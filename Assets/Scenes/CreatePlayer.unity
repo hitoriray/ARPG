@@ -314,6 +314,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1314781588}
+  - component: {fileID: 1314781589}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -335,8 +336,20 @@ Transform:
   m_Children:
   - {fileID: 1130479174478297206}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1314781589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314781587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d57865642c3d3424ba1f1a2d70123730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1671348813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -344,6 +357,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1002657396}
     m_Modifications:
+    - target: {fileID: 4838552527739420128, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552211687407269, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552211687407269, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552211687407269, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552211687407269, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7819552211935178880, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -368,6 +401,22 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7819552212169061117, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212169061117, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212169061117, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212169061117, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7819552212219394625, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -389,6 +438,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7819552212219394625, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212292060858, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212292060858, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212292060858, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552212292060858, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -592,6 +657,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7819552213541521447, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552213541521447, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552213541521447, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7819552213541521447, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7819552213674168372, guid: 228c433b23c5a274d9826bf93540cc57, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -627,7 +708,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3304632367700951243, guid: 35592af50a118a347aef20848bfd00b8, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3304632367700951243, guid: 35592af50a118a347aef20848bfd00b8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1066,7 +1147,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!137 &1130479173103418425
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -1087,7 +1168,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 249df724c5c531948a357c100787e4db, type: 2}
+  - {fileID: 2100000, guid: 5c77ee87e45670f4b89b78d91836e1c3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1474,7 +1555,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!137 &1130479173156941028
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -4558,7 +4639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!137 &1130479173566895549
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -5368,7 +5449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!137 &1130479173656256275
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -5389,7 +5470,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fad5184cd7abfe5429c03e02637cd450, type: 2}
+  - {fileID: 2100000, guid: 467eaeafd0d7d88458eb361c6ca333dd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6350,7 +6431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!137 &1130479173826820855
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -7271,7 +7352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!137 &1130479173949529068
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -7292,7 +7373,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 249df724c5c531948a357c100787e4db, type: 2}
+  - {fileID: 2100000, guid: 5c77ee87e45670f4b89b78d91836e1c3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9870,7 +9951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1130479174429390272
 Transform:
   m_ObjectHideFlags: 0
@@ -14649,7 +14730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!137 &1130479175112358869
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -15146,7 +15227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!137 &1130479175153267532
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
