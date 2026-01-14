@@ -11,27 +11,29 @@ using UnityEngine.UI;
 /// </summary>
 public class UI_ProfessionButton : MonoBehaviour
 {
+    #region ui控件
     [SerializeField] private Button button;
     [SerializeField] private Image icon;
     [SerializeField] private Image selectedIcon;
     [SerializeField] private Text nameText;
     [SerializeField] private AudioClip clickedAudio;
-
-    private static Color[] _colors;
-
+    #endregion
+    
     private UI_CreateCharacterWindow createCharacterWindow;
     public ProfessionType Profession { get; private set; }
 
+    #region 颜色相关
+    private static readonly Color[] Colors;
     static UI_ProfessionButton()
     {
-        _colors = new[] { Color.white, new Color(0.964f, 0.882f, 0.611f) };
+        Colors = new[] { Color.white, new Color(0.964f, 0.882f, 0.611f) };
     }
+    #endregion
 
     public void Init(UI_CreateCharacterWindow window, ProfessionType professionType)
     {
         createCharacterWindow = window;
         Profession = professionType;
-        
         button.onClick.AddListener(OnButtonClicked);
         Unselect();
     }
@@ -44,15 +46,15 @@ public class UI_ProfessionButton : MonoBehaviour
 
     public void Select()
     {
-        icon.color = _colors[1];
-        nameText.color = _colors[1];
+        icon.color = Colors[1];
+        nameText.color = Colors[1];
         selectedIcon.enabled = true;
     }
 
     public void Unselect()
     {
-        icon.color = _colors[0];
-        nameText.color = _colors[0];
+        icon.color = Colors[0];
+        nameText.color = Colors[0];
         selectedIcon.enabled = false;
     }
 }

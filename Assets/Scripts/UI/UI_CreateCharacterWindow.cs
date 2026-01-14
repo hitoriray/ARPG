@@ -11,23 +11,25 @@ namespace UI
     {
         // 模型交互Image
         [SerializeField] Image modelTouchImage;
-        // 角色预览
-        private Transform characterPreviewTransform;
 
+        #region 模型交互 - 拖拽
         [SerializeField] public float dragSpeed = 60f;
         private float lastPosX = 0;
+        #endregion
         
         // 职业按钮相关
         [SerializeField] private UI_ProfessionButton[] professionButtons; // 所有的职业按钮
         private UI_ProfessionButton currentProfessionButton; // 当前选中的职业按钮
 
+        // 外观部位按钮相关
+        [SerializeField] private UI_FacadeMenuButton[] facadeMenuButtons;
+        private UI_FacadeMenuButton currentFacadeMenuButton;
+        
         public override void Init()
         {
             base.Init();
             // 绑定modelTouchImage的拖拽事件
             modelTouchImage.OnDrag(ModelTouchImageDrag);
-            // 绑定角色预览
-            characterPreviewTransform = PlayerController.Instance.transform;
             
             // 初始化职业按钮
             for (int i = 0; i < professionButtons.Length; i++)
@@ -36,6 +38,12 @@ namespace UI
             }
             // 默认选择第一个职业（战士）
             SelectProfessionButton(professionButtons[0]);
+            
+            // 初始化外观部位按钮
+            facadeMenuButtons[0].Init(this, CharacterPartType.Face);
+            facadeMenuButtons[1].Init(this, CharacterPartType.Hair);
+            facadeMenuButtons[2].Init(this, CharacterPartType.Cloth);
+            SelectFacadeMenuButton(facadeMenuButtons[0]);
         }
 
         /// <summary>
@@ -47,12 +55,23 @@ namespace UI
         {
             float offset = eventData.position.x - lastPosX;
             lastPosX = eventData.position.x;
-            characterPreviewTransform.Rotate(new Vector3(0, -offset * Time.deltaTime * dragSpeed, 0));
+            CharacterCreator.Instance.RotateCharacter(new Vector3(0, -offset * Time.deltaTime * dragSpeed, 0));
         }
 
         private void Start()
         {
             Init();
+            
+            #region 测试逻辑
+
+            var faceConfigIDs = ConfigManager.Instance.GetConfig<ProjectConfig>(ConfigTool.ProjectConfigName).CustomCharacterPartConfigIdDict[CharacterPartType.Face];
+            foreach (var id in faceConfigIDs)
+            {
+                CharacterPartConfigBase config = ConfigTool.GetCharacterPartConfig(CharacterPartType.Face, id);
+                Debug.Log(config.Name);
+            }
+            
+            #endregion
         }
 
         /// <summary>
@@ -78,8 +97,25 @@ namespace UI
         /// </summary>
         private void SelectProfession(ProfessionType newProfession)
         {
-            // TODO：处理切换职业的业务逻辑
-            Debug.Log($"当前选择的职业是：{newProfession.ToString()}");
+            CharacterCreator.Instance.SetProfession(newProfession);
+            
+            // TODO:检查服装是否与职业相符
         }
+
+        /// <summary>
+        /// 选择外观部位
+        /// </summary>
+        public void SelectFacadeMenuButton(UI_FacadeMenuButton newFacadeMenuButton)
+        {
+            if (currentFacadeMenuButton != null)
+            {
+                currentFacadeMenuButton.Unselect();
+            }
+            
+            newFacadeMenuButton.Select();
+            currentFacadeMenuButton = newFacadeMenuButton;
+            // TODO：刷新界面
+        }
+        
     }
 }
