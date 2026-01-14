@@ -1,3 +1,4 @@
+using Config;
 using JKFrame;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +16,10 @@ namespace UI
 
         [SerializeField] public float dragSpeed = 60f;
         private float lastPosX = 0;
+        
+        // 职业按钮相关
+        [SerializeField] private UI_ProfessionButton[] professionButtons; // 所有的职业按钮
+        private UI_ProfessionButton currentProfessionButton; // 当前选中的职业按钮
 
         public override void Init()
         {
@@ -23,6 +28,14 @@ namespace UI
             modelTouchImage.OnDrag(ModelTouchImageDrag);
             // 绑定角色预览
             characterPreviewTransform = PlayerController.Instance.transform;
+            
+            // 初始化职业按钮
+            for (int i = 0; i < professionButtons.Length; i++)
+            {
+                professionButtons[i].Init(this, (ProfessionType)i); // 需要确保是按枚举顺序填入的四个职业
+            }
+            // 默认选择第一个职业（战士）
+            SelectProfessionButton(professionButtons[0]);
         }
 
         /// <summary>
@@ -32,7 +45,6 @@ namespace UI
         /// <param name="args"></param>
         private void ModelTouchImageDrag(PointerEventData eventData, object[] args)
         {
-            //print(eventData.position);
             float offset = eventData.position.x - lastPosX;
             lastPosX = eventData.position.x;
             characterPreviewTransform.Rotate(new Vector3(0, -offset * Time.deltaTime * dragSpeed, 0));
@@ -43,5 +55,31 @@ namespace UI
             Init();
         }
 
+        /// <summary>
+        /// 选择职业按钮
+        /// </summary>
+        public void SelectProfessionButton(UI_ProfessionButton newProfessionButton)
+        {
+            if (currentProfessionButton == newProfessionButton)
+                return;
+            
+            if (currentProfessionButton != null)
+            {
+                currentProfessionButton.Unselect();
+            }
+            
+            newProfessionButton.Select();
+            currentProfessionButton = newProfessionButton;
+            SelectProfession(newProfessionButton.Profession);
+        }
+
+        /// <summary>
+        /// 选择职业
+        /// </summary>
+        private void SelectProfession(ProfessionType newProfession)
+        {
+            // TODO：处理切换职业的业务逻辑
+            Debug.Log($"当前选择的职业是：{newProfession.ToString()}");
+        }
     }
 }

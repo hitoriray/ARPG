@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4838552527739420134}
   - component: {fileID: 4838552527739420129}
-  - component: {fileID: 4838552527739420128}
   m_Layer: 5
   m_Name: CharacterModelRTCamera
   m_TagString: Untagged
@@ -76,14 +75,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &4838552527739420128
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4838552527739420131}
-  m_Enabled: 1
 --- !u!1 &6530501354797596180
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,6 +1583,7 @@ GameObject:
   - component: {fileID: 7819552212219394628}
   - component: {fileID: 7819552212219394627}
   - component: {fileID: 7819552212219394626}
+  - component: {fileID: 1312544596}
   m_Layer: 5
   m_Name: ProfessionButton
   m_TagString: Untagged
@@ -1704,6 +1696,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1312544596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7819552212219394624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4847681983065f4da09a79213eee8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7819552212219394626}
+  icon: {fileID: 7819552213445849556}
+  selectedIcon: {fileID: 7819552211584360519}
+  nameText: {fileID: 7819552211677605436}
+  clickedAudio: {fileID: 8300000, guid: 89ec7c85dcf12f3408fd2d0825ab8101, type: 3}
 --- !u!1 &7819552212227287427
 GameObject:
   m_ObjectHideFlags: 0
@@ -2768,6 +2777,7 @@ GameObject:
   - component: {fileID: 7819552212691247589}
   - component: {fileID: 7819552212691247588}
   - component: {fileID: 7819552212691247587}
+  - component: {fileID: 1671348833}
   m_Layer: 5
   m_Name: ProfessionButton
   m_TagString: Untagged
@@ -2880,6 +2890,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1671348833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7819552212691247585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4847681983065f4da09a79213eee8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7819552212691247587}
+  icon: {fileID: 7819552212350881645}
+  selectedIcon: {fileID: 7819552212709404122}
+  nameText: {fileID: 7819552211580469477}
+  clickedAudio: {fileID: 8300000, guid: 89ec7c85dcf12f3408fd2d0825ab8101, type: 3}
 --- !u!1 &7819552212709404120
 GameObject:
   m_ObjectHideFlags: 0
@@ -3140,6 +3167,7 @@ GameObject:
   - component: {fileID: 7819552212735050377}
   - component: {fileID: 7819552212735050376}
   - component: {fileID: 7819552212735050423}
+  - component: {fileID: 656394509}
   m_Layer: 5
   m_Name: ProfessionButton
   m_TagString: Untagged
@@ -3252,6 +3280,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &656394509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7819552212735050421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4847681983065f4da09a79213eee8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7819552212735050423}
+  icon: {fileID: 7819552212877349858}
+  selectedIcon: {fileID: 7819552212049053871}
+  nameText: {fileID: 7819552211652921849}
+  clickedAudio: {fileID: 8300000, guid: 89ec7c85dcf12f3408fd2d0825ab8101, type: 3}
 --- !u!1 &7819552212745775134
 GameObject:
   m_ObjectHideFlags: 0
@@ -4202,6 +4247,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelTouchImage: {fileID: 7819552212139023731}
+  dragSpeed: 60
+  professionButtons:
+  - {fileID: 1671348833}
+  - {fileID: 963591091}
+  - {fileID: 656394509}
+  - {fileID: 1312544596}
 --- !u!1 &7819552213213703913
 GameObject:
   m_ObjectHideFlags: 0
@@ -4366,6 +4417,7 @@ GameObject:
   - component: {fileID: 7819552213227182774}
   - component: {fileID: 7819552213227182773}
   - component: {fileID: 7819552213227182772}
+  - component: {fileID: 963591091}
   m_Layer: 5
   m_Name: ProfessionButton
   m_TagString: Untagged
@@ -4478,6 +4530,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &963591091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7819552213227182770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4847681983065f4da09a79213eee8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7819552213227182772}
+  icon: {fileID: 7819552212579591142}
+  selectedIcon: {fileID: 7819552213112324573}
+  nameText: {fileID: 7819552212509863337}
+  clickedAudio: {fileID: 8300000, guid: 89ec7c85dcf12f3408fd2d0825ab8101, type: 3}
 --- !u!1 &7819552213337048039
 GameObject:
   m_ObjectHideFlags: 0
