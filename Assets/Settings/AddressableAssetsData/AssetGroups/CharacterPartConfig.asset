@@ -22,6 +22,86 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb6f551173a779245b5fcd5dd2c0ebda
+    m_Address: ClothConfig_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 630689a0bdc1038409f6de8419328885
+    m_Address: ClothConfig_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19806611dc326db4fb260053736717af
+    m_Address: ClothConfig_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff4924cc12ba617469adb626390d515d
+    m_Address: ClothConfig_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 955d08b9a98364741ac9ad4b068124fd
+    m_Address: ClothConfig_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52b801d704b3fc945a3d960987eacde2
+    m_Address: FaceConfig_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef52fed0be3bf0741be67b7a671e2b10
+    m_Address: FaceConfig_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 298b916fc70d2904899e541ee4b1990c
+    m_Address: FaceConfig_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0b015e0e18530d4997a9b2a5635a715
+    m_Address: FaceConfig_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8c21f7ebc3538d41ae1416ca6cbb952
+    m_Address: HairConfig_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcdcdefc02a97c34684939cbda486e64
+    m_Address: HairConfig_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c40375343809df4f9504e4fc87915c3
+    m_Address: HairConfig_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57374258e5bd0f543af7a1f726aad359
+    m_Address: HairConfig_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98a69b4db158ee8418e2bd7bb7ad00bd
+    m_Address: HairConfig_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f8c81f7d82070a4f96eaeaa17a94a45
+    m_Address: HairConfig_6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfaa21a72cde07d4e9e96d0b878458e9
+    m_Address: HairConfig_7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
   m_SchemaSet:
