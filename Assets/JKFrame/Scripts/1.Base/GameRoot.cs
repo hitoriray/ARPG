@@ -14,8 +14,7 @@ namespace JKFrame
         /// </summary>
         [SerializeField]
         private GameSetting gameSetting;
-        public GameSetting GameSetting => gameSetting;
-
+        public GameSetting GameSetting { get { return gameSetting; } }
         protected override void Awake()
         {
             if (Instance != null)
@@ -45,7 +44,10 @@ namespace JKFrame
 
         static GameRoot()
         {
-            EditorApplication.update += InitForEditor;
+            EditorApplication.update += () =>
+            {
+                InitForEditor();
+            };
         }
         [InitializeOnLoadMethod]
         public static void InitForEditor()

@@ -66,7 +66,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 2
     - Name: 
       Entry: 7
       Data: 
@@ -75,7 +75,7 @@ MonoBehaviour:
       Data: 4|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UI_ColorSelectorWindow, Assembly-CSharp
+      Data: UI_BagWindow, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
@@ -87,10 +87,10 @@ MonoBehaviour:
       Data: true
     - Name: prefabAssetName
       Entry: 1
-      Data: UI_ColorSelectorWindow
+      Data: UI_BagWindow
     - Name: layerNum
       Entry: 3
-      Data: 4
+      Data: 1
     - Name: objInstance
       Entry: 6
       Data: 
@@ -108,46 +108,13 @@ MonoBehaviour:
       Data: 6|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UI_CreateCharacterWindow, Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 7
-      Data: 7|JKFrame.UIElement, JKFrame
-    - Name: isCache
-      Entry: 5
-      Data: false
-    - Name: prefabAssetName
-      Entry: 1
-      Data: UI_CreateCharacterWindow
-    - Name: layerNum
-      Entry: 3
-      Data: 2
-    - Name: objInstance
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: 8|System.RuntimeType, mscorlib
-    - Name: 
-      Entry: 1
       Data: JKFrame.UI_LoadingWindow, JKFrame
     - Name: 
       Entry: 8
       Data: 
     - Name: $v
       Entry: 7
-      Data: 9|JKFrame.UIElement, JKFrame
+      Data: 7|JKFrame.UIElement, JKFrame
     - Name: isCache
       Entry: 5
       Data: true
@@ -172,4 +139,4 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  JKFarmeABName: JKFrame
+  JKFarmeABName: 
