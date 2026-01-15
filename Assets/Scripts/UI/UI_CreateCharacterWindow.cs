@@ -47,8 +47,9 @@ namespace UI
         // 自定义角色的数据
         private CustomCharacterData customCharacterData;
         
+        // 全局项目配置
         private ProjectConfig projectConfig;
-        //玩家当前每一个部位选择的是projectConfig中的第几个索引的配置
+        // 玩家当前每一个部位选择的是projectConfig中的第几个索引的配置
         private Dictionary<int, int> part2ConfigDict;
         
         private void Start()
@@ -197,6 +198,8 @@ namespace UI
             // 2.修改颜色
             var partConfig = GetCurrentCharacterPartConfig();
             CharacterCreator.Instance.SetColor1(partConfig, newColor);
+            // 3.修改自身按钮颜色
+            color1Button.image.color = new Color(newColor.r, newColor.g, newColor.b, 0.6f);
         }
 
         private void OnColor2Selected(Color newColor)
@@ -207,6 +210,8 @@ namespace UI
             // 2.修改颜色
             var partConfig = GetCurrentCharacterPartConfig();
             CharacterCreator.Instance.SetColor2(partConfig, newColor);
+            // 3.修改自身按钮颜色
+            color2Button.image.color = new Color(newColor.r, newColor.g, newColor.b, 0.6f);
         }
         
         #endregion
@@ -271,8 +276,6 @@ namespace UI
                 partNameText.text = partConfig.Name;
                 switch (partType)
                 {
-                    case CharacterPartType.Hat:
-                        break;
                     case CharacterPartType.Hair:
                         // 隐藏尺寸、高度、Color2
                         sizeSlider.transform.parent.gameObject.SetActive(false);
@@ -282,7 +285,9 @@ namespace UI
                         if ((partConfig as HairConfig).ColorIndex != -1)
                         {
                             color1Button.gameObject.SetActive(true);
-                            // TODO: 让该按钮的图片和当前的颜色配置一样
+                            // 让该按钮的图片和当前的颜色配置一样
+                            var color = customCharacterData.CustomPartDataDict[(int)partType].Color1;
+                            color1Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else
                         {
@@ -292,12 +297,12 @@ namespace UI
                     case CharacterPartType.Face:
                         // 尺寸
                         sizeSlider.transform.parent.gameObject.SetActive(true);
-                        sizeSlider.value = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Size;
+                        sizeSlider.value = customCharacterData.CustomPartDataDict[(int)partType].Size;
                         sizeSlider.minValue = 0.9f;
                         sizeSlider.maxValue = 1.2f;
                         // 高度
                         heightSlider.transform.parent.gameObject.SetActive(true);
-                        heightSlider.value = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Height;
+                        heightSlider.value = customCharacterData.CustomPartDataDict[(int)partType].Height;
                         heightSlider.minValue = 0;
                         heightSlider.maxValue = 0.1f;
                         // 隐藏颜色按钮
@@ -311,24 +316,20 @@ namespace UI
                         if ((partConfig as ClothConfig).ColorIndex1 != -1)
                         {
                             color1Button.gameObject.SetActive(true);
-                            // TODO: 让该按钮的图片和当前的颜色配置一样
+                            // 让该按钮的图片和当前的颜色配置一样
+                            var color = customCharacterData.CustomPartDataDict[(int)partType].Color1;
+                            color1Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else color1Button.gameObject.SetActive(false);
                         
                         if ((partConfig as ClothConfig).ColorIndex2 != -1)
                         {
                             color2Button.gameObject.SetActive(true);
-                            // TODO: 让该按钮的图片和当前的颜色配置一样
+                            // 让该按钮的图片和当前的颜色配置一样
+                            var color = customCharacterData.CustomPartDataDict[(int)partType].Color2;
+                            color2Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else color2Button.gameObject.SetActive(false);
-                        break;
-                    case CharacterPartType.ShoulderPad:
-                        break;
-                    case CharacterPartType.Belt:
-                        break;
-                    case CharacterPartType.Glove:
-                        break;
-                    case CharacterPartType.Shoe:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(partType), partType, null);
@@ -338,7 +339,19 @@ namespace UI
             // 更新模型
             if (updateCharacterView)
             {
-                CharacterCreator.Instance.SetPart(partConfig); 
+                // 修改角色模型
+                CharacterCreator.Instance.SetPart(partConfig);
+                // 让角色重新应用一次颜色
+                switch (partType)
+                {
+                    case CharacterPartType.Hair:
+                        CharacterCreator.Instance.SetColor1(partConfig, customCharacterData.CustomPartDataDict[(int)partType].Color1);
+                        break;
+                    case CharacterPartType.Cloth:
+                        CharacterCreator.Instance.SetColor1(partConfig, customCharacterData.CustomPartDataDict[(int)partType].Color1);
+                        CharacterCreator.Instance.SetColor2(partConfig, customCharacterData.CustomPartDataDict[(int)partType].Color2);
+                        break;
+                }
             }
         }
 

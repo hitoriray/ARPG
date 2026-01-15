@@ -68,12 +68,12 @@ namespace Player
             {
                 case CharacterPartType.Hair:
                     var hairConfig = partConfig as HairConfig;
-                    if (hairConfig == null) break;
+                    if (hairConfig == null || hairConfig.ColorIndex < 0) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMaterial.SetColor("_Color0" + (hairConfig.ColorIndex + 1), color);
                     break;
                 case CharacterPartType.Cloth:
                     var clothConfig = partConfig as ClothConfig;
-                    if (clothConfig == null) break;
+                    if (clothConfig == null || clothConfig.ColorIndex1 < 0) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMaterial.SetColor($"_Color0{(clothConfig.ColorIndex1 + 1).ToString()}", color);
                     break;
                 default:
@@ -91,7 +91,7 @@ namespace Player
             {
                 case CharacterPartType.Cloth:
                     var clothConfig = partConfig as ClothConfig;
-                    if (clothConfig == null) break;
+                    if (clothConfig == null || clothConfig.ColorIndex2 < 0) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMaterial.SetColor($"_Color0{(clothConfig.ColorIndex2 + 1).ToString()}", color);
                     break;
                 default:
