@@ -15,8 +15,6 @@ namespace Config
             string configName = "";
             switch (characterPartType)
             {
-                case CharacterPartType.Hat:
-                    break;
                 case CharacterPartType.Hair:
                     configName = "HairConfig_";
                     break;
@@ -26,16 +24,6 @@ namespace Config
                 case CharacterPartType.Cloth:
                     configName = "ClothConfig_";
                     break;
-                case CharacterPartType.ShoulderPad:
-                    break;
-                case CharacterPartType.Belt:
-                    break;
-                case CharacterPartType.Glove:
-                    break;
-                case CharacterPartType.Shoe:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(characterPartType), characterPartType, null);
             }
             
             configName += index.ToString();

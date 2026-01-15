@@ -4074,6 +4074,8 @@ MonoBehaviour:
   leftArrowButton: {fileID: 7819552212787850683}
   rightArrowButton: {fileID: 7819552212227287431}
   arrowAudioClip: {fileID: 8300000, guid: e5b481f1445784145a1e55295e671860, type: 3}
+  backButton: {fileID: 5224259986788301266}
+  sureButton: {fileID: 7768756316850961104}
 --- !u!1 &7819552213213703913
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,61 +1,51 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace Serialization
 {
     [Serializable]
-    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver
+    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        [SerializeField] private List<TKey> keys;
-        [SerializeField] private List<TValue> values;
+        private List<TKey> keys;
+        private List<TValue> values;
         [NonSerialized] private Dictionary<TKey, TValue> dict;
-
+        
         public SerializableDictionary()
         {
-            keys = new List<TKey>();
-            values = new List<TValue>();
             dict = new Dictionary<TKey, TValue>();
         }
 
-        public SerializableDictionary(int capacity)
+        public SerializableDictionary(Dictionary<TKey, TValue> dict)
         {
-            keys = new List<TKey>(capacity);
-            values = new List<TValue>(capacity);
-            dict = new Dictionary<TKey, TValue>(capacity);
+            this.dict = dict;
         }
 
-        #region ISerializationCallbackReceiver
-        public void OnBeforeSerialize()
+        [OnSerializing]
+        private void OnSerializing(StreamingContext context)
         {
+            keys = new List<TKey>(dict.Count);
+            values = new List<TValue>(dict.Count);
+            foreach (var item in dict)
+            {
+                keys.Add(item.Key);
+                values.Add(item.Value);
+            }
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            dict = new Dictionary<TKey, TValue>(keys.Count);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                dict.Add(keys[i], values[i]);
+            }
             keys.Clear();
             values.Clear();
-
-            keys.Capacity = dict.Count;
-            values.Capacity = dict.Count;
-            
-            foreach (var kvp in dict)
-            {
-                keys.Add(kvp.Key);
-                values.Add(kvp.Value);
-            }
         }
-
-        public void OnAfterDeserialize()
-        {
-            dict.Clear();
-            int count = Math.Min(keys.Count, values.Count);
-            dict = new Dictionary<TKey, TValue>(count);
-            for (int i = 0; i < count; i++)
-            {
-                if (keys[i] != null && !dict.ContainsKey(keys[i]))
-                {
-                    dict.Add(keys[i], values[i]);
-                }
-            }
-        }
-        #endregion
 
         #region IDictionary Implementation
         public TValue this[TKey key] { get => dict[key]; set => dict[key] = value; }

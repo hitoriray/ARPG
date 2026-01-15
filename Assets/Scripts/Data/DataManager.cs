@@ -50,25 +50,17 @@ namespace Data
         public static void InitCustomCharacterData()
         {
             CustomCharacterData = new CustomCharacterData();
-            CustomCharacterData = new CustomCharacterData
-            {
-                CustomPartDataDict = new(3)
+            CustomCharacterData.CustomPartDataDict = new SerializableDictionary<int, CustomCharacterPartData>();
+            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Face, 
+                new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } );
+            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Hair,
+                new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConvertToSerializationColor(), });
+            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Cloth,
+                new CustomCharacterPartData
                 {
-                    { (int)CharacterPartType.Face, new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } },
-                    {
-                        (int)CharacterPartType.Hair,
-                        new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConvertToSerializationColor(), }
-                    },
-                    {
-                        (int)CharacterPartType.Cloth,
-                        new CustomCharacterPartData
-                        {
-                            Index = 1, Color1 = Color.white.ConvertToSerializationColor(),
-                            Color2 = Color.black.ConvertToSerializationColor(),
-                        }
-                    }
-                }
-            };
+                    Index = 1, Color1 = Color.white.ConvertToSerializationColor(),
+                    Color2 = Color.black.ConvertToSerializationColor(),
+                });
         }
 
         public static void SaveCustomCharacterData()

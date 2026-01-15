@@ -1,4 +1,5 @@
 using Config;
+using Data;
 using UnityEngine;
 using JKFrame;
 using Player;
@@ -23,7 +24,7 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
     
     public void Init()
     {
-        playerView.Init();
+        playerView.Init(DataManager.CustomCharacterData);
     }
 
     /// <summary>

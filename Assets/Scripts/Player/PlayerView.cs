@@ -19,13 +19,31 @@ namespace Player
         private CustomCharacterData customCharacterData;                            // 玩家定义的角色数据，用于存档
         private readonly Dictionary<int, CharacterPartConfigBase> characterPartDict = new (); // 角色部位字典
         
-        public void Init()
+        public void Init(CustomCharacterData data)
         {
             // 提前实例化（需要注意对应的index）
             partSkinnedMeshRenderers[(int)CharacterPartType.Hair].material = Instantiate(partMaterials[0]);
             partSkinnedMeshRenderers[(int)CharacterPartType.Face].material = Instantiate(partMaterials[0]);
             partSkinnedMeshRenderers[(int)CharacterPartType.Cloth].material = Instantiate(partMaterials[2]);
-            customCharacterData = DataManager.CustomCharacterData;
+            customCharacterData = data;
+        }
+
+        public void InitOnGame(CustomCharacterData data)
+        {
+            Init(data);
+            
+            // 基于数据设置当前部位
+            var hairConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Hair, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Hair].Index);
+            var faceConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Face, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Index);
+            var clothConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Cloth, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Cloth].Index);
+            var facePartData = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face];
+
+            SetPart(hairConfig, true);
+            SetPart(faceConfig, true);
+            SetPart(clothConfig, true);
+            
+            SetSize(CharacterPartType.Face, facePartData.Size);
+            SetHeight(CharacterPartType.Face, facePartData.Height);
         }
 
         // 获取角色部位配置
@@ -141,6 +159,15 @@ namespace Player
             if (partType == CharacterPartType.Face)
             {
                 neckRootTransform.localPosition = new Vector3(-value, 0, 0);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            // 释放全部资源
+            foreach (var item in characterPartDict)
+            {
+                ResManager.Release(item.Value);
             }
         }
     }
