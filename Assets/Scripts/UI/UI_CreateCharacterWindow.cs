@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -71,6 +72,12 @@ namespace UI
             // 绑定左右箭头按钮的监听事件
             leftArrowButton.onClick.AddListener(OnLeftArrowBtnClicked);
             rightArrowButton.onClick.AddListener(OnRightArrowBtnClicked);
+            // 绑定slider事件
+            sizeSlider.onValueChanged.AddListener(OnSizeSliderValueChanged);
+            heightSlider.onValueChanged.AddListener(OnHeightSliderValueChanged);
+            // 绑定颜色按钮事件
+            color1Button.onClick.AddListener(OnColor1BtnClicked);
+            color2Button.onClick.AddListener(OnColor2BtnClicked);
             
             // 初始化默认数据
             customCharacterData = new CustomCharacterData
@@ -158,6 +165,50 @@ namespace UI
             SetCharacterPart(currentPartType, currentPartConfigIds[currentIndex], true, true);
             AudioManager.Instance.PlayOnShot(arrowAudioClip, Vector3.zero, 1, false);
         }
+        
+        private void OnSizeSliderValueChanged(float value)
+        {
+            GetCurrentCharacterPartData().Size = value;
+            CharacterCreator.Instance.SetSize(currentFacadeMenuButton.CharacterPartType, value);
+        }
+        
+        private void OnHeightSliderValueChanged(float value)
+        {
+            GetCurrentCharacterPartData().Height = value;
+            CharacterCreator.Instance.SetHeight(currentFacadeMenuButton.CharacterPartType, value);
+        }
+        
+        private void OnColor1BtnClicked()
+        {
+            // 显示颜色选择器窗口
+            UIManager.Instance.Show<UI_ColorSelectorWindow>().Init(OnColor1Selected, color1Button.image.color);
+        }
+        
+        private void OnColor2BtnClicked()
+        {
+            UIManager.Instance.Show<UI_ColorSelectorWindow>().Init(OnColor2Selected, color2Button.image.color);
+        }
+
+        private void OnColor1Selected(Color newColor)
+        {
+            // 1.存储数据
+            var currentPartData = GetCurrentCharacterPartData();
+            currentPartData.Color1 = newColor;
+            // 2.修改颜色
+            var partConfig = GetCurrentCharacterPartConfig();
+            CharacterCreator.Instance.SetColor1(partConfig, newColor);
+        }
+
+        private void OnColor2Selected(Color newColor)
+        {
+            // 1.存储数据
+            var currentPartData = GetCurrentCharacterPartData();
+            currentPartData.Color2 = newColor;
+            // 2.修改颜色
+            var partConfig = GetCurrentCharacterPartConfig();
+            CharacterCreator.Instance.SetColor2(partConfig, newColor);
+        }
+        
         #endregion
         
         /// <summary>
@@ -241,12 +292,14 @@ namespace UI
                     case CharacterPartType.Face:
                         // 尺寸
                         sizeSlider.transform.parent.gameObject.SetActive(true);
+                        sizeSlider.value = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Size;
                         sizeSlider.minValue = 0.9f;
-                        sizeSlider.maxValue = 1.1f;
+                        sizeSlider.maxValue = 1.2f;
                         // 高度
                         heightSlider.transform.parent.gameObject.SetActive(true);
+                        heightSlider.value = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Height;
                         heightSlider.minValue = 0;
-                        heightSlider.maxValue = 0.2f;
+                        heightSlider.maxValue = 0.1f;
                         // 隐藏颜色按钮
                         color1Button.gameObject.SetActive(false);
                         color2Button.gameObject.SetActive(false);
@@ -288,5 +341,28 @@ namespace UI
                 CharacterCreator.Instance.SetPart(partConfig); 
             }
         }
+
+        #region 辅助方法
+        /// <summary>
+        /// 获取当前角色部位配置
+        /// </summary>
+        private CharacterPartConfigBase GetCurrentCharacterPartConfig()
+        {
+            var currentPartType = currentFacadeMenuButton.CharacterPartType;
+            var currentIndex = part2ConfigDict[(int)currentPartType];
+            var currentId = projectConfig.CustomCharacterPartConfigIdDict[currentPartType][currentIndex];
+            return ConfigTool.GetCharacterPartConfig(currentPartType, currentId);
+        }
+
+        /// <summary>
+        /// 获取当前角色部位数据
+        /// </summary>
+        /// <returns></returns>
+        private CustomCharacterPartData GetCurrentCharacterPartData()
+        {
+            var currentPartType = currentFacadeMenuButton.CharacterPartType;
+            return customCharacterData.CustomPartDataDict[(int)currentPartType];
+        }
+        #endregion
     }
 }

@@ -85,6 +85,25 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
     public void SetPart(CharacterPartConfigBase partConfig)
     {
         playerView.SetPart(partConfig);
-        //TODO:要持久化保存玩家此次操作
+    }
+
+    public void SetSize(CharacterPartType partType, float value)
+    {
+        playerView.SetSize(partType, value);
+    }
+
+    public void SetHeight(CharacterPartType partType, float value)
+    {
+        playerView.SetHeight(partType, value);
+    }
+
+    public void SetColor1(CharacterPartConfigBase partConfig, Color color)
+    {
+        playerView.SetColor1(partConfig, color);
+    }
+    
+    public void SetColor2(CharacterPartConfigBase partConfig, Color color)
+    {
+        playerView.SetColor2(partConfig, color);
     }
 }
