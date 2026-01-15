@@ -10,7 +10,7 @@ namespace Player
 
         public void Init()
         {
-            playerView.InitOnGame(DataManager.CustomCharacterData);
+            // playerView.InitOnGame(DataManager.CustomCharacterData);
         }
     }
 }
