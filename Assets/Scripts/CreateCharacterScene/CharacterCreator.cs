@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Config;
 using UnityEngine;
 using JKFrame;
+using Player;
 
 public class CharacterCreator : SingletonMono<CharacterCreator>
 {
+    [SerializeField] private PlayerView playerView;
     [SerializeField] private Transform characterTransform;
     [SerializeField] private Animator animator;
     
@@ -20,7 +22,13 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
 
     private GameObject[] currentWeapons;
     #endregion
-    
+
+    private void Start()
+    {
+        base.Awake();
+        playerView.Init();
+    }
+
     /// <summary>
     /// 设置职业
     /// </summary>
@@ -68,5 +76,15 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
     public void RotateCharacter(Vector3 rotation)
     {
         characterTransform.Rotate(rotation);
+    }
+
+    /// <summary>
+    /// 设置部位
+    /// </summary>
+    /// <param name="partConfig"></param>
+    public void SetPart(CharacterPartConfigBase partConfig)
+    {
+        playerView.SetPart(partConfig);
+        //TODO:要持久化保存玩家此次操作
     }
 }
