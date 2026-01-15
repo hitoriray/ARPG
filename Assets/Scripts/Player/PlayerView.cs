@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Config;
+using Data;
+using JKFrame;
 using UnityEngine;
 
 namespace Player
@@ -13,6 +15,8 @@ namespace Player
         [SerializeField] private SkinnedMeshRenderer[] partSkinnedMeshRenderers;    // 部位渲染器
         [SerializeField] private Material[] partMaterials;                          // 部位的材质
         [SerializeField] private Transform neckRootTransform;                       // 头部的根节点，用于修改头部的大小和高度
+        private CustomCharacterData customCharacterData;                            // 玩家定义的角色数据，用于存档
+        private readonly Dictionary<int, CharacterPartConfigBase> characterPartDict = new (); // 角色部位字典
         
         public void Init()
         {
@@ -20,49 +24,65 @@ namespace Player
             partSkinnedMeshRenderers[(int)CharacterPartType.Hair].material = Instantiate(partMaterials[0]);
             partSkinnedMeshRenderers[(int)CharacterPartType.Face].material = Instantiate(partMaterials[0]);
             partSkinnedMeshRenderers[(int)CharacterPartType.Cloth].material = Instantiate(partMaterials[2]);
+            customCharacterData = DataManager.CustomCharacterData;
+        }
+
+        // 获取角色部位配置
+        public CharacterPartConfigBase GetCharacterPartConfig(CharacterPartType partType)
+        {
+            return characterPartDict.GetValueOrDefault((int)partType);
         }
         
-        public void SetPart(CharacterPartConfigBase partConfig)
+        public void SetPart(CharacterPartConfigBase partConfig, bool updateCharacterView = true)
         {
-            switch (partConfig.CharacterPartType)
+            var partType = partConfig.CharacterPartType;
+            if (characterPartDict.TryGetValue((int)partType, out var currentPartConfig))
             {
-                case CharacterPartType.Hat:
-                    break;
+                // 释放旧的资源并且设置新资源
+                ResManager.Release(currentPartConfig);
+                characterPartDict[(int)partType] = partConfig;
+            }
+            else
+            {
+                // 这个部位之前是空的，所以不存在资源释放问题
+                characterPartDict.Add((int)partType, partConfig);
+            }
+            
+            // 不更新实际的画面
+            if (!updateCharacterView)
+                return;
+            
+            switch (partType)
+            {
                 case CharacterPartType.Hair:
                     var hairConfig = partConfig as HairConfig;
                     if (hairConfig == null) break;
-                    partSkinnedMeshRenderers[(int)partConfig.CharacterPartType].sharedMesh = hairConfig.Mesh1;
+                    partSkinnedMeshRenderers[(int)partType].sharedMesh = hairConfig.Mesh1;
+                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1);
                     break;
                 case CharacterPartType.Face:
                     var faceConfig = partConfig as FaceConfig;
                     if (faceConfig == null) break;
-                    partSkinnedMeshRenderers[(int)partConfig.CharacterPartType].sharedMesh = faceConfig.Mesh1;
+                    partSkinnedMeshRenderers[(int)partType].sharedMesh = faceConfig.Mesh1;
                     break;
                 case CharacterPartType.Cloth:
                     var clothConfig = partConfig as ClothConfig;
                     if (clothConfig == null) break;
-                    partSkinnedMeshRenderers[(int)partConfig.CharacterPartType].sharedMesh = clothConfig.Mesh1;
-                    break;
-                case CharacterPartType.ShoulderPad:
-                    break;
-                case CharacterPartType.Belt:
-                    break;
-                case CharacterPartType.Glove:
-                    break;
-                case CharacterPartType.Shoe:
+                    partSkinnedMeshRenderers[(int)partType].sharedMesh = clothConfig.Mesh1;
+                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1);
+                    SetColor2(partType, customCharacterData.CustomPartDataDict[(int)partType].Color2);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-
+        
         /// <summary>
         /// 设置部位的颜色1
         /// </summary>
-        public void SetColor1(CharacterPartConfigBase partConfig, Color color)
+        public void SetColor1(CharacterPartType partType, Color color)
         {
-            var partType = partConfig.CharacterPartType;
+            var partConfig = GetCharacterPartConfig(partType);
             // 根据不同的部位类型，确定到具体要修改材质球中的哪一个颜色
             switch (partType)
             {
@@ -84,9 +104,9 @@ namespace Player
         /// <summary>
         /// 设置部位的颜色2
         /// </summary>
-        public void SetColor2(CharacterPartConfigBase partConfig, Color color)
+        public void SetColor2(CharacterPartType partType, Color color)
         {
-            var partType = partConfig.CharacterPartType;
+            var partConfig = GetCharacterPartConfig(partType);
             switch (partType)
             {
                 case CharacterPartType.Cloth:

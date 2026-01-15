@@ -10,7 +10,7 @@ namespace Config
         /// <summary>
         /// 获取角色部位的配置
         /// </summary>
-        public static CharacterPartConfigBase GetCharacterPartConfig(CharacterPartType characterPartType, int index)
+        public static CharacterPartConfigBase LoadCharacterPartConfig(CharacterPartType characterPartType, int index)
         {
             string configName = "";
             switch (characterPartType)

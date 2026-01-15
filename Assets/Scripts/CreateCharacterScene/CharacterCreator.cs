@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Config;
 using UnityEngine;
 using JKFrame;
@@ -22,10 +20,9 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
 
     private GameObject[] currentWeapons;
     #endregion
-
-    private void Start()
+    
+    public void Init()
     {
-        base.Awake();
         playerView.Init();
     }
 
@@ -81,10 +78,9 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
     /// <summary>
     /// 设置部位
     /// </summary>
-    /// <param name="partConfig"></param>
-    public void SetPart(CharacterPartConfigBase partConfig)
+    public void SetPart(CharacterPartConfigBase partConfig, bool updateCharacterView)
     {
-        playerView.SetPart(partConfig);
+        playerView.SetPart(partConfig, updateCharacterView);
     }
 
     public void SetSize(CharacterPartType partType, float value)
@@ -97,13 +93,20 @@ public class CharacterCreator : SingletonMono<CharacterCreator>
         playerView.SetHeight(partType, value);
     }
 
-    public void SetColor1(CharacterPartConfigBase partConfig, Color color)
+    public void SetColor1(CharacterPartType partType, Color color)
     {
-        playerView.SetColor1(partConfig, color);
+        playerView.SetColor1(partType, color);
     }
     
-    public void SetColor2(CharacterPartConfigBase partConfig, Color color)
+    public void SetColor2(CharacterPartType partType, Color color)
     {
-        playerView.SetColor2(partConfig, color);
+        playerView.SetColor2(partType, color);
+    }
+    
+    
+    // 获取角色部位配置
+    public CharacterPartConfigBase GetCharacterPartConfig(CharacterPartType partType)
+    {
+        return playerView.GetCharacterPartConfig(partType);
     }
 }
