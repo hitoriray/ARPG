@@ -1,3 +1,4 @@
+using Data;
 using JKFrame;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +20,11 @@ namespace UI
             continueButton.onClick.AddListener(OnContinueButtonClicked);
             quitButton.onClick.AddListener(OnQuitButtonClicked);
             
-            // TODO：没有存档，隐藏继续按钮
+            // 如果没有存档，隐藏继续按钮
+            if (!DataManager.HasArchive)
+            {
+                continueButton.gameObject.SetActive(false);
+            }
         }
 
         public override void OnClose()
@@ -32,16 +37,16 @@ namespace UI
         #region 事件回调
         private void OnStartButtonClicked()
         {
-
-
             Close();
+            GameManager.Instance.CreateNewArchiveAndEnterGame();
         }
 
         private void OnContinueButtonClicked()
         {
-
             Close();
+            GameManager.Instance.UseCurrentArchiveAndEnterGame();
         }
+        
         private void OnQuitButtonClicked()
         {
             Application.Quit();

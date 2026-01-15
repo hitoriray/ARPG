@@ -44,6 +44,10 @@ namespace UI
         [SerializeField] private Button rightArrowButton;
         [SerializeField] private AudioClip arrowAudioClip;
         
+        // 返回、确认按钮
+        [SerializeField] private Button backButton;
+        [SerializeField] private Button sureButton;
+        
         // 自定义角色的数据
         private static CustomCharacterData CustomCharacterData => DataManager.CustomCharacterData;
         
@@ -55,6 +59,7 @@ namespace UI
         public CharacterPartType CurrentCharacterPartType => currentFacadeMenuButton.CharacterPartType;
         public ProfessionType CurrentProfessionType => currentProfessionButton.Profession;
         
+        #region UI_WindowBase Implementation
         public override void Init()
         {
             base.Init();
@@ -68,17 +73,7 @@ namespace UI
                 { (int)CharacterPartType.Cloth, 0 }
             };
 
-            // 绑定modelTouchImage的拖拽事件
-            modelTouchImage.OnDrag(OnModelTouchImageDrag);
-            // 绑定左右箭头按钮的监听事件
-            leftArrowButton.onClick.AddListener(OnLeftArrowBtnClicked);
-            rightArrowButton.onClick.AddListener(OnRightArrowBtnClicked);
-            // 绑定slider事件
-            sizeSlider.onValueChanged.AddListener(OnSizeSliderValueChanged);
-            heightSlider.onValueChanged.AddListener(OnHeightSliderValueChanged);
-            // 绑定颜色按钮事件
-            color1Button.onClick.AddListener(OnColor1BtnClicked);
-            color2Button.onClick.AddListener(OnColor2BtnClicked);
+            BindEvents();
 
             // 初始化外观部位按钮
             facadeMenuButtons[0].Init(this, CharacterPartType.Face);
@@ -105,6 +100,26 @@ namespace UI
             // 释放自身资源
             ResManager.ReleaseInstance(gameObject);
         }
+        
+        #endregion
+
+        private void BindEvents()
+        {
+            // 绑定modelTouchImage的拖拽事件
+            modelTouchImage.OnDrag(OnModelTouchImageDrag);
+            // 绑定左右箭头按钮的监听事件
+            leftArrowButton.onClick.AddListener(OnLeftArrowBtnClicked);
+            rightArrowButton.onClick.AddListener(OnRightArrowBtnClicked);
+            // 绑定slider事件
+            sizeSlider.onValueChanged.AddListener(OnSizeSliderValueChanged);
+            heightSlider.onValueChanged.AddListener(OnHeightSliderValueChanged);
+            // 绑定颜色按钮事件
+            color1Button.onClick.AddListener(OnColor1BtnClicked);
+            color2Button.onClick.AddListener(OnColor2BtnClicked);
+            // 绑定返回、确认按钮
+            backButton.onClick.AddListener(OnBackBtnClicked);
+            sureButton.onClick.AddListener(OnSureBtnClicked);
+        }
 
         #region 事件回调
         /// <summary>
@@ -128,47 +143,17 @@ namespace UI
         {
             SetNextCharacterPart(1, CurrentCharacterPartType);
         }
-
-        private void SetNextCharacterPart(int increase, CharacterPartType currentPartType, bool updateUI = true)
-        {
-            int currentIndex = part2ConfigDict[(int)currentPartType];
-            var currentPartConfigIds = projectConfig.CustomCharacterPartConfigIdDict[currentPartType];
-            currentIndex += increase;
-            if (currentIndex < 0) currentIndex = currentPartConfigIds.Count - 1;
-            else if (currentIndex >= currentPartConfigIds.Count) currentIndex = 0;
-
-            // 检查职业有效性
-            var currentProfession = currentProfessionButton.Profession;
-            var partConfig = ConfigTool.LoadCharacterPartConfig(currentPartType, currentPartConfigIds[currentIndex]);
-            while (!partConfig.ProfessionTypes.Contains(currentProfession))
-            {
-                currentIndex += increase;
-                if (currentIndex < 0) currentIndex = currentPartConfigIds.Count - 1;
-                else if (currentIndex >= currentPartConfigIds.Count) currentIndex = 0;
-                
-                // 释放资源并且重新获取新资源
-                ResManager.Release(partConfig);
-                partConfig = ConfigTool.LoadCharacterPartConfig(currentPartType, currentPartConfigIds[currentIndex]);
-            }
-            // 释放最后一次的资源
-            ResManager.Release(partConfig);
-            
-            // 说明职业有效
-            part2ConfigDict[(int)currentPartType] = currentIndex;
-            SetCharacterPart(currentPartType, currentPartConfigIds[currentIndex], updateUI, true);
-            AudioManager.Instance.PlayOnShot(arrowAudioClip, Vector3.zero, 1, false);
-        }
         
         private void OnSizeSliderValueChanged(float value)
         {
-            GetCharacterPartData(currentFacadeMenuButton.CharacterPartType).Size = value;
-            CharacterCreator.Instance.SetSize(currentFacadeMenuButton.CharacterPartType, value);
+            GetCharacterPartData(CurrentCharacterPartType).Size = value;
+            CharacterCreator.Instance.SetSize(CurrentCharacterPartType, value);
         }
         
         private void OnHeightSliderValueChanged(float value)
         {
-            GetCharacterPartData(currentFacadeMenuButton.CharacterPartType).Height = value;
-            CharacterCreator.Instance.SetHeight(currentFacadeMenuButton.CharacterPartType, value);
+            GetCharacterPartData(CurrentCharacterPartType).Height = value;
+            CharacterCreator.Instance.SetHeight(CurrentCharacterPartType, value);
         }
         
         private void OnColor1BtnClicked()
@@ -185,7 +170,7 @@ namespace UI
         private void OnColor1Selected(Color newColor)
         {
             // 1.存储数据
-            var currentPartData = GetCharacterPartData(currentFacadeMenuButton.CharacterPartType);
+            var currentPartData = GetCharacterPartData(CurrentCharacterPartType);
             currentPartData.Color1 = newColor.ConvertToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor1(CurrentCharacterPartType, newColor);
@@ -196,16 +181,32 @@ namespace UI
         private void OnColor2Selected(Color newColor)
         {
             // 1.存储数据
-            var currentPartData = GetCharacterPartData(currentFacadeMenuButton.CharacterPartType);
+            var currentPartData = GetCharacterPartData(CurrentCharacterPartType);
             currentPartData.Color2 = newColor.ConvertToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor2(CurrentCharacterPartType, newColor);
             // 3.修改自身按钮颜色
             color2Button.image.color = new Color(newColor.r, newColor.g, newColor.b, 0.6f);
         }
+
+        private void OnBackBtnClicked()
+        {
+            Close();
+            SceneManager.LoadScene("Menu");
+        }
+
+        private void OnSureBtnClicked()
+        {
+            Close();
+            // 保存数据
+            DataManager.SaveCustomCharacterData();
+            // 进入游戏场景
+            SceneManager.LoadScene("Game");
+        }
         
         #endregion
         
+        #region 业务逻辑
         /// <summary>
         /// 选择职业按钮
         /// </summary>
@@ -233,21 +234,18 @@ namespace UI
             
             // 检查服装是否与职业相符
             var config = GetCharacterPartConfig(CharacterPartType.Hair);
-            // TODO: 这里存在资源卸载问题
             if (!config.ProfessionTypes.Contains(newProfession))
             {
                 SetNextCharacterPart(1, CharacterPartType.Hair, CurrentCharacterPartType == CharacterPartType.Hair);
             }
             
             config = GetCharacterPartConfig(CharacterPartType.Face);
-            // TODO: 这里存在资源卸载问题
             if (!config.ProfessionTypes.Contains(newProfession))
             {
                 SetNextCharacterPart(1, CharacterPartType.Face, CurrentCharacterPartType == CharacterPartType.Face);
             }
             
             config = GetCharacterPartConfig(CharacterPartType.Cloth);
-            // TODO: 这里存在资源卸载问题
             if (!config.ProfessionTypes.Contains(newProfession))
             {
                 SetNextCharacterPart(1, CharacterPartType.Cloth, CurrentCharacterPartType == CharacterPartType.Cloth);
@@ -267,9 +265,8 @@ namespace UI
             newFacadeMenuButton.Select();
             currentFacadeMenuButton = newFacadeMenuButton;
             // 刷新界面
-            var currentPartType = currentFacadeMenuButton.CharacterPartType;
-            var currentIndex = part2ConfigDict[(int)currentPartType];
-            SetCharacterPart(currentPartType, projectConfig.CustomCharacterPartConfigIdDict[currentPartType][currentIndex], true, false);
+            var currentIndex = part2ConfigDict[(int)CurrentCharacterPartType];
+            SetCharacterPart(CurrentCharacterPartType, projectConfig.CustomCharacterPartConfigIdDict[CurrentCharacterPartType][currentIndex], true, false);
         }
 
         /// <summary>
@@ -348,7 +345,47 @@ namespace UI
 
             // 更新角色模型
             CharacterCreator.Instance.SetPart(partConfig, updateCharacterView);
+            
+            // 保存数据
+            CustomCharacterData.CustomPartDataDict[(int)partType].Index = configIndex;
         }
+        
+        /// <summary>
+        /// 设置下一个角色部位
+        /// </summary>
+        /// <param name="increase">增量（-1表示切换到左边，1表示切换到右边）</param>
+        /// <param name="currentPartType"></param>
+        /// <param name="updateUI"></param>
+        private void SetNextCharacterPart(int increase, CharacterPartType currentPartType, bool updateUI = true)
+        {
+            int currentIndex = part2ConfigDict[(int)currentPartType];
+            var currentPartConfigIds = projectConfig.CustomCharacterPartConfigIdDict[currentPartType];
+            currentIndex += increase;
+            if (currentIndex < 0) currentIndex = currentPartConfigIds.Count - 1;
+            else if (currentIndex >= currentPartConfigIds.Count) currentIndex = 0;
+
+            // 检查职业有效性
+            var currentProfession = CurrentProfessionType;
+            var partConfig = ConfigTool.LoadCharacterPartConfig(currentPartType, currentPartConfigIds[currentIndex]);
+            while (!partConfig.ProfessionTypes.Contains(currentProfession))
+            {
+                currentIndex += increase;
+                if (currentIndex < 0) currentIndex = currentPartConfigIds.Count - 1;
+                else if (currentIndex >= currentPartConfigIds.Count) currentIndex = 0;
+                
+                // 释放资源并且重新获取新资源
+                ResManager.Release(partConfig);
+                partConfig = ConfigTool.LoadCharacterPartConfig(currentPartType, currentPartConfigIds[currentIndex]);
+            }
+            // 释放最后一次的资源
+            ResManager.Release(partConfig);
+            
+            // 说明职业有效
+            part2ConfigDict[(int)currentPartType] = currentIndex;
+            SetCharacterPart(currentPartType, currentPartConfigIds[currentIndex], updateUI, true);
+            AudioManager.Instance.PlayOnShot(arrowAudioClip, Vector3.zero, 1, false);
+        }
+        #endregion
 
         #region 辅助方法
         /// <summary>

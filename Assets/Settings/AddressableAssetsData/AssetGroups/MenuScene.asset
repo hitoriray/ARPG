@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: MenuScene
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: MenuScene
   m_Data:
     m_SerializedData: []
   m_GUID: 1023b4ffa4480564b8e1a410e01d7af2
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 5149e26658d73b746a74d7f792571a42
+    m_Address: UI_MenuSceneMenuWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
   m_SchemaSet:

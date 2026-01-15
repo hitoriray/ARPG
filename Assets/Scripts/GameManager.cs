@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Data;
 using JKFrame;
 using UnityEngine;
 
@@ -10,7 +11,10 @@ public class GameManager : SingletonMono<GameManager>
     /// </summary>
     public void CreateNewArchiveAndEnterGame()
     {
-        //TODO：进入自定义角色场景
+        // 初始化存档
+        DataManager.CreateArchive();
+        // 进入自定义角色场景
+        SceneManager.LoadScene("CreateCharacter");
     }
 
     /// <summary>
@@ -18,6 +22,9 @@ public class GameManager : SingletonMono<GameManager>
     /// </summary>
     public void UseCurrentArchiveAndEnterGame()
     {
-        //TODO：进入游戏场景
+        // 加载当前存档
+        DataManager.LoadCurrentArchive();
+        // 进入游戏场景
+        SceneManager.LoadScene("Game");
     }
 }

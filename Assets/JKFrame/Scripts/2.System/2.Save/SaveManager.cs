@@ -228,6 +228,7 @@ namespace JKFrame
             // 更新SaveManagerData 写入磁盘
             UpdateSaveManagerData();
         }
+        
         /// <summary>
         /// 删除存档
         /// </summary>
@@ -245,6 +246,23 @@ namespace JKFrame
             RemoveCache(saveItem.saveID);
             // 更新SaveManagerData 写入磁盘
             UpdateSaveManagerData();
+        }
+        
+        /// <summary>
+        /// 删除全部存档
+        /// </summary>
+        public static void DeleteAllSaveItems()
+        {
+            if (Directory.Exists(saveDirPath))
+            {
+                Directory.Delete(saveDirPath, true);
+            }
+            // 确保路径存在
+            if (Directory.Exists(saveDirPath) == false)
+            {
+                Directory.CreateDirectory(saveDirPath);
+            }
+            InitSaveManagerData();
         }
 
         #endregion

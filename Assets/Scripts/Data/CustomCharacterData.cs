@@ -12,7 +12,6 @@ namespace Data
     [Serializable]
     public class CustomCharacterData
     {
-        // TODO:字典结构和Color都不支持序列化
         public SerializableDictionary<int, CustomCharacterPartData> CustomPartDataDict;
     }
 
