@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Config;
+using Serialization;
 
 namespace Data
 {
@@ -18,8 +19,8 @@ namespace Data
                 CustomPartDataDict = new(3)
                 {
                     { (int)CharacterPartType.Face, new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } },
-                    { (int)CharacterPartType.Hair, new CustomCharacterPartData { Index = 1, Color1 = Color.white, } },
-                    { (int)CharacterPartType.Cloth, new CustomCharacterPartData { Index = 1, Color1 = Color.white, Color2 = Color.black, } }
+                    { (int)CharacterPartType.Hair, new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConvertToSerializationColor(), } },
+                    { (int)CharacterPartType.Cloth, new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConvertToSerializationColor(), Color2 = Color.black.ConvertToSerializationColor(), } }
                 }
             };
         }

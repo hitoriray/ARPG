@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
+using Serialization;
 using UnityEngine;
 
 namespace Player
@@ -58,7 +59,7 @@ namespace Player
                     var hairConfig = partConfig as HairConfig;
                     if (hairConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = hairConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1);
+                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1.ConvertToUnityColor());
                     break;
                 case CharacterPartType.Face:
                     var faceConfig = partConfig as FaceConfig;
@@ -69,8 +70,8 @@ namespace Player
                     var clothConfig = partConfig as ClothConfig;
                     if (clothConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = clothConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1);
-                    SetColor2(partType, customCharacterData.CustomPartDataDict[(int)partType].Color2);
+                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1.ConvertToUnityColor());
+                    SetColor2(partType, customCharacterData.CustomPartDataDict[(int)partType].Color2.ConvertToUnityColor());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

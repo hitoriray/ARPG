@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
+using Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -97,6 +98,13 @@ namespace UI
             // 默认选择第一个职业（战士）
             SelectProfessionButton(professionButtons[0]);
         }
+        
+        public override void OnClose()
+        {
+            base.OnClose();
+            // 释放自身资源
+            ResManager.ReleaseInstance(gameObject);
+        }
 
         #region 事件回调
         /// <summary>
@@ -178,7 +186,7 @@ namespace UI
         {
             // 1.存储数据
             var currentPartData = GetCharacterPartData(currentFacadeMenuButton.CharacterPartType);
-            currentPartData.Color1 = newColor;
+            currentPartData.Color1 = newColor.ConvertToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor1(CurrentCharacterPartType, newColor);
             // 3.修改自身按钮颜色
@@ -189,7 +197,7 @@ namespace UI
         {
             // 1.存储数据
             var currentPartData = GetCharacterPartData(currentFacadeMenuButton.CharacterPartType);
-            currentPartData.Color2 = newColor;
+            currentPartData.Color2 = newColor.ConvertToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor2(CurrentCharacterPartType, newColor);
             // 3.修改自身按钮颜色

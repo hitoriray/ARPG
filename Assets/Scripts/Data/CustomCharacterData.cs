@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Config;
+using Serialization;
 
 namespace Data
 {
@@ -12,7 +13,7 @@ namespace Data
     public class CustomCharacterData
     {
         // TODO:字典结构和Color都不支持序列化
-        public Dictionary<int, CustomCharacterPartData> CustomPartDataDict;
+        public SerializableDictionary<int, CustomCharacterPartData> CustomPartDataDict;
     }
 
     /// <summary>
@@ -24,7 +25,7 @@ namespace Data
         public int Index;
         public float Size;
         public float Height;
-        public Color Color1;
-        public Color Color2;
+        public SerializationColor Color1;
+        public SerializationColor Color2;
     }
 }
