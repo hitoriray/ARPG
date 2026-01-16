@@ -13,18 +13,32 @@ namespace Player
     /// </summary>
     public class PlayerView : MonoBehaviour
     {
+        [SerializeField] private AnimationController animationController;
+        public AnimationController AnimationController => animationController;
+        
         [SerializeField] private SkinnedMeshRenderer[] partSkinnedMeshRenderers;    // 部位渲染器
         [SerializeField] private Material[] partMaterials;                          // 部位的材质
         [SerializeField] private Transform neckRootTransform;                       // 头部的根节点，用于修改头部的大小和高度
         private CustomCharacterData customCharacterData;                            // 玩家定义的角色数据，用于存档
         private readonly Dictionary<int, CharacterPartConfigBase> characterPartDict = new (); // 角色部位字典
+
+        public void Init()
+        {
+            animationController.Init();
+        }
         
         public void Init(CustomCharacterData data)
         {
+            animationController.Init();
+            
             // 提前实例化（需要注意对应的index）
-            partSkinnedMeshRenderers[(int)CharacterPartType.Hair].material = Instantiate(partMaterials[0]);
-            partSkinnedMeshRenderers[(int)CharacterPartType.Face].material = Instantiate(partMaterials[0]);
-            partSkinnedMeshRenderers[(int)CharacterPartType.Cloth].material = Instantiate(partMaterials[2]);
+            if (partSkinnedMeshRenderers.Length >= 3)
+            {
+                partSkinnedMeshRenderers[(int)CharacterPartType.Hair].material = Instantiate(partMaterials[0]);
+                partSkinnedMeshRenderers[(int)CharacterPartType.Face].material = Instantiate(partMaterials[0]);
+                partSkinnedMeshRenderers[(int)CharacterPartType.Cloth].material = Instantiate(partMaterials[2]);
+            }
+
             customCharacterData = data;
         }
 

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: AnbiConfig
+  m_EditorClassIdentifier: 
+  m_GroupName: AnbiConfig
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 18c30a7a8b02e7f43a11c0c81d8d90ff
+  m_SerializeEntries:
+  - m_GUID: eb692bcb00d2beb47a836c8700499404
+    m_Address: AnbiConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: f20403200ab6bb64d9b2108733b053f1, type: 2}
+    - {fileID: 11400000, guid: 24db761739be45d46972f060df9c1c8c, type: 2}

@@ -6,7 +6,7 @@ namespace Config
     /// <summary>
     /// 头发配置
     /// </summary>
-    [CreateAssetMenu(fileName = "HairConfig_", menuName = "Config/HairConfig")]
+    [CreateAssetMenu(fileName = "HairConfig_", menuName = "Config/Character Part Config/Hair Config")]
     public class HairConfig : CharacterPartConfigBase
     {
         /// <summary>
