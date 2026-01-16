@@ -171,7 +171,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  WalkSpeed: 0
-  RunSpeed: 0
+  WalkSpeed: 1.5
+  RunSpeed: 3
   Walk2RunTransitionSpeed: 1
   RotateSpeed: 10
