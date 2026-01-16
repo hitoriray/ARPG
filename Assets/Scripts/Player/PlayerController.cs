@@ -16,7 +16,9 @@ namespace Player
 
         private AnbiConfig anbiConfig;
 
+        public Transform ModelTransform => playerView.transform;
         public float WalkSpeed => anbiConfig.WalkSpeed;
+        public float RotateSpeed => anbiConfig.RotateSpeed;
 
         public void Init()
         {
@@ -57,9 +59,21 @@ namespace Player
         /// <summary>
         /// 播放动画
         /// </summary>
-        public void PlayAnimation(string animationClipName, float fixedTime = 0.25f)
+        public void PlayAnimation(string clipName, float speed = 1, bool refreshAnimation = false, float transitionFixedTime = 0.25f)
         {
-            playerView.AnimationController.PlayAnimation(anbiConfig.GetAnimationClipByName(animationClipName), fixedTime);
+            playerView.AnimationController.PlayAnimation(anbiConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
+        }
+        
+        public void PlayBlendAnimation(string clip1Name, string clip2Name, float speed = 1, float transitionFixedTime = 0.25f)
+        {
+            var clip1 = anbiConfig.GetAnimationClipByName(clip1Name);
+            var clip2 = anbiConfig.GetAnimationClipByName(clip2Name);
+            playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
+        }
+        
+        public void SetBlendAnimationWeight(float clip1Weight)
+        {
+            playerView.AnimationController.SetBlendWeight(clip1Weight);
         }
     }
 }

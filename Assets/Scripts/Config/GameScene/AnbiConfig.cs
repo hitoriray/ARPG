@@ -8,6 +8,7 @@ namespace Config.GameScene
     public class AnbiConfig : ConfigBase
     {
         public float WalkSpeed;
+        public float RotateSpeed;
         public Dictionary<string, AnimationClip> StandAnimationDict;
 
         public AnimationClip GetAnimationClipByName(string clipName)
