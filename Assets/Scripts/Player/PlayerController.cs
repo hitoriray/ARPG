@@ -1,6 +1,5 @@
 using System;
 using Config.GameScene;
-using Data;
 using JKFrame;
 using Player.State;
 using UnityEngine;
@@ -18,7 +17,9 @@ namespace Player
 
         public Transform ModelTransform => playerView.transform;
         public float WalkSpeed => anbiConfig.WalkSpeed;
+        public float RunSpeed => anbiConfig.RunSpeed;
         public float RotateSpeed => anbiConfig.RotateSpeed;
+        public float Walk2RunTransitionSpeed => anbiConfig.Walk2RunTransitionSpeed;
 
         public void Init()
         {
@@ -59,13 +60,21 @@ namespace Player
         /// <summary>
         /// 播放动画
         /// </summary>
-        public void PlayAnimation(string clipName, float speed = 1, bool refreshAnimation = false, float transitionFixedTime = 0.25f)
+        public void PlayAnimation(string clipName, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, bool refreshAnimation = false, float transitionFixedTime = 0.25f)
         {
+            if (rootMotionAction != null)
+            {
+                playerView.AnimationController.SetRootMotionAction(rootMotionAction);
+            }
             playerView.AnimationController.PlayAnimation(anbiConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
         }
         
-        public void PlayBlendAnimation(string clip1Name, string clip2Name, float speed = 1, float transitionFixedTime = 0.25f)
+        public void PlayBlendAnimation(string clip1Name, string clip2Name, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, float transitionFixedTime = 0.25f)
         {
+            if (rootMotionAction != null)
+            {
+                playerView.AnimationController.SetRootMotionAction(rootMotionAction);
+            }
             var clip1 = anbiConfig.GetAnimationClipByName(clip1Name);
             var clip2 = anbiConfig.GetAnimationClipByName(clip2Name);
             playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
@@ -74,6 +83,11 @@ namespace Player
         public void SetBlendAnimationWeight(float clip1Weight)
         {
             playerView.AnimationController.SetBlendWeight(clip1Weight);
+        }
+
+        public void ClearRootMotionAction()
+        {
+            playerView.AnimationController.ClearRootMotionAction();
         }
     }
 }

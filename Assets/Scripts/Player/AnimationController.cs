@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -220,5 +219,23 @@ namespace Player
             graph.Connect(clipPlayable, 0, blendMixer, index);
             return clipPlayable;
         }
+        
+        #region Root Motion
+        private Action<Vector3, Quaternion> rootMotionAction;
+        private void OnAnimatorMove()
+        {
+            rootMotionAction?.Invoke(animator.deltaPosition, animator.deltaRotation);
+        }
+
+        public void SetRootMotionAction(Action<Vector3, Quaternion> rootMotionAction)
+        {
+            this.rootMotionAction = rootMotionAction;
+        }
+
+        public void ClearRootMotionAction()
+        {
+            rootMotionAction = null;
+        }
+        #endregion
     }
 }
