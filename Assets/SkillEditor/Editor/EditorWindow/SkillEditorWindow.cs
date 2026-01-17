@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Config.Skill;
+using SkillEditor.Editor.Track;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -8,6 +10,8 @@ using SkillEditor.Editor.Track.AnimationTrack;
 
 public class SkillEditorWindow : EditorWindow
 {
+    public static SkillEditorWindow Instance;
+    
     private VisualElement root;
 
     [MenuItem("Skill Editor/Skill Editor Window")]
@@ -19,6 +23,8 @@ public class SkillEditorWindow : EditorWindow
 
     public void CreateGUI()
     {
+        Instance = this;
+            
         root = rootVisualElement;
 
         // Import UXML
@@ -169,10 +175,14 @@ public class SkillEditorWindow : EditorWindow
     private void OnSkillConfigValueChanged(ChangeEvent<Object> evt)
     {
         skillConfig = evt.newValue as SkillConfig;
+        
+        // 重新绘制
+        ResetTrack();
 
-        if (skillConfig != null)
-            CurrentFrameCount = skillConfig.FrameCount;
-        // TODO: re draw
+        if (skillConfig == null)
+            return;
+        CurrentFrameCount = skillConfig.FrameCount;
+        CurrentSelectFrameIndex = 0;
     }
 
     #endregion
@@ -322,8 +332,12 @@ public class SkillEditorWindow : EditorWindow
 
     private int GetFrameIndexByMousePos(float x)
     {
-        float pos = x + ContentOffsetPosX;
-        return Mathf.RoundToInt(pos / skillEditorConfig.currentFrameUnitWidth);
+        return GetFrameIndexByPos(x + ContentOffsetPosX);
+    }
+
+    public int GetFrameIndexByPos(float x)
+    {
+        return Mathf.RoundToInt(x / skillEditorConfig.currentFrameUnitWidth);
     }
     
     private void DrawSelectLine()
@@ -400,9 +414,10 @@ public class SkillEditorWindow : EditorWindow
     #region Config
 
     private SkillConfig skillConfig;
+    public SkillConfig SkillConfig => skillConfig;
     private SkillEditorConfig skillEditorConfig = new();
 
-    private void SaveSkillConfig()
+    public void SaveSkillConfig()
     {
         if (skillConfig != null)
         {
@@ -417,14 +432,27 @@ public class SkillEditorWindow : EditorWindow
 
     private VisualElement trackMenuParent;
     private VisualElement ContentListView;
+    private List<SkillTrackBase> trackItems = new();
     
     private void InitContent()
     {
         trackMenuParent = root.Q<VisualElement>("TrackMenu");
         ContentListView = root.Q<VisualElement>(nameof(ContentListView));
         UpdateContentSize();
-        
+        InitTrack();
+    }
+
+    private void InitTrack()
+    {
         InitAnimationTrack();
+    }
+
+    private void ResetTrack()
+    {
+        foreach (var trackItem in trackItems)
+        {
+            trackItem.ResetView(skillEditorConfig.currentFrameUnitWidth);
+        }
     }
 
     private void UpdateContentSize()
@@ -435,7 +463,8 @@ public class SkillEditorWindow : EditorWindow
     private void InitAnimationTrack()
     {
         AnimationTrack animationTrack = new();
-        animationTrack.Init(trackMenuParent, ContentListView);
+        animationTrack.Init(trackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+        trackItems.Add(animationTrack);
     }
     
     #endregion
