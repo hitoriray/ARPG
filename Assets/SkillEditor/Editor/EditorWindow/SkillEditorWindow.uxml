@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Top" style="height: 45px; flex-basis: 45px; flex-direction: row; align-items: stretch; justify-content: flex-start;">
+        <ui:Button text="加载编辑器场景" display-tooltip-when-elided="true" name="LoadEditorSceneBtn" style="-unity-font: initial; font-size: 12px; width: 100px; align-items: stretch; margin-top: 2px; margin-bottom: 2px;" />
+        <ui:Button text="返回旧场景" display-tooltip-when-elided="true" name="LoadOldSceneBtn" style="-unity-font: initial; font-size: 12px; width: 100px; margin-top: 2px; margin-bottom: 2px;" />
+        <ui:Button text="技能基本信息" display-tooltip-when-elided="true" name="SkillBasicBtn" style="-unity-font: initial; font-size: 12px; width: 100px; margin-top: 2px; margin-bottom: 2px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="Content" style="height: 282px;" />
+</ui:UXML>
