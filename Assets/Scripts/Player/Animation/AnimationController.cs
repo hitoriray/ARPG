@@ -12,6 +12,7 @@ namespace Player.Animation
     public class AnimationController : MonoBehaviour
     {
         [SerializeField] private Animator animator;
+        [SerializeField] private bool logAnimationState = true;
         private PlayableGraph graph;
         private AnimationMixerPlayable mixer;
 
@@ -99,6 +100,8 @@ namespace Player.Animation
             
             if (graph.IsPlaying() == false)
                 graph.Play();
+
+            LogCurrentState("PlaySingle");
         }
         
         /// <summary>
@@ -126,6 +129,8 @@ namespace Player.Animation
             currentNode = blendAnimationNode;
             if (graph.IsPlaying() == false)
                 graph.Play();
+
+            LogCurrentState("PlayBlendList");
         }
 
         public void PlayBlendAnimation(AnimationClip clip1, AnimationClip clip2, float speed = 1, float transitionFixedTime = 0.25f)
@@ -150,6 +155,8 @@ namespace Player.Animation
             currentNode = blendAnimationNode;
             if (graph.IsPlaying() == false)
                 graph.Play();
+
+            LogCurrentState("PlayBlend");
         }
         
         public void SetBlendWeight(List<float> weights)
@@ -181,24 +188,29 @@ namespace Player.Animation
             (inputPort0, inputPort1) = (inputPort1, inputPort0);
 
             // 硬切判断
-            if (fixedTime == 0)
+            if (fixedTime <= 0)
             {
                 mixer.SetInputWeight(lastInputPort0, 0);
                 mixer.SetInputWeight(lastInputPort1, 1);
+                LogCurrentState("TransitionInstant");
+                transitionCoroutine = null;
+                yield break;
             }
             
             // 当前的权重
             float currentWeight = 1;
-            float speed = 1 / fixedTime;
             while (currentWeight > 0)
             {
-                currentWeight -= Mathf.Clamp01(currentWeight - Time.deltaTime * speed);
+                currentWeight = Mathf.MoveTowards(currentWeight, 0, Time.deltaTime / fixedTime);
                 mixer.SetInputWeight(lastInputPort0, currentWeight);
                 mixer.SetInputWeight(lastInputPort1, 1 - currentWeight);
                 
                 yield return null;
             }
 
+            mixer.SetInputWeight(lastInputPort0, 0);
+            mixer.SetInputWeight(lastInputPort1, 1);
+            LogCurrentState("TransitionEnd");
             transitionCoroutine = null;
         }
         
@@ -271,5 +283,37 @@ namespace Player.Animation
         }
         
         #endregion
+
+        private void LogCurrentState(string reason)
+        {
+            if (!logAnimationState)
+                return;
+
+            string nodeInfo;
+            if (currentNode is SingleAnimationNode singleNode)
+            {
+                nodeInfo = $"Single({singleNode.GetClipName()})";
+            }
+            else if (currentNode is BlendAnimationNode blendNode)
+            {
+                int count = blendNode.GetBlendInputCount();
+                var blendInfo = new System.Text.StringBuilder();
+                for (int i = 0; i < count; i++)
+                {
+                    if (i > 0) blendInfo.Append(", ");
+                    blendInfo.Append($"{blendNode.GetBlendClipName(i)}={blendNode.GetBlendWeight(i):0.###}");
+                }
+                nodeInfo = $"Blend({blendInfo})";
+            }
+            else
+            {
+                nodeInfo = "<none>";
+            }
+
+            float w0 = mixer.GetInputWeight(0);
+            float w1 = mixer.GetInputWeight(1);
+            float w2 = mixer.GetInputWeight(2);
+            Debug.Log($"[Animation] {reason} node={nodeInfo} mixer(0={w0:0.###},1={w1:0.###},2={w2:0.###})");
+        }
     }
 }

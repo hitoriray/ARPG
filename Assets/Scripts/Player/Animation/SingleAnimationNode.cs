@@ -25,6 +25,11 @@ namespace Player.Animation
             return clipPlayable.GetAnimationClip();
         }
 
+        public string GetClipName()
+        {
+            return clipPlayable.GetAnimationClip() != null ? clipPlayable.GetAnimationClip().name : "<null>";
+        }
+
         public override void SetSpeed(float speed)
         {
             clipPlayable.SetSpeed(speed);

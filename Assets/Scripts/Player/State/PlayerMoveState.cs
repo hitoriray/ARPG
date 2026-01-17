@@ -39,35 +39,34 @@ namespace Player.State
             if (h == 0 && v == 0)
             {
                 PlayerController.ChangeState(PlayerState.Idle);
+                return;
             }
-            else
-            {
-                // 处理移动
-                Vector3 input = new Vector3(h, 0, v);
-                if (Input.GetKey(KeyCode.LeftShift))
-                    runTransition = Mathf.Clamp01(runTransition + Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
-                else
-                    runTransition = Mathf.Clamp01(runTransition - Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
-                animationController.SetBlendWeight(1 - runTransition);
-                
-                // 获取相机的旋转值
-                float y = Camera.main.transform.rotation.eulerAngles.y;
-                // 让input也旋转y角度
-                Vector3 moveDir = Quaternion.Euler(0, y, 0) * input;
 
-                // 如果不是根运动
-                if (!applyRootMotionForMove)
-                {
-                    float speed = Mathf.Lerp(PlayerController.WalkSpeed, PlayerController.RunSpeed, runTransition);
-                    Vector3 motion = Time.deltaTime * speed * moveDir;
-                    motion.y = -9.8f * Time.deltaTime;
-                    characterController.Move(motion);
-                }
-                
-                // 处理旋转
-                PlayerController.ModelTransform.rotation = Quaternion.Slerp(PlayerController.ModelTransform.rotation, 
-                    Quaternion.LookRotation(moveDir), Time.deltaTime * PlayerController.RotateSpeed);
+            // 处理移动
+            Vector3 input = new Vector3(h, 0, v);
+            if (Input.GetKey(KeyCode.LeftShift))
+                runTransition = Mathf.Clamp01(runTransition + Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
+            else
+                runTransition = Mathf.Clamp01(runTransition - Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
+            animationController.SetBlendWeight(1 - runTransition);
+            
+            // 获取相机的旋转值
+            float y = Camera.main.transform.rotation.eulerAngles.y;
+            // 让input也旋转y角度
+            Vector3 moveDir = Quaternion.Euler(0, y, 0) * input;
+
+            // 如果不是根运动
+            if (!applyRootMotionForMove)
+            {
+                float speed = Mathf.Lerp(PlayerController.WalkSpeed, PlayerController.RunSpeed, runTransition);
+                Vector3 motion = Time.deltaTime * speed * moveDir;
+                motion.y = -9.8f * Time.deltaTime;
+                characterController.Move(motion);
             }
+            
+            // 处理旋转
+            PlayerController.ModelTransform.rotation = Quaternion.Slerp(PlayerController.ModelTransform.rotation, 
+                Quaternion.LookRotation(moveDir), Time.deltaTime * PlayerController.RotateSpeed);
         }
 
         public override void Exit()

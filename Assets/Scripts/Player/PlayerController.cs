@@ -45,7 +45,10 @@ namespace Player
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void ChangeState(PlayerState newState)
         {
+            var prevState = currentState;
             currentState = newState;
+            Debug.Log($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
+            
             switch (currentState)
             {
                 case PlayerState.Idle:

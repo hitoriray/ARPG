@@ -24,8 +24,8 @@ namespace Player.Animation
             }
         }
 
-        public void Init(PlayableGraph graph, AnimationMixerPlayable outputMixer, AnimationClip clip1,
-            AnimationClip clip2,
+        public void Init(PlayableGraph graph, AnimationMixerPlayable outputMixer,
+            AnimationClip clip1, AnimationClip clip2,
             float speed, int inputPort)
         {
             blendMixer = AnimationMixerPlayable.Create(graph, 2);
@@ -52,7 +52,7 @@ namespace Player.Animation
                 clipPlayable.SetSpeed(speed);
             }
         }
-        
+
         public void SetBlendWeight(List<float> weights)
         {
             for (int i = 0; i < weights.Count; i++)
@@ -67,6 +67,23 @@ namespace Player.Animation
             blendMixer.SetInputWeight(1, 1 - clip1Weight);
         }
 
+        public int GetBlendInputCount()
+        {
+            return blendMixer.IsValid() ? blendMixer.GetInputCount() : 0;
+        }
+
+        public float GetBlendWeight(int index)
+        {
+            return blendMixer.IsValid() ? blendMixer.GetInputWeight(index) : 0f;
+        }
+
+        public string GetBlendClipName(int index)
+        {
+            if (index < 0 || index >= blendClipPlayables.Count)
+                return "<out_of_range>";
+            var clip = blendClipPlayables[index].GetAnimationClip();
+            return clip != null ? clip.name : "<null>";
+        }
 
         public override void PushPool()
         {
