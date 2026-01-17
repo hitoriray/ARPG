@@ -175,3 +175,4 @@ MonoBehaviour:
   RunSpeed: 8
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
+  ApplyRootMotionForMove: 0

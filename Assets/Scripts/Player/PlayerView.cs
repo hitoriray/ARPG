@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
+using Player.Animation;
 using Serialization;
 using UnityEngine;
 

@@ -72,7 +72,7 @@ namespace Player
             {
                 playerView.AnimationController.SetRootMotionAction(rootMotionAction);
             }
-            playerView.AnimationController.PlayAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
+            playerView.AnimationController.PlaySingleAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
         }
         
         public void PlayBlendAnimation(string clip1Name, string clip2Name, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, float transitionFixedTime = 0.25f)
