@@ -16,10 +16,35 @@ namespace Player
         private AnimationClipPlayable clipPlayable2;
         private AnimationMixerPlayable blendMixer;
         private List<AnimationClipPlayable> blendClipPlayables = new(10);
-        private bool isCurrentBlendAnim;
-        
-        private bool isPlayingClip1 = true; // 当前是否是播放的clip1
+        private bool isCurrentBlendAnim = false;   // 当前是否是混合动画
+        private bool isCurrentPlayingClip1 = true; // 当前是否是播放的clip1
         private Coroutine transitionCoroutine;
+
+        private float speed;
+
+        public float Speed
+        {
+            get => speed;
+            set
+            {
+                speed = value;
+                if (isCurrentBlendAnim)
+                {
+                    for (int i = 0; i < blendClipPlayables.Count; i++)
+                    {
+                        blendClipPlayables[i].SetSpeed(value);
+                    }
+                }
+                else if (isCurrentPlayingClip1)
+                {
+                    clipPlayable1.SetSpeed(value);
+                }
+                else
+                {
+                    clipPlayable2.SetSpeed(value);
+                }
+            }
+        }
         
         #region 生命周期
         public void Init()
@@ -64,7 +89,7 @@ namespace Player
                 clipPlayable1.SetSpeed(speed);
                 graph.Connect(clipPlayable1, 0, mixer, 0);
                 mixer.SetInputWeight(0, 1);
-                isPlayingClip1 = true;
+                isCurrentPlayingClip1 = true;
             }
             else
             {
@@ -81,12 +106,13 @@ namespace Player
                     clipPlayable1.SetSpeed(speed);
                     graph.Connect(clipPlayable1, 0, mixer, 0);
                     transitionCoroutine = StartCoroutine(TransitionAnimation(2, 0, transitionFixedTime));
-                    isPlayingClip1 = true;
+                    isCurrentPlayingClip1 = true;
+                    isCurrentBlendAnim = false;
                     return;
                 }
                 
                 // 1 -> 2
-                if (isPlayingClip1)
+                if (isCurrentPlayingClip1)
                 {
                     // 避免重复播放同一个动画
                     if (refreshAnimation && clipPlayable1.GetAnimationClip() == clip)
@@ -114,7 +140,7 @@ namespace Player
                     transitionCoroutine = StartCoroutine(TransitionAnimation(1, 0, transitionFixedTime));
                 }
                 
-                isPlayingClip1 = !isPlayingClip1;
+                isCurrentPlayingClip1 = !isCurrentPlayingClip1;
             }
             
             if (graph.IsPlaying() == false)
@@ -141,7 +167,7 @@ namespace Player
 
             // 设置过渡
             if (transitionCoroutine != null) StopCoroutine(transitionCoroutine);
-            transitionCoroutine = StartCoroutine(isPlayingClip1 
+            transitionCoroutine = StartCoroutine(isCurrentPlayingClip1 
                 ? TransitionAnimation(0, 2, transitionFixedTime) 
                 : TransitionAnimation(1, 2, transitionFixedTime));
         }
@@ -159,7 +185,7 @@ namespace Player
 
             // 设置过渡
             if (transitionCoroutine != null) StopCoroutine(transitionCoroutine);
-            transitionCoroutine = StartCoroutine(isPlayingClip1 
+            transitionCoroutine = StartCoroutine(isCurrentPlayingClip1 
                 ? TransitionAnimation(0, 2, transitionFixedTime) 
                 : TransitionAnimation(1, 2, transitionFixedTime));
         }

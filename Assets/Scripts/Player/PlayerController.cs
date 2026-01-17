@@ -13,17 +13,23 @@ namespace Player
         private StateMachine stateMachine;
         private PlayerState currentState;
 
-        private AnbiConfig anbiConfig;
+        private CharacterConfig characterConfig;
+        public CharacterConfig CharacterConfig => characterConfig;
 
         public Transform ModelTransform => playerView.transform;
-        public float WalkSpeed => anbiConfig.WalkSpeed;
-        public float RunSpeed => anbiConfig.RunSpeed;
-        public float RotateSpeed => anbiConfig.RotateSpeed;
-        public float Walk2RunTransitionSpeed => anbiConfig.Walk2RunTransitionSpeed;
+        public float WalkSpeed => characterConfig.WalkSpeed;
+        public float RunSpeed => characterConfig.RunSpeed;
+        public float RotateSpeed => characterConfig.RotateSpeed;
+        
+        public float AnimationSpeed
+        {
+            get => playerView.AnimationController.Speed;
+            set => playerView.AnimationController.Speed = value;
+        }
 
         public void Init()
         {
-            anbiConfig = ResManager.LoadAsset<AnbiConfig>("AnbiConfig");
+            characterConfig = ResManager.LoadAsset<CharacterConfig>("AnbiConfig");
             
             playerView = GetComponentInChildren<PlayerView>();
             playerView?.Init();
@@ -66,7 +72,7 @@ namespace Player
             {
                 playerView.AnimationController.SetRootMotionAction(rootMotionAction);
             }
-            playerView.AnimationController.PlayAnimation(anbiConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
+            playerView.AnimationController.PlayAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
         }
         
         public void PlayBlendAnimation(string clip1Name, string clip2Name, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, float transitionFixedTime = 0.25f)
@@ -75,8 +81,8 @@ namespace Player
             {
                 playerView.AnimationController.SetRootMotionAction(rootMotionAction);
             }
-            var clip1 = anbiConfig.GetAnimationClipByName(clip1Name);
-            var clip2 = anbiConfig.GetAnimationClipByName(clip2Name);
+            var clip1 = characterConfig.GetAnimationClipByName(clip1Name);
+            var clip2 = characterConfig.GetAnimationClipByName(clip2Name);
             playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
         }
         
