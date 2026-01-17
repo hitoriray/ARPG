@@ -176,3 +176,14 @@ MonoBehaviour:
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 0
+  FootStepAudioClips:
+  - {fileID: 8300000, guid: f7730f403e3ed3848a39f5f4d41c30a8, type: 3}
+  - {fileID: 8300000, guid: c5212058eaf72594dbb061ac4573773b, type: 3}
+  - {fileID: 8300000, guid: 86702437b42009f4cb99665589097259, type: 3}
+  - {fileID: 8300000, guid: 4ee907eac4eaccb4b9328c2a2f883611, type: 3}
+  - {fileID: 8300000, guid: 5f6dd6c17f242864b83034274b22538b, type: 3}
+  - {fileID: 8300000, guid: 4eff82364e96cea4eb338f0eafb58acf, type: 3}
+  - {fileID: 8300000, guid: 184750abe7d233e4db4a922f4f3300b1, type: 3}
+  - {fileID: 8300000, guid: 9e6d1d31261ce234dab29108ebe2ff8e, type: 3}
+  - {fileID: 8300000, guid: 4148ff86046dcce4dbf204f482831839, type: 3}
+  - {fileID: 8300000, guid: eaadf3de69efd9b4884f98b04e496220, type: 3}

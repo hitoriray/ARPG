@@ -1,6 +1,7 @@
 using System;
 using Config.GameScene;
 using JKFrame;
+using Player.Animation;
 using Player.State;
 using UnityEngine;
 
@@ -15,18 +16,13 @@ namespace Player
 
         private CharacterConfig characterConfig;
         public CharacterConfig CharacterConfig => characterConfig;
+        public AnimationController AnimationController => playerView.AnimationController;
 
         public Transform ModelTransform => playerView.transform;
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
         
-        public float AnimationSpeed
-        {
-            get => playerView.AnimationController.Speed;
-            set => playerView.AnimationController.Speed = value;
-        }
-
         public void Init()
         {
             characterConfig = ResManager.LoadAsset<CharacterConfig>("AnbiConfig");
@@ -84,16 +80,6 @@ namespace Player
             var clip1 = characterConfig.GetAnimationClipByName(clip1Name);
             var clip2 = characterConfig.GetAnimationClipByName(clip2Name);
             playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
-        }
-        
-        public void SetBlendAnimationWeight(float clip1Weight)
-        {
-            playerView.AnimationController.SetBlendWeight(clip1Weight);
-        }
-
-        public void ClearRootMotionAction()
-        {
-            playerView.AnimationController.ClearRootMotionAction();
         }
     }
 }

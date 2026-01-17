@@ -228,5 +228,48 @@ namespace Player.Animation
             rootMotionAction = null;
         }
         #endregion
+        
+        #region 动画事件
+
+        private readonly Dictionary<string, Action> eventDict = new();
+        private void AnimationEvent(string eventName)
+        {
+            if (eventDict.TryGetValue(eventName, out var action))
+            {
+                action?.Invoke();
+            }
+        }
+
+        public void AddAnimationEvent(string eventName, Action action)
+        {
+            if (eventDict.TryGetValue(eventName, out var _action))
+            {
+                _action += action;
+            }
+            else
+            {
+                eventDict.Add(eventName, action);
+            }
+        }
+
+        public void RemoveAnimationEvent(string eventName)
+        {
+            eventDict.Remove(eventName);
+        }
+        
+        public void RemoveAnimationEvent(string eventName, Action action)
+        {
+            if (eventDict.TryGetValue(eventName, out var _action))
+            {
+                _action -= action;
+            }
+        }
+
+        public void ClearAllAnimationEvent()
+        {
+            eventDict.Clear();
+        }
+        
+        #endregion
     }
 }

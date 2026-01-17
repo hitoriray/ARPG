@@ -14,6 +14,7 @@ namespace Config.GameScene
         [LabelText("旋转速度")] public float RotateSpeed;
         [LabelText("为移动应用RootMotion")] public bool ApplyRootMotionForMove;
         [LabelText("标准动画配置")] public Dictionary<string, AnimationClip> StandAnimationDict;
+        [LabelText("脚步声音资源")] public AudioClip[] FootStepAudioClips;
 
         public AnimationClip GetAnimationClipByName(string clipName)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using JKFrame;
+using Player.Animation;
 using UnityEngine;
 
 namespace Player.State
@@ -7,6 +8,7 @@ namespace Player.State
     public class PlayerMoveState : PlayerStateBase
     {
         private CharacterController characterController;
+        private AnimationController animationController;
         private float runTransition;
         private bool applyRootMotionForMove;
 
@@ -14,6 +16,7 @@ namespace Player.State
         {
             base.Init(owner, stateType, stateMachine);
             characterController = PlayerController.GetComponent<CharacterController>();
+            animationController = PlayerController.AnimationController;
             applyRootMotionForMove = PlayerController.CharacterConfig.ApplyRootMotionForMove;
         }
 
@@ -24,7 +27,9 @@ namespace Player.State
             if (applyRootMotionForMove)
                 rootMotionAction = OnRootMotion;
             PlayerController.PlayBlendAnimation("walk", "run", rootMotionAction);
-            PlayerController.SetBlendAnimationWeight(1);
+            animationController.SetBlendWeight(1);
+            
+            animationController.AddAnimationEvent("FootStep", OnFootStep);
         }
 
         public override void Update()
@@ -43,7 +48,7 @@ namespace Player.State
                     runTransition = Mathf.Clamp01(runTransition + Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
                 else
                     runTransition = Mathf.Clamp01(runTransition - Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
-                PlayerController.SetBlendAnimationWeight(1 - runTransition);
+                animationController.SetBlendWeight(1 - runTransition);
                 
                 // 获取相机的旋转值
                 float y = Camera.main.transform.rotation.eulerAngles.y;
@@ -69,17 +74,24 @@ namespace Player.State
         {
             if (applyRootMotionForMove)
             {
-                PlayerController.ClearRootMotionAction();
+                animationController.ClearRootMotionAction();
             }
+            animationController.RemoveAnimationEvent("FootStep", OnFootStep);
         }
         
         private void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
             // 此时的速度是影响动画的播放速度来达到实际位移速度的变化
             float speed = Mathf.Lerp(PlayerController.WalkSpeed, PlayerController.RunSpeed, runTransition);
-            PlayerController.AnimationSpeed = speed;
+            animationController.Speed = speed;
             deltaPos.y = -9.8f * Time.deltaTime;
             characterController.Move(deltaPos);
+        }
+
+        private void OnFootStep()
+        {
+            int randomIndex = UnityEngine.Random.Range(0, PlayerController.CharacterConfig.FootStepAudioClips.Length);
+            AudioManager.Instance.PlayOnShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, 1f);
         }
     }
 }
