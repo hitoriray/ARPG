@@ -1,7 +1,7 @@
 using JKFrame;
 using UI;
 
-namespace MenuScene
+namespace Scene
 {
     public class MenuSceneManager : LogicManagerBase<MenuSceneManager>
     {

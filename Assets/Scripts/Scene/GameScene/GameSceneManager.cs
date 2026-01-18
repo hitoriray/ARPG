@@ -3,7 +3,7 @@ using Data;
 using JKFrame;
 using Player;
 
-namespace GameScene
+namespace Scene
 {
     public class GameSceneManager : LogicManagerBase<GameSceneManager>
     {

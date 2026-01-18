@@ -1,5 +1,4 @@
-﻿using System;
-using JKFrame;
+﻿using JKFrame;
 
 namespace Config
 {

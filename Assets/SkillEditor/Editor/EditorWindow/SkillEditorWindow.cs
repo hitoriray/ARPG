@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Config.Skill;
-using SkillEditor.Editor.Track;
-using SkillEditor.Editor.Track.AnimationTrack;
-using SkillEditor.Editor.Track.Inspector;
+using Config;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
@@ -11,9 +8,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace SkillEditor.Editor.EditorWindow
+namespace SkillEditor
 {
-    public class SkillEditorWindow : UnityEditor.EditorWindow
+    public class SkillEditorWindow : EditorWindow
     {
         public static SkillEditorWindow Instance;
     
@@ -235,7 +232,7 @@ namespace SkillEditor.Editor.EditorWindow
                 if (value > CurrentFrameCount)
                     CurrentFrameCount = value;
                 currentSelectFrameIndex = Mathf.Clamp(value, 0, CurrentFrameCount);
-                CurrentFrameText.value = currentSelectFrameIndex.ToString();
+                CurrentFrameField.value = currentSelectFrameIndex;
                 UpdateTimerShaftView();
                 TickSkill();
             }
@@ -249,7 +246,7 @@ namespace SkillEditor.Editor.EditorWindow
             set
             {
                 currentFrameCount = value;
-                FrameCountText.value = currentFrameCount.ToString();
+                FrameCountField.value = currentFrameCount;
                 // 同步给SkillConfig
                 if (skillConfig != null)
                 {
@@ -400,8 +397,10 @@ namespace SkillEditor.Editor.EditorWindow
         private Button PreviousFrameBtn;
         private Button PlayBtn;
         private Button NextFrameBtn;
-        private TextField CurrentFrameText;
-        private TextField FrameCountText;
+        private VisualElement FramerController;
+        private IntegerField CurrentFrameField;
+        private Label SeparatorLabel;
+        private IntegerField FrameCountField;
 
         private void InitConsole()
         {
@@ -412,10 +411,23 @@ namespace SkillEditor.Editor.EditorWindow
             NextFrameBtn = root.Q<Button>(nameof(NextFrameBtn));
             NextFrameBtn.clicked += OnNextFrameBtnClicked;
         
-            CurrentFrameText = root.Q<TextField>(nameof(CurrentFrameText));
-            CurrentFrameText.RegisterValueChangedCallback(OnCurrentFrameValueChanged);
-            FrameCountText = root.Q<TextField>(nameof(FrameCountText));
-            FrameCountText.RegisterValueChangedCallback(OnFrameCountValueChanged);
+            FramerController = root.Q<VisualElement>(nameof(FramerController));
+            
+            CurrentFrameField = new IntegerField();
+            CurrentFrameField.style.width = 40;
+            CurrentFrameField.style.height = 20;
+            CurrentFrameField.RegisterValueChangedCallback(OnCurrentFrameValueChanged);
+            FramerController.Add(CurrentFrameField);
+
+            SeparatorLabel = new Label("/");
+            SeparatorLabel.style.fontSize = 15;
+            FramerController.Add(SeparatorLabel);
+            
+            FrameCountField = new IntegerField();
+            FrameCountField.style.width = 40;
+            FrameCountField.style.height = 20;
+            FrameCountField.RegisterValueChangedCallback(OnFrameCountValueChanged);
+            FramerController.Add(FrameCountField);
         }
 
         private void OnPreviousFrameBtnClicked()
@@ -435,16 +447,16 @@ namespace SkillEditor.Editor.EditorWindow
             CurrentSelectFrameIndex++;
         }
 
-        private void OnCurrentFrameValueChanged(ChangeEvent<string> evt)
+        private void OnCurrentFrameValueChanged(ChangeEvent<int> evt)
         {
-            int newValue = int.Parse(evt.newValue);
+            int newValue = evt.newValue;
             if (CurrentSelectFrameIndex != newValue)
                 CurrentSelectFrameIndex = newValue;
         }
 
-        private void OnFrameCountValueChanged(ChangeEvent<string> evt)
+        private void OnFrameCountValueChanged(ChangeEvent<int> evt)
         {
-            int newValue = int.Parse(evt.newValue);
+            int newValue = evt.newValue;
             if (CurrentFrameCount != newValue)
                 CurrentFrameCount = newValue;
         }

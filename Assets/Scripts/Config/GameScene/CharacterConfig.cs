@@ -3,7 +3,7 @@ using JKFrame;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Config.GameScene
+namespace Config
 {
     [CreateAssetMenu(fileName = "CharacterConfig", menuName = "Config/Game Scene/Character Config")]
     public class CharacterConfig : ConfigBase

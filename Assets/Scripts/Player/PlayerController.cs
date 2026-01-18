@@ -1,5 +1,5 @@
 using System;
-using Config.GameScene;
+using Config;
 using JKFrame;
 using Player.Animation;
 using Player.Skill;

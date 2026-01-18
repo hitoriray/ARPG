@@ -1,14 +1,12 @@
-using SkillEditor.Editor.EditorWindow;
-using SkillEditor.Editor.Track.AnimationTrack;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace SkillEditor.Editor.Track.Inspector
+namespace SkillEditor
 {
     [CustomEditor(typeof(SkillEditorWindow))]
-    public class SkillEditorInspector : UnityEditor.Editor
+    public class SkillEditorInspector : Editor
     {
         public static SkillEditorInspector Instance;
         private static TrackItemBase currentTrackItem;
@@ -143,7 +141,7 @@ namespace SkillEditor.Editor.Track.Inspector
         {
             int value = evt.newValue;
             // 安全校验
-            if ((currentTrack as AnimationTrack.AnimationTrack).CheckFrameIndexOnDrag(trackItemFrameIndex + value, trackItemFrameIndex, false))
+            if ((currentTrack as AnimationTrack).CheckFrameIndexOnDrag(trackItemFrameIndex + value, trackItemFrameIndex, false))
             {
                 // 修改数据，刷新视图
                 SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameEventDict[trackItemFrameIndex].DurationFrame = value;

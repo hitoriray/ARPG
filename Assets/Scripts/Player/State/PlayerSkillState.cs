@@ -1,4 +1,4 @@
-﻿using Config.Skill;
+﻿using Config;
 using JKFrame;
 using UnityEngine;
 

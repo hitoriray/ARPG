@@ -1,8 +1,7 @@
-﻿using SkillEditor.Editor.EditorWindow;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace SkillEditor.Editor.Track
+namespace SkillEditor
 {
     public abstract class TrackItemBase
     {

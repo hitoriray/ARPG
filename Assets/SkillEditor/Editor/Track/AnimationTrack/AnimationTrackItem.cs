@@ -1,12 +1,9 @@
-﻿using Config.Skill;
-using SkillEditor.Editor.EditorWindow;
-using SkillEditor.Editor.Track.Inspector;
-using Unity.VisualScripting;
+﻿using Config;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace SkillEditor.Editor.Track.AnimationTrack
+namespace SkillEditor
 {
     public class AnimationTrackItem : TrackItemBase<AnimationTrack>
     {

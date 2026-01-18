@@ -1,8 +1,7 @@
-﻿using Data;
-using JKFrame;
+﻿using JKFrame;
 using UI;
 
-namespace CreateCharacterScene
+namespace Scene
 {
     public class CreateCharacterSceneManager : LogicManagerBase<CreateCharacterSceneManager>
     {

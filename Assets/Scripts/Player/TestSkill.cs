@@ -1,5 +1,4 @@
-﻿using System;
-using Config.Skill;
+﻿using Config;
 using Player.Skill;
 using UnityEngine;
 

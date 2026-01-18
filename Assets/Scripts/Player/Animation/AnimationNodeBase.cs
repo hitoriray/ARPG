@@ -1,5 +1,4 @@
 ﻿using JKFrame;
-using UnityEngine.Animations;
 
 namespace Player.Animation
 {

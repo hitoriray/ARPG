@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using UnityEngine;
 
-namespace Config.Skill
+namespace Config
 {
     [CreateAssetMenu(fileName = "Skill Config", menuName = "Config/SkillConfig")]
     public class SkillConfig : ConfigBase
