@@ -12,6 +12,7 @@ namespace Config.Skill
     {
         [LabelText("技能名称")] public string SkillName;
         [LabelText("帧数上限")] public int FrameCount = 100;
+        [LabelText("帧率")] public int FrameRate = 30;
 
         [NonSerialized, OdinSerialize]
         public SkillAnimationData SkillAnimationData = new();
@@ -46,6 +47,7 @@ namespace Config.Skill
     public class SkillAnimationEvent : SkillFrameEventBase
     {
         public AnimationClip AnimationClip;
+        public bool ApplyRootMotion;
         public float TransitionTime = 0.25f;
         
 #if UNITY_EDITOR

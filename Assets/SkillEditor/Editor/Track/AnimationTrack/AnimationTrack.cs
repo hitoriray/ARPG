@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Codice.CM.Interfaces;
 using Config.Skill;
+using SkillEditor.Editor.EditorWindow;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -168,6 +170,134 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             }
         }
 
+        public override void TickView(int frameIndex)
+        {
+            GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
+            Animator animator = previewGameObject.GetComponent<Animator>();
+            var frameData = AnimationData.FrameEventDict;
+            
+            #region 关于根运动的计算
+
+            SortedDictionary<int, SkillAnimationEvent> sortedFrameData = new(frameData);
+            int[] keys = sortedFrameData.Keys.ToArray();
+            Vector3 rootMotionTotalPos = Vector3.zero;
+            for (int i = 0; i < keys.Length; i++)
+            {
+                int key = keys[i];
+                var animationEvt = sortedFrameData[key];
+                // 只考虑根运动配置的动画
+                if (animationEvt.ApplyRootMotion == false)
+                    continue;
+
+                int nextKeyFrame = 0;
+                if (i + 1 < keys.Length)
+                {
+                    nextKeyFrame = keys[i + 1];
+                }
+                // 最后一个动画
+                else
+                {
+                    nextKeyFrame = SkillEditorWindow.Instance.SkillConfig.FrameCount;
+                }
+
+                bool isBreak = false; // 标记是否是最后一次采样
+                if (nextKeyFrame > frameIndex)
+                {
+                    nextKeyFrame = frameIndex;
+                    isBreak = true;
+                }
+                // 持续的帧数 = 下一个动画的帧数 - 当前动画的开始时间
+                int durationFrameCount = nextKeyFrame - key;
+                if (durationFrameCount > 0)
+                {
+                    // 获取动画资源的总帧数
+                    var clipFrameCnt = animationEvt.AnimationClip.length *
+                                         SkillEditorWindow.Instance.SkillConfig.FrameRate;
+                    // 计算当前的播放进度
+                    var totalProgress = durationFrameCount / clipFrameCnt;
+                    // 播放次数
+                    int playTimes = 0;
+                    // 最终不完整的一次播放的进度
+                    float lastProgress = 0;
+                    // 只有循环动画才需要采样多次
+                    if (animationEvt.AnimationClip.isLooping)
+                    {
+                        playTimes = (int)totalProgress;
+                        lastProgress = totalProgress - (int)totalProgress;
+                    }
+                    else
+                    {
+                        if (totalProgress >= 1)
+                        {
+                            playTimes = 1;
+                            lastProgress = 0;
+                        }
+                        // 因为总进度小于1，所以本身就是最后一次播放进度
+                        else
+                        {
+                            lastProgress = totalProgress;
+                            playTimes = 0;
+                        }
+                    }
+                    
+                    // 做采样计算
+                    animator.applyRootMotion = true;
+                    if (playTimes >= 1)
+                    {
+                        // 采样一次动画的完整进度
+                        animationEvt.AnimationClip.SampleAnimation(previewGameObject, animationEvt.AnimationClip.length);
+                        Vector3 samplePos = previewGameObject.transform.position;
+                        rootMotionTotalPos += samplePos * playTimes;
+                    }
+
+                    if (lastProgress > 0)
+                    {
+                        // 采样一次动画的不完整进度
+                        animationEvt.AnimationClip.SampleAnimation(previewGameObject, lastProgress * animationEvt.AnimationClip.length);
+                        Vector3 samplePos = previewGameObject.transform.position;
+                        rootMotionTotalPos += samplePos;
+                    }
+                }
+
+                if (isBreak) break;
+            }
+            
+            #endregion
+            
+            #region 关于当前帧的姿态
+            // 找到距离这一帧左边最近的一个动画，也就是当前要播放的动画
+            int currentOffset = int.MaxValue;
+            int animationEventIndex = -1;
+            foreach (var (startIndex, _) in frameData)
+            {
+                int tmpOffset = frameIndex - startIndex;
+                if (tmpOffset > 0 && tmpOffset < currentOffset)
+                {
+                    currentOffset = tmpOffset;
+                    animationEventIndex = startIndex;
+                }
+            }
+
+            if (animationEventIndex == -1)
+                return;
+            
+            var animationEvent = frameData[animationEventIndex];
+            // 动画资源的总帧数
+            float clipFrameCount = animationEvent.AnimationClip.length * animationEvent.AnimationClip.frameRate;
+            // 计算当前的播放进度
+            float progress = currentOffset / clipFrameCount;
+            // 循环动画的处理
+            if (progress > 1 && animationEvent.AnimationClip.isLooping)
+            {
+                progress -= (int)progress;
+            }
+
+            animator.applyRootMotion = animationEvent.ApplyRootMotion;
+            animationEvent.AnimationClip.SampleAnimation(previewGameObject, progress * animationEvent.AnimationClip.length);
+            #endregion
+
+            previewGameObject.transform.position = rootMotionTotalPos;
+        }
 
         #region 重载方法
         public override void DeleteTrackItem(int frameIndex)

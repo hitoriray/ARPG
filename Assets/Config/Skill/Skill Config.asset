@@ -16,7 +16,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 7400000, guid: 6ff472f09096b994489f1ce6b9bcb5aa, type: 2}
+    - {fileID: 1827226128182048838, guid: bc64cabb54929ff43ba1db9243464331, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -44,19 +44,22 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 0
+      Data: 106
     - Name: $v
       Entry: 7
       Data: 3|Config.Skill.SkillAnimationEvent, Assembly-CSharp
     - Name: AnimationClip
       Entry: 10
       Data: 0
+    - Name: ApplyRootMotion
+      Entry: 5
+      Data: false
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
     - Name: DurationFrame
       Entry: 3
-      Data: 20
+      Data: 60
     - Name: 
       Entry: 8
       Data: 
@@ -73,4 +76,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SkillName: test skill
-  FrameCount: 100
+  FrameCount: 176
+  FrameRate: 30

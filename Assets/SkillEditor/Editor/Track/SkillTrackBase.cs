@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SkillEditor.Editor.Track
@@ -40,5 +41,7 @@ namespace SkillEditor.Editor.Track
         public virtual void DeleteTrackItem(int frameIndex) {}
 
         public virtual void OnConfigChanged() {}
+
+        public virtual void TickView(int frameIndex) {}
     }
 }

@@ -36,6 +36,8 @@ namespace Player
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
+            
+            
         }
 
         /// <summary>
