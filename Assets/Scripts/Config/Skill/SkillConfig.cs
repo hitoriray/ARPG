@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Config.Skill
 {
-    [CreateAssetMenu(fileName = "Skill Config", menuName = "Config/Skill Config")]
+    [CreateAssetMenu(fileName = "Skill Config", menuName = "Config/SkillConfig")]
     public class SkillConfig : ConfigBase
     {
         [LabelText("技能名称")] public string SkillName;

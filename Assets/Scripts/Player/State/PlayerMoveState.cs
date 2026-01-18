@@ -15,7 +15,7 @@ namespace Player.State
         public override void Init(IStateMachineOwner owner, int stateType, StateMachine stateMachine)
         {
             base.Init(owner, stateType, stateMachine);
-            characterController = PlayerController.GetComponent<CharacterController>();
+            characterController = PlayerController.CharacterController;
             animationController = PlayerController.AnimationController;
             applyRootMotionForMove = PlayerController.CharacterConfig.ApplyRootMotionForMove;
         }

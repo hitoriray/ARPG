@@ -2,6 +2,7 @@ using System;
 using Config.GameScene;
 using JKFrame;
 using Player.Animation;
+using Player.Skill;
 using Player.State;
 using UnityEngine;
 
@@ -10,6 +11,10 @@ namespace Player
     public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner
     {
         [SerializeField] private PlayerView playerView;
+        [SerializeField] private SkillPlayer skillPlayer;
+        public SkillPlayer SkillPlayer => skillPlayer;
+        [SerializeField] private CharacterController characterController;
+        public CharacterController CharacterController => characterController;
         
         private StateMachine stateMachine;
         private PlayerState currentState;
@@ -31,13 +36,13 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(DataManager.CustomCharacterData);
             
+            skillPlayer.Init(playerView?.AnimationController);
+            
             // 初始化状态机
             stateMachine = PoolManager.Instance.GetObject<StateMachine>();
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
-            
-            
         }
 
         /// <summary>
@@ -58,6 +63,9 @@ namespace Player
                     break;
                 case PlayerState.Move:
                     stateMachine.ChangeState<PlayerMoveState>((int)currentState);
+                    break;
+                case PlayerState.Skill:
+                    stateMachine.ChangeState<PlayerSkillState>((int)currentState);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

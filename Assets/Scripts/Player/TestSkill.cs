@@ -14,7 +14,7 @@ namespace Player
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                skillPlayer.PlaySkill(skillConfig);
+                // skillPlayer.PlaySkill(skillConfig);
             }
         }
     }

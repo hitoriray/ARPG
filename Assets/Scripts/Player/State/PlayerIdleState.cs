@@ -18,7 +18,12 @@ namespace Player.State
             {
                 PlayerController.ChangeState(PlayerState.Move);
             }
+            
+            // TODO: change to skill
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlayerController.ChangeState(PlayerState.Skill);
+            }
         }
-
     }
 }
