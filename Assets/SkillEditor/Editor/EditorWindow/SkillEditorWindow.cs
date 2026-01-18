@@ -28,6 +28,8 @@ namespace SkillEditor.Editor.EditorWindow
 
         public void CreateGUI()
         {
+            SkillConfig.SetSkillConfigValidateAction(ResetView);
+            
             Instance = this;
             
             root = rootVisualElement;
@@ -54,6 +56,16 @@ namespace SkillEditor.Editor.EditorWindow
                 CurrentFrameCount = 100;
             }
             CurrentSelectFrameIndex = 0;
+        }
+
+        private void ResetView()
+        {
+            // ResetTrackData();
+            // UpdateContentSize();
+            // ResetTrack();
+            var tmpConfig = skillConfig;
+            SkillConfigObjectField.value = null;
+            SkillConfigObjectField.value = tmpConfig;
         }
 
         private void OnDestroy()
@@ -451,12 +463,16 @@ namespace SkillEditor.Editor.EditorWindow
             {
                 EditorUtility.SetDirty(skillConfig);
                 AssetDatabase.SaveAssetIfDirty(skillConfig);
+                ResetTrackData();
+            }
+        }
 
-                // 重新引用一下数据
-                for (int i = 0; i < trackItems.Count; i++)
-                {
-                    trackItems[i].OnConfigChanged();
-                }
+        private void ResetTrackData()
+        {
+            // 重新引用一下数据
+            for (int i = 0; i < trackItems.Count; i++)
+            {
+                trackItems[i].OnConfigChanged();
             }
         }
 

@@ -16,6 +16,19 @@ namespace Config.Skill
 
         [NonSerialized, OdinSerialize]
         public SkillAnimationData SkillAnimationData = new();
+
+#if UNITY_EDITOR
+        private static Action skillConfigValidateAction;
+
+        public static void SetSkillConfigValidateAction(Action action)
+        {
+            skillConfigValidateAction = action;
+        }
+        private void OnValidate()
+        {
+            skillConfigValidateAction?.Invoke();
+        }
+#endif
     }
 
     /// <summary>
