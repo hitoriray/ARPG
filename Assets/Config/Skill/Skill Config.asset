@@ -17,7 +17,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 6ff472f09096b994489f1ce6b9bcb5aa, type: 2}
-    - {fileID: 7400000, guid: 1cc3f503950140e4f8bdddf105b56fa1, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -39,7 +38,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 1
     - Name: 
       Entry: 7
       Data: 
@@ -57,31 +56,7 @@ MonoBehaviour:
       Data: 0.25
     - Name: DurationFrame
       Entry: 3
-      Data: 50
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 51
-    - Name: $v
-      Entry: 7
-      Data: 4|Config.Skill.SkillAnimationEvent, Assembly-CSharp
-    - Name: AnimationClip
-      Entry: 10
-      Data: 1
-    - Name: TransitionTime
-      Entry: 4
-      Data: 0.25
-    - Name: DurationFrame
-      Entry: 3
-      Data: 40
+      Data: 20
     - Name: 
       Entry: 8
       Data: 

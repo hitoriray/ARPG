@@ -51,6 +51,14 @@ public class SkillEditorWindow : EditorWindow
         CurrentSelectFrameIndex = 0;
     }
 
+    private void OnDestroy()
+    {
+        if (skillConfig != null)
+        {
+            SaveSkillConfig();
+        }
+    }
+
     #region TopMenu
 
     private const string skillEditorScenePath = "Assets/SkillEditor/SkillEditorScene.unity";
@@ -227,7 +235,6 @@ public class SkillEditorWindow : EditorWindow
             if (skillConfig != null)
             {
                 skillConfig.FrameCount = currentFrameCount;
-                SaveSkillConfig();
             }
             
             // Content size change
@@ -305,6 +312,7 @@ public class SkillEditorWindow : EditorWindow
         
         UpdateTimerShaftView();
         UpdateContentSize();
+        // TODO: TrackItem.ResetView();
     }
     
     private void OnTimerShaftMouseDown(MouseDownEvent evt)
@@ -425,6 +433,12 @@ public class SkillEditorWindow : EditorWindow
         {
             EditorUtility.SetDirty(skillConfig);
             AssetDatabase.SaveAssetIfDirty(skillConfig);
+
+            // 重新引用一下数据
+            for (int i = 0; i < trackItems.Count; i++)
+            {
+                trackItems[i].OnConfigChanged();
+            }
         }
     }
 
@@ -467,6 +481,12 @@ public class SkillEditorWindow : EditorWindow
         AnimationTrack animationTrack = new();
         animationTrack.Init(trackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
         trackItems.Add(animationTrack);
+    }
+
+    public void ShowTrackItemOnInspector(TrackItemBase trackItem, SkillTrackBase track)
+    {
+        SkillEditorInspector.SetTrackItem(trackItem, track);
+        Selection.activeObject = this;
     }
     
     #endregion

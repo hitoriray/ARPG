@@ -6,26 +6,18 @@ using UnityEngine.UIElements;
 
 namespace SkillEditor.Editor.Track.AnimationTrack
 {
-    public class AnimationTrackItem : TrackItemBase
+    public class AnimationTrackItem : TrackItemBase<AnimationTrack>
     {
-        private const string trackItemAssetPath =
-            "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackItem.uxml";
-
-        
-
-        private AnimationTrack animationTrack;
-        private int frameIndex;
-        private float frameUnitWidth;
+        private const string trackItemAssetPath = "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackItem.uxml";
         private SkillAnimationEvent animationEvent;
-
-        public Label Root { get; private set; }
+        public SkillAnimationEvent AnimationEvent => animationEvent;
         private VisualElement mainDragArea;
         private VisualElement animationOverLine;
 
         public void Init(AnimationTrack animationTrack, VisualElement parent, int startFrameIndex, float frameUnitWidth,
             SkillAnimationEvent animationEvent)
         {
-            this.animationTrack = animationTrack;
+            track = animationTrack;
             this.frameIndex = startFrameIndex;
             this.frameUnitWidth = frameUnitWidth;
             this.animationEvent = animationEvent;
@@ -35,13 +27,18 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             animationOverLine = Root.Q<VisualElement>("OverLine");
             parent.Add(Root);
 
+            normalColor = new Color(0.388f, 0.850f, 0.905f, 0.5f);
+            selectColor = new Color(0.388f, 0.850f, 0.905f, 1f);
+            OnUnselect();
+
             BindEvents();
             ResetView(frameUnitWidth);
         }
 
-        public void ResetView(float frameUnitWidth)
+        public override void ResetView(float frameUnitWidth)
         {
-            this.frameUnitWidth = frameUnitWidth;
+            base.ResetView(frameUnitWidth);
+
             Root.text = animationEvent.AnimationClip.name;
 
             // 位置计算
@@ -66,8 +63,6 @@ namespace SkillEditor.Editor.Track.AnimationTrack
         }
 
         #region 鼠标拖拽事件
-        private static Color normalColor = new Color(0.388f, 0.850f, 0.905f, 0.5f);
-        private static Color selectColor = new Color(0.388f, 0.850f, 0.905f, 1f);
         private bool mouseDrag = false;
         private float startDragPosX;
         private int startDragFrameIndex;
@@ -82,10 +77,10 @@ namespace SkillEditor.Editor.Track.AnimationTrack
         
         private void OnMouseDown(MouseDownEvent evt)
         {
-            Root.style.backgroundColor = selectColor;
             startDragPosX = evt.mousePosition.x;
             startDragFrameIndex = frameIndex;
             mouseDrag = true;
+            Select();
         }
 
         private void OnMouseMove(MouseMoveEvent evt)
@@ -100,11 +95,11 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                     return;
                 if (offsetFrame < 0)
                 {
-                    checkDrag = animationTrack.CheckFrameIndexOnDrag(targetFrameIndex);
+                    checkDrag = track.CheckFrameIndexOnDrag(targetFrameIndex, startDragFrameIndex, true);
                 }
                 else if (offsetFrame > 0)
                 {
-                    checkDrag = animationTrack.CheckFrameIndexOnDrag(targetFrameIndex + animationEvent.DurationFrame);
+                    checkDrag = track.CheckFrameIndexOnDrag(targetFrameIndex + animationEvent.DurationFrame, startDragFrameIndex, false);
                 }
                 else
                 {
@@ -116,10 +111,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                     // 确定修改数据
                     frameIndex = targetFrameIndex;
                     // 如果超出右侧边界，则拓展边界
-                    if (frameIndex + animationEvent.DurationFrame > SkillEditorWindow.Instance.SkillConfig.FrameCount)
-                    {
-                        SkillEditorWindow.Instance.CurrentFrameCount = frameIndex + animationEvent.DurationFrame;
-                    }
+                    CheckFrameCount();
                     // 刷新视图
                     ResetView(frameUnitWidth);
                 }
@@ -137,7 +129,6 @@ namespace SkillEditor.Editor.Track.AnimationTrack
 
         private void OnMouseOut(MouseOutEvent evt)
         {
-            Root.style.backgroundColor = normalColor;
             if (mouseDrag)
             {
                 ApplyDrag();
@@ -150,9 +141,24 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             if (startDragFrameIndex == frameIndex)
                 return;
             
-            animationTrack.SetFrameIndex(startDragFrameIndex, frameIndex);
+            track.SetFrameIndex(startDragFrameIndex, frameIndex);
+            SkillEditorInspector.Instance.SetTrackItemFrameIndex(frameIndex);
+        }
+
+        public void CheckFrameCount()
+        {
+            // 如果超出右侧边界，则拓展边界
+            if (frameIndex + animationEvent.DurationFrame > SkillEditorWindow.Instance.SkillConfig.FrameCount)
+            {
+                SkillEditorWindow.Instance.CurrentFrameCount = frameIndex + animationEvent.DurationFrame;
+            }
         }
 
         #endregion
+
+        public override void OnConfigChanged()
+        {
+            animationEvent = track.AnimationData.FrameEventDict[frameIndex];
+        }
     }
 }

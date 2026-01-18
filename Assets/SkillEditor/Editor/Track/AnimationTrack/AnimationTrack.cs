@@ -14,7 +14,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
 
         private Dictionary<int, AnimationTrackItem> trackItemDict = new();
 
-        private SkillAnimationData animationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
+        public SkillAnimationData AnimationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
         
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -38,12 +38,17 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             if (SkillEditorWindow.Instance.SkillConfig == null)
                 return;
             // 根据数据绘制TrackItem
-            foreach (var (startFrameIndex, animationEvent) in animationData.FrameEventDict)
+            foreach (var (startFrameIndex, animationEvent) in AnimationData.FrameEventDict)
             {
-                AnimationTrackItem trackItem = new();
-                trackItem.Init(this, track, startFrameIndex, frameWidth, animationEvent);
-                trackItemDict.Add(startFrameIndex, trackItem);
+               CreateAnimationTrackItem(startFrameIndex, animationEvent);
             }
+        }
+
+        private void CreateAnimationTrackItem(int startFrameIndex, SkillAnimationEvent animationEvent)
+        {
+            AnimationTrackItem trackItem = new();
+            trackItem.Init(this, track, startFrameIndex, frameWidth, animationEvent);
+            trackItemDict.Add(startFrameIndex, trackItem);
         }
 
         #region 拖拽资源
@@ -71,7 +76,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                 int nextTrackItem = -1;
                 int currentOffset = int.MaxValue;
 
-                foreach (var (startIndex, animationEvent) in animationData.FrameEventDict)
+                foreach (var (startIndex, animationEvent) in AnimationData.FrameEventDict)
                 {
                     // 不允许选中帧在TrackItem之间（动画事件的起点到终点之间）
                     if (selectFrameIndex > startIndex && selectFrameIndex < startIndex + animationEvent.DurationFrame)
@@ -115,22 +120,31 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                     };
 
                     // 保存新增的动画数据
-                    animationData.FrameEventDict.Add(selectFrameIndex, animationEvent);
+                    AnimationData.FrameEventDict.Add(selectFrameIndex, animationEvent);
                     SkillEditorWindow.Instance.SaveSkillConfig();
                     
-                    // 修改编辑器视图
-                    ResetView();
+                    // 创建一个新的Item
+                    CreateAnimationTrackItem(selectFrameIndex, animationEvent);
                 }
             }
         }
         #endregion
         
-        public bool CheckFrameIndexOnDrag(int targetIndex)
+        public bool CheckFrameIndexOnDrag(int targetIndex, int selfIndex, bool isLeft)
         {
-            foreach (var (startIndex, animationEvent) in animationData.FrameEventDict)
+            foreach (var (startIndex, animationEvent) in AnimationData.FrameEventDict)
             {
-                // 不允许targetIndex在TrackItem之间（动画事件的起点到终点之间）
-                if (targetIndex > startIndex && targetIndex < startIndex + animationEvent.DurationFrame)
+                // 规避拖拽时考虑自身
+                if (startIndex == selfIndex)
+                    continue;
+                
+                // 向左移动 && 原先在其右边 && 目标没有重叠
+                if (isLeft && selfIndex > startIndex && targetIndex < startIndex + animationEvent.DurationFrame)
+                {
+                    return false;
+                }
+                // 向右移动 && 原先在其左边 && 目标没有重叠
+                else if (isLeft == false && selfIndex < startIndex && targetIndex > startIndex)
                 {
                     return false;
                 }
@@ -145,11 +159,34 @@ namespace SkillEditor.Editor.Track.AnimationTrack
         /// <param name="newIndex"></param>
         public void SetFrameIndex(int oldIndex, int newIndex)
         {
-            if (animationData.FrameEventDict.Remove(oldIndex, out var animationEvent))
+            if (AnimationData.FrameEventDict.Remove(oldIndex, out var animationEvent))
             {
-                animationData.FrameEventDict.Add(newIndex, animationEvent);
+                AnimationData.FrameEventDict.Add(newIndex, animationEvent);
+                trackItemDict.Remove(oldIndex, out var animationTrackItem);
+                trackItemDict.Add(newIndex, animationTrackItem);
                 SkillEditorWindow.Instance.SaveSkillConfig();
             }
         }
+
+
+        #region 重载方法
+        public override void DeleteTrackItem(int frameIndex)
+        {
+            AnimationData.FrameEventDict.Remove(frameIndex);
+            if (trackItemDict.Remove(frameIndex, out var animationTrackItem))
+            {
+                track.Remove(animationTrackItem.Root);
+            }
+            SkillEditorWindow.Instance.SaveSkillConfig();
+        }
+
+        public override void OnConfigChanged()
+        {
+            foreach (var item in trackItemDict.Values)
+            {
+                item.OnConfigChanged();
+            }
+        }
+        #endregion
     }
 }

@@ -36,5 +36,9 @@ namespace SkillEditor.Editor.Track
         {
             this.frameWidth = frameWidth;
         }
+
+        public virtual void DeleteTrackItem(int frameIndex) {}
+
+        public virtual void OnConfigChanged() {}
     }
 }
