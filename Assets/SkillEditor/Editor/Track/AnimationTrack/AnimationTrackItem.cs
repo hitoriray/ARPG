@@ -1,4 +1,5 @@
 ﻿using Config.Skill;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,8 @@ namespace SkillEditor.Editor.Track.AnimationTrack
     {
         private const string trackItemAssetPath =
             "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackItem.uxml";
+
+        
 
         private AnimationTrack animationTrack;
         private int frameIndex;
@@ -31,6 +34,8 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             mainDragArea = Root.Q<VisualElement>("Main");
             animationOverLine = Root.Q<VisualElement>("OverLine");
             parent.Add(Root);
+
+            BindEvents();
             ResetView(frameUnitWidth);
         }
 
@@ -44,7 +49,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             mainPos.x = frameIndex * frameUnitWidth;
             Root.transform.position = mainPos;
             Root.style.width = animationEvent.DurationFrame * frameUnitWidth;
-            
+
             // 计算动画结束线的位置
             int animationClipFrameCount = (int)(animationEvent.AnimationClip.length * animationEvent.AnimationClip.frameRate);
             if (animationClipFrameCount > animationEvent.DurationFrame)
@@ -59,5 +64,95 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                 animationOverLine.transform.position = overLinePos;
             }
         }
+
+        #region 鼠标拖拽事件
+        private static Color normalColor = new Color(0.388f, 0.850f, 0.905f, 0.5f);
+        private static Color selectColor = new Color(0.388f, 0.850f, 0.905f, 1f);
+        private bool mouseDrag = false;
+        private float startDragPosX;
+        private int startDragFrameIndex;
+        
+        private void BindEvents()
+        {
+            mainDragArea.RegisterCallback<MouseDownEvent>(OnMouseDown);
+            mainDragArea.RegisterCallback<MouseMoveEvent>(OnMouseMove);
+            mainDragArea.RegisterCallback<MouseUpEvent>(OnMouseUp);
+            mainDragArea.RegisterCallback<MouseOutEvent>(OnMouseOut);
+        }
+        
+        private void OnMouseDown(MouseDownEvent evt)
+        {
+            Root.style.backgroundColor = selectColor;
+            startDragPosX = evt.mousePosition.x;
+            startDragFrameIndex = frameIndex;
+            mouseDrag = true;
+        }
+
+        private void OnMouseMove(MouseMoveEvent evt)
+        {
+            if (mouseDrag)
+            {
+                float offsetPos = evt.mousePosition.x - startDragPosX;
+                int offsetFrame = Mathf.RoundToInt(offsetPos / frameUnitWidth);
+                int targetFrameIndex = startDragFrameIndex + offsetFrame;
+                bool checkDrag = false;
+                if (targetFrameIndex < 0) // 不考虑拖拽到负数的情况
+                    return;
+                if (offsetFrame < 0)
+                {
+                    checkDrag = animationTrack.CheckFrameIndexOnDrag(targetFrameIndex);
+                }
+                else if (offsetFrame > 0)
+                {
+                    checkDrag = animationTrack.CheckFrameIndexOnDrag(targetFrameIndex + animationEvent.DurationFrame);
+                }
+                else
+                {
+                    return;
+                }
+
+                if (checkDrag)
+                {
+                    // 确定修改数据
+                    frameIndex = targetFrameIndex;
+                    // 如果超出右侧边界，则拓展边界
+                    if (frameIndex + animationEvent.DurationFrame > SkillEditorWindow.Instance.SkillConfig.FrameCount)
+                    {
+                        SkillEditorWindow.Instance.CurrentFrameCount = frameIndex + animationEvent.DurationFrame;
+                    }
+                    // 刷新视图
+                    ResetView(frameUnitWidth);
+                }
+            }
+        }
+
+        private void OnMouseUp(MouseUpEvent evt)
+        {
+            if (mouseDrag)
+            {
+                ApplyDrag();
+            }
+            mouseDrag = false;
+        }
+
+        private void OnMouseOut(MouseOutEvent evt)
+        {
+            Root.style.backgroundColor = normalColor;
+            if (mouseDrag)
+            {
+                ApplyDrag();
+            }
+            mouseDrag = false;
+        }
+
+        private void ApplyDrag()
+        {
+            if (startDragFrameIndex == frameIndex)
+                return;
+            
+            animationTrack.SetFrameIndex(startDragFrameIndex, frameIndex);
+        }
+
+        #endregion
     }
 }

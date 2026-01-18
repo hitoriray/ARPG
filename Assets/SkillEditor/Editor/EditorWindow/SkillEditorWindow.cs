@@ -42,6 +42,7 @@ public class SkillEditorWindow : EditorWindow
         if (skillConfig != null)
         {
             SkillConfigObjectField.value = skillConfig;
+            CurrentFrameCount = skillConfig.FrameCount;
         }
         else
         {
@@ -172,17 +173,22 @@ public class SkillEditorWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// 技能配置修改事件
+    /// </summary>
     private void OnSkillConfigValueChanged(ChangeEvent<Object> evt)
     {
         skillConfig = evt.newValue as SkillConfig;
         
         // 重新绘制
         ResetTrack();
-
-        if (skillConfig == null)
-            return;
-        CurrentFrameCount = skillConfig.FrameCount;
         CurrentSelectFrameIndex = 0;
+        if (skillConfig == null)
+        {
+            CurrentFrameCount = 100;
+            return;
+        }
+        CurrentFrameCount = skillConfig.FrameCount;
     }
 
     #endregion
@@ -199,8 +205,6 @@ public class SkillEditorWindow : EditorWindow
         get => currentSelectFrameIndex;
         set
         {
-            if (currentSelectFrameIndex == value)
-                return;
             // 如果超出范围，更新最大帧
             if (value > CurrentFrameCount)
                 CurrentFrameCount = value;
@@ -217,8 +221,6 @@ public class SkillEditorWindow : EditorWindow
         get => currentFrameCount;
         set
         {
-            if (currentFrameCount == value)
-                return;
             currentFrameCount = value;
             FrameCountText.value = currentFrameCount.ToString();
             // 同步给SkillConfig

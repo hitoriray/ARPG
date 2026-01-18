@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Codice.CM.Interfaces;
 using Config.Skill;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace SkillEditor.Editor.Track.AnimationTrack
         public override string TrackAssetPath => "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackContent.uxml";
 
         private Dictionary<int, AnimationTrackItem> trackItemDict = new();
+
+        private SkillAnimationData animationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
         
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -35,7 +38,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
             if (SkillEditorWindow.Instance.SkillConfig == null)
                 return;
             // 根据数据绘制TrackItem
-            foreach (var (startFrameIndex, animationEvent) in SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameEventDict)
+            foreach (var (startFrameIndex, animationEvent) in animationData.FrameEventDict)
             {
                 AnimationTrackItem trackItem = new();
                 trackItem.Init(this, track, startFrameIndex, frameWidth, animationEvent);
@@ -68,7 +71,7 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                 int nextTrackItem = -1;
                 int currentOffset = int.MaxValue;
 
-                foreach (var (startIndex, animationEvent) in SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameEventDict)
+                foreach (var (startIndex, animationEvent) in animationData.FrameEventDict)
                 {
                     // 不允许选中帧在TrackItem之间（动画事件的起点到终点之间）
                     if (selectFrameIndex > startIndex && selectFrameIndex < startIndex + animationEvent.DurationFrame)
@@ -112,16 +115,41 @@ namespace SkillEditor.Editor.Track.AnimationTrack
                     };
 
                     // 保存新增的动画数据
-                    SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameEventDict.Add(selectFrameIndex, animationEvent);
+                    animationData.FrameEventDict.Add(selectFrameIndex, animationEvent);
                     SkillEditorWindow.Instance.SaveSkillConfig();
                     
-                    // TODO:同步修改编辑器视图
+                    // 修改编辑器视图
+                    ResetView();
                 }
             }
-            
         }
         #endregion
         
-        
+        public bool CheckFrameIndexOnDrag(int targetIndex)
+        {
+            foreach (var (startIndex, animationEvent) in animationData.FrameEventDict)
+            {
+                // 不允许targetIndex在TrackItem之间（动画事件的起点到终点之间）
+                if (targetIndex > startIndex && targetIndex < startIndex + animationEvent.DurationFrame)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 将oldIndex的数据变为newIndex，其实就是修改skillConfig中字典的索引
+        /// </summary>
+        /// <param name="oldIndex"></param>
+        /// <param name="newIndex"></param>
+        public void SetFrameIndex(int oldIndex, int newIndex)
+        {
+            if (animationData.FrameEventDict.Remove(oldIndex, out var animationEvent))
+            {
+                animationData.FrameEventDict.Add(newIndex, animationEvent);
+                SkillEditorWindow.Instance.SaveSkillConfig();
+            }
+        }
     }
 }

@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "ARPG.sln"
+    "dotnet.defaultSolution": "ARPG.sln",
+    "dotnet.preferCSharpExtension": true
 }
