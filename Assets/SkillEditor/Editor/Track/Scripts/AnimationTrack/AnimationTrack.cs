@@ -9,9 +9,7 @@ namespace SkillEditor
 {
     public class AnimationTrack : SkillTrackBase
     {
-        public override string MenuAssetPath => "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackMenu.uxml";
-        public override string TrackAssetPath => "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackContent.uxml";
-
+        private SingleLineTrackStyle trackStyle;
         private Dictionary<int, AnimationTrackItem> trackItemDict = new();
 
         public SkillAnimationData AnimationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
@@ -19,8 +17,10 @@ namespace SkillEditor
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
             base.Init(menuParent, trackParent, frameWidth);
-            track.RegisterCallback<DragUpdatedEvent>(OnDragUpdate);
-            track.RegisterCallback<DragExitedEvent>(OnDragExited);
+            trackStyle = new SingleLineTrackStyle();
+            trackStyle.Init(menuParent, trackParent, "动画配置");
+            trackStyle.contentRoot.RegisterCallback<DragUpdatedEvent>(OnDragUpdate);
+            trackStyle.contentRoot.RegisterCallback<DragExitedEvent>(OnDragExited);
             ResetView();
         }
 
@@ -31,7 +31,7 @@ namespace SkillEditor
             // 销毁当前已有的
             foreach (var (_, trackItem) in trackItemDict)
             {
-                track.Remove(trackItem.Root);
+                trackStyle.RemoveItem(trackItem.ItemStyle.Root);
             }
             trackItemDict.Clear();
 
@@ -47,7 +47,7 @@ namespace SkillEditor
         private void CreateAnimationTrackItem(int startFrameIndex, SkillAnimationEvent animationEvent)
         {
             AnimationTrackItem trackItem = new();
-            trackItem.Init(this, track, startFrameIndex, frameWidth, animationEvent);
+            trackItem.Init(this, trackStyle, startFrameIndex, frameWidth, animationEvent);
             trackItemDict.Add(startFrameIndex, trackItem);
         }
 
@@ -303,7 +303,7 @@ namespace SkillEditor
             AnimationData.FrameEventDict.Remove(frameIndex);
             if (trackItemDict.Remove(frameIndex, out var animationTrackItem))
             {
-                track.Remove(animationTrackItem.Root);
+                trackStyle.RemoveItem(animationTrackItem.ItemStyle.Root);
             }
             SkillEditorWindow.Instance.SaveSkillConfig();
         }

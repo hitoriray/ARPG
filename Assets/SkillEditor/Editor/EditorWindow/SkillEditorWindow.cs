@@ -52,6 +52,17 @@ namespace SkillEditor
             {
                 CurrentFrameCount = 100;
             }
+
+            // 防止因为编辑器刷新导致演示预制体消失
+            if (currentPreviewCharacterPrefab != null)
+            {
+                PreviewCharacterPrefabObjectField.value = currentPreviewCharacterPrefab;
+            }
+            if (currentPreviewCharacterObj != null)
+            {
+                PreviewCharacterObjectField.value = currentPreviewCharacterObj;
+            }
+
             CurrentSelectFrameIndex = 0;
         }
 
@@ -82,8 +93,11 @@ namespace SkillEditor
         private Button LoadOldSceneBtn;
         private Button SkillBasicBtn;
         private ObjectField PreviewCharacterPrefabObjectField;
+        private ObjectField PreviewCharacterObjectField;
         private ObjectField SkillConfigObjectField;
 
+        private GameObject currentPreviewCharacterPrefab;
+        
         private GameObject currentPreviewCharacterObj;
         public GameObject CurrentPreviewCharacterObj => currentPreviewCharacterObj;
 
@@ -103,7 +117,8 @@ namespace SkillEditor
             SkillBasicBtn = root.Q<Button>(nameof(SkillBasicBtn));
             SkillBasicBtn.clicked += OnSkillBasicBtnClicked;
 
-            PreviewCharacterPrefabObjectField.RegisterValueChangedCallback(OnPreviewCharacterPrefabValueChanged);
+            PreviewCharacterPrefabObjectField.RegisterValueChangedCallback(OnPreviewCharacterPrefabObjectValueChanged);
+            PreviewCharacterObjectField.RegisterValueChangedCallback(OnPreviewCharacterObjectValueChanged);
             SkillConfigObjectField.RegisterValueChangedCallback(OnSkillConfigValueChanged);
         }
 
@@ -119,26 +134,37 @@ namespace SkillEditor
             PreviewCharacterPrefabObjectField = new ObjectField("演示角色预制体")
             {
                 objectType = typeof(GameObject),
-                allowSceneObjects = false,
+                allowSceneObjects = true,
             };
             PreviewCharacterPrefabObjectField.AddToClassList("compact-object-field");
             PreviewCharacterPrefabObjectField.style.flexGrow = 1;
             PreviewCharacterPrefabObjectField.style.flexShrink = 1;
             PreviewCharacterPrefabObjectField.style.minWidth = 0;
             PreviewCharacterPrefabObjectField.style.alignItems = new StyleEnum<Align>(Align.Center);
+            topMenu.Add(PreviewCharacterPrefabObjectField);
 
+            PreviewCharacterObjectField = new ObjectField("演示角色")
+            {
+                objectType = typeof(GameObject),
+                allowSceneObjects = true,
+            };
+            PreviewCharacterObjectField.AddToClassList("compact-object-field");
+            PreviewCharacterObjectField.style.flexGrow = 1;
+            PreviewCharacterObjectField.style.flexShrink = 1;
+            PreviewCharacterObjectField.style.minWidth = 0;
+            PreviewCharacterObjectField.style.alignItems = new StyleEnum<Align>(Align.Center);
+            topMenu.Add(PreviewCharacterObjectField);
+            
             SkillConfigObjectField = new ObjectField("技能配置文件")
             {
                 objectType = typeof(SkillConfig),
-                allowSceneObjects = false,
+                allowSceneObjects = true,
             };
             SkillConfigObjectField.AddToClassList("compact-object-field");
             SkillConfigObjectField.style.flexGrow = 1;
             SkillConfigObjectField.style.flexShrink = 1;
             SkillConfigObjectField.style.minWidth = 0;
             SkillConfigObjectField.style.alignItems = new StyleEnum<Align>(Align.Center);
-
-            topMenu.Add(PreviewCharacterPrefabObjectField);
             topMenu.Add(SkillConfigObjectField);
         }
 
@@ -175,25 +201,43 @@ namespace SkillEditor
             }
         }
 
-        private void OnPreviewCharacterPrefabValueChanged(ChangeEvent<Object> evt)
+        private void OnPreviewCharacterPrefabObjectValueChanged(ChangeEvent<Object> evt)
         {
+            // 避免在其他场景实例化
             string currentScenePath = EditorSceneManager.GetActiveScene().path;
             if (currentScenePath != skillEditorScenePath)
+            {
+                PreviewCharacterPrefabObjectField.value = null;
+                return;
+            }
+
+            // 如果值相等，return掉
+            if (evt.newValue == currentPreviewCharacterPrefab)
                 return;
 
+            currentPreviewCharacterPrefab = evt.newValue as GameObject; 
+            
+            // 销毁旧的
             if (currentPreviewCharacterObj != null)
                 DestroyImmediate(currentPreviewCharacterObj);
-
             Transform parent = GameObject.Find(previewCharacterParentPath).transform;
             if (parent != null && parent.childCount > 0)
             {
                 DestroyImmediate(parent.GetChild(0).gameObject);
             }
 
+            // 实例化新的
             if (evt.newValue != null)
             {
                 currentPreviewCharacterObj = Instantiate(evt.newValue as GameObject, parent);
+                currentPreviewCharacterObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                PreviewCharacterObjectField.value = currentPreviewCharacterObj;
             }
+        }
+
+        private void OnPreviewCharacterObjectValueChanged(ChangeEvent<Object> evt)
+        {
+            currentPreviewCharacterObj = evt.newValue as GameObject;
         }
 
         /// <summary>
@@ -492,16 +536,26 @@ namespace SkillEditor
     
         #region Track
 
-        private VisualElement trackMenuParent;
+        private VisualElement TrackMenuParent;
         private VisualElement ContentListView;
+        private ScrollView MainContentView;
         private List<SkillTrackBase> trackItems = new();
     
         private void InitContent()
         {
-            trackMenuParent = root.Q<VisualElement>("TrackMenu");
             ContentListView = root.Q<VisualElement>(nameof(ContentListView));
+            TrackMenuParent = root.Q<VisualElement>("TrackMenu");
+            MainContentView = root.Q<ScrollView>(nameof(MainContentView));
+            MainContentView.verticalScroller.valueChanged += OnMainContentViewValueChanged;
             UpdateContentSize();
             InitTrack();
+        }
+
+        private void OnMainContentViewValueChanged(float value)
+        {
+            Vector3 pos = TrackMenuParent.transform.position;
+            pos.y = contentContainer.transform.position.y;
+            TrackMenuParent.transform.position = pos;
         }
 
         private void InitTrack()
@@ -525,7 +579,7 @@ namespace SkillEditor
         private void InitAnimationTrack()
         {
             AnimationTrack animationTrack = new();
-            animationTrack.Init(trackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            animationTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
             trackItems.Add(animationTrack);
         }
 

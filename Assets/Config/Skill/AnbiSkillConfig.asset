@@ -27,10 +27,10 @@ MonoBehaviour:
     SerializationNodes:
     - Name: SkillAnimationData
       Entry: 7
-      Data: 0|Config.Skill.SkillAnimationData, Assembly-CSharp
+      Data: 0|Config.SkillAnimationData, Assembly-CSharp
     - Name: FrameEventDict
       Entry: 7
-      Data: 1|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.Skill.SkillAnimationEvent,
+      Data: 1|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillAnimationEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
@@ -50,7 +50,7 @@ MonoBehaviour:
       Data: 39
     - Name: $v
       Entry: 7
-      Data: 3|Config.Skill.SkillAnimationEvent, Assembly-CSharp
+      Data: 3|Config.SkillAnimationEvent, Assembly-CSharp
     - Name: AnimationClip
       Entry: 10
       Data: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 4|Config.Skill.SkillAnimationEvent, Assembly-CSharp
+      Data: 4|Config.SkillAnimationEvent, Assembly-CSharp
     - Name: AnimationClip
       Entry: 10
       Data: 1
@@ -104,7 +104,7 @@ MonoBehaviour:
       Data: 20
     - Name: $v
       Entry: 7
-      Data: 5|Config.Skill.SkillAnimationEvent, Assembly-CSharp
+      Data: 5|Config.SkillAnimationEvent, Assembly-CSharp
     - Name: AnimationClip
       Entry: 10
       Data: 2
@@ -131,7 +131,7 @@ MonoBehaviour:
       Data: 58
     - Name: $v
       Entry: 7
-      Data: 6|Config.Skill.SkillAnimationEvent, Assembly-CSharp
+      Data: 6|Config.SkillAnimationEvent, Assembly-CSharp
     - Name: AnimationClip
       Entry: 10
       Data: 3
@@ -160,5 +160,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SkillName: test skill
-  FrameCount: 113
+  FrameCount: 130
   FrameRate: 30

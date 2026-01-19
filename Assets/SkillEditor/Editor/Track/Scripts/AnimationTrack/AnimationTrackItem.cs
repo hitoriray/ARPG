@@ -7,13 +7,12 @@ namespace SkillEditor
 {
     public class AnimationTrackItem : TrackItemBase<AnimationTrack>
     {
-        private const string trackItemAssetPath = "Assets/SkillEditor/Editor/Track/AnimationTrack/AnimationTrackItem.uxml";
         private SkillAnimationEvent animationEvent;
         public SkillAnimationEvent AnimationEvent => animationEvent;
-        private VisualElement mainDragArea;
-        private VisualElement animationOverLine;
+        
+        private SkillAnimationTrackItemStyle animationItemStyle;
 
-        public void Init(AnimationTrack animationTrack, VisualElement parent, int startFrameIndex, float frameUnitWidth,
+        public void Init(AnimationTrack animationTrack, SkillTrackStyleBase parentTrackStyle, int startFrameIndex, float frameUnitWidth,
             SkillAnimationEvent animationEvent)
         {
             track = animationTrack;
@@ -21,10 +20,9 @@ namespace SkillEditor
             this.frameUnitWidth = frameUnitWidth;
             this.animationEvent = animationEvent;
 
-            Root = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(trackItemAssetPath).Instantiate().Query<Label>();
-            mainDragArea = Root.Q<VisualElement>("Main");
-            animationOverLine = Root.Q<VisualElement>("OverLine");
-            parent.Add(Root);
+            animationItemStyle = new SkillAnimationTrackItemStyle();
+            ItemStyle = animationItemStyle;
+            animationItemStyle.Init(parentTrackStyle, startFrameIndex, frameUnitWidth);
 
             normalColor = new Color(0.388f, 0.850f, 0.905f, 0.5f);
             selectColor = new Color(0.388f, 0.850f, 0.905f, 1f);
@@ -38,26 +36,24 @@ namespace SkillEditor
         {
             base.ResetView(frameUnitWidth);
 
-            Root.text = animationEvent.AnimationClip.name;
+            animationItemStyle.SetTitle(animationEvent.AnimationClip.name);
 
             // 位置计算
-            Vector3 mainPos = Root.transform.position;
-            mainPos.x = frameIndex * frameUnitWidth;
-            Root.transform.position = mainPos;
-            Root.style.width = animationEvent.DurationFrame * frameUnitWidth;
+            animationItemStyle.SetPositionX(frameIndex * frameUnitWidth);
+            animationItemStyle.SetWidth(animationEvent.DurationFrame * frameUnitWidth);
 
             // 计算动画结束线的位置
             int animationClipFrameCount = (int)(animationEvent.AnimationClip.length * animationEvent.AnimationClip.frameRate);
             if (animationClipFrameCount > animationEvent.DurationFrame)
             {
-                animationOverLine.style.display = DisplayStyle.None;
+                animationItemStyle.AnimationOverLine.style.display = DisplayStyle.None;
             }
             else
-            {
-                animationOverLine.style.display = DisplayStyle.Flex;
-                Vector3 overLinePos = animationOverLine.transform.position;
+            { 
+                animationItemStyle.AnimationOverLine.style.display = DisplayStyle.Flex;
+                Vector3 overLinePos = animationItemStyle.AnimationOverLine.transform.position;
                 overLinePos.x = animationClipFrameCount * frameUnitWidth - 1;
-                animationOverLine.transform.position = overLinePos;
+                animationItemStyle.AnimationOverLine.transform.position = overLinePos;
             }
         }
 
@@ -68,10 +64,10 @@ namespace SkillEditor
         
         private void BindEvents()
         {
-            mainDragArea.RegisterCallback<MouseDownEvent>(OnMouseDown);
-            mainDragArea.RegisterCallback<MouseMoveEvent>(OnMouseMove);
-            mainDragArea.RegisterCallback<MouseUpEvent>(OnMouseUp);
-            mainDragArea.RegisterCallback<MouseOutEvent>(OnMouseOut);
+            animationItemStyle.MainDragArea.RegisterCallback<MouseDownEvent>(OnMouseDown);
+            animationItemStyle.MainDragArea.RegisterCallback<MouseMoveEvent>(OnMouseMove);
+            animationItemStyle.MainDragArea.RegisterCallback<MouseUpEvent>(OnMouseUp);
+            animationItemStyle.MainDragArea.RegisterCallback<MouseOutEvent>(OnMouseOut);
         }
         
         private void OnMouseDown(MouseDownEvent evt)

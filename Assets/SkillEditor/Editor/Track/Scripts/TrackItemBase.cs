@@ -27,7 +27,7 @@ namespace SkillEditor
         protected T track;
         protected Color normalColor;
         protected Color selectColor;
-        public Label Root { get; protected set; }
+        public SkillTrackItemStyleBase ItemStyle { get; protected set; }
         protected int frameIndex;
         public int FrameIndex => frameIndex;
 
@@ -38,11 +38,11 @@ namespace SkillEditor
         }
         public override void OnSelect()
         {
-            Root.style.backgroundColor = selectColor;
+            ItemStyle.SetBGColor(selectColor);
         }
         public override void OnUnselect()
         {
-            Root.style.backgroundColor = normalColor;
+            ItemStyle.SetBGColor(normalColor);
         }
     }
 }
