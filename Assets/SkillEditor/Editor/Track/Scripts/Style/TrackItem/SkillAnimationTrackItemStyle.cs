@@ -5,7 +5,7 @@ namespace SkillEditor
 {
     public class SkillAnimationTrackItemStyle : SkillTrackItemStyleBase
     {
-        private const string trackItemAssetPath = "Assets/SkillEditor/Editor/Track/Assets/AnimationTrack/AnimationTrackItem.uxml";
+        private const string trackItemAssetPath = "Assets/SkillEditor/Editor/Track/Assets/TrackItem/AnimationTrackItem.uxml";
         private Label titleLabel;
         public VisualElement MainDragArea { get; protected set; }
         public VisualElement AnimationOverLine { get; protected set; }

@@ -1,10 +1,14 @@
-﻿using UnityEngine.UIElements;
+﻿using System.Collections.Generic;
+using Config;
+using UnityEngine.UIElements;
 
 namespace SkillEditor
 {
     public class AudioTrack : SkillTrackBase
     {
         private SkillMultiLineTrackStyle trackStyle;
+        public SkillAudioData AudioData => SkillEditorWindow.Instance.SkillConfig.SkillAudioData;
+        private List<AudioTrackItem> trackItems = new();
 
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -12,6 +16,35 @@ namespace SkillEditor
             trackStyle = new SkillMultiLineTrackStyle();
             trackStyle.Init(menuParent, trackParent, "音效配置", CheckAddChildTrack, CheckDeleteChildTrack);
             
+            ResetView();
+        }
+
+        public override void ResetView(float frameWidth)
+        {
+            base.ResetView(frameWidth);
+            // 销毁当前已有的
+            foreach (var item in trackItems)
+            {
+                item.Destroy();
+            }
+            trackItems.Clear();
+            
+            if (SkillEditorWindow.Instance.SkillConfig == null)
+                return;
+            
+            // 根据数据绘制TrackItem
+            foreach (var audioEvent in AudioData.FrameData)
+            {
+                CreateAudioTrackItem(audioEvent);
+            }
+        }
+
+        private void CreateAudioTrackItem(SkillAudioEvent audioEvent)
+        {
+            var item = new AudioTrackItem();
+            item.Init(frameWidth, audioEvent, trackStyle.AddChildTrack());
+            item.SetTrackName(audioEvent.TrackName);
+            trackItems.Add(item);
         }
 
         /// <summary>

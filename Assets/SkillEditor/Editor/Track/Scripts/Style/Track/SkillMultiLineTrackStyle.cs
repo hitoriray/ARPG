@@ -141,11 +141,20 @@ namespace SkillEditor
             // 由上级具体轨道类来判断能不能添加
             if (addChildTrackFunc())
             {
-                ChildTrack childTrack = new ChildTrack();
-                childTrack.Init(menuItemParent, contentRoot, childTracks.Count, OnDeleteBtnClicked);
-                childTracks.Add(childTrack);
-                UpdateSize();
+                AddChildTrack();
             }
+        }
+
+        /// <summary>
+        /// 添加子轨道辅助方法（供外部调用）
+        /// </summary>
+        public ChildTrack AddChildTrack()
+        {
+            ChildTrack childTrack = new ChildTrack();
+            childTrack.Init(menuItemParent, contentRoot, childTracks.Count, OnDeleteBtnClicked);
+            childTracks.Add(childTrack);
+            UpdateSize();
+            return childTrack;
         }
         
         /// <summary>
@@ -160,7 +169,7 @@ namespace SkillEditor
             int index = childTrack.GetIndex();
             if (deleteChildTrackFunc(index))
             {
-                childTrack.Destroy();
+                childTrack.DoDestroy();
                 childTracks.RemoveAt(index);
                 // 所有的子轨道都需要更新一下索引
                 UpdateChildTracksIndex(index);
@@ -190,11 +199,13 @@ namespace SkillEditor
             private const string ChildMenuItemAssetPath = "Assets/SkillEditor/Editor/Track/Assets/MultiLineTrackStyle/MultiLineTrackItem.uxml";
             private const string ChildTrackContentAssetPath = "Assets/SkillEditor/Editor/Track/Assets/MultiLineTrackStyle/MultiLineTrackContentItem.uxml";
             
-            private VisualElement menuRoot;
-            private VisualElement trackRoot;
+            public VisualElement menuRoot;
+            public VisualElement trackRoot;
 
-            private VisualElement menuParent;
-            private VisualElement trackParent;
+            public VisualElement menuParent;
+            public VisualElement trackParent;
+
+            private TextField trackNameField;
 
             private Action<ChildTrack> deleteAction;
 
@@ -203,6 +214,7 @@ namespace SkillEditor
             private static Color normalColor = new Color(0, 0, 0, 0);
             private static Color selectColor = Color.green;
             
+            private VisualElement content;
             
             public void Init(VisualElement menuParent, VisualElement trackParent, int index, Action<ChildTrack> deleteAction)
             {
@@ -214,6 +226,7 @@ namespace SkillEditor
                 menuParent.Add(menuRoot);
                 trackRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ChildTrackContentAssetPath).Instantiate().Query().ToList()[1];
                 trackParent.Add(trackRoot);
+                trackNameField = menuRoot.Q<TextField>("NameField");
                 
                 Button deleteBtn = menuRoot.Q<Button>("DeleteBtn");
                 deleteBtn.clicked += () => deleteAction(this);
@@ -222,6 +235,17 @@ namespace SkillEditor
                 Unselect();
             }
 
+            public void InitContent(VisualElement content)
+            {
+                this.content = content;
+                trackRoot.Add(this.content);
+            }
+            
+            public void SetTrackName(string trackName)
+            {
+                trackNameField.value = trackName;
+            }
+            
             public void SetIndex(int idx)
             {
                 index = idx;
@@ -254,6 +278,11 @@ namespace SkillEditor
             }
             
             public void Destroy()
+            {
+                deleteAction(this);
+            }
+
+            public void DoDestroy()
             {
                 menuParent.Remove(menuRoot);
                 trackParent.Remove(trackRoot);

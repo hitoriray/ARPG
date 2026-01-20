@@ -5,7 +5,7 @@ namespace SkillEditor
 {
     public abstract class SkillTrackItemStyleBase
     {
-        public Label Root { get; protected set; }
+        public VisualElement Root { get; protected set; }
 
         public virtual void SetBGColor(Color color)
         {
