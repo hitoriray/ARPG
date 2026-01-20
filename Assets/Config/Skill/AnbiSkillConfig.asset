@@ -20,6 +20,8 @@ MonoBehaviour:
     - {fileID: 1827226128182048838, guid: 57bedb1c0023c1c4cb6a2ec83ea8cf26, type: 3}
     - {fileID: 1827226128182048838, guid: 10af83b6732f10c43ae89c195365378b, type: 3}
     - {fileID: 1827226128182048838, guid: c0efa37e21f027044a3d824dee7c1d58, type: 3}
+    - {fileID: 8300000, guid: c5212058eaf72594dbb061ac4573773b, type: 3}
+    - {fileID: 8300000, guid: 89ec7c85dcf12f3408fd2d0825ab8101, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -177,13 +179,13 @@ MonoBehaviour:
       Data: "\u97F3\u6548\u8F68\u9053"
     - Name: FrameIndex
       Entry: 3
-      Data: -1
+      Data: 0
     - Name: PlayCount
       Entry: 3
       Data: 0
     - Name: AudioClip
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 4
     - Name: Volume
       Entry: 4
       Data: 0
@@ -195,16 +197,16 @@ MonoBehaviour:
       Data: 10|Config.SkillAudioEvent, Assembly-CSharp
     - Name: TrackName
       Entry: 1
-      Data: "\u97F3\u6548\u8F68\u9053"
+      Data: 22
     - Name: FrameIndex
       Entry: 3
-      Data: -1
+      Data: 19
     - Name: PlayCount
       Entry: 3
       Data: 0
     - Name: AudioClip
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 4
     - Name: Volume
       Entry: 4
       Data: 0
@@ -216,19 +218,19 @@ MonoBehaviour:
       Data: 11|Config.SkillAudioEvent, Assembly-CSharp
     - Name: TrackName
       Entry: 1
-      Data: "\u97F3\u6548\u8F68\u9053"
+      Data: 123
     - Name: FrameIndex
       Entry: 3
-      Data: -1
+      Data: 0
     - Name: PlayCount
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: AudioClip
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 5
     - Name: Volume
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 

@@ -18,19 +18,22 @@ namespace SkillEditor
         private Action addChildTrackAction = null;
         private Func<int, bool> deleteChildTrackFunc = null;
         private Action<int, int> swapChildTrackAction = null;
+        private Action<ChildTrack, string> updateTrackNameAction = null;
         private readonly List<ChildTrack> childTracks = new();
         private VisualElement menuItemParent;
         
         public void Init(VisualElement menuParent, VisualElement contentParent, string title, 
             Action addChildTrackAction, 
             Func<int, bool> deleteChildTrackFunc,
-            Action<int, int> swapChildTrackAction)
+            Action<int, int> swapChildTrackAction,
+            Action<ChildTrack, string> updateTrackNameAction)
         {
             this.menuParent = menuParent;
             this.contentParent = contentParent;
             this.addChildTrackAction = addChildTrackAction;
             this.deleteChildTrackFunc = deleteChildTrackFunc;
             this.swapChildTrackAction = swapChildTrackAction;
+            this.updateTrackNameAction = updateTrackNameAction;
             
             menuRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(MenuAssetPath).Instantiate().Query().ToList()[1];
             menuParent.Add(menuRoot);
@@ -147,7 +150,7 @@ namespace SkillEditor
         public ChildTrack AddChildTrack()
         {
             ChildTrack childTrack = new ChildTrack();
-            childTrack.Init(menuItemParent, contentRoot, childTracks.Count, DeleteChildTrackAndData, DeleteChildTrack);
+            childTrack.Init(menuItemParent, contentRoot, childTracks.Count, DeleteChildTrackAndData, DeleteChildTrack, updateTrackNameAction);
             childTracks.Add(childTrack);
             UpdateSize();
             return childTrack;
@@ -218,6 +221,7 @@ namespace SkillEditor
 
             private Action<ChildTrack> deleteAction;
             private Action<ChildTrack> destroyAction;
+            private Action<ChildTrack, string> updateTrackNameAction;
 
             private int index;
 
@@ -226,18 +230,25 @@ namespace SkillEditor
             
             private VisualElement content;
             
-            public void Init(VisualElement menuParent, VisualElement trackParent, int index, Action<ChildTrack> deleteAction, Action<ChildTrack> destroyAction)
+            public void Init(VisualElement menuParent, VisualElement trackParent, int index, 
+                Action<ChildTrack> deleteAction, 
+                Action<ChildTrack> destroyAction,
+                Action<ChildTrack, string> updateTrackNameAction)
             {
                 this.menuParent = menuParent;
                 this.trackParent = trackParent;
                 this.deleteAction = deleteAction;
                 this.destroyAction = destroyAction;
+                this.updateTrackNameAction = updateTrackNameAction;
                 
                 menuRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ChildMenuItemAssetPath).Instantiate().Query().ToList()[1];
                 menuParent.Add(menuRoot);
                 trackRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ChildTrackContentAssetPath).Instantiate().Query().ToList()[1];
                 trackParent.Add(trackRoot);
+                
                 trackNameField = menuRoot.Q<TextField>("NameField");
+                trackNameField.RegisterCallback<FocusInEvent>(OnTrackNameFieldFocusIn);
+                trackNameField.RegisterCallback<FocusOutEvent>(OnTrackNameFieldFocusOut);
                 
                 Button deleteBtn = menuRoot.Q<Button>("DeleteBtn");
                 deleteBtn.clicked += () => this.deleteAction(this);
@@ -245,6 +256,22 @@ namespace SkillEditor
                 SetIndex(index);
                 Unselect();
             }
+
+            #region TrackNameField
+            private string oldTrackNameFieldValue;
+            private void OnTrackNameFieldFocusIn(FocusInEvent evt)
+            {
+                oldTrackNameFieldValue = trackNameField.value;
+            }
+
+            private void OnTrackNameFieldFocusOut(FocusOutEvent evt)
+            {
+                if (oldTrackNameFieldValue != trackNameField.value)
+                {
+                    updateTrackNameAction?.Invoke(this, trackNameField.value);
+                }
+            }
+            #endregion
 
             public void InitContent(VisualElement content)
             {

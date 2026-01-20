@@ -14,7 +14,7 @@ namespace SkillEditor
         {
             base.Init(menuParent, trackParent, frameWidth);
             trackStyle = new SkillMultiLineTrackStyle();
-            trackStyle.Init(menuParent, trackParent, "音效配置", AddChildTrack, CheckDeleteChildTrack, SwapChildTrack);
+            trackStyle.Init(menuParent, trackParent, "音效配置", AddChildTrack, CheckDeleteChildTrack, SwapChildTrack, UpdateChildTrackName);
             
             ResetView();
         }
@@ -48,9 +48,18 @@ namespace SkillEditor
         }
 
         /// <summary>
+        /// 更新子轨道名称
+        /// </summary>
+        private void UpdateChildTrackName(SkillMultiLineTrackStyle.ChildTrack childTrack, string newName)
+        {
+            // 同步给配置
+            AudioData.FrameData[childTrack.GetIndex()].TrackName = newName;
+            SkillEditorWindow.Instance.SaveSkillConfig();
+        }
+
+        /// <summary>
         /// 新增子轨道
         /// </summary>
-        /// <returns></returns>
         private void AddChildTrack()
         {
             SkillAudioEvent audioEvent = new();
