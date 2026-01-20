@@ -24,9 +24,20 @@ namespace SkillEditor
 
         public void ResetView(float frameUnitWidth, SkillAudioEvent audioEvent)
         {
-            SetTitle(audioEvent.AudioClip.name);
-            SetWidth(frameUnitWidth * audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate);
-            SetPositionX(frameUnitWidth * audioEvent.FrameIndex);
+            if (IsInit == false)
+                return;
+            if (audioEvent.AudioClip != null)
+            {
+                SetTitle(audioEvent.AudioClip.name);
+                SetWidth(frameUnitWidth * audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+                SetPositionX(frameUnitWidth * audioEvent.FrameIndex);
+            }
+            else
+            {
+                SetTitle("");
+                SetWidth(0);
+                SetPositionX(0);
+            }
         }
         
         public void SetTitle(string title)

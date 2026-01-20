@@ -1,7 +1,9 @@
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace SkillEditor
 {
@@ -54,10 +56,15 @@ namespace SkillEditor
             if (currentTrackItem == null)
                 return;
 
-            // TODO: for anim
-            if (currentTrackItem.GetType() == typeof(AnimationTrackItem))
+            // TODO: 补充其他类型
+            Type itemType = currentTrackItem.GetType();
+            if (itemType == typeof(AnimationTrackItem))
             {
                 DrawAnimationTrackItem((AnimationTrackItem)currentTrackItem);
+            }
+            else if (itemType == typeof(AudioTrackItem))
+            {
+                DrawAudioTrackItem((AudioTrackItem)currentTrackItem);
             }
         }
 
@@ -182,7 +189,6 @@ namespace SkillEditor
                 ((AnimationTrackItem)currentTrackItem).AnimationEvent.TransitionTime = transitionField.value;
             }
         }
-
         #endregion
         
         private void OnDeleteBtnClicked()
@@ -190,6 +196,51 @@ namespace SkillEditor
             currentTrack.DeleteTrackItem(trackItemFrameIndex);
             Selection.activeObject = null;
         }
+
+        #endregion
+        
+        #region 音效轨道
+
+        private FloatField volumeField;
+        private void DrawAudioTrackItem(AudioTrackItem audioTrackItem)
+        {
+            // 音效资源
+            ObjectField audioClipAssetField = new ObjectField("音效资源");
+            audioClipAssetField.objectType = typeof(AudioClip);
+            audioClipAssetField.value = audioTrackItem.AudioEvent.AudioClip;
+            audioClipAssetField.RegisterValueChangedCallback(OnAudioClipAssetFieldValueChanged);
+            root.Add(audioClipAssetField);
+            
+            // 音量
+            volumeField = new FloatField("播放音量");
+            volumeField.value = audioTrackItem.AudioEvent.Volume;
+            volumeField.RegisterCallback<FocusInEvent>(OnVolumeFieldFocusIn);
+            volumeField.RegisterCallback<FocusOutEvent>(OnVolumeFieldFocusOut);
+            root.Add(volumeField);
+        }
+
+        private void OnAudioClipAssetFieldValueChanged(ChangeEvent<Object> evt)
+        {
+            var clip = evt.newValue as AudioClip;
+            ((AudioTrackItem)currentTrackItem).AudioEvent.AudioClip = clip;
+            currentTrackItem.ResetView();
+        }
+        
+        #region VolumeField
+        private float oldVolumeValue = 0;
+        private void OnVolumeFieldFocusIn(FocusInEvent evt)
+        {
+            oldVolumeValue = volumeField.value;
+        }
+
+        private void OnVolumeFieldFocusOut(FocusOutEvent evt)
+        {
+            if (volumeField.value != oldVolumeValue)
+            {
+                ((AudioTrackItem)currentTrackItem).AudioEvent.Volume = volumeField.value;
+            }
+        }
+        #endregion
 
         #endregion
     }

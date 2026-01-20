@@ -42,7 +42,7 @@ namespace SkillEditor
         private void CreateAudioTrackItem(SkillAudioEvent audioEvent)
         {
             var item = new AudioTrackItem();
-            item.Init(frameWidth, audioEvent, trackStyle.AddChildTrack());
+            item.Init(this, frameWidth, audioEvent, trackStyle.AddChildTrack());
             item.SetTrackName(audioEvent.TrackName);
             trackItems.Add(item);
         }

@@ -30,8 +30,7 @@ namespace SkillEditor
         public SkillTrackItemStyleBase ItemStyle { get; protected set; }
         protected int frameIndex;
         public int FrameIndex => frameIndex;
-
-
+        
         public override void Select()
         {
             SkillEditorWindow.Instance.ShowTrackItemOnInspector(this, track);

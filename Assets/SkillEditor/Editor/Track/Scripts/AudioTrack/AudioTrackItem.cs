@@ -10,8 +10,10 @@ namespace SkillEditor
         private SkillMultiLineTrackStyle.ChildTrack childTrack;
         private SkillAudioTrackItemStyle audioItemStyle;
         private SkillAudioEvent audioEvent;
-        public void Init(float frameUnitWidth, SkillAudioEvent audioEvent, SkillMultiLineTrackStyle.ChildTrack childTrack)
+        public SkillAudioEvent AudioEvent => audioEvent;
+        public void Init(AudioTrack track, float frameUnitWidth, SkillAudioEvent audioEvent, SkillMultiLineTrackStyle.ChildTrack childTrack)
         {
+            this.track = track;
             this.frameIndex = audioEvent.FrameIndex;
             this.childTrack = childTrack;
             this.audioEvent = audioEvent;
@@ -35,10 +37,8 @@ namespace SkillEditor
                     audioItemStyle.Init(frameUnitWidth, audioEvent, childTrack);
                     BindEvents();
                 }
-                audioItemStyle.ResetView(frameUnitWidth, audioEvent);
             }
-            
-            
+            audioItemStyle.ResetView(frameUnitWidth, audioEvent);
         }
         
         public void Destroy()
@@ -51,7 +51,7 @@ namespace SkillEditor
             childTrack.SetTrackName(trackName);
         }
 
-        #region 鼠标拖拽事件
+        #region 鼠标交互
         private bool mouseDrag = false;
         private float startDragPosX;
         private int startDragFrameIndex;
@@ -157,7 +157,6 @@ namespace SkillEditor
                     // 构建默认的音效数据
                     audioEvent.AudioClip = clip;
                     audioEvent.FrameIndex = selectFrameIndex;
-                    audioEvent.PlayCount = 1;
                     audioEvent.Volume = 1;
                     this.frameIndex = selectFrameIndex;
                     ResetView();
@@ -166,6 +165,5 @@ namespace SkillEditor
             }
         }
         #endregion
-        
     }
 }
