@@ -315,6 +315,12 @@ namespace SkillEditor
                 item.OnConfigChanged();
             }
         }
+
+        public override void Destroy()
+        {
+            trackStyle.Destroy();
+        }
+
         #endregion
     }
 }

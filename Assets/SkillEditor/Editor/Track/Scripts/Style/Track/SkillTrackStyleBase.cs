@@ -25,5 +25,13 @@ namespace SkillEditor
         {
             contentRoot.Remove(ve);
         }
+
+        public virtual void Destroy()
+        {
+            if (menuRoot != null)
+                menuParent.Remove(menuRoot);
+            if (contentRoot != null)
+                contentParent.Remove(contentRoot);
+        }
     }
 }

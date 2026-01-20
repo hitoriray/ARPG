@@ -248,14 +248,17 @@ namespace SkillEditor
             skillConfig = evt.newValue as SkillConfig;
         
             // 重新绘制
-            ResetTrack();
             CurrentSelectFrameIndex = 0;
             if (skillConfig == null)
             {
                 CurrentFrameCount = 100;
-                return;
             }
-            CurrentFrameCount = skillConfig.FrameCount;
+            else
+            {
+                CurrentFrameCount = skillConfig.FrameCount;
+            }
+            
+            ResetTrack();
         }
 
         #endregion
@@ -560,15 +563,36 @@ namespace SkillEditor
 
         private void InitTrack()
         {
+            if (skillConfig == null)
+                return;
             InitAnimationTrack();
         }
 
         private void ResetTrack()
         {
+            // 如果配置文件为空，则清空所有轨道
+            if (skillConfig == null)
+            {
+                DestroyTracks();
+                return;
+            }
+            // 如果轨道列表里没有数据，说明没有轨道，但是当前用户是有配置的，所以需要初始化轨道
+            if (trackItems.Count == 0)
+                InitTrack();
+            // 更新视图
             foreach (var trackItem in trackItems)
             {
                 trackItem.ResetView(skillEditorConfig.currentFrameUnitWidth);
             }
+        }
+
+        private void DestroyTracks()
+        {
+            foreach (var trackItem in trackItems)
+            {
+                trackItem.ResetView(skillEditorConfig.currentFrameUnitWidth);
+            }
+            trackItems.Clear();
         }
 
         private void UpdateContentSize()
