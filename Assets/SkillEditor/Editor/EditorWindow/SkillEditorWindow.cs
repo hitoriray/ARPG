@@ -375,7 +375,7 @@ namespace SkillEditor
         
             UpdateTimerShaftView();
             UpdateContentSize();
-            // TODO: TrackItem.ResetView();
+            ResetTrack();
         }
     
         private void OnTimerShaftMouseDown(MouseDownEvent evt)
@@ -563,9 +563,25 @@ namespace SkillEditor
 
         private void InitTrack()
         {
+            // 如果没有配置，不需要初始化轨道
             if (skillConfig == null)
                 return;
             InitAnimationTrack();
+            InitAudioTrack();
+        }
+        
+        private void InitAnimationTrack()
+        {
+            AnimationTrack animationTrack = new();
+            animationTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            trackItems.Add(animationTrack);
+        }
+
+        private void InitAudioTrack()
+        {
+            AudioTrack audioTrack = new();
+            audioTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            trackItems.Add(audioTrack);
         }
 
         private void ResetTrack()
@@ -590,7 +606,7 @@ namespace SkillEditor
         {
             foreach (var trackItem in trackItems)
             {
-                trackItem.ResetView(skillEditorConfig.currentFrameUnitWidth);
+                trackItem.Destroy();
             }
             trackItems.Clear();
         }
@@ -598,13 +614,6 @@ namespace SkillEditor
         private void UpdateContentSize()
         {
             ContentListView.style.width = skillEditorConfig.currentFrameUnitWidth * CurrentFrameCount;
-        }
-
-        private void InitAnimationTrack()
-        {
-            AnimationTrack animationTrack = new();
-            animationTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
-            trackItems.Add(animationTrack);
         }
 
         public void ShowTrackItemOnInspector(TrackItemBase trackItem, SkillTrackBase track)

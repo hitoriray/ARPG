@@ -9,7 +9,7 @@ namespace SkillEditor
 {
     public class AnimationTrack : SkillTrackBase
     {
-        private SingleLineTrackStyle trackStyle;
+        private SkillSingleLineTrackStyle trackStyle;
         private Dictionary<int, AnimationTrackItem> trackItemDict = new();
 
         public SkillAnimationData AnimationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
@@ -17,7 +17,7 @@ namespace SkillEditor
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
             base.Init(menuParent, trackParent, frameWidth);
-            trackStyle = new SingleLineTrackStyle();
+            trackStyle = new SkillSingleLineTrackStyle();
             trackStyle.Init(menuParent, trackParent, "动画配置");
             trackStyle.contentRoot.RegisterCallback<DragUpdatedEvent>(OnDragUpdate);
             trackStyle.contentRoot.RegisterCallback<DragExitedEvent>(OnDragExited);
