@@ -14,7 +14,7 @@ namespace SkillEditor
         {
             base.Init(menuParent, trackParent, frameWidth);
             trackStyle = new SkillMultiLineTrackStyle();
-            trackStyle.Init(menuParent, trackParent, "音效配置", CheckAddChildTrack, CheckDeleteChildTrack);
+            trackStyle.Init(menuParent, trackParent, "音效配置", AddChildTrack, CheckDeleteChildTrack, SwapChildTrack);
             
             ResetView();
         }
@@ -48,12 +48,15 @@ namespace SkillEditor
         }
 
         /// <summary>
-        /// 检查子轨道能否添加
+        /// 新增子轨道
         /// </summary>
         /// <returns></returns>
-        private bool CheckAddChildTrack()
+        private void AddChildTrack()
         {
-            return true;
+            SkillAudioEvent audioEvent = new();
+            AudioData.FrameData.Add(audioEvent);
+            CreateAudioTrackItem(audioEvent);
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
 
         /// <summary>
@@ -63,7 +66,22 @@ namespace SkillEditor
         /// <returns></returns>
         private bool CheckDeleteChildTrack(int index)
         {
+            if (index < 0 || index >= AudioData.FrameData.Count)
+                return false;
+            if (AudioData.FrameData[index] == null)
+                return false;
+            AudioData.FrameData.RemoveAt(index);
+            SkillEditorWindow.Instance.SaveSkillConfig();
             return true;
+        }
+
+        private void SwapChildTrack(int index1, int index2)
+        {
+            var audioData1 = AudioData.FrameData[index1];
+            var audioData2 = AudioData.FrameData[index2];
+            AudioData.FrameData[index1] = audioData2;
+            AudioData.FrameData[index2] = audioData1;
+            // 保存交给窗口的退出机制
         }
 
         #region 重载方法

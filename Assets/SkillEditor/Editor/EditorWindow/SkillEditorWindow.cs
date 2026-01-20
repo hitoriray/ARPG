@@ -76,7 +76,9 @@ namespace SkillEditor
             SkillConfigObjectField.value = tmpConfig;
         }
 
-        private void OnDestroy()
+        // OnDestroy有一个问题：窗口销毁会调用，但是直接关闭Unity不会调用
+        // 因此改为OnDisable
+        private void OnDisable()
         {
             if (skillConfig != null)
             {

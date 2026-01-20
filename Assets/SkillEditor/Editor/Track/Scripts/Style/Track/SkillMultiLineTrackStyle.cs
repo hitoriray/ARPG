@@ -15,20 +15,22 @@ namespace SkillEditor
         private const float itemHeight = 32f;
         #endregion
         
-
-        private Func<bool> addChildTrackFunc = null;
+        private Action addChildTrackAction = null;
         private Func<int, bool> deleteChildTrackFunc = null;
-        
+        private Action<int, int> swapChildTrackAction = null;
+        private readonly List<ChildTrack> childTracks = new();
         private VisualElement menuItemParent;
         
-        private List<ChildTrack> childTracks = new();
-        
-        public void Init(VisualElement menuParent, VisualElement contentParent, string title, Func<bool> addChildTrackFunc, Func<int, bool> deleteChildTrackFunc)
+        public void Init(VisualElement menuParent, VisualElement contentParent, string title, 
+            Action addChildTrackAction, 
+            Func<int, bool> deleteChildTrackFunc,
+            Action<int, int> swapChildTrackAction)
         {
             this.menuParent = menuParent;
             this.contentParent = contentParent;
-            this.addChildTrackFunc = addChildTrackFunc;
+            this.addChildTrackAction = addChildTrackAction;
             this.deleteChildTrackFunc = deleteChildTrackFunc;
+            this.swapChildTrackAction = swapChildTrackAction;
             
             menuRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(MenuAssetPath).Instantiate().Query().ToList()[1];
             menuParent.Add(menuRoot);
@@ -118,7 +120,8 @@ namespace SkillEditor
             childTracks[index1] = childTrack2;
             childTracks[index2] = childTrack1;
             UpdateChildTracksIndex();
-            // TODO: 上级轨道的实际数据变更
+            // 上级轨道的实际数据变更
+            swapChildTrackAction(index1, index2);
         }
 
         private void UpdateSize()
@@ -135,14 +138,7 @@ namespace SkillEditor
         /// </summary>
         private void OnAddBtnClicked()
         {
-            if (addChildTrackFunc == null)
-                return;
-            
-            // 由上级具体轨道类来判断能不能添加
-            if (addChildTrackFunc())
-            {
-                AddChildTrack();
-            }
+            addChildTrackAction?.Invoke();
         }
 
         /// <summary>
@@ -151,16 +147,16 @@ namespace SkillEditor
         public ChildTrack AddChildTrack()
         {
             ChildTrack childTrack = new ChildTrack();
-            childTrack.Init(menuItemParent, contentRoot, childTracks.Count, OnDeleteBtnClicked);
+            childTrack.Init(menuItemParent, contentRoot, childTracks.Count, DeleteChildTrackAndData, DeleteChildTrack);
             childTracks.Add(childTrack);
             UpdateSize();
             return childTrack;
         }
-        
+
         /// <summary>
-        /// 删除子轨道
+        /// 删除子轨道及其数据
         /// </summary>
-        private void OnDeleteBtnClicked(ChildTrack childTrack)
+        private void DeleteChildTrackAndData(ChildTrack childTrack)
         {
             if (deleteChildTrackFunc == null)
                 return;
@@ -175,6 +171,19 @@ namespace SkillEditor
                 UpdateChildTracksIndex(index);
                 UpdateSize();
             }
+        }
+        
+        /// <summary>
+        /// 删除子轨道（显示层面）
+        /// </summary>
+        private void DeleteChildTrack(ChildTrack childTrack)
+        {
+            int index = childTrack.GetIndex();
+            childTrack.DoDestroy();
+            childTracks.RemoveAt(index);
+            // 所有的子轨道都需要更新一下索引
+            UpdateChildTracksIndex(index);
+            UpdateSize();
         }
 
         /// <summary>
@@ -208,6 +217,7 @@ namespace SkillEditor
             private TextField trackNameField;
 
             private Action<ChildTrack> deleteAction;
+            private Action<ChildTrack> destroyAction;
 
             private int index;
 
@@ -216,11 +226,12 @@ namespace SkillEditor
             
             private VisualElement content;
             
-            public void Init(VisualElement menuParent, VisualElement trackParent, int index, Action<ChildTrack> deleteAction)
+            public void Init(VisualElement menuParent, VisualElement trackParent, int index, Action<ChildTrack> deleteAction, Action<ChildTrack> destroyAction)
             {
                 this.menuParent = menuParent;
                 this.trackParent = trackParent;
                 this.deleteAction = deleteAction;
+                this.destroyAction = destroyAction;
                 
                 menuRoot = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ChildMenuItemAssetPath).Instantiate().Query().ToList()[1];
                 menuParent.Add(menuRoot);
@@ -229,7 +240,7 @@ namespace SkillEditor
                 trackNameField = menuRoot.Q<TextField>("NameField");
                 
                 Button deleteBtn = menuRoot.Q<Button>("DeleteBtn");
-                deleteBtn.clicked += () => deleteAction(this);
+                deleteBtn.clicked += () => this.deleteAction(this);
                 
                 SetIndex(index);
                 Unselect();
@@ -279,7 +290,7 @@ namespace SkillEditor
             
             public void Destroy()
             {
-                deleteAction(this);
+                destroyAction(this);
             }
 
             public void DoDestroy()
