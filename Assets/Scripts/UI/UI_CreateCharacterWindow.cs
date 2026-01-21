@@ -74,6 +74,8 @@ namespace UI
                 { (int)CharacterPartType.Cloth, 0 }
             };
 
+            lastPosX = modelTouchImage.transform.position.x;
+            // 绑定事件
             BindEvents();
 
             // 初始化外观部位按钮
@@ -108,6 +110,7 @@ namespace UI
         {
             // 绑定modelTouchImage的拖拽事件
             modelTouchImage.OnDrag(OnModelTouchImageDrag);
+            modelTouchImage.OnEndDrag(OnModelTouchImageEndDrag);
             // 绑定左右箭头按钮的监听事件
             leftArrowButton.onClick.AddListener(OnLeftArrowBtnClicked);
             rightArrowButton.onClick.AddListener(OnRightArrowBtnClicked);
@@ -130,9 +133,18 @@ namespace UI
         /// <param name="args"></param>
         private void OnModelTouchImageDrag(PointerEventData eventData, object[] args)
         {
+            if (lastPosX == float.MaxValue)
+            {
+                lastPosX = eventData.position.x;
+            }
             float offset = eventData.position.x - lastPosX;
             lastPosX = eventData.position.x;
             CharacterCreator.Instance.RotateCharacter(new Vector3(0, -offset * Time.deltaTime * dragSpeed, 0));
+        }
+
+        private void OnModelTouchImageEndDrag(PointerEventData eventData, object[] args)
+        {
+            lastPosX = float.MaxValue;
         }
 
         private void OnLeftArrowBtnClicked()

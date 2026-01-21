@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Config;
+using Player.Skill;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
@@ -76,6 +77,11 @@ namespace SkillEditor
             SkillConfigObjectField.value = tmpConfig;
         }
 
+        private void OnEnable()
+        {
+            SceneView.beforeSceneGui += OnSceneGUI;
+        }
+
         // OnDestroy有一个问题：窗口销毁会调用，但是直接关闭Unity不会调用
         // 因此改为OnDisable
         private void OnDisable()
@@ -84,6 +90,7 @@ namespace SkillEditor
             {
                 SaveSkillConfig();
             }
+            SceneView.beforeSceneGui -= OnSceneGUI;
         }
 
         #region TopMenu
@@ -243,6 +250,10 @@ namespace SkillEditor
                 currentPreviewCharacterObj = Instantiate(evt.newValue as GameObject, parent);
                 currentPreviewCharacterObj.transform.localRotation = Quaternion.Euler(0, 0, 0);
                 PreviewCharacterObjectField.value = currentPreviewCharacterObj;
+                if (currentPreviewCharacterObj.GetComponent<SkillPlayer>() == null)
+                {
+                    currentPreviewCharacterObj.AddComponent<SkillPlayer>();
+                }
             }
         }
 
@@ -585,6 +596,7 @@ namespace SkillEditor
             InitAnimationTrack();
             InitAudioTrack();
             InitEffectTrack();
+            InitAttackDetectionTrack();
         }
         
         private void InitAnimationTrack()
@@ -607,6 +619,13 @@ namespace SkillEditor
             EffectTrack effectTrack = new();
             effectTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
             trackItems.Add(effectTrack);
+        }
+
+        private void InitAttackDetectionTrack()
+        {
+            AttackDetectionTrack attackDetectionTrack = new();
+            attackDetectionTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            trackItems.Add(attackDetectionTrack);
         }
 
         private void ResetTrack()
@@ -719,6 +738,33 @@ namespace SkillEditor
         private Func<int, bool, Vector3> getPositionForRootMotionAction;
         public Vector3 GetPositionForRootMotion(int frameIndex, bool recover = false) => getPositionForRootMotionAction(frameIndex, recover);
 
+        #endregion
+        
+        #region Gizmo & SceneGUI
+
+        [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected)]
+        private static void DrawGizmos(SkillPlayer skillPlayer, GizmoType gizmoType)
+        {
+            if (Instance == null || Instance.currentPreviewCharacterObj?.GetComponent<SkillPlayer>() != skillPlayer)
+                return;
+
+            foreach (var item in Instance.trackItems)
+            {
+                item.DrawGizmos();
+            }
+        }
+
+        private void OnSceneGUI(SceneView sceneView)
+        {
+            if (currentPreviewCharacterObj == null)
+                return;
+            
+            foreach (var item in Instance.trackItems)
+            {
+                item.OnSceneGUI();
+            }
+        }
+        
         #endregion
     }
 

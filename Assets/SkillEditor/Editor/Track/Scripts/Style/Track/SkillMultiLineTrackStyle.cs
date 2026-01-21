@@ -94,6 +94,11 @@ namespace SkillEditor
         private void OnMenuItemParentMouseUp(MouseUpEvent evt)
         {
             isDragging = false;
+            if (selectTrackIndex != -1)
+            {
+                childTracks[selectTrackIndex].Unselect();
+                selectTrackIndex = -1;
+            }
         }
 
         private void OnMenuItemParentMouseOut(MouseOutEvent evt)
@@ -102,6 +107,11 @@ namespace SkillEditor
             if (menuItemParent.contentRect.Contains(evt.localMousePosition) == false) // 检测鼠标位置是否真的离开范围
             {
                 isDragging = false;
+                if (selectTrackIndex != -1)
+                {
+                    childTracks[selectTrackIndex].Unselect();
+                    selectTrackIndex = -1;
+                }
             }
         }
 

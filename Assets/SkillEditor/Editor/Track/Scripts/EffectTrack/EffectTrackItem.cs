@@ -202,15 +202,9 @@ namespace SkillEditor
                 if (effectPrefabObj == null)
                 {
                     Transform characterRoot = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.transform;
-                    // 获取模拟坐标
-                    Vector3 rootPosition = SkillEditorWindow.Instance.GetPositionForRootMotion(effectEvent.FrameIndex, true);
-                    Vector3 oldPos = characterRoot.position;
                     // 把角色临时设置到播放坐标
-                    characterRoot.position = rootPosition;
                     Vector3 pos = characterRoot.TransformPoint(effectEvent.Position);
                     Vector3 rot = characterRoot.eulerAngles + effectEvent.Rotation;
-                    // 还原坐标
-                    characterRoot.position = oldPos;
                     // 实例化
                     effectPrefabObj = GameObject.Instantiate(effectEvent.Prefab, pos, Quaternion.Euler(rot), EffectTrack.EffectParent);
                     effectPrefabObj.name = effectEvent.Prefab.name;

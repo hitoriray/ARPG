@@ -2416,6 +2416,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1225690905743967572}
   - component: {fileID: 1350554120813909240}
+  - component: {fileID: 2931312227527091582}
+  - component: {fileID: 1938671290649829891}
   m_Layer: 0
   m_Name: AnbiWeapon_CompanyB_Blade_Fire01
   m_TagString: Untagged
@@ -2492,6 +2494,31 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.35164732, y: -0.0024696589, z: 0.0000018663704}
     m_Extent: {x: 0.4784922, y: 0.0368078, z: 0.014033344}
   m_DirtyAABB: 0
+--- !u!65 &2931312227527091582
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4520302079631979457}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.028067052, y: 0.95699, z: 0.07368849}
+  m_Center: {x: 0.0000020178204, y: -0.01717779, z: 0.106367335}
+--- !u!114 &1938671290649829891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4520302079631979457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2845f6bdb8d34ea6a1916639707ffca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4549490710876959037
 GameObject:
   m_ObjectHideFlags: 0
@@ -4760,6 +4787,7 @@ GameObject:
   - component: {fileID: 9199947191751119930}
   - component: {fileID: 9199947191751119929}
   - component: {fileID: 9199947191751119928}
+  - component: {fileID: 2967168895580941586}
   m_Layer: 0
   m_Name: PlayerModel(SkillEditor)
   m_TagString: Untagged
@@ -4840,6 +4868,60 @@ MonoBehaviour:
   partSkinnedMeshRenderers: []
   partMaterials: []
   neckRootTransform: {fileID: 0}
+--- !u!114 &2967168895580941586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8317496414798129508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87171888bab64d74a4a664cb41788cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 1938671290649829891}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: weaponDict
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Player.Skill.SkillWeapon,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u5DE6\u624B\u6B66\u5668"
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &8367043976108584300
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Config;
 using JKFrame;
 using Player.Animation;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Player.Skill
 {
     // 技能播放器
-    public class SkillPlayer : MonoBehaviour
+    public class SkillPlayer : SerializedMonoBehaviour
     {
         private AnimationController animationController;
         
@@ -126,5 +128,12 @@ namespace Player.Skill
             yield return new WaitForSeconds(time);
             obj.JKGameObjectPushPool();
         }
+        
+        #region 武器
+
+        [SerializeField] private Dictionary<string, SkillWeapon> weaponDict = new();
+        public Dictionary<string, SkillWeapon> WeaponDict => weaponDict;
+
+        #endregion
     }
 }

@@ -13,12 +13,10 @@ namespace Config
         [LabelText("帧数上限")] public int FrameCount = 100;
         [LabelText("帧率")] public int FrameRate = 30;
 
-        [NonSerialized, OdinSerialize]
-        public SkillAnimationData SkillAnimationData = new();
-        [NonSerialized, OdinSerialize]
-        public SkillAudioData SkillAudioData = new();
-        [NonSerialized, OdinSerialize]
-        public SkillEffectData SkillEffectData = new();
+        [NonSerialized, OdinSerialize] public SkillAnimationData SkillAnimationData = new();
+        [NonSerialized, OdinSerialize] public SkillAudioData SkillAudioData = new();
+        [NonSerialized, OdinSerialize] public SkillEffectData SkillEffectData = new();
+        [NonSerialized, OdinSerialize] public SkillAttackDetectionData SkillAttackDetectionData = new();
 
 #if UNITY_EDITOR
         private static Action skillConfigValidateAction;

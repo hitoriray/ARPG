@@ -30,5 +30,9 @@ namespace SkillEditor
         public virtual void OnStop() {}
         
         public virtual void Destroy() {}
+
+        public virtual void DrawGizmos() {}
+
+        public virtual void OnSceneGUI() {}
     }
 }

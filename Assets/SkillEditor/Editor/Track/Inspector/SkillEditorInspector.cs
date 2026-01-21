@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Config;
+using Player.Skill;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -12,6 +16,7 @@ namespace SkillEditor
     {
         public static SkillEditorInspector Instance;
         private static TrackItemBase currentTrackItem;
+        public static TrackItemBase CurrentTrackItem => currentTrackItem;
         private static SkillTrackBase currentTrack; 
         public static void SetTrackItem(TrackItemBase trackItem, SkillTrackBase track)
         {
@@ -69,6 +74,10 @@ namespace SkillEditor
             else if (itemType == typeof(EffectTrackItem))
             {
                 DrawEffectTrackItem((EffectTrackItem)currentTrackItem);
+            }
+            else if (itemType == typeof(AttackDetectionTrackItem))
+            {
+                DrawAttackDetectionTrackItem((AttackDetectionTrackItem)currentTrackItem);
             }
         }
 
@@ -373,6 +382,231 @@ namespace SkillEditor
             }
         }
         #endregion
+        
+        #endregion
+        
+        #endregion
+        
+        #region 伤害检测轨道
+
+        private IntegerField durationFrameField;
+        private List<string> detectionTypeList;
+        private void DrawAttackDetectionTrackItem(AttackDetectionTrackItem attackDetectionTrackItem)
+        {
+            // 持续帧数
+            durationFrameField = new IntegerField("持续帧数");
+            durationFrameField.value = attackDetectionTrackItem.AttackDetectionEvent.DurationFrame;
+            durationFrameField.RegisterCallback<FocusInEvent>(OnDurationFrameFieldFocusIn);
+            durationFrameField.RegisterCallback<FocusOutEvent>(OnDurationFrameFieldFocusOut);
+            root.Add(durationFrameField);
+            
+            // 检测类型下拉列表
+            detectionTypeList = new(Enum.GetNames(typeof(AttackDetectionType)));
+            DropdownField detectionDropdownField = new DropdownField("检测类型", detectionTypeList, (int)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType);
+            detectionDropdownField.RegisterValueChangedCallback(OnDetectionDropdownFieldValueChanged);
+            root.Add(detectionDropdownField);
+            
+            // 根据检测类型进行实际的绘制
+            switch (attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType)
+            {
+                case AttackDetectionType.Weapon:
+                    WeaponDetectionData weaponDetectionData = (WeaponDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    DropdownField weaponDetectionDropdownField = new DropdownField("武器选择");
+                    SkillPlayer skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
+                    weaponDetectionDropdownField.choices = skillPlayer.WeaponDict.Keys.ToList();
+                    if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName) &&
+                        skillPlayer.WeaponDict.ContainsKey(weaponDetectionData.WeaponName))
+                    {
+                        weaponDetectionDropdownField.value = weaponDetectionData.WeaponName;
+                    }
+                    weaponDetectionDropdownField.RegisterValueChangedCallback(OnWeaponDetectionDropdownFieldValueChanged);
+                    root.Add(weaponDetectionDropdownField);
+                    break;
+                case AttackDetectionType.Box:
+                    BoxDetectionData boxDetectionData = (BoxDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    Vector3Field boxDetectionPosField = new("位置");
+                    Vector3Field boxDetectionRotField = new("旋转");
+                    Vector3Field boxDetectionScaleField = new("缩放");
+                    boxDetectionPosField.value = boxDetectionData.Position;
+                    boxDetectionRotField.value = boxDetectionData.Rotation;
+                    boxDetectionScaleField.value = boxDetectionData.Scale;
+                    boxDetectionPosField.RegisterValueChangedCallback(OnShapeDetectionPosFieldValueChanged);
+                    boxDetectionRotField.RegisterValueChangedCallback(OnBoxDetectionRotFieldValueChanged);
+                    boxDetectionScaleField.RegisterValueChangedCallback(OnBoxDetectionScaleFieldValueChanged);
+                    root.Add(boxDetectionPosField);
+                    root.Add(boxDetectionRotField);
+                    root.Add(boxDetectionScaleField);
+                    break;
+                case AttackDetectionType.Sphere:
+                    SphereDetectionData sphereDetectionData = (SphereDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    Vector3Field sphereDetectionPosField = new("位置");
+                    FloatField sphereDetectionRadiusField = new("半径");
+                    sphereDetectionPosField.value = sphereDetectionData.Position;
+                    sphereDetectionRadiusField.value = sphereDetectionData.Radius;
+                    sphereDetectionPosField.RegisterValueChangedCallback(OnShapeDetectionPosFieldValueChanged);
+                    sphereDetectionRadiusField.RegisterValueChangedCallback(OnSphereDetectionRadiusFieldValueChanged);
+                    root.Add(sphereDetectionPosField);
+                    root.Add(sphereDetectionRadiusField);
+                    break;
+                case AttackDetectionType.Fan:
+                    FanDetectionData fanDetectionData = (FanDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    Vector3Field fanDetectionPosField = new("位置");
+                    Vector3Field fanDetectionRotField = new("旋转");
+                    FloatField fanDetectionInsideRadiusField = new("内半径");
+                    FloatField fanDetectionRadiusField = new("外半径");
+                    FloatField fanDetectionHeightField = new("高度");
+                    FloatField fanDetectionAngleField = new("角度");
+                    fanDetectionPosField.value = fanDetectionData.Position;
+                    fanDetectionRotField.value = fanDetectionData.Rotation;
+                    fanDetectionInsideRadiusField.value = fanDetectionData.InsideRadius;
+                    fanDetectionRadiusField.value = fanDetectionData.Radius;
+                    fanDetectionHeightField.value = fanDetectionData.Height;
+                    fanDetectionAngleField.value = fanDetectionData.Angle;
+                    fanDetectionPosField.RegisterValueChangedCallback(OnShapeDetectionPosFieldValueChanged);
+                    fanDetectionRotField.RegisterValueChangedCallback(OnFanDetectionRotFieldValueChanged);
+                    fanDetectionInsideRadiusField.RegisterValueChangedCallback(OnFanDetectionInsideRadiusFieldValueChanged);
+                    fanDetectionRadiusField.RegisterValueChangedCallback(OnFanDetectionRadiusFieldValueChanged);
+                    fanDetectionHeightField.RegisterValueChangedCallback(OnFanDetectionHeightFieldValueChanged);
+                    fanDetectionAngleField.RegisterValueChangedCallback(OnFanDetectionAngleFieldValueChanged);
+                    root.Add(fanDetectionPosField);
+                    root.Add(fanDetectionRotField);
+                    root.Add(fanDetectionInsideRadiusField);
+                    root.Add(fanDetectionRadiusField);
+                    root.Add(fanDetectionHeightField);
+                    root.Add(fanDetectionAngleField);
+                    break;
+            }
+        }
+
+
+        #region Common Event
+        private void OnDetectionDropdownFieldValueChanged(ChangeEvent<string> evt)
+        {
+            AttackDetectionTrackItem attackDetectionTrackItem = (AttackDetectionTrackItem)currentTrackItem;
+            attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType = (AttackDetectionType)detectionTypeList.IndexOf(evt.newValue);
+            Show();
+        }
+        
+        #region DurationFrameField
+        private float oldDurationFrameValue = 0;
+        private void OnDurationFrameFieldFocusIn(FocusInEvent evt)
+        {
+            oldDurationFrameValue = durationFrameField.value;
+        }
+
+        private void OnDurationFrameFieldFocusOut(FocusOutEvent evt)
+        {
+            if (durationFrameField.value != oldDurationFrameValue)
+            {
+                ((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.DurationFrame = durationFrameField.value;
+                currentTrackItem.ResetView();
+            }
+        }
+        #endregion
+        #endregion
+        
+        #region Weapon Events
+
+        private void OnWeaponDetectionDropdownFieldValueChanged(ChangeEvent<string> evt)
+        {
+            WeaponDetectionData weaponDetectionData = (WeaponDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            weaponDetectionData.WeaponName = evt.newValue;
+        }
+        
+        #endregion
+        
+        #region Shape Events
+        
+        private void OnShapeDetectionPosFieldValueChanged(ChangeEvent<Vector3> evt)
+        {
+            ShapeDetectionDataBase shapeDetectionData = (ShapeDetectionDataBase)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            shapeDetectionData.Position = evt.newValue;
+        }
+        
+        #endregion
+
+        #region Box Events
+
+        private void OnBoxDetectionRotFieldValueChanged(ChangeEvent<Vector3> evt)
+        {
+            BoxDetectionData boxDetectionData = (BoxDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            boxDetectionData.Rotation = evt.newValue;
+        }
+
+        private void OnBoxDetectionScaleFieldValueChanged(ChangeEvent<Vector3> evt)
+        {
+            BoxDetectionData boxDetectionData = (BoxDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            boxDetectionData.Scale = evt.newValue;
+        }
+
+        #endregion
+        
+        #region Sphere Events
+        
+        private void OnSphereDetectionRadiusFieldValueChanged(ChangeEvent<float> evt)
+        {
+            SphereDetectionData sphereDetectionData = (SphereDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            sphereDetectionData.Radius = evt.newValue;
+        }
+        
+        #endregion
+
+        #region Fan Events
+        
+        private void OnFanDetectionRotFieldValueChanged(ChangeEvent<Vector3> evt)
+        {
+            FanDetectionData fanDetectionData = (FanDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            fanDetectionData.Rotation = evt.newValue;
+        }
+        
+        private void OnFanDetectionInsideRadiusFieldValueChanged(ChangeEvent<float> evt)
+        {
+            FanDetectionData fanDetectionData = (FanDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            fanDetectionData.InsideRadius = evt.newValue;
+            if (fanDetectionData.Radius <= fanDetectionData.InsideRadius)
+            {
+                fanDetectionData.InsideRadius =  fanDetectionData.Radius - 0.01f;
+                Show();
+            }
+        }
+
+        private void OnFanDetectionRadiusFieldValueChanged(ChangeEvent<float> evt)
+        {
+            FanDetectionData fanDetectionData = (FanDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            fanDetectionData.Radius = evt.newValue;
+            if (fanDetectionData.Radius <= fanDetectionData.InsideRadius)
+            {
+                fanDetectionData.InsideRadius =  fanDetectionData.Radius - 0.01f;
+                Show();
+            }
+        }
+
+        private void OnFanDetectionHeightFieldValueChanged(ChangeEvent<float> evt)
+        {
+            FanDetectionData fanDetectionData = (FanDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            fanDetectionData.Height = evt.newValue;
+            if (fanDetectionData.Height <= 0)
+            {
+                fanDetectionData.Height = 0.01f;
+                Show();
+            }
+        }
+
+        private void OnFanDetectionAngleFieldValueChanged(ChangeEvent<float> evt)
+        {
+            FanDetectionData fanDetectionData = (FanDetectionData)((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.AttackDetectionData;
+            fanDetectionData.Angle = evt.newValue;
+            if (fanDetectionData.Angle < 0)
+            {
+                fanDetectionData.Angle = 0.1f;
+                Show();
+            }
+            else if (fanDetectionData.Angle > 360)
+            {
+                fanDetectionData.Angle = 360f;
+                Show();
+            }
+        }
         
         #endregion
         
