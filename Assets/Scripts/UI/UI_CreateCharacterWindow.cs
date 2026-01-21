@@ -384,7 +384,7 @@ namespace UI
             // 说明职业有效
             part2ConfigDict[(int)currentPartType] = currentIndex;
             SetCharacterPart(currentPartType, currentPartConfigIds[currentIndex], updateUI, true);
-            AudioManager.Instance.PlayOnShot(arrowAudioClip, Vector3.zero, 1, false);
+            AudioManager.Instance.PlayOneShot(arrowAudioClip, Vector3.zero, 1, false);
         }
         #endregion
 

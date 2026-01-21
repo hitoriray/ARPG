@@ -90,7 +90,7 @@ namespace Player.State
         private void OnFootStep()
         {
             int randomIndex = UnityEngine.Random.Range(0, PlayerController.CharacterConfig.FootStepAudioClips.Length);
-            AudioManager.Instance.PlayOnShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, 1f);
+            AudioManager.Instance.PlayOneShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, 1f);
         }
     }
 }

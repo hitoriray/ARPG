@@ -1,5 +1,6 @@
 ﻿using System;
 using Config;
+using JKFrame;
 using Player.Animation;
 using UnityEngine;
 
@@ -81,6 +82,15 @@ namespace Player.Skill
                 else
                 {
                     animationController.ClearRootMotionAction();
+                }
+            }
+            // 驱动音效
+            foreach (var audioEvent in skillConfig.SkillAudioData.FrameData)
+            {
+                if (audioEvent.AudioClip != null && audioEvent.FrameIndex == currentFrameIndex)
+                {
+                    // 播放音效，从头播放
+                    AudioManager.Instance.PlayOneShot(audioEvent.AudioClip, transform.position, audioEvent.Volume);
                 }
             }
         }

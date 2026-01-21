@@ -98,6 +98,48 @@ namespace SkillEditor
         {
             trackStyle.Destroy();
         }
+
+        public override void OnPlay(int startFrameIndex)
+        {
+            foreach (var audioEvent in AudioData.FrameData)
+            {
+                if (audioEvent.AudioClip == null)
+                    continue;
+                
+                // 1.开始帧在左边 && 长度大于当前选中帧 = 时间轴播放帧在轨道中间部分
+                float audioFrameCount = audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate;
+                int audioLastFrameCount =
+                    (int)(audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate) + audioEvent.FrameIndex;
+                if (audioEvent.FrameIndex < startFrameIndex && audioLastFrameCount > startFrameIndex)
+                {
+                    // 按比例播放音效
+                    int offset = startFrameIndex - audioEvent.FrameIndex;
+                    float playRate = offset / audioFrameCount;
+                    EditorAudioUtility.PlayAudio(audioEvent.AudioClip, playRate);
+                }
+                else if (audioEvent.FrameIndex == startFrameIndex)
+                {
+                    // 播放音效，从头播放
+                    EditorAudioUtility.PlayAudio(audioEvent.AudioClip, 0);
+                }
+            }
+        }
+
+        public override void TickView(int frameIndex)
+        {
+            if (SkillEditorWindow.Instance.IsPlaying)
+            {
+                foreach (var audioEvent in AudioData.FrameData)
+                {
+                    if (audioEvent.AudioClip != null && audioEvent.FrameIndex == frameIndex)
+                    {
+                        // 播放音效，从头播放
+                        EditorAudioUtility.PlayAudio(audioEvent.AudioClip, 0);
+                    }
+                }
+            }
+        }
+        
         #endregion
     }
 }

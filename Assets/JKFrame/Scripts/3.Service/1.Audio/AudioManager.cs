@@ -261,7 +261,7 @@ namespace JKFrame
         /// <param name="is3d">是否3D</param>
         /// <param name="callBack">回调函数-在音乐播放完成后执行</param>
         /// <param name="callBacKTime">回调函数在音乐播放完成后执行的延迟时间</param>
-        public void PlayOnShot(AudioClip clip, Component component, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
+        public void PlayOneShot(AudioClip clip, Component component, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
         {
             // 初始化音乐播放器
             AudioSource audioSource = GetAudioPlay(is3d);
@@ -284,7 +284,7 @@ namespace JKFrame
         /// <param name="is3d">是否3D</param>
         /// <param name="callBack">回调函数-在音乐播放完成后执行</param>
         /// <param name="callBacKTime">回调函数在音乐播放完成后执行的延迟时间</param>
-        public void PlayOnShot(AudioClip clip, Vector3 position, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
+        public void PlayOneShot(AudioClip clip, Vector3 position, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
         {
             // 初始化音乐播放器
             AudioSource audioSource = GetAudioPlay(is3d);
@@ -305,10 +305,10 @@ namespace JKFrame
         /// <param name="is3d">是否3D</param>
         /// <param name="callBack">回调函数-在音乐播放完成后执行</param>
         /// <param name="callBacKTime">回调函数在音乐播放完成后执行的延迟时间</param>
-        public void PlayOnShot(string clipAssetName, Component component, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
+        public void PlayOneShot(string clipAssetName, Component component, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
         {
             AudioClip audioClip = ResManager.LoadAsset<AudioClip>(clipAssetName);
-            if (audioClip != null) PlayOnShot(audioClip, component, volumeScale, is3d, callBack, callBacKTime);
+            if (audioClip != null) PlayOneShot(audioClip, component, volumeScale, is3d, callBack, callBacKTime);
         }
 
         /// <summary>
@@ -320,10 +320,10 @@ namespace JKFrame
         /// <param name="is3d">是否3D</param>
         /// <param name="callBack">回调函数-在音乐播放完成后执行</param>
         /// <param name="callBacKTime">回调函数在音乐播放完成后执行的延迟时间</param>
-        public void PlayOnShot(string clipAssetName, Vector3 position, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
+        public void PlayOneShot(string clipAssetName, Vector3 position, float volumeScale = 1, bool is3d = true, UnityAction callBack = null, float callBacKTime = 0)
         {
             AudioClip audioClip = ResManager.LoadAsset<AudioClip>(clipAssetName);
-            if (audioClip != null) PlayOnShot(audioClip, position, volumeScale, is3d, callBack, callBacKTime);
+            if (audioClip != null) PlayOneShot(audioClip, position, volumeScale, is3d, callBack, callBacKTime);
         }
         #endregion
     }

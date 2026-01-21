@@ -25,7 +25,9 @@ namespace SkillEditor
 
         public virtual void OnConfigChanged() {}
 
+        public virtual void OnPlay(int startFrameIndex) {}
         public virtual void TickView(int frameIndex) {}
+        public virtual void OnStop() {}
         
         public virtual void Destroy() {}
     }

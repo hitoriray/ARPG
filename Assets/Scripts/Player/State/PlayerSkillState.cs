@@ -29,7 +29,7 @@ namespace Player.State
 
         private void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
-            deltaPos.y -= 9.8f * Time.deltaTime; // 这个不一定是-9.8，主要还是看技能的情况
+            // deltaPos.y -= 9.8f * Time.deltaTime; // 这个不一定是-9.8，主要还是看技能的情况
             characterController.Move(deltaPos);
             PlayerController.transform.rotation *= deltaRot;
         }

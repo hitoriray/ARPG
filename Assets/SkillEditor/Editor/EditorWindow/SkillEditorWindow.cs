@@ -145,7 +145,7 @@ namespace SkillEditor
             PreviewCharacterPrefabObjectField.style.alignItems = new StyleEnum<Align>(Align.Center);
             topMenu.Add(PreviewCharacterPrefabObjectField);
 
-            PreviewCharacterObjectField = new ObjectField("演示角色")
+            PreviewCharacterObjectField = new ObjectField("演示角色物体")
             {
                 objectType = typeof(GameObject),
                 allowSceneObjects = true,
@@ -277,13 +277,18 @@ namespace SkillEditor
             get => currentSelectFrameIndex;
             set
             {
+                int oldValue = currentSelectFrameIndex;
                 // 如果超出范围，更新最大帧
                 if (value > CurrentFrameCount)
                     CurrentFrameCount = value;
                 currentSelectFrameIndex = Mathf.Clamp(value, 0, CurrentFrameCount);
                 CurrentFrameField.value = currentSelectFrameIndex;
-                UpdateTimerShaftView();
-                TickSkill();
+                // 避免重复调用
+                if (oldValue != currentSelectFrameIndex)
+                {
+                    UpdateTimerShaftView();
+                    TickSkill();
+                }
             }
         }
 
@@ -640,6 +645,20 @@ namespace SkillEditor
                 {
                     startTime = DateTime.Now;
                     startFrameIndex = currentSelectFrameIndex;
+                    
+                    // OnPlay
+                    foreach (var trackItem in trackItems)
+                    {
+                        trackItem.OnPlay(currentSelectFrameIndex);
+                    }
+                }
+                else
+                {
+                    // OnStop
+                    foreach (var trackItem in trackItems)
+                    {
+                        trackItem.OnStop();
+                    }
                 }
             }
         }
