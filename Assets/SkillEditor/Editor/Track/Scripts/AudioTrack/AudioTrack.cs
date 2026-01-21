@@ -80,6 +80,7 @@ namespace SkillEditor
             if (AudioData.FrameData[index] == null)
                 return false;
             AudioData.FrameData.RemoveAt(index);
+            trackItems.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
             return true;
         }

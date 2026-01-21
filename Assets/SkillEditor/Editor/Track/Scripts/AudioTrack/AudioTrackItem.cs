@@ -87,8 +87,8 @@ namespace SkillEditor
                 // 确定修改数据
                 frameIndex = targetFrameIndex;
                 audioEvent.FrameIndex = frameIndex;
-                // 如果超出右侧边界，则拓展边界
-                CheckFrameCount();
+                // 如果超出右侧边界，则拓展边界（音效感觉没必要自动拓展边界）
+                // CheckFrameCount();
                 // 刷新视图
                 ResetView(frameUnitWidth);
             }
@@ -117,9 +117,8 @@ namespace SkillEditor
             if (startDragFrameIndex == frameIndex)
                 return;
             
-            // audioEvent.FrameIndex = frameIndex;
-            // TODO: Inspector数据刷新
-            // SkillEditorInspector.Instance.SetTrackItemFrameIndex(frameIndex);
+            audioEvent.FrameIndex = frameIndex;
+            SkillEditorInspector.Instance.SetTrackItemFrameIndex(frameIndex);
         }
 
         public void CheckFrameCount()

@@ -55,6 +55,7 @@ namespace SkillEditor
                 overLinePos.x = animationClipFrameCount * frameUnitWidth - 1;
                 animationItemStyle.AnimationOverLine.transform.position = overLinePos;
             }
+            track.TickView(SkillEditorWindow.Instance.CurrentSelectFrameIndex);
         }
 
         #region 鼠标拖拽事件
@@ -105,8 +106,8 @@ namespace SkillEditor
                 {
                     // 确定修改数据
                     frameIndex = targetFrameIndex;
-                    // 如果超出右侧边界，则拓展边界（音效感觉没必要自动拓展边界）
-                    // CheckFrameCount();
+                    // 如果超出右侧边界，则拓展边界
+                    CheckFrameCount();
                     // 刷新视图
                     ResetView(frameUnitWidth);
                 }

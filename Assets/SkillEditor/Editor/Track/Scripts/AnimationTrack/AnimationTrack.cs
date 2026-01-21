@@ -157,6 +157,7 @@ namespace SkillEditor
         /// </summary>
         /// <param name="oldIndex"></param>
         /// <param name="newIndex"></param>
+        
         public void SetFrameIndex(int oldIndex, int newIndex)
         {
             if (AnimationData.FrameEventDict.Remove(oldIndex, out var animationEvent))
@@ -164,18 +165,32 @@ namespace SkillEditor
                 AnimationData.FrameEventDict.Add(newIndex, animationEvent);
                 trackItemDict.Remove(oldIndex, out var animationTrackItem);
                 trackItemDict.Add(newIndex, animationTrackItem);
-                SkillEditorWindow.Instance.SaveSkillConfig();
             }
         }
 
         public override void TickView(int frameIndex)
         {
             GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
+            if (previewGameObject != null)
+            {
+                // 更新姿态
+                // UpdateGesture(frameIndex);
+                previewGameObject.transform.position = GetPositionForRootMotion(frameIndex);
+            }
+        }
+
+        /// <summary>
+        /// 获取根运动的位置
+        /// </summary>
+        /// <param name="frameIndex">当前帧</param>
+        /// <param name="recover">是否需要恢复</param>
+        /// <returns></returns>
+        public Vector3 GetPositionForRootMotion(int frameIndex, bool recover = false)
+        {
+            GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
             Animator animator = previewGameObject.GetComponent<Animator>();
             var frameData = AnimationData.FrameEventDict;
             
-            #region 关于根运动的计算
-
             SortedDictionary<int, SkillAnimationEvent> sortedFrameData = new(frameData);
             int[] keys = sortedFrameData.Keys.ToArray();
             Vector3 rootMotionTotalPos = Vector3.zero;
@@ -259,10 +274,23 @@ namespace SkillEditor
 
                 if (isBreak) break;
             }
+
+            if (recover)
+            {
+                UpdateGesture(SkillEditorWindow.Instance.CurrentSelectFrameIndex);
+            }
+            return rootMotionTotalPos;
+        }
+
+        /// <summary>
+        /// 更新姿态
+        /// </summary>
+        private void UpdateGesture(int frameIndex)
+        {
+            GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
+            Animator animator = previewGameObject.GetComponent<Animator>();
+            var frameData = AnimationData.FrameEventDict;
             
-            #endregion
-            
-            #region 关于当前帧的姿态
             // 找到距离这一帧左边最近的一个动画，也就是当前要播放的动画
             int currentOffset = int.MaxValue;
             int animationEventIndex = -1;
@@ -292,9 +320,6 @@ namespace SkillEditor
 
             animator.applyRootMotion = animationEvent.ApplyRootMotion;
             animationEvent.AnimationClip.SampleAnimation(previewGameObject, progress * animationEvent.AnimationClip.length);
-            #endregion
-
-            previewGameObject.transform.position = rootMotionTotalPos;
         }
 
         #region 重载方法
@@ -305,7 +330,6 @@ namespace SkillEditor
             {
                 trackStyle.RemoveItem(animationTrackItem.ItemStyle.Root);
             }
-            SkillEditorWindow.Instance.SaveSkillConfig();
         }
 
         public override void OnConfigChanged()

@@ -170,6 +170,15 @@ namespace SkillEditor
             topMenu.Add(SkillConfigObjectField);
         }
 
+        public bool IsInEditorScene
+        {
+            get
+            {
+                string currentScenePath = EditorSceneManager.GetActiveScene().path;
+                return currentScenePath == skillEditorScenePath;
+            }
+        }
+
         /// <summary>
         /// 加载编辑器场景
         /// </summary>
@@ -272,10 +281,10 @@ namespace SkillEditor
         private VisualElement contentContainer;
         private VisualElement contentViewport;
         private int currentSelectFrameIndex = -1;
-        private int CurrentSelectFrameIndex
+        public int CurrentSelectFrameIndex
         {
             get => currentSelectFrameIndex;
-            set
+            private set
             {
                 int oldValue = currentSelectFrameIndex;
                 // 如果超出范围，更新最大帧
@@ -575,6 +584,7 @@ namespace SkillEditor
                 return;
             InitAnimationTrack();
             InitAudioTrack();
+            InitEffectTrack();
         }
         
         private void InitAnimationTrack()
@@ -582,6 +592,7 @@ namespace SkillEditor
             AnimationTrack animationTrack = new();
             animationTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
             trackItems.Add(animationTrack);
+            getPositionForRootMotionAction = animationTrack.GetPositionForRootMotion;
         }
 
         private void InitAudioTrack()
@@ -589,6 +600,13 @@ namespace SkillEditor
             AudioTrack audioTrack = new();
             audioTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
             trackItems.Add(audioTrack);
+        }
+        
+        private void InitEffectTrack()
+        {
+            EffectTrack effectTrack = new();
+            effectTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            trackItems.Add(effectTrack);
         }
 
         private void ResetTrack()
@@ -697,6 +715,9 @@ namespace SkillEditor
                 }
             }
         }
+
+        private Func<int, bool, Vector3> getPositionForRootMotionAction;
+        public Vector3 GetPositionForRootMotion(int frameIndex, bool recover = false) => getPositionForRootMotionAction(frameIndex, recover);
 
         #endregion
     }

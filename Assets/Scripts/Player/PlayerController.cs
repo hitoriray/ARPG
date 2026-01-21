@@ -36,7 +36,7 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(DataManager.CustomCharacterData);
             
-            skillPlayer.Init(playerView?.AnimationController);
+            skillPlayer.Init(playerView?.AnimationController, ModelTransform);
             
             // 初始化状态机
             stateMachine = PoolManager.Instance.GetObject<StateMachine>();

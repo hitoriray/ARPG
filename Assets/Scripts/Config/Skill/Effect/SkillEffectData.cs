@@ -4,12 +4,12 @@ using Sirenix.Serialization;
 
 namespace Config
 {
-    public class SkillAudioData
+    public class SkillEffectData
     {
         /// <summary>
-        /// 音效事件
+        /// 特效事件
         /// </summary>
         [NonSerialized, OdinSerialize]
-        public List<SkillAudioEvent> FrameData = new();
+        public List<SkillEffectEvent> FrameData = new();
     }
 }

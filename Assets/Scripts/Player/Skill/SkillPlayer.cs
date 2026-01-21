@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Config;
 using JKFrame;
 using Player.Animation;
@@ -18,9 +19,12 @@ namespace Player.Skill
         private bool isPlaying = false;
         public bool IsPlaying => isPlaying;
 
-        public void Init(AnimationController animationController)
+        private Transform modelTransform;
+
+        public void Init(AnimationController animationController, Transform modelTransform)
         {
             this.animationController = animationController;
+            this.modelTransform = modelTransform;
         }
         
         private Action skillEndAction;
@@ -93,6 +97,34 @@ namespace Player.Skill
                     AudioManager.Instance.PlayOneShot(audioEvent.AudioClip, transform.position, audioEvent.Volume);
                 }
             }
+            // 驱动特效
+            foreach (var effectEvent in skillConfig.SkillEffectData.FrameData)
+            {
+                if (effectEvent.Prefab != null && effectEvent.FrameIndex == currentFrameIndex)
+                {
+                    // 实例化特效
+                    var effectObj = PoolManager.Instance.GetGameObject(effectEvent.Prefab.name);
+                    if (effectObj != null)
+                    {
+                        effectObj = GameObject.Instantiate(effectEvent.Prefab);
+                        effectObj.name = effectEvent.Prefab.name;
+                    }
+
+                    effectObj.transform.position = modelTransform.TransformPoint(effectEvent.Position);
+                    effectObj.transform.rotation = Quaternion.Euler(modelTransform.eulerAngles + effectEvent.Rotation);
+                    effectObj.transform.localScale = effectEvent.Scale;
+                    if (effectEvent.AutoDestroy)
+                    {
+                        StartCoroutine(AutoDestructEffectGameObject(effectEvent.Duration, effectObj));
+                    }
+                }
+            }
+        }
+
+        private IEnumerator AutoDestructEffectGameObject(float time, GameObject obj)
+        {
+            yield return new WaitForSeconds(time);
+            obj.JKGameObjectPushPool();
         }
     }
 }

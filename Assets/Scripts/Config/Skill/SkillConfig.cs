@@ -17,6 +17,8 @@ namespace Config
         public SkillAnimationData SkillAnimationData = new();
         [NonSerialized, OdinSerialize]
         public SkillAudioData SkillAudioData = new();
+        [NonSerialized, OdinSerialize]
+        public SkillEffectData SkillEffectData = new();
 
 #if UNITY_EDITOR
         private static Action skillConfigValidateAction;
