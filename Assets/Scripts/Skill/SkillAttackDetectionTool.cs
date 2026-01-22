@@ -22,29 +22,26 @@ namespace Skill
             }
         }
 
-        public static Collider[] BoxDetection(Transform modelTransform, BoxDetectionData detectionData, LayerMask detectionLayer)
+        public static Collider[] BoxDetection(Transform modelTransform, BoxDetectionData data, LayerMask detectionLayer)
         {
             ClearDetectionResults();
-            Physics.OverlapBoxNonAlloc(modelTransform.position + detectionData.Position, detectionData.Scale / 2, detectionResults,
-                modelTransform.rotation * Quaternion.Euler(detectionData.Rotation), detectionLayer);
+            Physics.OverlapBoxNonAlloc(modelTransform.TransformPoint(data.Position), data.Scale / 2, detectionResults,
+                modelTransform.rotation * Quaternion.Euler(data.Rotation), detectionLayer);
             return detectionResults;
         }
         
-        public static Collider[] SphereDetection(Transform modelTransform, SphereDetectionData detectionData, LayerMask detectionLayer)
+        public static Collider[] SphereDetection(Transform modelTransform, SphereDetectionData data, LayerMask detectionLayer)
         {
             ClearDetectionResults();
-            Physics.OverlapSphereNonAlloc(modelTransform.position + detectionData.Position, detectionData.Radius, detectionResults, detectionLayer);
+            Physics.OverlapSphereNonAlloc(modelTransform.TransformPoint(data.Position), data.Radius, detectionResults, detectionLayer);
             return detectionResults;
         }
         
         public static Collider[] FanDetection(Transform modelTransform, FanDetectionData data, LayerMask detectionLayer)
         {
             ClearDetectionResults();
-            Vector3 size = new Vector3();
-            size.x = data.Radius * 2;
-            size.z = size.x;
-            size.y = data.Height;
-            Vector3 fanPos = modelTransform.position + data.Position;
+            Vector3 size = new(data.Radius * 2, data.Height, data.Radius * 2);
+            Vector3 fanPos = modelTransform.TransformPoint(data.Position);
             Physics.OverlapBoxNonAlloc(fanPos, size / 2, detectionResults,
                 modelTransform.rotation * Quaternion.Euler(data.Rotation), detectionLayer);
 

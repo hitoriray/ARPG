@@ -16,6 +16,6 @@ namespace Config
         /// </summary>
         [NonSerialized, OdinSerialize]
         [DictionaryDrawerSettings(KeyLabel = "帧数", ValueLabel = "动画事件")]
-        public Dictionary<int, SkillAnimationEvent> FrameEventDict = new();
+        public Dictionary<int, SkillAnimationEvent> FrameData = new();
     }
 }

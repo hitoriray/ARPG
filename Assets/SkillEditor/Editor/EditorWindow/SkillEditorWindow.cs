@@ -26,7 +26,7 @@ namespace SkillEditor
 
         public void CreateGUI()
         {
-            SkillConfig.SetSkillConfigValidateAction(ResetView);
+            SkillClip.SetSkillClipValidateAction(ResetView);
             
             Instance = this;
             
@@ -44,10 +44,10 @@ namespace SkillEditor
             InitConsole();
             InitContent();
 
-            if (skillConfig != null)
+            if (skillClip != null)
             {
-                SkillConfigObjectField.value = skillConfig;
-                CurrentFrameCount = skillConfig.FrameCount;
+                SkillConfigObjectField.value = skillClip;
+                CurrentFrameCount = skillClip.FrameCount;
             }
             else
             {
@@ -72,7 +72,7 @@ namespace SkillEditor
             // ResetTrackData();
             // UpdateContentSize();
             // ResetTrack();
-            var tmpConfig = skillConfig;
+            var tmpConfig = skillClip;
             SkillConfigObjectField.value = null;
             SkillConfigObjectField.value = tmpConfig;
         }
@@ -86,7 +86,7 @@ namespace SkillEditor
         // 因此改为OnDisable
         private void OnDisable()
         {
-            if (skillConfig != null)
+            if (skillClip != null)
             {
                 SaveSkillConfig();
             }
@@ -115,20 +115,6 @@ namespace SkillEditor
             InitTopMenuObjectFields();
 
             BindTopMenuEvents();
-        }
-
-        private void BindTopMenuEvents()
-        {
-            LoadEditorSceneBtn = root.Q<Button>(nameof(LoadEditorSceneBtn));
-            LoadEditorSceneBtn.clicked += OnLoadEditorSceneBtnClicked;
-            LoadOldSceneBtn = root.Q<Button>(nameof(LoadOldSceneBtn));
-            LoadOldSceneBtn.clicked += OnLoadOldSceneBtnClicked;
-            SkillBasicBtn = root.Q<Button>(nameof(SkillBasicBtn));
-            SkillBasicBtn.clicked += OnSkillBasicBtnClicked;
-
-            PreviewCharacterPrefabObjectField.RegisterValueChangedCallback(OnPreviewCharacterPrefabObjectValueChanged);
-            PreviewCharacterObjectField.RegisterValueChangedCallback(OnPreviewCharacterObjectValueChanged);
-            SkillConfigObjectField.RegisterValueChangedCallback(OnSkillConfigValueChanged);
         }
 
         private void InitTopMenuObjectFields()
@@ -166,7 +152,7 @@ namespace SkillEditor
             
             SkillConfigObjectField = new ObjectField("技能配置文件")
             {
-                objectType = typeof(SkillConfig),
+                objectType = typeof(SkillClip),
                 allowSceneObjects = true,
             };
             SkillConfigObjectField.AddToClassList("compact-object-field");
@@ -175,6 +161,20 @@ namespace SkillEditor
             SkillConfigObjectField.style.minWidth = 0;
             SkillConfigObjectField.style.alignItems = new StyleEnum<Align>(Align.Center);
             topMenu.Add(SkillConfigObjectField);
+        }
+        
+        private void BindTopMenuEvents()
+        {
+            LoadEditorSceneBtn = root.Q<Button>(nameof(LoadEditorSceneBtn));
+            LoadEditorSceneBtn.clicked += OnLoadEditorSceneBtnClicked;
+            LoadOldSceneBtn = root.Q<Button>(nameof(LoadOldSceneBtn));
+            LoadOldSceneBtn.clicked += OnLoadOldSceneBtnClicked;
+            SkillBasicBtn = root.Q<Button>(nameof(SkillBasicBtn));
+            SkillBasicBtn.clicked += OnSkillBasicBtnClicked;
+
+            PreviewCharacterPrefabObjectField.RegisterValueChangedCallback(OnPreviewCharacterPrefabObjectValueChanged);
+            PreviewCharacterObjectField.RegisterValueChangedCallback(OnPreviewCharacterObjectValueChanged);
+            SkillConfigObjectField.RegisterValueChangedCallback(OnSkillConfigValueChanged);
         }
 
         public bool IsInEditorScene
@@ -213,9 +213,9 @@ namespace SkillEditor
         // 加载技能基本信息
         private void OnSkillBasicBtnClicked()
         {
-            if (skillConfig != null)
+            if (skillClip != null)
             {
-                Selection.activeObject = skillConfig;
+                Selection.activeObject = skillClip;
             }
         }
 
@@ -267,17 +267,17 @@ namespace SkillEditor
         /// </summary>
         private void OnSkillConfigValueChanged(ChangeEvent<Object> evt)
         {
-            skillConfig = evt.newValue as SkillConfig;
+            skillClip = evt.newValue as SkillClip;
         
             // 重新绘制
             CurrentSelectFrameIndex = 0;
-            if (skillConfig == null)
+            if (skillClip == null)
             {
                 CurrentFrameCount = 100;
             }
             else
             {
-                CurrentFrameCount = skillConfig.FrameCount;
+                CurrentFrameCount = skillClip.FrameCount;
             }
             
             ResetTrack();
@@ -322,9 +322,9 @@ namespace SkillEditor
                 currentFrameCount = value;
                 FrameCountField.value = currentFrameCount;
                 // 同步给SkillConfig
-                if (skillConfig != null)
+                if (skillClip != null)
                 {
-                    skillConfig.FrameCount = currentFrameCount;
+                    skillClip.FrameCount = currentFrameCount;
                 }
             
                 // Content size change
@@ -435,7 +435,7 @@ namespace SkillEditor
             isTimerShaftMouseEnter = false;
         }
 
-        private int GetFrameIndexByMousePos(float x)
+        public int GetFrameIndexByMousePos(float x)
         {
             return GetFrameIndexByPos(x + ContentOffsetPosX);
         }
@@ -539,16 +539,16 @@ namespace SkillEditor
 
         #region Config
 
-        private SkillConfig skillConfig;
-        public SkillConfig SkillConfig => skillConfig;
+        private SkillClip skillClip;
+        public SkillClip SkillClip => skillClip;
         private SkillEditorConfig skillEditorConfig = new();
 
         public void SaveSkillConfig()
         {
-            if (skillConfig != null)
+            if (skillClip != null)
             {
-                EditorUtility.SetDirty(skillConfig);
-                AssetDatabase.SaveAssetIfDirty(skillConfig);
+                EditorUtility.SetDirty(skillClip);
+                AssetDatabase.SaveAssetIfDirty(skillClip);
                 ResetTrackData();
             }
         }
@@ -556,9 +556,9 @@ namespace SkillEditor
         private void ResetTrackData()
         {
             // 重新引用一下数据
-            for (int i = 0; i < trackItems.Count; i++)
+            for (int i = 0; i < trackItemList.Count; i++)
             {
-                trackItems[i].OnConfigChanged();
+                trackItemList[i].OnConfigChanged();
             }
         }
 
@@ -568,32 +568,34 @@ namespace SkillEditor
 
         private VisualElement TrackMenuParent;
         private VisualElement ContentListView;
-        private ScrollView MainContentView;
-        private List<SkillTrackBase> trackItems = new();
+        private readonly List<SkillTrackBase> trackItemList = new();
     
         private void InitContent()
         {
             ContentListView = root.Q<VisualElement>(nameof(ContentListView));
             TrackMenuParent = root.Q<VisualElement>("TrackMenu");
-            MainContentView = root.Q<ScrollView>(nameof(MainContentView));
-            MainContentView.verticalScroller.valueChanged += OnMainContentViewValueChanged;
+            ScrollView trackMenuScrollView = root.Q<ScrollView>("TrackMenuScrollView");
+            ScrollView mainContentScrollView = root.Q<ScrollView>("MainContentView");
+            trackMenuScrollView.verticalScroller.valueChanged += (value) =>
+            {
+                mainContentScrollView.verticalScroller.value = value;
+            };
+            mainContentScrollView.verticalScroller.valueChanged += (value) =>
+            {
+                trackMenuScrollView.verticalScroller.value = value;
+            };
+            
             UpdateContentSize();
             InitTrack();
-        }
-
-        private void OnMainContentViewValueChanged(float value)
-        {
-            Vector3 pos = TrackMenuParent.transform.position;
-            pos.y = contentContainer.transform.position.y;
-            TrackMenuParent.transform.position = pos;
         }
 
         private void InitTrack()
         {
             // 如果没有配置，不需要初始化轨道
-            if (skillConfig == null)
+            if (skillClip == null)
                 return;
             InitAnimationTrack();
+            InitEventTrack();
             InitAudioTrack();
             InitEffectTrack();
             InitAttackDetectionTrack();
@@ -603,7 +605,7 @@ namespace SkillEditor
         {
             AnimationTrack animationTrack = new();
             animationTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
-            trackItems.Add(animationTrack);
+            trackItemList.Add(animationTrack);
             getPositionForRootMotionAction = animationTrack.GetPositionForRootMotion;
         }
 
@@ -611,36 +613,43 @@ namespace SkillEditor
         {
             AudioTrack audioTrack = new();
             audioTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
-            trackItems.Add(audioTrack);
+            trackItemList.Add(audioTrack);
         }
         
         private void InitEffectTrack()
         {
             EffectTrack effectTrack = new();
             effectTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
-            trackItems.Add(effectTrack);
+            trackItemList.Add(effectTrack);
         }
 
         private void InitAttackDetectionTrack()
         {
             AttackDetectionTrack attackDetectionTrack = new();
             attackDetectionTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
-            trackItems.Add(attackDetectionTrack);
+            trackItemList.Add(attackDetectionTrack);
+        }
+
+        private void InitEventTrack()
+        {
+            EventTrack eventTrack = new();
+            eventTrack.Init(TrackMenuParent, ContentListView, skillEditorConfig.currentFrameUnitWidth);
+            trackItemList.Add(eventTrack);
         }
 
         private void ResetTrack()
         {
             // 如果配置文件为空，则清空所有轨道
-            if (skillConfig == null)
+            if (skillClip == null)
             {
                 DestroyTracks();
                 return;
             }
             // 如果轨道列表里没有数据，说明没有轨道，但是当前用户是有配置的，所以需要初始化轨道
-            if (trackItems.Count == 0)
+            if (trackItemList.Count == 0)
                 InitTrack();
             // 更新视图
-            foreach (var trackItem in trackItems)
+            foreach (var trackItem in trackItemList)
             {
                 trackItem.ResetView(skillEditorConfig.currentFrameUnitWidth);
             }
@@ -648,11 +657,11 @@ namespace SkillEditor
 
         private void DestroyTracks()
         {
-            foreach (var trackItem in trackItems)
+            foreach (var trackItem in trackItemList)
             {
                 trackItem.Destroy();
             }
-            trackItems.Clear();
+            trackItemList.Clear();
         }
 
         private void UpdateContentSize()
@@ -684,7 +693,7 @@ namespace SkillEditor
                     startFrameIndex = currentSelectFrameIndex;
                     
                     // OnPlay
-                    foreach (var trackItem in trackItems)
+                    foreach (var trackItem in trackItemList)
                     {
                         trackItem.OnPlay(currentSelectFrameIndex);
                     }
@@ -692,7 +701,7 @@ namespace SkillEditor
                 else
                 {
                     // OnStop
-                    foreach (var trackItem in trackItems)
+                    foreach (var trackItem in trackItemList)
                     {
                         trackItem.OnStop();
                     }
@@ -711,7 +720,7 @@ namespace SkillEditor
                 float dt = (float)DateTime.Now.Subtract(startTime).TotalSeconds;
                 // 确定时间轴的帧率
                 float frameRate;
-                if (skillConfig != null) frameRate = skillConfig.FrameRate;
+                if (skillClip != null) frameRate = skillClip.FrameRate;
                 else frameRate = skillEditorConfig.defaultFrameRate;
                 // 根据时间差计算当前的选中帧
                 CurrentSelectFrameIndex = (int)(dt * frameRate + startFrameIndex);
@@ -726,9 +735,9 @@ namespace SkillEditor
         private void TickSkill()
         {
             // 驱动技能表现
-            if (skillConfig != null && currentPreviewCharacterObj != null)
+            if (skillClip != null && currentPreviewCharacterObj != null)
             {
-                foreach (var trackItem in trackItems)
+                foreach (var trackItem in trackItemList)
                 {
                     trackItem.TickView(currentSelectFrameIndex);
                 }
@@ -748,7 +757,7 @@ namespace SkillEditor
             if (Instance == null || Instance.currentPreviewCharacterObj == null || Instance.currentPreviewCharacterObj.GetComponent<SkillPlayer>() != skillPlayer)
                 return;
 
-            foreach (var item in Instance.trackItems)
+            foreach (var item in Instance.trackItemList)
             {
                 item.DrawGizmos();
             }
@@ -759,7 +768,7 @@ namespace SkillEditor
             if (currentPreviewCharacterObj == null)
                 return;
             
-            foreach (var item in Instance.trackItems)
+            foreach (var item in Instance.trackItemList)
             {
                 item.OnSceneGUI();
             }

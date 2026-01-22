@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Label text="E" display-tooltip-when-elided="true" name="EventTrackItem" style="flex-direction: row; height: 100%; -unity-text-align: middle-center; font-size: 15px; background-color: rgba(99, 217, 229, 0.5); white-space: normal; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 15px; position: absolute; -unity-slice-right: 0; border-right-color: rgba(32, 32, 32, 0.5); border-right-width: 0.5px; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px;" />
+</ui:UXML>

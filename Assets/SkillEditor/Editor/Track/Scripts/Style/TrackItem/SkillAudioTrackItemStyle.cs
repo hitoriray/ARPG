@@ -29,7 +29,7 @@ namespace SkillEditor
             if (audioEvent.AudioClip != null)
             {
                 SetTitle(audioEvent.AudioClip.name);
-                SetWidth(frameUnitWidth * audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+                SetWidth(frameUnitWidth * audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillClip.FrameRate);
                 SetPositionX(frameUnitWidth * audioEvent.FrameIndex);
             }
             else

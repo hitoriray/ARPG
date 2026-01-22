@@ -8,8 +8,8 @@ namespace SkillEditor
     public class EffectTrack : SkillTrackBase
     {
         private SkillMultiLineTrackStyle trackStyle;
-        public SkillEffectData EffectData => SkillEditorWindow.Instance.SkillConfig.SkillEffectData;
-        private readonly List<EffectTrackItem> trackItems = new();
+        public SkillEffectData EffectData => SkillEditorWindow.Instance.SkillClip.SkillEffectData;
+        private readonly List<EffectTrackItem> trackItemList = new();
 
         public static Transform EffectParent { get; private set; }
         
@@ -39,11 +39,11 @@ namespace SkillEditor
         {
             base.ResetView(frameWidth);
             // 销毁当前已有的
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 item.Destroy();
             }
-            trackItems.Clear();
+            trackItemList.Clear();
             
             // 根据数据绘制TrackItem
             foreach (var audioEvent in EffectData.FrameData)
@@ -57,7 +57,7 @@ namespace SkillEditor
             EffectTrackItem item = new();
             item.Init(this, frameWidth, effectEvent, trackStyle.AddChildTrack());
             item.SetTrackName(effectEvent.TrackName);
-            trackItems.Add(item);
+            trackItemList.Add(item);
         }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace SkillEditor
                 return false;
             EffectData.FrameData.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
-            trackItems[index].CleanupEffectPrefabObject();
-            trackItems.RemoveAt(index);
+            trackItemList[index].CleanupEffectPrefabObject();
+            trackItemList.RemoveAt(index);
             return true;
         }
 
@@ -112,7 +112,7 @@ namespace SkillEditor
         public override void Destroy()
         {
             trackStyle.Destroy();
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 item.CleanupEffectPrefabObject();
             }
@@ -120,7 +120,7 @@ namespace SkillEditor
         
         public override void TickView(int frameIndex)
         {
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 item.TickView(frameIndex);
             }

@@ -7,8 +7,8 @@ namespace SkillEditor
     public class AttackDetectionTrack : SkillTrackBase
     {
         private SkillMultiLineTrackStyle trackStyle;
-        public SkillAttackDetectionData AttackDetectionData => SkillEditorWindow.Instance.SkillConfig.SkillAttackDetectionData;
-        private List<AttackDetectionTrackItem> trackItems = new();
+        public SkillAttackDetectionData AttackDetectionData => SkillEditorWindow.Instance.SkillClip.SkillAttackDetectionData;
+        private readonly List<AttackDetectionTrackItem> trackItemList = new();
         
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -23,13 +23,13 @@ namespace SkillEditor
         {
             base.ResetView(frameWidth);
             // 销毁当前已有的
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 item.Destroy();
             }
-            trackItems.Clear();
+            trackItemList.Clear();
             
-            if (SkillEditorWindow.Instance.SkillConfig == null)
+            if (SkillEditorWindow.Instance.SkillClip == null)
                 return;
             
             // 根据数据绘制TrackItem
@@ -44,7 +44,7 @@ namespace SkillEditor
             var item = new AttackDetectionTrackItem();
             item.Init(this, frameWidth, attackDetectionEvent, trackStyle.AddChildTrack());
             item.SetTrackName(attackDetectionEvent.TrackName);
-            trackItems.Add(item);
+            trackItemList.Add(item);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SkillEditor
             if (AttackDetectionData.FrameData[index] == null)
                 return false;
             AttackDetectionData.FrameData.RemoveAt(index);
-            trackItems.RemoveAt(index);
+            trackItemList.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
             return true;
         }
@@ -98,7 +98,7 @@ namespace SkillEditor
 
         public override void DrawGizmos()
         {
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 int currentFrameIndex = SkillEditorWindow.Instance.CurrentSelectFrameIndex;
                 SkillAttackDetectionEvent detectionEvent = item.AttackDetectionEvent;
@@ -111,7 +111,7 @@ namespace SkillEditor
 
         public override void OnSceneGUI()
         {
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 int currentFrameIndex = SkillEditorWindow.Instance.CurrentSelectFrameIndex;
                 SkillAttackDetectionEvent detectionEvent = item.AttackDetectionEvent;

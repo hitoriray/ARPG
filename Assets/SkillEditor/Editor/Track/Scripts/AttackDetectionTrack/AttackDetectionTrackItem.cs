@@ -123,9 +123,9 @@ namespace SkillEditor
 
         public void CheckFrameCount()
         {
-            int frameCount = (int)(attackDetectionEvent.DurationFrame * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+            int frameCount = (int)(attackDetectionEvent.DurationFrame * SkillEditorWindow.Instance.SkillClip.FrameRate);
             // 如果超出右侧边界，则拓展边界
-            if (frameIndex + frameCount > SkillEditorWindow.Instance.SkillConfig.FrameCount)
+            if (frameIndex + frameCount > SkillEditorWindow.Instance.SkillClip.FrameCount)
             {
                 SkillEditorWindow.Instance.CurrentFrameCount = frameIndex + frameCount;
             }

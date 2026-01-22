@@ -1,5 +1,4 @@
 ﻿using Config;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -144,7 +143,7 @@ namespace SkillEditor
         public void CheckFrameCount()
         {
             // 如果超出右侧边界，则拓展边界
-            if (frameIndex + animationEvent.DurationFrame > SkillEditorWindow.Instance.SkillConfig.FrameCount)
+            if (frameIndex + animationEvent.DurationFrame > SkillEditorWindow.Instance.SkillClip.FrameCount)
             {
                 SkillEditorWindow.Instance.CurrentFrameCount = frameIndex + animationEvent.DurationFrame;
             }
@@ -154,7 +153,7 @@ namespace SkillEditor
 
         public override void OnConfigChanged()
         {
-            animationEvent = track.AnimationData.FrameEventDict[frameIndex];
+            animationEvent = track.AnimationData.FrameData[frameIndex];
         }
     }
 }

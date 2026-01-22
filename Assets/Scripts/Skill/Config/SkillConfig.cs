@@ -1,34 +1,13 @@
-﻿using System;
-using JKFrame;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
+﻿using JKFrame;
+using Skill.Behaviour;
 using UnityEngine;
 
 namespace Config
 {
-    [CreateAssetMenu(fileName = "Skill Config", menuName = "Config/SkillConfig")]
+    [CreateAssetMenu(fileName = "SkillConfig", menuName = "Config/Skill/SkillConfig")]
     public class SkillConfig : ConfigBase
     {
-        [LabelText("技能名称")] public string SkillName;
-        [LabelText("帧数上限")] public int FrameCount = 100;
-        [LabelText("帧率")] public int FrameRate = 30;
-
-        [NonSerialized, OdinSerialize] public SkillAnimationData SkillAnimationData = new();
-        [NonSerialized, OdinSerialize] public SkillAudioData SkillAudioData = new();
-        [NonSerialized, OdinSerialize] public SkillEffectData SkillEffectData = new();
-        [NonSerialized, OdinSerialize] public SkillAttackDetectionData SkillAttackDetectionData = new();
-
-#if UNITY_EDITOR
-        private static Action skillConfigValidateAction;
-
-        public static void SetSkillConfigValidateAction(Action action)
-        {
-            skillConfigValidateAction = action;
-        }
-        private void OnValidate()
-        {
-            skillConfigValidateAction?.Invoke();
-        }
-#endif
+        public SkillClip[] Clips; // 全部的技能片段
+        public SkillBehaviourBase Behaviour; // 技能的运行逻辑
     }
 }

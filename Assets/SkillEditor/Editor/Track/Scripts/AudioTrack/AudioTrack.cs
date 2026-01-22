@@ -7,8 +7,8 @@ namespace SkillEditor
     public class AudioTrack : SkillTrackBase
     {
         private SkillMultiLineTrackStyle trackStyle;
-        public SkillAudioData AudioData => SkillEditorWindow.Instance.SkillConfig.SkillAudioData;
-        private List<AudioTrackItem> trackItems = new();
+        public SkillAudioData AudioData => SkillEditorWindow.Instance.SkillClip.SkillAudioData;
+        private readonly List<AudioTrackItem> trackItemList = new();
 
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -23,13 +23,13 @@ namespace SkillEditor
         {
             base.ResetView(frameWidth);
             // 销毁当前已有的
-            foreach (var item in trackItems)
+            foreach (var item in trackItemList)
             {
                 item.Destroy();
             }
-            trackItems.Clear();
+            trackItemList.Clear();
             
-            if (SkillEditorWindow.Instance.SkillConfig == null)
+            if (SkillEditorWindow.Instance.SkillClip == null)
                 return;
             
             // 根据数据绘制TrackItem
@@ -44,7 +44,7 @@ namespace SkillEditor
             var item = new AudioTrackItem();
             item.Init(this, frameWidth, audioEvent, trackStyle.AddChildTrack());
             item.SetTrackName(audioEvent.TrackName);
-            trackItems.Add(item);
+            trackItemList.Add(item);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SkillEditor
             if (AudioData.FrameData[index] == null)
                 return false;
             AudioData.FrameData.RemoveAt(index);
-            trackItems.RemoveAt(index);
+            trackItemList.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
             return true;
         }
@@ -108,9 +108,9 @@ namespace SkillEditor
                     continue;
                 
                 // 1.开始帧在左边 && 长度大于当前选中帧 = 时间轴播放帧在轨道中间部分
-                float audioFrameCount = audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate;
+                float audioFrameCount = audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillClip.FrameRate;
                 int audioLastFrameCount =
-                    (int)(audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillConfig.FrameRate) + audioEvent.FrameIndex;
+                    (int)(audioEvent.AudioClip.length * SkillEditorWindow.Instance.SkillClip.FrameRate) + audioEvent.FrameIndex;
                 if (audioEvent.FrameIndex < startFrameIndex && audioLastFrameCount > startFrameIndex)
                 {
                     // 按比例播放音效

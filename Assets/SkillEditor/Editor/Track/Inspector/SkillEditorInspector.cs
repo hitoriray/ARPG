@@ -61,6 +61,7 @@ namespace SkillEditor
             if (currentTrackItem == null)
                 return;
 
+            trackItemFrameIndex = currentTrackItem.FrameIndex;
             // TODO: 补充其他类型
             Type itemType = currentTrackItem.GetType();
             if (itemType == typeof(AnimationTrackItem))
@@ -78,6 +79,10 @@ namespace SkillEditor
             else if (itemType == typeof(AttackDetectionTrackItem))
             {
                 DrawAttackDetectionTrackItem((AttackDetectionTrackItem)currentTrackItem);
+            }
+            else if (itemType == typeof(EventTrackItem))
+            {
+                DrawEventTrackItem((EventTrackItem)currentTrackItem);
             }
         }
 
@@ -105,52 +110,51 @@ namespace SkillEditor
         private Label clipFrameCountLabel;
         private Label isLoopLabel;
     
-        private void DrawAnimationTrackItem(AnimationTrackItem animationTrackItem)
+        private void DrawAnimationTrackItem(AnimationTrackItem trackItem)
         {
-            trackItemFrameIndex = animationTrackItem.FrameIndex;
             // 动画资源
-            ObjectField animationClipAssetField = new ObjectField("动画资源");
+            ObjectField animationClipAssetField = new("动画资源");
             animationClipAssetField.objectType = typeof(AnimationClip);
-            animationClipAssetField.value = animationTrackItem.AnimationEvent.AnimationClip;
+            animationClipAssetField.value = trackItem.AnimationEvent.AnimationClip;
             animationClipAssetField.RegisterValueChangedCallback(OnAnimationClipAssetFieldValueChanged);
             root.Add(animationClipAssetField);
             // 根运动
-            rootMotionToggle = new Toggle("应用根运动");
-            rootMotionToggle.value = animationTrackItem.AnimationEvent.ApplyRootMotion;
+            rootMotionToggle = new("应用根运动");
+            rootMotionToggle.value = trackItem.AnimationEvent.ApplyRootMotion;
             rootMotionToggle.RegisterValueChangedCallback(OnRootMotionToggleValueChanged);
             root.Add(rootMotionToggle);
             // 轨道长度
-            durationField = new IntegerField("轨道长度");
-            durationField.value = animationTrackItem.AnimationEvent.DurationFrame;
+            durationField = new("轨道长度");
+            durationField.value = trackItem.AnimationEvent.DurationFrame;
             durationField.RegisterCallback<FocusInEvent>(OnDurationFieldFocusIn);
             durationField.RegisterCallback<FocusOutEvent>(OnDurationFieldFocusOut);
             root.Add(durationField);
             // 过渡时间
-            transitionField = new FloatField("过渡时间");
-            transitionField.value = animationTrackItem.AnimationEvent.TransitionTime;
+            transitionField = new("过渡时间");
+            transitionField.value = trackItem.AnimationEvent.TransitionTime;
             transitionField.RegisterCallback<FocusInEvent>(OnTransitionFieldFocusIn);
             transitionField.RegisterCallback<FocusOutEvent>(OnTransitionFieldFocusOut);
             root.Add(transitionField);
             // 动画相关信息
-            int clipFrameCount = (int)(animationTrackItem.AnimationEvent.AnimationClip.length * animationTrackItem.AnimationEvent.AnimationClip.frameRate);
-            clipFrameCountLabel = new Label($"动画资源长度: {clipFrameCount}");
+            int clipFrameCount = (int)(trackItem.AnimationEvent.AnimationClip.length * trackItem.AnimationEvent.AnimationClip.frameRate);
+            clipFrameCountLabel = new($"动画资源长度: {clipFrameCount}");
             root.Add(clipFrameCountLabel);
-            isLoopLabel = new Label($"循环动画: {animationTrackItem.AnimationEvent.AnimationClip.isLooping}");
+            isLoopLabel = new($"循环动画: {trackItem.AnimationEvent.AnimationClip.isLooping}");
             root.Add(isLoopLabel);
             // 删除
-            Button deleteBtn = new Button(OnDeleteBtnClicked);
+            Button deleteBtn = new(OnDeleteAnimationBtnClicked);
             deleteBtn.text = "删除";
             deleteBtn.style.backgroundColor = new Color(1, 0, 0, 0.5f);
             root.Add(deleteBtn);
             // 设置持续帧数至选中帧
-            Button setFrameBtn = new Button(OnSetFrameBtnClicked);
+            Button setFrameBtn = new(OnSetFrameBtnClicked);
             setFrameBtn.text = "设置持续帧数至选中帧";
             root.Add(setFrameBtn);
         }
 
         private void OnAnimationClipAssetFieldValueChanged(ChangeEvent<Object> evt)
         {
-            AnimationClip clip = evt.newValue as AnimationClip;
+            AnimationClip clip = (AnimationClip)evt.newValue;
             clipFrameCountLabel.text = $"动画资源长度: {(int)(clip.length * clip.frameRate)}";
             isLoopLabel.text = $"循环动画: {clip.isLooping}";
             ((AnimationTrackItem)currentTrackItem).AnimationEvent.AnimationClip = clip;
@@ -165,7 +169,7 @@ namespace SkillEditor
         }
         
         #region DurationField事件
-        private int oldDurationValue = 0;
+        private int oldDurationValue;
         private void OnDurationFieldFocusIn(FocusInEvent evt)
         {
             oldDurationValue = durationField.value;
@@ -201,7 +205,7 @@ namespace SkillEditor
         #endregion
 
         #region TransitionField事件
-        private float oldTransitionValue = 0;
+        private float oldTransitionValue;
         private void OnTransitionFieldFocusIn(FocusInEvent evt)
         {
             oldTransitionValue = transitionField.value;
@@ -209,14 +213,14 @@ namespace SkillEditor
 
         private void OnTransitionFieldFocusOut(FocusOutEvent evt)
         {
-            if (transitionField.value != oldTransitionValue)
+            if (!Mathf.Approximately(transitionField.value, oldTransitionValue))
             {
                 ((AnimationTrackItem)currentTrackItem).AnimationEvent.TransitionTime = transitionField.value;
             }
         }
         #endregion
         
-        private void OnDeleteBtnClicked()
+        private void OnDeleteAnimationBtnClicked()
         {
             currentTrack.DeleteTrackItem(trackItemFrameIndex);
             Selection.activeObject = null;
@@ -227,18 +231,18 @@ namespace SkillEditor
         #region 音效轨道
 
         private FloatField volumeField;
-        private void DrawAudioTrackItem(AudioTrackItem audioTrackItem)
+        private void DrawAudioTrackItem(AudioTrackItem trackItem)
         {
             // 音效资源
-            ObjectField audioClipAssetField = new ObjectField("音效资源");
+            ObjectField audioClipAssetField = new("音效资源");
             audioClipAssetField.objectType = typeof(AudioClip);
-            audioClipAssetField.value = audioTrackItem.AudioEvent.AudioClip;
+            audioClipAssetField.value = trackItem.AudioEvent.AudioClip;
             audioClipAssetField.RegisterValueChangedCallback(OnAudioClipAssetFieldValueChanged);
             root.Add(audioClipAssetField);
             
             // 音量
-            volumeField = new FloatField("播放音量");
-            volumeField.value = audioTrackItem.AudioEvent.Volume;
+            volumeField = new("播放音量");
+            volumeField.value = trackItem.AudioEvent.Volume;
             volumeField.RegisterCallback<FocusInEvent>(OnVolumeFieldFocusIn);
             volumeField.RegisterCallback<FocusOutEvent>(OnVolumeFieldFocusOut);
             root.Add(volumeField);
@@ -252,7 +256,7 @@ namespace SkillEditor
         }
         
         #region VolumeField
-        private float oldVolumeValue = 0;
+        private float oldVolumeValue;
         private void OnVolumeFieldFocusIn(FocusInEvent evt)
         {
             oldVolumeValue = volumeField.value;
@@ -260,7 +264,7 @@ namespace SkillEditor
 
         private void OnVolumeFieldFocusOut(FocusOutEvent evt)
         {
-            if (volumeField.value != oldVolumeValue)
+            if (!Mathf.Approximately(volumeField.value, oldVolumeValue))
             {
                 ((AudioTrackItem)currentTrackItem).AudioEvent.Volume = volumeField.value;
             }
@@ -273,58 +277,57 @@ namespace SkillEditor
 
         private IntegerField effectDurationField;
         
-        private void DrawEffectTrackItem(EffectTrackItem effectTrackItem)
+        private void DrawEffectTrackItem(EffectTrackItem trackItem)
         {
             // 预制体
             ObjectField prefabAssetField = new ObjectField("特效预制体");
             prefabAssetField.objectType = typeof(GameObject);
-            prefabAssetField.value = effectTrackItem.EffectEvent.Prefab;
+            prefabAssetField.value = trackItem.EffectEvent.Prefab;
             prefabAssetField.RegisterValueChangedCallback(OnEffectPrefabAssetFieldValueChanged);
             root.Add(prefabAssetField);
             // 坐标
-            Vector3Field posField = new Vector3Field("位置");
-            posField.value = effectTrackItem.EffectEvent.Position;
+            Vector3Field posField = new("位置");
+            posField.value = trackItem.EffectEvent.Position;
             posField.RegisterValueChangedCallback(OnEffectPosFieldValueChanged);
             root.Add(posField);
             // 旋转
-            Vector3Field rotField = new Vector3Field("旋转");
-            rotField.value = effectTrackItem.EffectEvent.Rotation;
+            Vector3Field rotField = new("旋转");
+            rotField.value = trackItem.EffectEvent.Rotation;
             rotField.RegisterValueChangedCallback(OnEffectRotFieldValueChanged);
             root.Add(rotField);
             // 缩放
-            Vector3Field scaleField = new Vector3Field("缩放");
-            scaleField.value = effectTrackItem.EffectEvent.Scale;
+            Vector3Field scaleField = new("缩放");
+            scaleField.value = trackItem.EffectEvent.Scale;
             scaleField.RegisterValueChangedCallback(OnEffectScaleFieldValueChanged);
             root.Add(scaleField);
             // 自动销毁
-            Toggle autoDestroyToggle = new Toggle("自动销毁");
-            autoDestroyToggle.value = effectTrackItem.EffectEvent.AutoDestroy;
+            Toggle autoDestroyToggle = new("自动销毁");
+            autoDestroyToggle.value = trackItem.EffectEvent.AutoDestroy;
             autoDestroyToggle.RegisterValueChangedCallback(OnEffectAutoDestroyToggleValueChanged);
             root.Add(autoDestroyToggle);
             // 持续时间
-            effectDurationField = new IntegerField("持续时间");
-            effectDurationField.value = effectTrackItem.EffectEvent.Duration;
+            effectDurationField = new("持续时间");
+            effectDurationField.value = trackItem.EffectEvent.Duration;
             effectDurationField.RegisterCallback<FocusInEvent>(OnEffectDurationFieldFocusIn);
             effectDurationField.RegisterCallback<FocusOutEvent>(OnEffectDurationFieldFocusOut);
             root.Add(effectDurationField);
             // 时间计算按钮
-            Button calcDurationBtn = new Button(CalcEffectDuration);
+            Button calcDurationBtn = new(CalcEffectDuration);
             calcDurationBtn.text = "重新计时";
             root.Add(calcDurationBtn);
             // 应用模型Transform属性
-            Button applyModelTransformBtn = new Button(ApplyModelTransform);
+            Button applyModelTransformBtn = new(ApplyModelTransform);
             applyModelTransformBtn.text = "应用模型Transform属性";
             root.Add(applyModelTransformBtn);
             // 设置持续帧数至选中帧
-            Button setFrameBtn = new Button(OnSetEffectDurationFrameBtnClicked);
+            Button setFrameBtn = new(OnSetEffectDurationFrameBtnClicked);
             setFrameBtn.text = "设置持续帧数至选中帧";
             root.Add(setFrameBtn);
         }
 
         private void ApplyModelTransform()
         {
-            EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
-            effectTrackItem.ApplyModelTransform();
+            ((EffectTrackItem)currentTrackItem).ApplyModelTransform();
             Show();
         }
 
@@ -338,7 +341,7 @@ namespace SkillEditor
                 if (particleSystem.main.duration > maxDuration)
                     maxDuration = particleSystem.main.duration;
             }
-            effectTrackItem.EffectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+            effectTrackItem.EffectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillClip.FrameRate);
             effectDurationField.value = effectTrackItem.EffectEvent.Duration;
             // TODO：删掉下面这一行
             effectTrackItem.ResetView();
@@ -382,7 +385,7 @@ namespace SkillEditor
         }
         
         #region EffectDurationField
-        private float oldEffectDurationValue = 0;
+        private float oldEffectDurationValue;
         private void OnEffectDurationFieldFocusIn(FocusInEvent evt)
         {
             oldEffectDurationValue = effectDurationField.value;
@@ -390,7 +393,7 @@ namespace SkillEditor
 
         private void OnEffectDurationFieldFocusOut(FocusOutEvent evt)
         {
-            if (effectDurationField.value != oldEffectDurationValue)
+            if (!Mathf.Approximately(effectDurationField.value, oldEffectDurationValue))
             {
                 EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
                 effectTrackItem.EffectEvent.Duration = effectDurationField.value;
@@ -414,30 +417,30 @@ namespace SkillEditor
         #region 伤害检测轨道
 
         private IntegerField detectionDurationFrameField;
-        private List<string> detectionTypeList;
-        private void DrawAttackDetectionTrackItem(AttackDetectionTrackItem attackDetectionTrackItem)
+        private List<string> detectionTypeChoiceList;
+        private void DrawAttackDetectionTrackItem(AttackDetectionTrackItem trackItem)
         {
             // 持续帧数
             detectionDurationFrameField = new IntegerField("持续帧数");
-            detectionDurationFrameField.value = attackDetectionTrackItem.AttackDetectionEvent.DurationFrame;
+            detectionDurationFrameField.value = trackItem.AttackDetectionEvent.DurationFrame;
             detectionDurationFrameField.RegisterValueChangedCallback(OnDurationFrameFieldValueChanged);
             root.Add(detectionDurationFrameField);
             
             // 检测类型下拉列表
-            detectionTypeList = new(Enum.GetNames(typeof(AttackDetectionType)));
-            DropdownField detectionDropdownField = new DropdownField("检测类型", detectionTypeList, (int)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType);
+            detectionTypeChoiceList = new(Enum.GetNames(typeof(AttackDetectionType)));
+            DropdownField detectionDropdownField = new("检测类型", detectionTypeChoiceList, (int)trackItem.AttackDetectionEvent.AttackDetectionType);
             detectionDropdownField.RegisterValueChangedCallback(OnDetectionDropdownFieldValueChanged);
             root.Add(detectionDropdownField);
             
             // 根据检测类型进行实际的绘制
-            switch (attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType)
+            switch (trackItem.AttackDetectionEvent.AttackDetectionType)
             {
                 case AttackDetectionType.Weapon:
-                    WeaponDetectionData weaponDetectionData = (WeaponDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
-                    DropdownField weaponDetectionDropdownField = new DropdownField("武器选择");
+                    var weaponDetectionData = (WeaponDetectionData)trackItem.AttackDetectionEvent.AttackDetectionData;
+                    DropdownField weaponDetectionDropdownField = new("武器选择");
                     if (SkillEditorWindow.Instance.CurrentPreviewCharacterObj != null)
                     {
-                        SkillPlayer skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
+                        var skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
                         weaponDetectionDropdownField.choices = skillPlayer.WeaponDict.Keys.ToList();
                     }
                     if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName))
@@ -448,7 +451,7 @@ namespace SkillEditor
                     root.Add(weaponDetectionDropdownField);
                     break;
                 case AttackDetectionType.Box:
-                    BoxDetectionData boxDetectionData = (BoxDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    var boxDetectionData = (BoxDetectionData)trackItem.AttackDetectionEvent.AttackDetectionData;
                     Vector3Field boxDetectionPosField = new("位置");
                     Vector3Field boxDetectionRotField = new("旋转");
                     Vector3Field boxDetectionScaleField = new("缩放");
@@ -463,7 +466,7 @@ namespace SkillEditor
                     root.Add(boxDetectionScaleField);
                     break;
                 case AttackDetectionType.Sphere:
-                    SphereDetectionData sphereDetectionData = (SphereDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    var sphereDetectionData = (SphereDetectionData)trackItem.AttackDetectionEvent.AttackDetectionData;
                     Vector3Field sphereDetectionPosField = new("位置");
                     FloatField sphereDetectionRadiusField = new("半径");
                     sphereDetectionPosField.value = sphereDetectionData.Position;
@@ -474,7 +477,7 @@ namespace SkillEditor
                     root.Add(sphereDetectionRadiusField);
                     break;
                 case AttackDetectionType.Fan:
-                    FanDetectionData fanDetectionData = (FanDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
+                    var fanDetectionData = (FanDetectionData)trackItem.AttackDetectionEvent.AttackDetectionData;
                     Vector3Field fanDetectionPosField = new("位置");
                     Vector3Field fanDetectionRotField = new("旋转");
                     FloatField fanDetectionInsideRadiusField = new("内半径");
@@ -503,7 +506,7 @@ namespace SkillEditor
             }
             
             // 设置持续帧数至选中帧
-            Button setFrameBtn = new Button(OnSetDetectionDurationFrameBtnClicked);
+            Button setFrameBtn = new(OnSetDetectionDurationFrameBtnClicked);
             setFrameBtn.text = "设置持续帧数至选中帧";
             root.Add(setFrameBtn);
         }
@@ -512,7 +515,7 @@ namespace SkillEditor
         private void OnDetectionDropdownFieldValueChanged(ChangeEvent<string> evt)
         {
             AttackDetectionTrackItem attackDetectionTrackItem = (AttackDetectionTrackItem)currentTrackItem;
-            attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType = (AttackDetectionType)detectionTypeList.IndexOf(evt.newValue);
+            attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionType = (AttackDetectionType)detectionTypeChoiceList.IndexOf(evt.newValue);
             Show();
         }
         
@@ -638,6 +641,102 @@ namespace SkillEditor
         
         #endregion
         
+        #endregion
+        
+        #region 事件轨道
+
+        private List<string> eventTypeChoiceList = new();
+        private void DrawEventTrackItem(EventTrackItem trackItem)
+        {
+            // 事件类型下拉列表
+            eventTypeChoiceList = new(Enum.GetNames(typeof(SkillEventType)));
+            DropdownField eventTypeDropdownField = new DropdownField("事件类型", eventTypeChoiceList, (int)trackItem.CustomEvent.EventType);
+            eventTypeDropdownField.RegisterValueChangedCallback(OnEventTypeDropdownFieldValueChanged);
+            root.Add(eventTypeDropdownField);
+            // 只有自定义事件才会显示名称
+            if (trackItem.CustomEvent.EventType == SkillEventType.Custom)
+            {
+                // 名称
+                TextField nameField = new("事件名称");
+                nameField.value = trackItem.CustomEvent.CustomEventName;
+                nameField.RegisterValueChangedCallback(OnNameFieldValueChanged);
+                root.Add(nameField);
+            }
+
+            // 参数1
+            IntegerField intArgField = new("int参数");
+            intArgField.value = trackItem.CustomEvent.IntArg;
+            intArgField.RegisterValueChangedCallback(OnIntArgFieldValueChanged);
+            root.Add(intArgField);
+            // 参数2
+            FloatField floatArgField = new("float参数");
+            floatArgField.value = trackItem.CustomEvent.FloatArg;
+            floatArgField.RegisterValueChangedCallback(OnFloatArgFieldValueChanged);
+            root.Add(floatArgField);
+            // 参数3
+            TextField stringArgField = new("string参数");
+            stringArgField.value = trackItem.CustomEvent.StringArg;
+            stringArgField.RegisterValueChangedCallback(OnStringArgFieldValueChanged);
+            root.Add(stringArgField);
+            // 参数4
+            ObjectField objectArgField = new("object参数")
+            {
+                objectType = typeof(UnityEngine.Object),
+                allowSceneObjects = false,
+            };
+            objectArgField.value = trackItem.CustomEvent.ObjectArg;
+            objectArgField.RegisterValueChangedCallback(OnObjectArgFieldValueChanged);
+            root.Add(objectArgField);
+            
+            // 删除
+            Button deleteBtn = new Button(OnDeleteEventBtnClicked);
+            deleteBtn.text = "删除";
+            deleteBtn.style.backgroundColor = new Color(1, 0, 0, 0.5f);
+            root.Add(deleteBtn);
+        }
+
+        private void OnEventTypeDropdownFieldValueChanged(ChangeEvent<string> evt)
+        {
+            EventTrackItem eventTrackItem = (EventTrackItem)currentTrackItem;
+            eventTrackItem.CustomEvent.EventType = (SkillEventType)eventTypeChoiceList.IndexOf(evt.newValue);
+            if (eventTrackItem.CustomEvent.EventType != SkillEventType.Custom)
+            {
+                eventTrackItem.CustomEvent.CustomEventName = "";
+            }
+            Show();
+        }
+
+        private void OnNameFieldValueChanged(ChangeEvent<string> evt)
+        {
+            ((EventTrackItem)currentTrackItem).CustomEvent.CustomEventName = evt.newValue;
+        }
+
+        private void OnIntArgFieldValueChanged(ChangeEvent<int> evt)
+        {
+            ((EventTrackItem)currentTrackItem).CustomEvent.IntArg = evt.newValue;
+        }
+        
+        private void OnFloatArgFieldValueChanged(ChangeEvent<float> evt)
+        {
+            ((EventTrackItem)currentTrackItem).CustomEvent.FloatArg = evt.newValue;
+        }
+
+        private void OnStringArgFieldValueChanged(ChangeEvent<string> evt)
+        {
+            ((EventTrackItem)currentTrackItem).CustomEvent.StringArg = evt.newValue;
+        }
+
+        private void OnObjectArgFieldValueChanged(ChangeEvent<Object> evt)
+        {
+            ((EventTrackItem)currentTrackItem).CustomEvent.ObjectArg = evt.newValue;
+        }
+
+        private void OnDeleteEventBtnClicked()
+        {
+            currentTrack.DeleteTrackItem(trackItemFrameIndex);
+            Selection.activeObject = null;
+        }
+
         #endregion
     }
 }

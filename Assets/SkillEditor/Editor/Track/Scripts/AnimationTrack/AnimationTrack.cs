@@ -10,9 +10,9 @@ namespace SkillEditor
     public class AnimationTrack : SkillTrackBase
     {
         private SkillSingleLineTrackStyle trackStyle;
-        private Dictionary<int, AnimationTrackItem> trackItemDict = new();
+        private readonly Dictionary<int, AnimationTrackItem> trackItemDict = new();
 
-        public SkillAnimationData AnimationData => SkillEditorWindow.Instance.SkillConfig.SkillAnimationData;
+        public SkillAnimationData AnimationData => SkillEditorWindow.Instance.SkillClip.SkillAnimationData;
         
         public override void Init(VisualElement menuParent, VisualElement trackParent, float frameWidth)
         {
@@ -35,10 +35,10 @@ namespace SkillEditor
             }
             trackItemDict.Clear();
 
-            if (SkillEditorWindow.Instance.SkillConfig == null)
+            if (SkillEditorWindow.Instance.SkillClip == null)
                 return;
             // 根据数据绘制TrackItem
-            foreach (var (startFrameIndex, animationEvent) in AnimationData.FrameEventDict)
+            foreach (var (startFrameIndex, animationEvent) in AnimationData.FrameData)
             {
                CreateAnimationTrackItem(startFrameIndex, animationEvent);
             }
@@ -76,7 +76,7 @@ namespace SkillEditor
                 int nextTrackItem = -1;
                 int currentOffset = int.MaxValue;
 
-                foreach (var (startIndex, animationEvent) in AnimationData.FrameEventDict)
+                foreach (var (startIndex, animationEvent) in AnimationData.FrameData)
                 {
                     // 不允许选中帧在TrackItem之间（动画事件的起点到终点之间）
                     if (selectFrameIndex > startIndex && selectFrameIndex < startIndex + animationEvent.DurationFrame)
@@ -120,7 +120,7 @@ namespace SkillEditor
                     };
 
                     // 保存新增的动画数据
-                    AnimationData.FrameEventDict.Add(selectFrameIndex, animationEvent);
+                    AnimationData.FrameData.Add(selectFrameIndex, animationEvent);
                     SkillEditorWindow.Instance.SaveSkillConfig();
                     
                     // 创建一个新的Item
@@ -132,7 +132,7 @@ namespace SkillEditor
         
         public bool CheckFrameIndexOnDrag(int targetIndex, int selfIndex, bool isLeft)
         {
-            foreach (var (startIndex, animationEvent) in AnimationData.FrameEventDict)
+            foreach (var (startIndex, animationEvent) in AnimationData.FrameData)
             {
                 // 规避拖拽时考虑自身
                 if (startIndex == selfIndex)
@@ -160,9 +160,9 @@ namespace SkillEditor
         
         public void SetFrameIndex(int oldIndex, int newIndex)
         {
-            if (AnimationData.FrameEventDict.Remove(oldIndex, out var animationEvent))
+            if (AnimationData.FrameData.Remove(oldIndex, out var animationEvent))
             {
-                AnimationData.FrameEventDict.Add(newIndex, animationEvent);
+                AnimationData.FrameData.Add(newIndex, animationEvent);
                 trackItemDict.Remove(oldIndex, out var animationTrackItem);
                 trackItemDict.Add(newIndex, animationTrackItem);
             }
@@ -189,7 +189,7 @@ namespace SkillEditor
         {
             GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
             Animator animator = previewGameObject.GetComponentInChildren<Animator>();
-            var frameData = AnimationData.FrameEventDict;
+            var frameData = AnimationData.FrameData;
             
             SortedDictionary<int, SkillAnimationEvent> sortedFrameData = new(frameData);
             int[] keys = sortedFrameData.Keys.ToArray();
@@ -210,7 +210,7 @@ namespace SkillEditor
                 // 最后一个动画
                 else
                 {
-                    nextKeyFrame = SkillEditorWindow.Instance.SkillConfig.FrameCount;
+                    nextKeyFrame = SkillEditorWindow.Instance.SkillClip.FrameCount;
                 }
 
                 bool isBreak = false; // 标记是否是最后一次采样
@@ -225,7 +225,7 @@ namespace SkillEditor
                 {
                     // 获取动画资源的总帧数
                     var clipFrameCnt = animationEvt.AnimationClip.length *
-                                         SkillEditorWindow.Instance.SkillConfig.FrameRate;
+                                         SkillEditorWindow.Instance.SkillClip.FrameRate;
                     // 计算当前的播放进度
                     var totalProgress = durationFrameCount / clipFrameCnt;
                     // 播放次数
@@ -289,7 +289,7 @@ namespace SkillEditor
         {
             GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
             Animator animator = previewGameObject.GetComponent<Animator>();
-            var frameData = AnimationData.FrameEventDict;
+            var frameData = AnimationData.FrameData;
             
             // 找到距离这一帧左边最近的一个动画，也就是当前要播放的动画
             int currentOffset = int.MaxValue;
@@ -325,10 +325,10 @@ namespace SkillEditor
         #region 重载方法
         public override void DeleteTrackItem(int frameIndex)
         {
-            AnimationData.FrameEventDict.Remove(frameIndex);
-            if (trackItemDict.Remove(frameIndex, out var animationTrackItem))
+            AnimationData.FrameData.Remove(frameIndex);
+            if (trackItemDict.Remove(frameIndex, out var trackItem))
             {
-                trackStyle.RemoveItem(animationTrackItem.ItemStyle.Root);
+                trackStyle.RemoveItem(trackItem.ItemStyle.Root);
             }
         }
 

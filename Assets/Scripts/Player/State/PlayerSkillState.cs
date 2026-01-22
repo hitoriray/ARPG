@@ -6,7 +6,7 @@ namespace Player.State
 {
     public class PlayerSkillState : PlayerStateBase
     {
-        private SkillConfig skillConfig;
+        private SkillClip skillClip;
         private CharacterController characterController;
 
         public override void Init(IStateMachineOwner owner)
@@ -18,8 +18,8 @@ namespace Player.State
         public override void Enter()
         {
             // TODO: play skill
-            skillConfig = ResSystem.LoadAsset<SkillConfig>("AnbiSkillConfig");
-            PlayerController.SkillPlayer.PlaySkill(skillConfig, OnSkillEnd, OnWeaponDetectionAction, OnRootMotion);
+            skillClip = ResSystem.LoadAsset<SkillClip>("AnbiSkillConfig");
+            PlayerController.SkillPlayer.PlaySkillClip(skillClip, OnSkillEnd, OnWeaponDetectionAction, OnRootMotion);
         }
 
         /// <summary>

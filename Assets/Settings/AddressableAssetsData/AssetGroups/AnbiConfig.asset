@@ -23,7 +23,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dd4bbcdbbb053d74a9a9aaa9a764a5e7
-    m_Address: AnbiSkillConfig
+    m_Address: AnbiSkillClip
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,13 +1,14 @@
 ﻿using Config;
 using Skill;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
     public class TestSkill : MonoBehaviour
     {
         public SkillPlayer skillPlayer;
-        public SkillConfig skillConfig;
+        [FormerlySerializedAs("skillConfig")] public SkillClip skillClip;
 
         private void Update()
         {

@@ -170,7 +170,7 @@ namespace SkillEditor
                         if (particleSystem.main.duration > maxDuration)
                             maxDuration = particleSystem.main.duration;
                     }
-                    effectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+                    effectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillClip.FrameRate);
                     effectEvent.FrameIndex = selectFrameIndex;
                     
                     this.frameIndex = selectFrameIndex;
@@ -215,7 +215,7 @@ namespace SkillEditor
                 foreach (var particleSystem in particleSystems)
                 {
                     int simulateFrame = frameIndex - effectEvent.FrameIndex;
-                    particleSystem.Simulate((float)simulateFrame / SkillEditorWindow.Instance.SkillConfig.FrameRate);
+                    particleSystem.Simulate((float)simulateFrame / SkillEditorWindow.Instance.SkillClip.FrameRate);
                 }
             }
             else

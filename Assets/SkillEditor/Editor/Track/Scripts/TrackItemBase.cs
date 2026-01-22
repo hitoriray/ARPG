@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace SkillEditor
 {
     public abstract class TrackItemBase
     {
         protected float frameUnitWidth;
+        protected int frameIndex;
+        public int FrameIndex => frameIndex;
 
         public abstract void Select();
         public abstract void OnSelect();
@@ -28,8 +29,6 @@ namespace SkillEditor
         protected Color normalColor;
         protected Color selectColor;
         public SkillTrackItemStyleBase ItemStyle { get; protected set; }
-        protected int frameIndex;
-        public int FrameIndex => frameIndex;
         
         public override void Select()
         {
