@@ -15,6 +15,7 @@ namespace Skill
         [SerializeField] protected List<SkillConfig> skillConfigs = new();  // 技能
         [ShowInInspector] protected List<SkillBehaviourBase> skillBehaviours;
 
+        public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
 
         public virtual void SetCanReleaseFlag(bool newValue)
@@ -45,7 +46,12 @@ namespace Skill
 
         public virtual void ReleaseSkill(int index)
         {
+            if (LastReleaseBehaviourIndex != -1)
+            {
+                skillBehaviours[index].OnReleaseNew();
+            }
             skillBehaviours[index].Release();
+            LastReleaseBehaviourIndex = index;
         }
         
         public virtual bool CheckCost(SkillCostType costType, float costValue)

@@ -267,8 +267,9 @@ namespace SkillEditor
         /// </summary>
         private void OnSkillConfigValueChanged(ChangeEvent<Object> evt)
         {
+            SaveSkillConfig();
+            
             skillClip = evt.newValue as SkillClip;
-        
             // 重新绘制
             CurrentSelectFrameIndex = 0;
             if (skillClip == null)
