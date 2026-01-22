@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Config;
 using JKFrame;
@@ -45,16 +44,12 @@ namespace Skill
         [SerializeField] private Dictionary<string, SkillWeapon> weaponDict = new();
         public Dictionary<string, SkillWeapon> WeaponDict => weaponDict;
 
-        private void OnWeaponDetection(Collider collider)
+        private void OnWeaponDetection(Collider col)
         {
-            onWeaponDetectionAction?.Invoke(collider);
+            skillBehaviour.OnAttackDetection(col);
         }
 
         #endregion
-        
-        private Action<Vector3, Quaternion> rootMotionAction;
-        private Action skillEndAction;
-        private Action<Collider> onWeaponDetectionAction;
         
         private SkillBehaviourBase skillBehaviour;
 
@@ -66,29 +61,19 @@ namespace Skill
         /// <summary>
         /// 播放技能片段
         /// </summary>
-        public void PlaySkillClip(SkillClip skillClip, Action skillEndAction, Action<Collider> onWeaponDetectionAction, Action<Vector3, Quaternion> rootMotionAction = null)
+        public void PlaySkillClip(SkillClip skillClip)
         {
             this.skillClip = skillClip;
             currentFrameIndex = -1;
             frameRate = skillClip.FrameRate;
             playerTotalTime = 0;
             isPlaying = true;
-            this.skillEndAction = skillEndAction;
-            this.rootMotionAction = rootMotionAction;
-            this.onWeaponDetectionAction = onWeaponDetectionAction;
             TickSkill();
         }
 
         private void Clean()
         {
-            if (rootMotionAction != null)
-            {
-                animationController.ClearRootMotionAction();
-            }
             skillClip = null;
-            rootMotionAction = null;
-            skillEndAction = null;
-            onWeaponDetectionAction = null;
         }
 
         private void Update()
@@ -108,7 +93,7 @@ namespace Skill
                 if (targetFrameIndex >= skillClip.FrameCount)
                 {
                     isPlaying = false;
-                    skillEndAction?.Invoke();
+                    skillBehaviour.OnSkillClipEnd();
                     Clean();
                 }
             }
@@ -117,7 +102,7 @@ namespace Skill
         private void TickSkill()
         {
             currentFrameIndex++;
-
+            skillBehaviour.OnTickSkill(currentFrameIndex);
             TickSkillCustomEvent();
             TickSkillAnimationEvent();
             TickSkillAudioEvent();
@@ -153,7 +138,7 @@ namespace Skill
                     animationController.PlaySingleAnimation(animationEvent.AnimationClip, 1, true, animationEvent.TransitionTime);
                     if (animationEvent.ApplyRootMotion)
                     {
-                        animationController.SetRootMotionAction(rootMotionAction);
+                        animationController.SetRootMotionAction(skillBehaviour.OnRootMotion);
                     }
                     else
                     {
@@ -286,7 +271,7 @@ namespace Skill
                             {
                                 if (col != null)
                                 {
-                                    onWeaponDetectionAction?.Invoke(col);
+                                    skillBehaviour.OnAttackDetection(col);
                                 }
                             }
                         }

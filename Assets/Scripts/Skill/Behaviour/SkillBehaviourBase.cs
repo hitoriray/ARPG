@@ -1,11 +1,59 @@
 ﻿using Config;
+using Player;
 using UnityEngine;
 
 namespace Skill.Behaviour
 {
     public abstract class SkillBehaviourBase
     {
+        protected PlayerController player;
+        protected SkillConfig skillConfig;
+        protected SkillBrainBase skillBrain;
+        protected SkillPlayer skillPlayer;
+
         public abstract SkillBehaviourBase DeepClone();
+
+        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer)
+        {
+            this.player = player;
+            this.skillConfig = skillConfig;
+            this.skillBrain = skillBrain;
+            this.skillPlayer = skillPlayer;
+        }
+        
+        public virtual void OnUpdate()
+        {
+        }
+        
+        public virtual void Release()
+        {
+            ApplyCosts();
+        }
+        
+        public virtual bool CheckRelease()
+        {
+            return CheckCost();
+        }
+
+        public virtual void ApplyCosts()
+        {
+            foreach (var item in skillConfig.ReleaseCostDict)
+            {
+                skillBrain.ApplyCost(item.Key, item.Value);
+            }
+        }
+
+        public virtual bool CheckCost()
+        {
+            foreach (var item in skillConfig.ReleaseCostDict)
+            {
+                if (skillBrain.CheckCost(item.Key, item.Value) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         
         #region 技能驱动时的事件
 
@@ -62,7 +110,11 @@ namespace Skill.Behaviour
         {
         }
 
-        public virtual void OnWeaponDetection(Collider col)
+        public virtual void OnAttackDetection(Collider col)
+        {
+        }
+
+        public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
         }
         

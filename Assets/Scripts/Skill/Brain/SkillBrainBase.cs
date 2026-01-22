@@ -1,22 +1,62 @@
 ﻿using System.Collections.Generic;
 using Config;
 using JKFrame;
+using Player;
+using Sirenix.OdinInspector;
+using Skill.Behaviour;
 using UnityEngine;
 
 namespace Skill
 {
     public abstract class SkillBrainBase : MonoBehaviour
     {
-        public SkillConfig basicAttackConfig;           // 普攻
-        public List<SkillConfig> skillConfigs = new();  // 技能
+        [SerializeField] protected SkillPlayer skillPlayer;
+        [SerializeField] protected List<SkillConfig> skillConfigs = new();  // 技能
+        [ShowInInspector] protected List<SkillBehaviourBase> skillBehaviours;
 
+        public virtual void Init(PlayerController player)
+        {
+            skillPlayer.Init(player.AnimationController, player.ModelTransform);
+
+            skillBehaviours = new(skillConfigs.Count);
+            foreach (var skillConfig in skillConfigs)
+            {
+                var skillBehaviour = skillConfig.Behaviour.DeepClone();
+                skillBehaviour.Init(player, skillConfig, this, skillPlayer);
+                skillBehaviours.Add(skillBehaviour);
+            }
+        }
+
+        protected virtual void Update()
+        {
+            foreach (var skillBehaviour in skillBehaviours)
+            {
+                skillBehaviour.OnUpdate();
+            }
+        }
+
+        public virtual void ReleaseSkill(int index)
+        {
+            skillBehaviours[index].Release();
+        }
+        
+        public virtual bool CheckCost(SkillCostType costType, float costValue)
+        {
+            // TODO：和上一层对接，（如PlayerController）
+            return true;
+        }
+        
+        public virtual bool CheckReleaseSkill(int index)
+        {
+            return skillBehaviours[index].CheckRelease();
+        }
+        
         /// <summary>
         /// 应用技能的消耗
         /// </summary>
-        /// <param name="costType">消耗类型</param>
-        /// <param name="value">消耗的值</param>
-        public virtual void ApplyCost(SkillCostType costType, float value)
+        public virtual void ApplyCost(SkillCostType costType, float costValue)
         {
+            Debug.Log($"释放技能的代价：类型:{costType}，需求量:{costValue}");
             // TODO：和上一层对接，（如PlayerController）
         }
         

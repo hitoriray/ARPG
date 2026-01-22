@@ -488,7 +488,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 17
+      Data: 21
     - Name: $v
       Entry: 7
       Data: 25|Config.SkillCustomEvent, Assembly-CSharp

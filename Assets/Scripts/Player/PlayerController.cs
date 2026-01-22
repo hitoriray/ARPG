@@ -10,23 +10,22 @@ namespace Player
 {
     public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner
     {
+        [SerializeField] private SkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
-        [SerializeField] private SkillPlayer skillPlayer;
-        public SkillPlayer SkillPlayer => skillPlayer;
         [SerializeField] private CharacterController characterController;
+
+        public SkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
-        
-        private StateMachine stateMachine;
-        private PlayerState currentState;
-
-        private CharacterConfig characterConfig;
-        public CharacterConfig CharacterConfig => characterConfig;
         public AnimationController AnimationController => playerView.AnimationController;
-
         public Transform ModelTransform => playerView.transform;
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
+
+        private StateMachine stateMachine;
+        private PlayerState currentState;
+        private CharacterConfig characterConfig;
+        public CharacterConfig CharacterConfig => characterConfig;
         
         public void Init()
         {
@@ -36,8 +35,7 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(DataManager.CustomCharacterData);
             
-            skillPlayer.Init(playerView?.AnimationController, ModelTransform);
-            
+            skillBrain.Init(this);
             // 初始化状态机
             stateMachine = ResSystem.GetOrNew<StateMachine>();
             stateMachine.Init(this);
