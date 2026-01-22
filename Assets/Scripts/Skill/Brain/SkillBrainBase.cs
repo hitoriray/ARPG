@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Config;
 using JKFrame;
 using Player;
@@ -14,10 +15,17 @@ namespace Skill
         [SerializeField] protected List<SkillConfig> skillConfigs = new();  // 技能
         [ShowInInspector] protected List<SkillBehaviourBase> skillBehaviours;
 
+        public virtual bool CanRelease { get; protected set; }
+
+        public virtual void SetCanReleaseFlag(bool newValue)
+        {
+            CanRelease = newValue;
+        }
+
         public virtual void Init(PlayerController player)
         {
+            CanRelease = true;
             skillPlayer.Init(player.AnimationController, player.ModelTransform);
-
             skillBehaviours = new(skillConfigs.Count);
             foreach (var skillConfig in skillConfigs)
             {
@@ -48,7 +56,7 @@ namespace Skill
         
         public virtual bool CheckReleaseSkill(int index)
         {
-            return skillBehaviours[index].CheckRelease();
+            return CanRelease && skillBehaviours[index].CheckRelease();
         }
         
         /// <summary>
@@ -69,7 +77,7 @@ namespace Skill
             public T value;
         }
         
-        private Dictionary<string, ISkillShareData> shareDataDict = new();
+        private readonly Dictionary<string, ISkillShareData> shareDataDict = new();
 
         protected SkillShareData<T> GetSkillShareData<T>()
         {
@@ -86,13 +94,22 @@ namespace Skill
             var skillShareData = GetSkillShareData<T>();
             skillShareData.value = value;
             shareDataDict.Add(key, skillShareData);
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+            {
+                ((SharedDataEventData<T>)sharedDataEventData).TriggerOnCreate(value);
+                ((SharedDataEventData<T>)sharedDataEventData).TriggerOnChanged(value);
+            }
         }
 
         public void AddOrUpdateShareData<T>(string key, T value)
         {
-            if (shareDataDict.TryGetValue(key, out var skillShareData))
+            if (shareDataDict.TryGetValue(key, out var data))
             {
-                ((SkillShareData<T>)skillShareData).value = value;
+                ((SkillShareData<T>)data).value = value;
+                if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+                {
+                    ((SharedDataEventData<T>)sharedDataEventData).TriggerOnChanged(value);
+                }
             }
             else
                 AddShareData(key, value);
@@ -105,26 +122,128 @@ namespace Skill
 
         public bool TryGetShareData<T>(string key, out T value)
         {
-            bool res = shareDataDict.TryGetValue(key, out ISkillShareData skillShareData);
-            value = res ? ((SkillShareData<T>)skillShareData).value : default;
+            bool res = shareDataDict.TryGetValue(key, out var data);
+            value = res ? ((SkillShareData<T>)data).value : default;
             return res;
         }
 
         public void RemoveShareData(string key)
         {
-            if (shareDataDict.TryGetValue(key, out ISkillShareData skillShareData))
+            if (shareDataDict.Remove(key, out var data))
             {
-                DestroySkillShareData(skillShareData);
+                if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+                {
+                    sharedDataEventData.TriggerOnRemove();
+                }
+                DestroySkillShareData(data);
             }
         }
 
         public void ClearShareData()
         {
-            foreach (var item in shareDataDict)
+            foreach (var (key, value) in shareDataDict)
             {
-                DestroySkillShareData(item.Value);
+                DestroySkillShareData(value);
+                if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+                {
+                    sharedDataEventData.TriggerOnRemove();
+                }
             }
             shareDataDict.Clear();
+        }
+
+        #endregion
+        
+        #region 共享数据相关事件
+
+        private interface ISharedDataEventData
+        {
+            public void TriggerOnRemove();
+        }
+
+        private class SharedDataEventData<T> : ISharedDataEventData
+        {
+            public Action<T> onCreate;
+            public Action<T> onChanged;
+            public Action onRemove;
+
+            public void TriggerOnCreate(T value) => onCreate?.Invoke(value);
+            public void TriggerOnChanged(T value) => onChanged?.Invoke(value);
+            public void TriggerOnRemove() => onRemove?.Invoke();
+        }
+        
+        private Dictionary<string, ISharedDataEventData> sharedDataEventDict = new();
+
+        public void AddSharedDataCreateEventListener<T>(string key, Action<T> action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData) == false)
+            {
+                SharedDataEventData<T> eventData = new();
+                eventData.onCreate += action;
+                sharedDataEventDict.Add(key, eventData);
+            }
+            else
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onCreate += action;
+            }
+        }
+
+        public void RemoveSharedDataCreateEventListener<T>(string key, Action<T> action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onCreate -= action;
+            }
+        }
+        
+        public void AddSharedDataChangedEventListener<T>(string key, Action<T> action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData) == false)
+            {
+                SharedDataEventData<T> eventData = new();
+                eventData.onChanged += action;
+                sharedDataEventDict.Add(key, eventData);
+            }
+            else
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onChanged += action;
+            }
+        }
+
+        public void RemoveSharedDataChangedEventListener<T>(string key, Action<T> action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onChanged -= action;
+            }
+        }
+        
+        public void AddSharedDataRemoveEventListener<T>(string key, Action action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData) == false)
+            {
+                SharedDataEventData<T> eventData = new();
+                eventData.onRemove += action;
+                sharedDataEventDict.Add(key, eventData);
+            }
+            else
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onRemove += action;
+            }
+        }
+
+        public void RemoveSharedDataRemoveEventListener<T>(string key, Action action)
+        {
+            if (sharedDataEventDict.TryGetValue(key, out var sharedDataEventData))
+            {
+                SharedDataEventData<T> eventData = (SharedDataEventData<T>)sharedDataEventData;
+                eventData.onRemove -= action;
+            }
         }
 
         #endregion

@@ -1,4 +1,6 @@
-﻿using Player.State;
+﻿using Config;
+using Player;
+using Player.State;
 using UnityEngine;
 
 namespace Skill.Behaviour
@@ -10,7 +12,7 @@ namespace Skill.Behaviour
 
         public override SkillBehaviourBase DeepClone()
         {
-            return new AnbiSkillBehaviour() { cdTime = cdTime };
+            return new AnbiSkillBehaviour { cdTime = cdTime };
         }
         
         public override void Release()
@@ -28,6 +30,7 @@ namespace Skill.Behaviour
 
         public override void OnUpdate()
         {
+            base.OnUpdate();
             cdTimer -= Time.deltaTime;
             if (cdTimer < 0)
             {

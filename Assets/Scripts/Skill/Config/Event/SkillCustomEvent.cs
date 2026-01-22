@@ -13,6 +13,8 @@
     public enum SkillEventType
     {
         Custom,             // 自定义事件类型
-        CancelRecovery,     // 取消后摇
+        CanSkillRelease,    // 取消后摇
+        CanRotate,          // 可以旋转
+        CannotRotate,       // 不可以旋转
     }
 }

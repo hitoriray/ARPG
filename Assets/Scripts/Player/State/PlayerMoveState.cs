@@ -57,7 +57,8 @@ namespace Player.State
             float y = Camera.main.transform.rotation.eulerAngles.y;
             // 让input也旋转y角度
             Vector3 moveDir = Quaternion.Euler(0, y, 0) * input;
-
+            // 处理旋转
+            PlayerController.Rotate(input);
             // 如果不是根运动
             if (!applyRootMotionForMove)
             {
@@ -66,10 +67,6 @@ namespace Player.State
                 motion.y = -9.8f * Time.deltaTime;
                 characterController.Move(motion);
             }
-            
-            // 处理旋转
-            PlayerController.ModelTransform.rotation = Quaternion.Slerp(PlayerController.ModelTransform.rotation, 
-                Quaternion.LookRotation(moveDir), Time.deltaTime * PlayerController.RotateSpeed);
         }
 
         public override void Exit()

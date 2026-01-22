@@ -46,9 +46,7 @@ namespace Player
         /// <summary>
         /// 修改玩家状态
         /// </summary>
-        /// <param name="newState"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void ChangeState(PlayerState newState)
+        public void ChangeState(PlayerState newState, bool reCurrstate = false)
         {
             var prevState = currentState;
             currentState = newState;
@@ -57,13 +55,13 @@ namespace Player
             switch (currentState)
             {
                 case PlayerState.Idle:
-                    stateMachine.ChangeState<PlayerIdleState>();
+                    stateMachine.ChangeState<PlayerIdleState>(reCurrstate);
                     break;
                 case PlayerState.Move:
-                    stateMachine.ChangeState<PlayerMoveState>();
+                    stateMachine.ChangeState<PlayerMoveState>(reCurrstate);
                     break;
                 case PlayerState.Skill:
-                    stateMachine.ChangeState<PlayerSkillState>();
+                    stateMachine.ChangeState<PlayerSkillState>(reCurrstate);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -91,6 +89,18 @@ namespace Player
             var clip1 = characterConfig.GetAnimationClipByName(clip1Name);
             var clip2 = characterConfig.GetAnimationClipByName(clip2Name);
             playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
+        }
+
+        public void Rotate(Vector3 inputDir, float rotateSpeed = 0)
+        {
+            if (rotateSpeed == 0) rotateSpeed = RotateSpeed;
+            // 获取相机的旋转值
+            float y = Camera.main.transform.rotation.eulerAngles.y;
+            // 让input也旋转y角度
+            Vector3 moveDir = Quaternion.Euler(0, y, 0) * inputDir;
+            // 处理旋转
+            ModelTransform.rotation = Quaternion.Slerp(ModelTransform.rotation,
+                Quaternion.LookRotation(moveDir), Time.deltaTime * rotateSpeed);
         }
     }
 }

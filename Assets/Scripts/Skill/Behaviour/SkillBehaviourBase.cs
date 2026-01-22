@@ -10,6 +10,7 @@ namespace Skill.Behaviour
         protected SkillConfig skillConfig;
         protected SkillBrainBase skillBrain;
         protected SkillPlayer skillPlayer;
+        protected bool canRotate = false;
 
         public abstract SkillBehaviourBase DeepClone();
 
@@ -23,10 +24,13 @@ namespace Skill.Behaviour
         
         public virtual void OnUpdate()
         {
+            RotateOnUpdate();
         }
         
         public virtual void Release()
         {
+            canRotate = false;
+            skillBrain.SetCanReleaseFlag(false);
             ApplyCosts();
         }
         
@@ -53,6 +57,20 @@ namespace Skill.Behaviour
                 }
             }
             return true;
+        }
+
+        protected virtual void RotateOnUpdate()
+        {
+            // TODO: 怪物不能基于玩家的控制进行旋转
+            if (canRotate)
+            {
+                float h = Input.GetAxis("Horizontal");
+                float v = Input.GetAxis("Vertical");
+                if (h != 0 || v != 0)
+                {
+                    player.Rotate(new Vector3(h, 0, v));
+                }
+            }
         }
         
         #region 技能驱动时的事件
@@ -108,6 +126,18 @@ namespace Skill.Behaviour
         
         public virtual void AfterSkillCustomEvent(SkillCustomEvent evt)
         {
+            if (evt.EventType == SkillEventType.CanSkillRelease)
+            {
+                skillBrain.SetCanReleaseFlag(true);
+            }
+            else if (evt.EventType == SkillEventType.CanRotate)
+            {
+                canRotate = true;
+            }
+            else if (evt.EventType == SkillEventType.CannotRotate)
+            {
+                canRotate = false;
+            }
         }
 
         public virtual void OnAttackDetection(Collider col)

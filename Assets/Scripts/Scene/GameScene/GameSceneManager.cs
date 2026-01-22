@@ -1,7 +1,7 @@
-using System;
 using Data;
 using JKFrame;
 using Player;
+using UnityEngine;
 
 namespace Scene
 {
@@ -16,7 +16,7 @@ namespace Scene
         
         private void Start()
         {
-            #region Test...
+            #region 测试逻辑
 
             if (isTest)
             {
@@ -32,6 +32,7 @@ namespace Scene
             
             #endregion
             
+            Cursor.lockState = CursorLockMode.Locked;
             // 初始化角色
             PlayerController.Instance.Init();
         }

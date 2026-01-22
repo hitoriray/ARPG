@@ -295,7 +295,7 @@ namespace Skill
         private IEnumerator AutoDestructEffectGameObject(float time, GameObject obj)
         {
             yield return new WaitForSeconds(time);
-            obj.GameObjectPushPool();
+            if (obj != null) obj.GameObjectPushPool();
         }
         
         #region Editor
