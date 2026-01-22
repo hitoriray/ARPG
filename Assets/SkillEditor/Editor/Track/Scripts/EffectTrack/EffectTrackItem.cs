@@ -192,24 +192,16 @@ namespace SkillEditor
             int durationFrame = effectEvent.Duration;
             if (effectEvent.FrameIndex <= frameIndex && frameIndex < effectEvent.FrameIndex + durationFrame)
             {
-                // 对比预制体
-                if (effectPrefabObj != null && effectPrefabObj.name != effectEvent.Prefab.name)
-                {
-                    GameObject.DestroyImmediate(effectPrefabObj);
-                    effectPrefabObj = null;
-                }
-
-                if (effectPrefabObj == null)
-                {
-                    Transform characterRoot = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.transform;
-                    // 把角色临时设置到播放坐标
-                    Vector3 pos = characterRoot.TransformPoint(effectEvent.Position);
-                    Vector3 rot = characterRoot.eulerAngles + effectEvent.Rotation;
-                    // 实例化
-                    effectPrefabObj = GameObject.Instantiate(effectEvent.Prefab, pos, Quaternion.Euler(rot), EffectTrack.EffectParent);
-                    effectPrefabObj.name = effectEvent.Prefab.name;
-                    effectPrefabObj.transform.localScale = effectEvent.Scale;
-                }
+                GameObject.DestroyImmediate(effectPrefabObj);
+                
+                Transform characterRoot = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.transform;
+                // 把角色临时设置到播放坐标
+                Vector3 pos = characterRoot.TransformPoint(effectEvent.Position);
+                Vector3 rot = characterRoot.eulerAngles + effectEvent.Rotation;
+                // 实例化
+                effectPrefabObj = GameObject.Instantiate(effectEvent.Prefab, pos, Quaternion.Euler(rot), EffectTrack.EffectParent);
+                effectPrefabObj.name = effectEvent.Prefab.name;
+                effectPrefabObj.transform.localScale = effectEvent.Scale;
                 // 粒子模拟
                 ParticleSystem[] particleSystems = effectPrefabObj.GetComponentsInChildren<ParticleSystem>();
                 foreach (var particleSystem in particleSystems)

@@ -158,14 +158,14 @@ namespace SkillEditor
             clipFrameCountLabel.text = $"动画资源长度: {(int)(clip.length * clip.frameRate)}";
             isLoopLabel.text = $"循环动画: {clip.isLooping}";
             ((AnimationTrackItem)currentTrackItem).AnimationEvent.AnimationClip = clip;
-            SkillEditorWindow.Instance.SaveSkillConfig();
             currentTrackItem.ResetView();
+            SkillEditorWindow.Instance.TickSkill();
         }
 
         private void OnRootMotionToggleValueChanged(ChangeEvent<bool> evt)
         {
             ((AnimationTrackItem)currentTrackItem).AnimationEvent.ApplyRootMotion = evt.newValue;
-            SkillEditorWindow.Instance.SaveSkillConfig();
+            SkillEditorWindow.Instance.TickSkill();
         }
         
         #region DurationField事件
@@ -192,6 +192,7 @@ namespace SkillEditor
                 {
                     durationField.value = oldDurationValue;
                 }
+                SkillEditorWindow.Instance.TickSkill();
             }
         }
         
@@ -224,6 +225,7 @@ namespace SkillEditor
         {
             currentTrack.DeleteTrackItem(trackItemFrameIndex);
             Selection.activeObject = null;
+            SkillEditorWindow.Instance.TickSkill();
         }
 
         #endregion
@@ -355,6 +357,7 @@ namespace SkillEditor
             // 重新计时
             CalcEffectDuration();
             effectTrackItem.ResetView();
+            SkillEditorWindow.Instance.TickSkill();
         }
         
         private void OnEffectPosFieldValueChanged(ChangeEvent<Vector3> evt)
@@ -362,6 +365,7 @@ namespace SkillEditor
             EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
             effectTrackItem.EffectEvent.Position = evt.newValue;
             effectTrackItem.ResetView();
+            SkillEditorWindow.Instance.TickSkill();
         }
         
         private void OnEffectRotFieldValueChanged(ChangeEvent<Vector3> evt)
@@ -369,6 +373,7 @@ namespace SkillEditor
             EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
             effectTrackItem.EffectEvent.Rotation = evt.newValue;
             effectTrackItem.ResetView();
+            SkillEditorWindow.Instance.TickSkill();
         }
 
         private void OnEffectScaleFieldValueChanged(ChangeEvent<Vector3> evt)
@@ -376,6 +381,7 @@ namespace SkillEditor
             EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
             effectTrackItem.EffectEvent.Scale = evt.newValue;
             effectTrackItem.ResetView();
+            SkillEditorWindow.Instance.TickSkill();
         }
         
         private void OnEffectAutoDestroyToggleValueChanged(ChangeEvent<bool> evt)
@@ -398,6 +404,7 @@ namespace SkillEditor
                 EffectTrackItem effectTrackItem = (EffectTrackItem)currentTrackItem;
                 effectTrackItem.EffectEvent.Duration = effectDurationField.value;
                 effectTrackItem.ResetView();
+                SkillEditorWindow.Instance.TickSkill();
             }
         }
 

@@ -174,7 +174,7 @@ namespace SkillEditor
             if (previewGameObject != null)
             {
                 // 更新姿态
-                // UpdateGesture(frameIndex);
+                UpdateGesture(frameIndex);
                 previewGameObject.transform.position = GetPositionForRootMotion(frameIndex);
             }
         }
@@ -318,7 +318,7 @@ namespace SkillEditor
                 progress -= (int)progress;
             }
 
-            animator.applyRootMotion = animationEvent.ApplyRootMotion;
+            animator.applyRootMotion = animationEvent.AnimationClip.hasRootCurves; // 或者永远设为true
             animationEvent.AnimationClip.SampleAnimation(previewGameObject, progress * animationEvent.AnimationClip.length);
         }
 

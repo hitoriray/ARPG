@@ -733,7 +733,7 @@ namespace SkillEditor
             }
         }
 
-        private void TickSkill()
+        public void TickSkill()
         {
             // 驱动技能表现
             if (skillClip != null && currentPreviewCharacterObj != null)
