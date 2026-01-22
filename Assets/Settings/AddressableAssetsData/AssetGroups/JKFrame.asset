@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 7de790e91fa53004fa9f3c57cc1ba0da
   m_SerializeEntries:
-  - m_GUID: e6c210616e140fd4390b6abb619baec9
-    m_Address: AudioPlay
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29e4e189755c172469818bfbd3d8a3a4
     m_Address: UI_ColorSelectorWindow
     m_ReadOnly: 0

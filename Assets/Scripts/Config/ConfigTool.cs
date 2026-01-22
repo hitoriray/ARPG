@@ -4,7 +4,7 @@ namespace Config
 {
     public static class ConfigTool
     {
-        public static readonly string ProjectConfigName = "Project";
+        public static readonly string ProjectConfigName = "ProjectConfig";
         
         /// <summary>
         /// 获取角色部位的配置
@@ -26,7 +26,7 @@ namespace Config
             }
             
             configName += index.ToString();
-            return ResManager.LoadAsset<CharacterPartConfigBase>(configName);
+            return ResSystem.LoadAsset<CharacterPartConfigBase>(configName);
         }
     }
 }

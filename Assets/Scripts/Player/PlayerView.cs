@@ -4,7 +4,6 @@ using Config;
 using Data;
 using JKFrame;
 using Player.Animation;
-using Serialization;
 using UnityEngine;
 
 namespace Player
@@ -48,10 +47,10 @@ namespace Player
             Init(data);
             
             // 基于数据设置当前部位
-            var hairConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Hair, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Hair].Index);
-            var faceConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Face, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Index);
-            var clothConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Cloth, customCharacterData.CustomPartDataDict[(int)CharacterPartType.Cloth].Index);
-            var facePartData = customCharacterData.CustomPartDataDict[(int)CharacterPartType.Face];
+            var hairConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Hair, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Hair].Index);
+            var faceConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Face, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face].Index);
+            var clothConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Cloth, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Cloth].Index);
+            var facePartData = customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face];
 
             SetPart(hairConfig, true);
             SetPart(faceConfig, true);
@@ -73,7 +72,7 @@ namespace Player
             if (characterPartDict.TryGetValue((int)partType, out var currentPartConfig))
             {
                 // 释放旧的资源并且设置新资源
-                ResManager.Release(currentPartConfig);
+                ResSystem.UnloadAsset(currentPartConfig);
                 characterPartDict[(int)partType] = partConfig;
             }
             else
@@ -92,7 +91,7 @@ namespace Player
                     var hairConfig = partConfig as HairConfig;
                     if (hairConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = hairConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1.ConvertToUnityColor());
+                    SetColor1(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
                     break;
                 case CharacterPartType.Face:
                     var faceConfig = partConfig as FaceConfig;
@@ -103,8 +102,8 @@ namespace Player
                     var clothConfig = partConfig as ClothConfig;
                     if (clothConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = clothConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict[(int)partType].Color1.ConvertToUnityColor());
-                    SetColor2(partType, customCharacterData.CustomPartDataDict[(int)partType].Color2.ConvertToUnityColor());
+                    SetColor1(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
+                    SetColor2(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color2.ConverToUnityColor());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -182,7 +181,7 @@ namespace Player
             // 释放全部资源
             foreach (var item in characterPartDict)
             {
-                ResManager.Release(item.Value);
+                ResSystem.UnloadAsset(item.Value);
             }
         }
     }

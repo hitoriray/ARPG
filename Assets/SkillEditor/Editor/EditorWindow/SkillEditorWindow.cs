@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Config;
-using Player.Skill;
+using Skill;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
@@ -745,7 +745,7 @@ namespace SkillEditor
         [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected)]
         private static void DrawGizmos(SkillPlayer skillPlayer, GizmoType gizmoType)
         {
-            if (Instance == null || Instance.currentPreviewCharacterObj?.GetComponent<SkillPlayer>() != skillPlayer)
+            if (Instance == null || Instance.currentPreviewCharacterObj == null || Instance.currentPreviewCharacterObj.GetComponent<SkillPlayer>() != skillPlayer)
                 return;
 
             foreach (var item in Instance.trackItems)

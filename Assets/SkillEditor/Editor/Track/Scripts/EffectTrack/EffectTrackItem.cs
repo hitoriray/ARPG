@@ -170,7 +170,7 @@ namespace SkillEditor
                         if (particleSystem.main.duration > maxDuration)
                             maxDuration = particleSystem.main.duration;
                     }
-                    effectEvent.Duration = maxDuration;
+                    effectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
                     effectEvent.FrameIndex = selectFrameIndex;
                     
                     this.frameIndex = selectFrameIndex;
@@ -189,7 +189,7 @@ namespace SkillEditor
             if (effectEvent.Prefab == null || SkillEditorWindow.Instance.CurrentPreviewCharacterObj == null)
                 return;
             // 是否在播放范围内
-            int durationFrame = (int)(effectEvent.Duration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+            int durationFrame = effectEvent.Duration;
             if (effectEvent.FrameIndex <= frameIndex && frameIndex < effectEvent.FrameIndex + durationFrame)
             {
                 // 对比预制体

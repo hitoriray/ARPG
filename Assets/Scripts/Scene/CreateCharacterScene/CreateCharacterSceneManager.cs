@@ -3,14 +3,14 @@ using UI;
 
 namespace Scene
 {
-    public class CreateCharacterSceneManager : LogicManagerBase<CreateCharacterSceneManager>
+    public class CreateCharacterSceneManager : SingletonMono<CreateCharacterSceneManager>
     {
         private void Start()
         {
             // 初始化角色创建者
             CharacterCreator.Instance.Init();
             // 显示创建角色的主窗口
-            UIManager.Instance.Show<UI_CreateCharacterWindow>();
+            UISystem.Show<UI_CreateCharacterWindow>();
         }
     }
 }

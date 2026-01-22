@@ -1060,6 +1060,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 686081962531700663}
+  - component: {fileID: 2657579467709470765}
+  - component: {fileID: 8700698116699134917}
+  - component: {fileID: 7299106118690704105}
   m_Layer: 0
   m_Name: Anbi_Weapon_02
   m_TagString: Untagged
@@ -1082,6 +1085,48 @@ Transform:
   m_Father: {fileID: 8418861735795443432}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2657579467709470765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471904415395808412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2845f6bdb8d34ea6a1916639707ffca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionCollider: {fileID: 8700698116699134917}
+--- !u!65 &8700698116699134917
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471904415395808412}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0388191, y: 0.16958345, z: 0.18623477}
+  m_Center: {x: -0.40128732, y: 0.004796018, z: -0.009413898}
+--- !u!54 &7299106118690704105
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471904415395808412}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &2509263945461181254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2416,8 +2461,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1225690905743967572}
   - component: {fileID: 1350554120813909240}
-  - component: {fileID: 2931312227527091582}
-  - component: {fileID: 1938671290649829891}
   m_Layer: 0
   m_Name: AnbiWeapon_CompanyB_Blade_Fire01
   m_TagString: Untagged
@@ -2494,31 +2537,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.35164732, y: -0.0024696589, z: 0.0000018663704}
     m_Extent: {x: 0.4784922, y: 0.0368078, z: 0.014033344}
   m_DirtyAABB: 0
---- !u!65 &2931312227527091582
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4520302079631979457}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.028067052, y: 0.95699, z: 0.07368849}
-  m_Center: {x: 0.0000020178204, y: -0.01717779, z: 0.106367335}
---- !u!114 &1938671290649829891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4520302079631979457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2845f6bdb8d34ea6a1916639707ffca1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4549490710876959037
 GameObject:
   m_ObjectHideFlags: 0
@@ -4884,7 +4902,7 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1938671290649829891}
+    - {fileID: 2657579467709470765}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -4892,7 +4910,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: weaponDict
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Player.Skill.SkillWeapon,
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Skill.SkillWeapon,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
@@ -4909,7 +4927,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: "\u5DE6\u624B\u6B66\u5668"
+      Data: Weapon1
     - Name: $v
       Entry: 10
       Data: 0
@@ -4922,6 +4940,10 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  attackDetectionLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  drawAttackDetectionGizmos: 0
 --- !u!1 &8367043976108584300
 GameObject:
   m_ObjectHideFlags: 0

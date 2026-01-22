@@ -75,7 +75,7 @@ namespace Player.Animation
             // first play, no transition
             if (currentNode == null)
             {
-                singleAnimationNode = PoolManager.Instance.GetObject<SingleAnimationNode>();
+                singleAnimationNode = ResSystem.GetOrNew<SingleAnimationNode>();
                 singleAnimationNode.Init(graph, mixer, clip, speed, inputPort0);
                 mixer.SetInputWeight(inputPort0, 1);
             }
@@ -88,7 +88,7 @@ namespace Player.Animation
                 
                 // 销毁掉当前可能被占用的节点
                 DestroyNode(previousNode);
-                singleAnimationNode = PoolManager.Instance.GetObject<SingleAnimationNode>();
+                singleAnimationNode = ResSystem.GetOrNew<SingleAnimationNode>();
                 singleAnimationNode.Init(graph, mixer, clip, speed, inputPort1);
                 previousNode = currentNode;
                 StartTransitionAnimation(transitionFixedTime);
@@ -108,7 +108,7 @@ namespace Player.Animation
         /// </summary>
         public void PlayBlendAnimation(List<AnimationClip> clips, float speed = 1, float transitionFixedTime = 0.25f)
         {
-            BlendAnimationNode blendAnimationNode = PoolManager.Instance.GetObject<BlendAnimationNode>();
+            BlendAnimationNode blendAnimationNode = ResSystem.GetOrNew<BlendAnimationNode>();
 
             // first play, no transition
             if (currentNode == null)
@@ -134,7 +134,7 @@ namespace Player.Animation
 
         public void PlayBlendAnimation(AnimationClip clip1, AnimationClip clip2, float speed = 1, float transitionFixedTime = 0.25f)
         {
-            BlendAnimationNode blendAnimationNode = PoolManager.Instance.GetObject<BlendAnimationNode>();
+            BlendAnimationNode blendAnimationNode = ResSystem.GetOrNew<BlendAnimationNode>();
 
             // first play, no transition
             if (currentNode == null)
@@ -312,7 +312,7 @@ namespace Player.Animation
             float w0 = mixer.GetInputWeight(0);
             float w1 = mixer.GetInputWeight(1);
             float w2 = mixer.GetInputWeight(2);
-            Debug.Log($"[Animation] {reason} node={nodeInfo} mixer(0={w0:0.###},1={w1:0.###},2={w2:0.###})");
+            // Debug.Log($"[Animation] {reason} node={nodeInfo} mixer(0={w0:0.###},1={w1:0.###},2={w2:0.###})");
         }
     }
 }

@@ -39,7 +39,7 @@ namespace UI
 
         private void OnButtonClicked()
         {
-            AudioManager.Instance.PlayOneShot(clickedAudio, Vector3.zero, 1, false);
+            AudioSystem.PlayOneShot(clickedAudio, Vector3.zero, false, 1, false);
             createCharacterWindow.SelectProfessionButton(this);
         }
 

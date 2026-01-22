@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using JKFrame;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
 namespace Player.Animation
 {
-    [Pool]
     public class BlendAnimationNode : AnimationNodeBase
     {
         private AnimationMixerPlayable blendMixer;

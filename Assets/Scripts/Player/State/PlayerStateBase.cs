@@ -6,9 +6,9 @@ namespace Player.State
     {
         protected PlayerController PlayerController;
         
-        public override void Init(IStateMachineOwner owner, int stateType, StateMachine stateMachine)
+        public override void Init(IStateMachineOwner owner)
         {
-            base.Init(owner, stateType, stateMachine);
+            base.Init(owner);
             PlayerController = owner as PlayerController;
         }
     }

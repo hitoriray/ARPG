@@ -1,5 +1,5 @@
 using System;
-using Serialization;
+using JKFrame;
 
 namespace Data
 {
@@ -9,7 +9,7 @@ namespace Data
     [Serializable]
     public class CustomCharacterData
     {
-        public SerializableDictionary<int, CustomCharacterPartData> CustomPartDataDict;
+        public Serialized_Dic<int, CustomCharacterPartData> CustomPartDataDict;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ namespace Data
         public int Index;
         public float Size;
         public float Height;
-        public SerializationColor Color1;
-        public SerializationColor Color2;
+        public Serialized_Color Color1;
+        public Serialized_Color Color2;
     }
 }

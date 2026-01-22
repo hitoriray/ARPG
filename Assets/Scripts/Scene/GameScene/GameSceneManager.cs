@@ -5,7 +5,7 @@ using Player;
 
 namespace Scene
 {
-    public class GameSceneManager : LogicManagerBase<GameSceneManager>
+    public class GameSceneManager : SingletonMono<GameSceneManager>
     {
         #region Test
 

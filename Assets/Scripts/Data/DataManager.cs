@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Config;
 using JKFrame;
-using Serialization;
 
 namespace Data
 {
@@ -19,7 +18,7 @@ namespace Data
 
         private static void LoadArchive()
         {
-            var saveItem = SaveManager.GetSaveItem(0);
+            var saveItem = SaveSystem.GetSaveItem(0);
             HasArchive = saveItem != null;
         }
 
@@ -30,9 +29,9 @@ namespace Data
         {
             if (HasArchive)
             {
-                SaveManager.DeleteAllSaveItems();
+                SaveSystem.DeleteAllSaveItem();
             }
-            SaveManager.CreateSaveItem();
+            SaveSystem.CreateSaveItem();
             
             // 初始化角色外观数据
             InitCustomCharacterData();
@@ -41,7 +40,7 @@ namespace Data
 
         public static void LoadCurrentArchive()
         {
-            CustomCharacterData = SaveManager.LoadObject<CustomCharacterData>();
+            CustomCharacterData = SaveSystem.LoadObject<CustomCharacterData>();
         }
 
         #region 玩家数据
@@ -50,22 +49,22 @@ namespace Data
         public static void InitCustomCharacterData()
         {
             CustomCharacterData = new CustomCharacterData();
-            CustomCharacterData.CustomPartDataDict = new SerializableDictionary<int, CustomCharacterPartData>();
-            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Face, 
+            CustomCharacterData.CustomPartDataDict = new Serialized_Dic<int, CustomCharacterPartData>();
+            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Face, 
                 new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } );
-            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Hair,
-                new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConvertToSerializationColor(), });
-            CustomCharacterData.CustomPartDataDict.Add((int)CharacterPartType.Cloth,
+            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Hair,
+                new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConverToSerializationColor(), });
+            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Cloth,
                 new CustomCharacterPartData
                 {
-                    Index = 1, Color1 = Color.white.ConvertToSerializationColor(),
-                    Color2 = Color.black.ConvertToSerializationColor(),
+                    Index = 1, Color1 = Color.white.ConverToSerializationColor(),
+                    Color2 = Color.black.ConverToSerializationColor(),
                 });
         }
 
         public static void SaveCustomCharacterData()
         {
-            SaveManager.SaveObject(CustomCharacterData);
+            SaveSystem.SaveObject(CustomCharacterData);
         }
 
         #endregion

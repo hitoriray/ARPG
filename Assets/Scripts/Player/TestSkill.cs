@@ -1,5 +1,5 @@
 ﻿using Config;
-using Player.Skill;
+using Skill;
 using UnityEngine;
 
 namespace Player

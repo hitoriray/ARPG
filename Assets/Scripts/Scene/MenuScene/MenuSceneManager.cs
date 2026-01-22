@@ -3,11 +3,11 @@ using UI;
 
 namespace Scene
 {
-    public class MenuSceneManager : LogicManagerBase<MenuSceneManager>
+    public class MenuSceneManager : SingletonMono<MenuSceneManager>
     {
         void Start()
         {
-            UIManager.Instance.Show<UI_MenuWindow>();
+            UISystem.Show<UI_MenuSceneMenuWindow>();
         }
     }
 }

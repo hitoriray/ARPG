@@ -11,7 +11,7 @@ public class GameManager : SingletonMono<GameManager>
         // 初始化存档
         DataManager.CreateArchive();
         // 进入自定义角色场景
-        SceneManager.LoadScene("CreateCharacter");
+        SceneSystem.LoadScene("CreateCharacter");
     }
 
     /// <summary>
@@ -22,6 +22,6 @@ public class GameManager : SingletonMono<GameManager>
         // 加载当前存档
         DataManager.LoadCurrentArchive();
         // 进入游戏场景
-        SceneManager.LoadScene("Game");
+        SceneSystem.LoadScene("Game");
     }
 }

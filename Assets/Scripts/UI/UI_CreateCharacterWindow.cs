@@ -4,14 +4,13 @@ using Config;
 using Data;
 using JKFrame;
 using Scene;
-using Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace UI
 {
-    [UIElement(false, "UI_CreateCharacterWindow", 2)]
+    [UIWindowData(nameof(UI_CreateCharacterWindow), false, "UI_CreateCharacterWindow", 2)]
     public class UI_CreateCharacterWindow : UI_WindowBase
     {
         // 模型交互Image
@@ -66,7 +65,7 @@ namespace UI
             base.Init();
             
             // 获取配置
-            projectConfig = ConfigManager.Instance.GetConfig<ProjectConfig>(ConfigTool.ProjectConfigName);
+            projectConfig = ResSystem.LoadAsset<ProjectConfig>(ConfigTool.ProjectConfigName);
             part2ConfigDict = new(3)
             {
                 { (int)CharacterPartType.Hair, 0 },
@@ -84,9 +83,9 @@ namespace UI
             facadeMenuButtons[2].Init(this, CharacterPartType.Cloth);
             SelectFacadeMenuButton(facadeMenuButtons[0]);
             // 应用默认的部位配置
-            SetCharacterPart(CharacterPartType.Face, CustomCharacterData.CustomPartDataDict[(int)CharacterPartType.Face].Index, true, true);
-            SetCharacterPart(CharacterPartType.Hair, CustomCharacterData.CustomPartDataDict[(int)CharacterPartType.Hair].Index, false, true);
-            SetCharacterPart(CharacterPartType.Cloth, CustomCharacterData.CustomPartDataDict[(int)CharacterPartType.Cloth].Index, false, true);
+            SetCharacterPart(CharacterPartType.Face, CustomCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face].Index, true, true);
+            SetCharacterPart(CharacterPartType.Hair, CustomCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Hair].Index, false, true);
+            SetCharacterPart(CharacterPartType.Cloth, CustomCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Cloth].Index, false, true);
 
             // 初始化职业按钮
             for (int i = 0; i < professionButtons.Length; i++)
@@ -101,7 +100,7 @@ namespace UI
         {
             base.OnClose();
             // 释放自身资源
-            ResManager.ReleaseInstance(gameObject);
+            ResSystem.UnloadInstance(gameObject);
         }
         
         #endregion
@@ -131,7 +130,7 @@ namespace UI
         /// </summary>
         /// <param name="eventData"></param>
         /// <param name="args"></param>
-        private void OnModelTouchImageDrag(PointerEventData eventData, object[] args)
+        private void OnModelTouchImageDrag(PointerEventData eventData)
         {
             if (lastPosX == float.MaxValue)
             {
@@ -142,7 +141,7 @@ namespace UI
             CharacterCreator.Instance.RotateCharacter(new Vector3(0, -offset * Time.deltaTime * dragSpeed, 0));
         }
 
-        private void OnModelTouchImageEndDrag(PointerEventData eventData, object[] args)
+        private void OnModelTouchImageEndDrag(PointerEventData eventData)
         {
             lastPosX = float.MaxValue;
         }
@@ -172,19 +171,19 @@ namespace UI
         private void OnColor1BtnClicked()
         {
             // 显示颜色选择器窗口
-            UIManager.Instance.Show<UI_ColorSelectorWindow>().Init(OnColor1Selected, color1Button.image.color);
+            UISystem.Show<UI_ColorSelectorWindow>().Init(OnColor1Selected, color1Button.image.color);
         }
         
         private void OnColor2BtnClicked()
         {
-            UIManager.Instance.Show<UI_ColorSelectorWindow>().Init(OnColor2Selected, color2Button.image.color);
+            UISystem.Show<UI_ColorSelectorWindow>().Init(OnColor2Selected, color2Button.image.color);
         }
 
         private void OnColor1Selected(Color newColor)
         {
             // 1.存储数据
             var currentPartData = GetCharacterPartData(CurrentCharacterPartType);
-            currentPartData.Color1 = newColor.ConvertToSerializationColor();
+            currentPartData.Color1 = newColor.ConverToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor1(CurrentCharacterPartType, newColor);
             // 3.修改自身按钮颜色
@@ -195,7 +194,7 @@ namespace UI
         {
             // 1.存储数据
             var currentPartData = GetCharacterPartData(CurrentCharacterPartType);
-            currentPartData.Color2 = newColor.ConvertToSerializationColor();
+            currentPartData.Color2 = newColor.ConverToSerializationColor();
             // 2.修改颜色
             CharacterCreator.Instance.SetColor2(CurrentCharacterPartType, newColor);
             // 3.修改自身按钮颜色
@@ -204,17 +203,17 @@ namespace UI
 
         private void OnBackBtnClicked()
         {
-            Close();
-            SceneManager.LoadScene("Menu");
+            UISystem.Close<UI_CreateCharacterWindow>();
+            SceneSystem.LoadScene("Menu");
         }
 
         private void OnSureBtnClicked()
         {
-            Close();
+            UISystem.Close<UI_CreateCharacterWindow>();
             // 保存数据
             DataManager.SaveCustomCharacterData();
             // 进入游戏场景
-            SceneManager.LoadScene("Game");
+            SceneSystem.LoadScene("Game");
         }
         
         #endregion
@@ -306,7 +305,7 @@ namespace UI
                         {
                             color1Button.gameObject.SetActive(true);
                             // 让该按钮的图片和当前的颜色配置一样
-                            var color = CustomCharacterData.CustomPartDataDict[(int)partType].Color1;
+                            var color = CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1;
                             color1Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else
@@ -317,12 +316,12 @@ namespace UI
                     case CharacterPartType.Face:
                         // 尺寸
                         sizeSlider.transform.parent.gameObject.SetActive(true);
-                        sizeSlider.value = CustomCharacterData.CustomPartDataDict[(int)partType].Size;
+                        sizeSlider.value = CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Size;
                         sizeSlider.minValue = 0.9f;
                         sizeSlider.maxValue = 1.2f;
                         // 高度
                         heightSlider.transform.parent.gameObject.SetActive(true);
-                        heightSlider.value = CustomCharacterData.CustomPartDataDict[(int)partType].Height;
+                        heightSlider.value = CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Height;
                         heightSlider.minValue = 0;
                         heightSlider.maxValue = 0.1f;
                         // 隐藏颜色按钮
@@ -337,7 +336,7 @@ namespace UI
                         {
                             color1Button.gameObject.SetActive(true);
                             // 让该按钮的图片和当前的颜色配置一样
-                            var color = CustomCharacterData.CustomPartDataDict[(int)partType].Color1;
+                            var color = CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1;
                             color1Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else color1Button.gameObject.SetActive(false);
@@ -346,7 +345,7 @@ namespace UI
                         {
                             color2Button.gameObject.SetActive(true);
                             // 让该按钮的图片和当前的颜色配置一样
-                            var color = CustomCharacterData.CustomPartDataDict[(int)partType].Color2;
+                            var color = CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color2;
                             color2Button.image.color = new Color(color.r, color.g, color.b, 0.6f);
                         }
                         else color2Button.gameObject.SetActive(false);
@@ -360,7 +359,7 @@ namespace UI
             CharacterCreator.Instance.SetPart(partConfig, updateCharacterView);
             
             // 保存数据
-            CustomCharacterData.CustomPartDataDict[(int)partType].Index = configIndex;
+            CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType].Index = configIndex;
         }
         
         /// <summary>
@@ -387,16 +386,16 @@ namespace UI
                 else if (currentIndex >= currentPartConfigIds.Count) currentIndex = 0;
                 
                 // 释放资源并且重新获取新资源
-                ResManager.Release(partConfig);
+                ResSystem.UnloadAsset(partConfig);
                 partConfig = ConfigTool.LoadCharacterPartConfig(currentPartType, currentPartConfigIds[currentIndex]);
             }
             // 释放最后一次的资源
-            ResManager.Release(partConfig);
+            ResSystem.UnloadAsset(partConfig);
             
             // 说明职业有效
             part2ConfigDict[(int)currentPartType] = currentIndex;
             SetCharacterPart(currentPartType, currentPartConfigIds[currentIndex], updateUI, true);
-            AudioManager.Instance.PlayOneShot(arrowAudioClip, Vector3.zero, 1, false);
+            AudioSystem.PlayOneShot(arrowAudioClip, Vector3.zero, false, 1, false);
         }
         #endregion
 
@@ -414,7 +413,7 @@ namespace UI
         /// </summary>
         private CustomCharacterPartData GetCharacterPartData(CharacterPartType partType)
         {
-            return CustomCharacterData.CustomPartDataDict[(int)partType];
+            return CustomCharacterData.CustomPartDataDict.Dictionary[(int)partType];
         }
         #endregion
     }

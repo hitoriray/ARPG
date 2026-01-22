@@ -12,9 +12,9 @@ namespace Player.State
         private float runTransition;
         private bool applyRootMotionForMove;
 
-        public override void Init(IStateMachineOwner owner, int stateType, StateMachine stateMachine)
+        public override void Init(IStateMachineOwner owner)
         {
-            base.Init(owner, stateType, stateMachine);
+            base.Init(owner);
             characterController = PlayerController.CharacterController;
             animationController = PlayerController.AnimationController;
             applyRootMotionForMove = PlayerController.CharacterConfig.ApplyRootMotionForMove;
@@ -90,7 +90,7 @@ namespace Player.State
         private void OnFootStep()
         {
             int randomIndex = UnityEngine.Random.Range(0, PlayerController.CharacterConfig.FootStepAudioClips.Length);
-            AudioManager.Instance.PlayOneShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, 1f);
+            AudioSystem.PlayOneShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, false, 1f);
         }
     }
 }

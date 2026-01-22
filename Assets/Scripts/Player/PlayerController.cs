@@ -2,7 +2,7 @@ using System;
 using Config;
 using JKFrame;
 using Player.Animation;
-using Player.Skill;
+using Skill;
 using Player.State;
 using UnityEngine;
 
@@ -30,7 +30,7 @@ namespace Player
         
         public void Init()
         {
-            characterConfig = ResManager.LoadAsset<CharacterConfig>("AnbiConfig");
+            characterConfig = ResSystem.LoadAsset<CharacterConfig>("AnbiConfig");
             
             playerView = GetComponentInChildren<PlayerView>();
             playerView?.Init();
@@ -39,7 +39,7 @@ namespace Player
             skillPlayer.Init(playerView?.AnimationController, ModelTransform);
             
             // 初始化状态机
-            stateMachine = PoolManager.Instance.GetObject<StateMachine>();
+            stateMachine = ResSystem.GetOrNew<StateMachine>();
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
@@ -54,18 +54,18 @@ namespace Player
         {
             var prevState = currentState;
             currentState = newState;
-            Debug.Log($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
+            // Debug.Log($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
             
             switch (currentState)
             {
                 case PlayerState.Idle:
-                    stateMachine.ChangeState<PlayerIdleState>((int)currentState);
+                    stateMachine.ChangeState<PlayerIdleState>();
                     break;
                 case PlayerState.Move:
-                    stateMachine.ChangeState<PlayerMoveState>((int)currentState);
+                    stateMachine.ChangeState<PlayerMoveState>();
                     break;
                 case PlayerState.Skill:
-                    stateMachine.ChangeState<PlayerSkillState>((int)currentState);
+                    stateMachine.ChangeState<PlayerSkillState>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

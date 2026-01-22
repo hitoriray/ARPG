@@ -13,7 +13,7 @@ namespace Player.Animation
 
         public virtual void PushPool()
         {
-            this.JKObjectPushPool();
+            this.ObjectPushPool();
         }
     }
 }

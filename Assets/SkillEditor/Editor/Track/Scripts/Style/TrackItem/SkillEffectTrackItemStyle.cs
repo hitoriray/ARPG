@@ -29,7 +29,7 @@ namespace SkillEditor
             if (effectEvent.Prefab != null)
             {
                 SetTitle(effectEvent.Prefab.name);
-                SetWidth(frameUnitWidth * effectEvent.Duration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+                SetWidth(frameUnitWidth * effectEvent.Duration);
                 SetPositionX(frameUnitWidth * effectEvent.FrameIndex);
             }
             else

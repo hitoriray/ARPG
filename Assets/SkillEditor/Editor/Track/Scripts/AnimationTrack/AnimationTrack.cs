@@ -188,7 +188,7 @@ namespace SkillEditor
         public Vector3 GetPositionForRootMotion(int frameIndex, bool recover = false)
         {
             GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
-            Animator animator = previewGameObject.GetComponent<Animator>();
+            Animator animator = previewGameObject.GetComponentInChildren<Animator>();
             var frameData = AnimationData.FrameEventDict;
             
             SortedDictionary<int, SkillAnimationEvent> sortedFrameData = new(frameData);

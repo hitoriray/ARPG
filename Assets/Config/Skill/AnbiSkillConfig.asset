@@ -16,10 +16,9 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 1827226128182048838, guid: 57bedb1c0023c1c4cb6a2ec83ea8cf26, type: 3}
-    - {fileID: 7400000, guid: 6662e4f9df9663046832dcd80a91c550, type: 2}
-    - {fileID: 7400000, guid: 9bece185442e4cb48a20711479b28eb8, type: 2}
-    - {fileID: 1827226128182048838, guid: a8ded213646abea4697d6bb40fc4e4b0, type: 3}
+    - {fileID: 7400000, guid: c5a15bb3cd889e14db7adc0d511118f4, type: 2}
+    - {fileID: 7400000, guid: dd947c63d5e5c164d837b5e264777bfc, type: 2}
+    - {fileID: 7400000, guid: 6716c32a43782064a87f088a46f25e7c, type: 2}
     - {fileID: 9068624454220128171, guid: b3f3a6218be24254f9ce07de1db0c92d, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -42,13 +41,13 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 4
+      Data: 3
     - Name: 
       Entry: 7
       Data: 
     - Name: $k
       Entry: 3
-      Data: 39
+      Data: 20
     - Name: $v
       Entry: 7
       Data: 3|Config.SkillAnimationEvent, Assembly-CSharp
@@ -75,7 +74,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 0
+      Data: 39
     - Name: $v
       Entry: 7
       Data: 4|Config.SkillAnimationEvent, Assembly-CSharp
@@ -90,7 +89,7 @@ MonoBehaviour:
       Data: 0.25
     - Name: DurationFrame
       Entry: 3
-      Data: 20
+      Data: 60
     - Name: 
       Entry: 8
       Data: 
@@ -102,7 +101,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 3
-      Data: 20
+      Data: 0
     - Name: $v
       Entry: 7
       Data: 5|Config.SkillAnimationEvent, Assembly-CSharp
@@ -117,34 +116,7 @@ MonoBehaviour:
       Data: 0.25
     - Name: DurationFrame
       Entry: 3
-      Data: 19
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 3
-      Data: 58
-    - Name: $v
-      Entry: 7
-      Data: 6|Config.SkillAnimationEvent, Assembly-CSharp
-    - Name: AnimationClip
-      Entry: 10
-      Data: 3
-    - Name: ApplyRootMotion
-      Entry: 5
-      Data: true
-    - Name: TransitionTime
-      Entry: 4
-      Data: 0.25
-    - Name: DurationFrame
-      Entry: 3
-      Data: 55
+      Data: 20
     - Name: 
       Entry: 8
       Data: 
@@ -162,14 +134,32 @@ MonoBehaviour:
       Data: 
     - Name: SkillAudioData
       Entry: 7
-      Data: 7|Config.SkillAudioData, Assembly-CSharp
+      Data: 6|Config.SkillAudioData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 8|System.Collections.Generic.List`1[[Config.SkillAudioEvent, Assembly-CSharp]],
+      Data: 7|System.Collections.Generic.List`1[[Config.SkillAudioEvent, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 8|Config.SkillAudioEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u97F3\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: -1
+    - Name: AudioClip
+      Entry: 6
+      Data: 
+    - Name: Volume
+      Entry: 4
       Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -194,13 +184,13 @@ MonoBehaviour:
       Data: 11|Config.SkillEffectEvent, Assembly-CSharp
     - Name: TrackName
       Entry: 1
-      Data: "\u7279\u6548\u8F68\u9053"
+      Data: 1
     - Name: FrameIndex
       Entry: 3
-      Data: 6
+      Data: 4
     - Name: Prefab
       Entry: 10
-      Data: 4
+      Data: 3
     - Name: Position
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -209,10 +199,10 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 0.56
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1.11
     - Name: 
       Entry: 8
       Data: 
@@ -224,10 +214,10 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 4
-      Data: 0
+      Data: -26.9
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 180
     - Name: 
       Entry: 8
       Data: 
@@ -236,19 +226,19 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 1
+      Data: 0.6
     - Name: 
       Entry: 4
-      Data: 1
+      Data: 0.6
     - Name: 
       Entry: 4
-      Data: 1
+      Data: 0.6
     - Name: 
       Entry: 8
       Data: 
     - Name: Duration
-      Entry: 4
-      Data: 2
+      Entry: 3
+      Data: 54
     - Name: AutoDestroy
       Entry: 5
       Data: true
@@ -279,16 +269,16 @@ MonoBehaviour:
       Data: 14|Config.SkillAttackDetectionEvent, Assembly-CSharp
     - Name: TrackName
       Entry: 1
-      Data: Box
+      Data: Fan
     - Name: FrameIndex
       Entry: 3
-      Data: 48
+      Data: 47
     - Name: DurationFrame
       Entry: 3
-      Data: 20
+      Data: 30
     - Name: AttackDetectionData
       Entry: 7
-      Data: 15|Config.BoxDetectionData, Assembly-CSharp
+      Data: 15|Config.FanDetectionData, Assembly-CSharp
     - Name: Position
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -297,10 +287,10 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 4
-      Data: -0.121079117
+      Data: 0
     - Name: 
       Entry: 4
-      Data: 0.13348484
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -309,112 +299,7 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 1.28588974
-    - Name: 
-      Entry: 4
-      Data: 354.0285
-    - Name: 
-      Entry: 4
-      Data: 2.69239378
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Scale
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 1.95
-    - Name: 
-      Entry: 4
-      Data: 2
-    - Name: 
-      Entry: 4
-      Data: 2
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 16|Config.SkillAttackDetectionEvent, Assembly-CSharp
-    - Name: TrackName
-      Entry: 1
-      Data: Spere
-    - Name: FrameIndex
-      Entry: 3
-      Data: 7
-    - Name: DurationFrame
-      Entry: 3
-      Data: 20
-    - Name: AttackDetectionData
-      Entry: 7
-      Data: 17|Config.SphereDetectionData, Assembly-CSharp
-    - Name: Position
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 0.5611627
-    - Name: 
-      Entry: 4
-      Data: 0.110161424
-    - Name: 
-      Entry: 4
-      Data: -1.32455957
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Radius
-      Entry: 4
-      Data: 0.7278536
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 18|Config.SkillAttackDetectionEvent, Assembly-CSharp
-    - Name: TrackName
-      Entry: 1
-      Data: Fan
-    - Name: FrameIndex
-      Entry: 3
-      Data: 14
-    - Name: DurationFrame
-      Entry: 3
-      Data: 10
-    - Name: AttackDetectionData
-      Entry: 7
-      Data: 19|Config.FanDetectionData, Assembly-CSharp
-    - Name: Position
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: -0.3
-    - Name: 
-      Entry: 4
-      Data: -0.48
-    - Name: 
-      Entry: 4
-      Data: -0.1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Rotation
-      Entry: 7
-      Data: UnityEngine.Vector3, UnityEngine.CoreModule
-    - Name: 
-      Entry: 4
-      Data: 1.99007
+      Data: 0
     - Name: 
       Entry: 4
       Data: 0
@@ -426,16 +311,121 @@ MonoBehaviour:
       Data: 
     - Name: InsideRadius
       Entry: 4
-      Data: 0
+      Data: 0.01
     - Name: Radius
       Entry: 4
-      Data: 6.60276842
+      Data: 3
     - Name: Height
       Entry: 4
-      Data: 0.590409
+      Data: 1
     - Name: Angle
       Entry: 4
-      Data: 61.1012268
+      Data: 180
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 16|Config.SkillAttackDetectionEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: Box
+    - Name: FrameIndex
+      Entry: 3
+      Data: 31
+    - Name: DurationFrame
+      Entry: 3
+      Data: 10
+    - Name: AttackDetectionData
+      Entry: 7
+      Data: 17|Config.BoxDetectionData, Assembly-CSharp
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 18|Config.SkillAttackDetectionEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: Sphere
+    - Name: FrameIndex
+      Entry: 3
+      Data: 46
+    - Name: DurationFrame
+      Entry: 3
+      Data: 20
+    - Name: AttackDetectionData
+      Entry: 7
+      Data: 19|Config.SphereDetectionData, Assembly-CSharp
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Radius
+      Entry: 4
+      Data: 1.58
     - Name: 
       Entry: 8
       Data: 
@@ -450,16 +440,16 @@ MonoBehaviour:
       Data: Weapon
     - Name: FrameIndex
       Entry: 3
-      Data: 39
+      Data: 16
     - Name: DurationFrame
       Entry: 3
-      Data: 10
+      Data: 34
     - Name: AttackDetectionData
       Entry: 7
       Data: 21|Config.WeaponDetectionData, Assembly-CSharp
     - Name: WeaponName
       Entry: 1
-      Data: "\u5DE6\u624B\u6B66\u5668"
+      Data: Weapon1
     - Name: 
       Entry: 8
       Data: 
@@ -476,5 +466,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SkillName: test skill
-  FrameCount: 113
+  FrameCount: 103
   FrameRate: 30

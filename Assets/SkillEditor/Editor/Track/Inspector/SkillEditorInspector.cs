@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Config;
-using Player.Skill;
+using Skill;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -137,11 +137,15 @@ namespace SkillEditor
             root.Add(clipFrameCountLabel);
             isLoopLabel = new Label($"循环动画: {animationTrackItem.AnimationEvent.AnimationClip.isLooping}");
             root.Add(isLoopLabel);
-
+            // 删除
             Button deleteBtn = new Button(OnDeleteBtnClicked);
             deleteBtn.text = "删除";
             deleteBtn.style.backgroundColor = new Color(1, 0, 0, 0.5f);
             root.Add(deleteBtn);
+            // 设置持续帧数至选中帧
+            Button setFrameBtn = new Button(OnSetFrameBtnClicked);
+            setFrameBtn.text = "设置持续帧数至选中帧";
+            root.Add(setFrameBtn);
         }
 
         private void OnAnimationClipAssetFieldValueChanged(ChangeEvent<Object> evt)
@@ -175,8 +179,8 @@ namespace SkillEditor
                 if (((AnimationTrack)currentTrack).CheckFrameIndexOnDrag(trackItemFrameIndex + durationField.value, trackItemFrameIndex, false))
                 {
                     // 修改数据，刷新视图
-                    SkillEditorWindow.Instance.SkillConfig.SkillAnimationData.FrameEventDict[trackItemFrameIndex].DurationFrame = durationField.value;
-                    (currentTrackItem as AnimationTrackItem)?.CheckFrameCount(); // 先刷新再保存，否则会刷新不了
+                    ((AnimationTrackItem)currentTrackItem).AnimationEvent.DurationFrame = durationField.value;
+                    ((AnimationTrackItem)currentTrackItem).CheckFrameCount(); // 先刷新再保存，否则会刷新不了
                     SkillEditorWindow.Instance.SaveSkillConfig();
                     currentTrackItem.ResetView();
                 }
@@ -185,6 +189,14 @@ namespace SkillEditor
                     durationField.value = oldDurationValue;
                 }
             }
+        }
+        
+        private void OnSetFrameBtnClicked()
+        {
+            OnDurationFieldFocusIn(null);
+            var newValue = SkillEditorWindow.Instance.CurrentSelectFrameIndex - ((AnimationTrackItem)currentTrackItem).FrameIndex;
+            if (newValue > 0) durationField.value = newValue;
+            OnDurationFieldFocusOut(null);
         }
         #endregion
 
@@ -259,7 +271,7 @@ namespace SkillEditor
         
         #region 特效轨道
 
-        private FloatField effectDurationField;
+        private IntegerField effectDurationField;
         
         private void DrawEffectTrackItem(EffectTrackItem effectTrackItem)
         {
@@ -290,7 +302,7 @@ namespace SkillEditor
             autoDestroyToggle.RegisterValueChangedCallback(OnEffectAutoDestroyToggleValueChanged);
             root.Add(autoDestroyToggle);
             // 持续时间
-            effectDurationField = new FloatField("持续时间");
+            effectDurationField = new IntegerField("持续时间");
             effectDurationField.value = effectTrackItem.EffectEvent.Duration;
             effectDurationField.RegisterCallback<FocusInEvent>(OnEffectDurationFieldFocusIn);
             effectDurationField.RegisterCallback<FocusOutEvent>(OnEffectDurationFieldFocusOut);
@@ -303,6 +315,10 @@ namespace SkillEditor
             Button applyModelTransformBtn = new Button(ApplyModelTransform);
             applyModelTransformBtn.text = "应用模型Transform属性";
             root.Add(applyModelTransformBtn);
+            // 设置持续帧数至选中帧
+            Button setFrameBtn = new Button(OnSetEffectDurationFrameBtnClicked);
+            setFrameBtn.text = "设置持续帧数至选中帧";
+            root.Add(setFrameBtn);
         }
 
         private void ApplyModelTransform()
@@ -322,8 +338,8 @@ namespace SkillEditor
                 if (particleSystem.main.duration > maxDuration)
                     maxDuration = particleSystem.main.duration;
             }
-            effectTrackItem.EffectEvent.Duration = maxDuration;
-            effectDurationField.value = maxDuration;
+            effectTrackItem.EffectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillConfig.FrameRate);
+            effectDurationField.value = effectTrackItem.EffectEvent.Duration;
             // TODO：删掉下面这一行
             effectTrackItem.ResetView();
         }
@@ -381,6 +397,14 @@ namespace SkillEditor
                 effectTrackItem.ResetView();
             }
         }
+
+        private void OnSetEffectDurationFrameBtnClicked()
+        {
+            OnEffectDurationFieldFocusIn(null);
+            int newValue = SkillEditorWindow.Instance.CurrentSelectFrameIndex - ((EffectTrackItem)currentTrackItem).FrameIndex;
+            if (newValue > 0) effectDurationField.value = newValue;
+            OnEffectDurationFieldFocusOut(null);
+        }
         #endregion
         
         #endregion
@@ -389,16 +413,15 @@ namespace SkillEditor
         
         #region 伤害检测轨道
 
-        private IntegerField durationFrameField;
+        private IntegerField detectionDurationFrameField;
         private List<string> detectionTypeList;
         private void DrawAttackDetectionTrackItem(AttackDetectionTrackItem attackDetectionTrackItem)
         {
             // 持续帧数
-            durationFrameField = new IntegerField("持续帧数");
-            durationFrameField.value = attackDetectionTrackItem.AttackDetectionEvent.DurationFrame;
-            durationFrameField.RegisterCallback<FocusInEvent>(OnDurationFrameFieldFocusIn);
-            durationFrameField.RegisterCallback<FocusOutEvent>(OnDurationFrameFieldFocusOut);
-            root.Add(durationFrameField);
+            detectionDurationFrameField = new IntegerField("持续帧数");
+            detectionDurationFrameField.value = attackDetectionTrackItem.AttackDetectionEvent.DurationFrame;
+            detectionDurationFrameField.RegisterValueChangedCallback(OnDurationFrameFieldValueChanged);
+            root.Add(detectionDurationFrameField);
             
             // 检测类型下拉列表
             detectionTypeList = new(Enum.GetNames(typeof(AttackDetectionType)));
@@ -412,10 +435,12 @@ namespace SkillEditor
                 case AttackDetectionType.Weapon:
                     WeaponDetectionData weaponDetectionData = (WeaponDetectionData)attackDetectionTrackItem.AttackDetectionEvent.AttackDetectionData;
                     DropdownField weaponDetectionDropdownField = new DropdownField("武器选择");
-                    SkillPlayer skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
-                    weaponDetectionDropdownField.choices = skillPlayer.WeaponDict.Keys.ToList();
-                    if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName) &&
-                        skillPlayer.WeaponDict.ContainsKey(weaponDetectionData.WeaponName))
+                    if (SkillEditorWindow.Instance.CurrentPreviewCharacterObj != null)
+                    {
+                        SkillPlayer skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
+                        weaponDetectionDropdownField.choices = skillPlayer.WeaponDict.Keys.ToList();
+                    }
+                    if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName))
                     {
                         weaponDetectionDropdownField.value = weaponDetectionData.WeaponName;
                     }
@@ -476,8 +501,12 @@ namespace SkillEditor
                     root.Add(fanDetectionAngleField);
                     break;
             }
+            
+            // 设置持续帧数至选中帧
+            Button setFrameBtn = new Button(OnSetDetectionDurationFrameBtnClicked);
+            setFrameBtn.text = "设置持续帧数至选中帧";
+            root.Add(setFrameBtn);
         }
-
 
         #region Common Event
         private void OnDetectionDropdownFieldValueChanged(ChangeEvent<string> evt)
@@ -487,22 +516,21 @@ namespace SkillEditor
             Show();
         }
         
-        #region DurationFrameField
-        private float oldDurationFrameValue = 0;
-        private void OnDurationFrameFieldFocusIn(FocusInEvent evt)
+        private void OnDurationFrameFieldValueChanged(ChangeEvent<int> evt)
         {
-            oldDurationFrameValue = durationFrameField.value;
+            ((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.DurationFrame = evt.newValue;
+            currentTrackItem.ResetView();
         }
 
-        private void OnDurationFrameFieldFocusOut(FocusOutEvent evt)
+        private void OnSetDetectionDurationFrameBtnClicked()
         {
-            if (durationFrameField.value != oldDurationFrameValue)
+            var newValue = SkillEditorWindow.Instance.CurrentSelectFrameIndex - ((AttackDetectionTrackItem)currentTrackItem).FrameIndex;
+            if (newValue > 0)
             {
-                ((AttackDetectionTrackItem)currentTrackItem).AttackDetectionEvent.DurationFrame = durationFrameField.value;
-                currentTrackItem.ResetView();
+                detectionDurationFrameField.value = newValue;
             }
         }
-        #endregion
+        
         #endregion
         
         #region Weapon Events

@@ -1,0 +1,251 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Config;
+using JKFrame;
+using Player.Animation;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace Skill
+{
+    // 技能播放器
+    public class SkillPlayer : SerializedMonoBehaviour
+    {
+        private AnimationController animationController;
+        
+        private SkillConfig skillConfig;
+        private int currentFrameIndex;
+        private float playerTotalTime;
+        private float frameRate;
+        private bool isPlaying = false;
+        public bool IsPlaying => isPlaying;
+
+        private Transform modelTransform;
+        public Transform ModelTransform => modelTransform;
+        
+        public LayerMask attackDetectionLayer; // 攻击检测的Layer
+
+        public void Init(AnimationController animationController, Transform modelTransform)
+        {
+            this.animationController = animationController;
+            this.modelTransform = modelTransform;
+
+            foreach (var skillWeapon in weaponDict.Values)
+            {
+                skillWeapon.Init(attackDetectionLayer, OnWeaponDetection);
+            }
+        }
+        
+        #region 武器
+
+        [SerializeField] private Dictionary<string, SkillWeapon> weaponDict = new();
+        public Dictionary<string, SkillWeapon> WeaponDict => weaponDict;
+
+        private void OnWeaponDetection(Collider collider)
+        {
+            onWeaponDetectionAction?.Invoke(collider);
+        }
+
+        #endregion
+        
+        private Action skillEndAction;
+        private Action<Vector3, Quaternion> rootMotionAction;
+        private Action<Collider> onWeaponDetectionAction;
+
+        public void PlaySkill(SkillConfig skillConfig, Action skillEndAction, Action<Collider> onWeaponDetectionAction, Action<Vector3, Quaternion> rootMotionAction = null)
+        {
+            this.skillConfig = skillConfig;
+            currentFrameIndex = -1;
+            frameRate = skillConfig.FrameRate;
+            playerTotalTime = 0;
+            isPlaying = true;
+            this.skillEndAction = skillEndAction;
+            this.rootMotionAction = rootMotionAction;
+            this.onWeaponDetectionAction = onWeaponDetectionAction;
+            TickSkill();
+        }
+
+        private void Clean()
+        {
+            if (rootMotionAction != null)
+            {
+                animationController.ClearRootMotionAction();
+            }
+            skillConfig = null;
+            rootMotionAction = null;
+            skillEndAction = null;
+            onWeaponDetectionAction = null;
+        }
+
+        private void Update()
+        {
+            if (IsPlaying)
+            {
+                playerTotalTime += Time.deltaTime;
+                int targetFrameIndex = (int)(playerTotalTime * frameRate);
+                // 防止一帧延迟过大，追帧
+                while (currentFrameIndex < targetFrameIndex)
+                {
+                    // 驱动一次技能
+                    TickSkill();
+                }
+                
+                // 如果到达最后一帧，技能结束
+                if (targetFrameIndex >= skillConfig.FrameCount)
+                {
+                    isPlaying = false;
+                    skillEndAction?.Invoke();
+                    Clean();
+                }
+            }
+        }
+
+        private void TickSkill()
+        {
+            currentFrameIndex++;
+            // 驱动动画
+            if (animationController != null &&
+                skillConfig.SkillAnimationData.FrameEventDict.TryGetValue(currentFrameIndex, out var animationEvent))
+            {
+                animationController.PlaySingleAnimation(animationEvent.AnimationClip, 1, true, animationEvent.TransitionTime);
+
+                if (animationEvent.ApplyRootMotion)
+                {
+                    animationController.SetRootMotionAction(rootMotionAction);
+                }
+                else
+                {
+                    animationController.ClearRootMotionAction();
+                }
+            }
+            // 驱动音效
+            foreach (var audioEvent in skillConfig.SkillAudioData.FrameData)
+            {
+                if (audioEvent.AudioClip != null && audioEvent.FrameIndex == currentFrameIndex)
+                {
+                    // 播放音效，从头播放
+                    AudioSystem.PlayOneShot(audioEvent.AudioClip, transform.position, false, audioEvent.Volume);
+                }
+            }
+            // 驱动特效
+            foreach (var effectEvent in skillConfig.SkillEffectData.FrameData)
+            {
+                if (effectEvent.Prefab != null && effectEvent.FrameIndex == currentFrameIndex)
+                {
+                    // 实例化特效
+                    var effectObj = PoolSystem.GetGameObject(effectEvent.Prefab.name);
+                    if (effectObj == null)
+                    {
+                        effectObj = GameObject.Instantiate(effectEvent.Prefab);
+                        effectObj.name = effectEvent.Prefab.name;
+                    }
+
+                    effectObj.transform.position = modelTransform.TransformPoint(effectEvent.Position);
+                    effectObj.transform.rotation = Quaternion.Euler(modelTransform.eulerAngles + effectEvent.Rotation);
+                    effectObj.transform.localScale = effectEvent.Scale;
+                    if (effectEvent.AutoDestroy)
+                    {
+                        StartCoroutine(AutoDestructEffectGameObject((float)effectEvent.Duration / skillConfig.FrameRate, effectObj));
+                    }
+                }
+            }
+            
+#if UNITY_EDITOR
+            if (drawAttackDetectionGizmos)
+            {
+                currentAttackDetectionList.Clear();
+            }
+#endif
+            
+            // 驱动伤害检测
+            foreach (var detectionEvent in skillConfig.SkillAttackDetectionData.FrameData)
+            {
+                var detectionType = detectionEvent.GetAttackDetectionType();
+                // 只有武器需要关注开头和结尾帧
+                if (detectionType == AttackDetectionType.Weapon)
+                {
+                    if (detectionEvent.FrameIndex == currentFrameIndex)
+                    {
+                        // 驱动武器开启
+                        var weaponDetectionData = (WeaponDetectionData)detectionEvent.AttackDetectionData;
+                        if (weaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weapon))
+                        {
+                            weapon.StartDetection();
+                        }
+                        else
+                        {
+                            Debug.LogError("没有指定的武器");
+                        }
+                    }
+                    if (currentFrameIndex == detectionEvent.FrameIndex + detectionEvent.DurationFrame)
+                    {
+                        // 驱动武器关闭
+                        var weaponDetectionData = (WeaponDetectionData)detectionEvent.AttackDetectionData;
+                        if (weaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weapon))
+                        {
+                            weapon.StopDetection();
+                        }
+                        else
+                        {
+                            Debug.LogError("没有指定的武器");
+                        }
+                    }
+                }
+                // 其他形状每一帧都做检测
+                else
+                {
+                    // 当前帧在范围内
+                    if (currentFrameIndex >= detectionEvent.FrameIndex && 
+                             currentFrameIndex <= detectionEvent.FrameIndex + detectionEvent.DurationFrame)
+                    {
+                        var colliders = SkillAttackDetectionTool.ShapeDetection(modelTransform, detectionEvent.AttackDetectionData, detectionType, attackDetectionLayer);
+                        if (colliders == null)
+                            break;
+                        foreach (var col in colliders)
+                        {
+                            if (col != null)
+                            {
+                                onWeaponDetectionAction?.Invoke(col);
+                            }
+                        }
+                    }
+                }
+#if UNITY_EDITOR
+                if (drawAttackDetectionGizmos)
+                {
+                    // 当前帧在范围内
+                    if (currentFrameIndex >= detectionEvent.FrameIndex &&
+                        currentFrameIndex <= detectionEvent.FrameIndex + detectionEvent.DurationFrame)
+                    {
+                        currentAttackDetectionList.Add(detectionEvent);
+                    }
+                }
+#endif
+            }
+        }
+
+        private IEnumerator AutoDestructEffectGameObject(float time, GameObject obj)
+        {
+            yield return new WaitForSeconds(time);
+            obj.GameObjectPushPool();
+        }
+        
+        #region Editor
+#if UNITY_EDITOR
+        [SerializeField] private bool drawAttackDetectionGizmos;
+        private List<SkillAttackDetectionEvent> currentAttackDetectionList = new();
+        private void OnDrawGizmos()
+        {
+            if (drawAttackDetectionGizmos && currentAttackDetectionList.Count > 0)
+            {
+                foreach (var detectionEvent in currentAttackDetectionList)
+                {
+                    SkillGizmosTool.DrawDetectionGizmos(detectionEvent, this);
+                }
+            }
+        }
+#endif
+        #endregion
+    }
+}
