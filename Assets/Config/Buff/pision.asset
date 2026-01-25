@@ -22,26 +22,44 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes:
     - Name: startEffect
-      Entry: 6
-      Data: 
-    - Name: tickEffect
       Entry: 7
-      Data: 0|Skill.Buff.SimpleBuffEffectData, Assembly-CSharp
+      Data: 0|Config.SimpleBuffEffectData, Assembly-CSharp
     - Name: type
       Entry: 3
       Data: 0
     - Name: value
       Entry: 4
-      Data: -10
+      Data: -5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: periodicEffect
+      Entry: 7
+      Data: 1|Config.SimpleBuffEffectData, Assembly-CSharp
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 4
+      Data: -5
     - Name: 
       Entry: 8
       Data: 
     - Name: endEffect
-      Entry: 6
+      Entry: 7
+      Data: 2|Config.SimpleBuffEffectData, Assembly-CSharp
+    - Name: type
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 4
+      Data: -5
+    - Name: 
+      Entry: 8
       Data: 
   buffName: "\u4E2D\u6BD2"
   description: "\u6211\u4E2D\u6BD2\u4E86\uFF01"
   icon: {fileID: 0}
   maxStack: 5
-  duration: 3
-  tickTime: 1
+  duration: 5
+  periodicTime: 1
