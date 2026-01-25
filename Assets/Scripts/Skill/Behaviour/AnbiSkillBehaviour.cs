@@ -8,7 +8,7 @@ namespace Skill.Behaviour
     public class AnbiSkillBehaviour : SkillBehaviourBase
     {
         #region 配置
-        public float cdTime = 5f;       // 整段技能结束的cd时间
+        public float cdTime = 10;       // 整段技能结束的cd时间
         public float standingTime = 5;  // 等待下一段技能的释放的空窗时间
         #endregion
         protected float cdTimer;
@@ -71,7 +71,7 @@ namespace Skill.Behaviour
             cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
             
             // 技能处于某一段，但是可能会超时
-            if (attackIndex == -1)
+            if (attackIndex != -1)
             {
                 // 已经超时，应该进入到完整CD
                 if (cdTimer <= 0)
