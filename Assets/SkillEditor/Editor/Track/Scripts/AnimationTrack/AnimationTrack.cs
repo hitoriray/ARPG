@@ -288,7 +288,7 @@ namespace SkillEditor
         private void UpdateGesture(int frameIndex)
         {
             GameObject previewGameObject = SkillEditorWindow.Instance.CurrentPreviewCharacterObj;
-            Animator animator = previewGameObject.GetComponent<Animator>();
+            Animator animator = previewGameObject.GetComponentInChildren<Animator>();
             var frameData = AnimationData.FrameData;
             
             // 找到距离这一帧左边最近的一个动画，也就是当前要播放的动画

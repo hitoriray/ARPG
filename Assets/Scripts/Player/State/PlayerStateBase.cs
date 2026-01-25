@@ -1,4 +1,5 @@
 ﻿using JKFrame;
+using Player.Animation;
 using UnityEngine;
 
 namespace Player.State
@@ -6,12 +7,14 @@ namespace Player.State
     public abstract class PlayerStateBase : StateBase
     {
         protected PlayerController PlayerController;
+        protected AnimationController animationController;
         protected static int currentReleaseSkillIndex;
         
         public override void Init(IStateMachineOwner owner)
         {
             base.Init(owner);
             PlayerController = owner as PlayerController;
+            animationController = PlayerController.AnimationController;
         }
 
         // TODO: 临时测试逻辑
@@ -31,6 +34,12 @@ namespace Player.State
             }
 
             return false;
+        }
+        
+        protected void OnFootStep()
+        {
+            int randomIndex = UnityEngine.Random.Range(0, PlayerController.CharacterConfig.FootStepAudioClips.Length);
+            AudioSystem.PlayOneShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, false, 1f);
         }
     }
 }

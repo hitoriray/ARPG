@@ -10,9 +10,15 @@
 
         public override void Enter()
         {
+            animationController.AddAnimationEvent("FootStep", OnFootStep);
             PlaySkill();
         }
 
+        public override void Exit()
+        {
+            animationController.RemoveAnimationEvent("FootStep", OnFootStep);
+        }
+        
         public override void Update()
         {
             if (CheckAndEnterSkillState())

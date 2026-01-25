@@ -15,7 +15,6 @@ namespace Skill.Behaviour
         {
             base.Release();
             attackIndex += 1;
-            Debug.Log($"attackIndex={attackIndex}");
             if (attackIndex >= skillConfig.Clips.Length)
                 attackIndex = 0;
             skillPlayer.StartPlaySkillConfig(this);
@@ -30,14 +29,23 @@ namespace Skill.Behaviour
         
         public override void OnSkillClipEnd()
         {
-            attackIndex = -1;
+            OnChangeSkill();
             player.ChangeState(PlayerState.Idle);
         }
 
         public override void OnReleaseNew()
         {
-            Debug.Log("release new");
-            attackIndex = -1;
+            OnChangeSkill();
+        }
+
+        private void OnChangeSkill()
+        {
+            if (skillBrain.TryGetShareData(AnbiSkillBrain.ContinueBasicAttackDataKey, out bool canContinue)
+                && canContinue == false)
+            {
+                attackIndex = -1;
+            }
+            skillBrain.AddOrUpdateShareData(AnbiSkillBrain.ContinueBasicAttackDataKey, false);
         }
     }
 }

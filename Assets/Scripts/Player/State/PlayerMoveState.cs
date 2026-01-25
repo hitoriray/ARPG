@@ -8,7 +8,6 @@ namespace Player.State
     public class PlayerMoveState : PlayerStateBase
     {
         private CharacterController characterController;
-        private AnimationController animationController;
         private float runTransition;
         private bool applyRootMotionForMove;
 
@@ -16,7 +15,6 @@ namespace Player.State
         {
             base.Init(owner);
             characterController = PlayerController.CharacterController;
-            animationController = PlayerController.AnimationController;
             applyRootMotionForMove = PlayerController.CharacterConfig.ApplyRootMotionForMove;
         }
 
@@ -85,12 +83,6 @@ namespace Player.State
             animationController.Speed = speed;
             deltaPos.y = -9.8f * Time.deltaTime;
             characterController.Move(deltaPos);
-        }
-
-        private void OnFootStep()
-        {
-            int randomIndex = UnityEngine.Random.Range(0, PlayerController.CharacterConfig.FootStepAudioClips.Length);
-            AudioSystem.PlayOneShot(PlayerController.CharacterConfig.FootStepAudioClips[randomIndex], PlayerController.transform.position, false, 1f);
         }
     }
 }
