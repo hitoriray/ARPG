@@ -46,7 +46,7 @@ namespace Skill
 
         public virtual void ReleaseSkill(int index)
         {
-            if (LastReleaseBehaviourIndex != -1)
+            if (LastReleaseBehaviourIndex == -1)
             {
                 skillBehaviours[index].OnReleaseNew();
             }
