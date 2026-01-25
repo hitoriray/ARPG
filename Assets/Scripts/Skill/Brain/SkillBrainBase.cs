@@ -17,6 +17,7 @@ namespace Skill
 
         public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
+        public int SkillConfigCount => skillConfigs.Count;
 
         public virtual void SetCanReleaseFlag(bool newValue)
         {
@@ -48,7 +49,7 @@ namespace Skill
         {
             if (LastReleaseBehaviourIndex != -1 && LastReleaseBehaviourIndex != index)
             {
-                skillBehaviours[index].OnReleaseNew();
+                skillBehaviours[index].OnReleaseNewSkill();
             }
             skillBehaviours[index].Release();
             LastReleaseBehaviourIndex = index;

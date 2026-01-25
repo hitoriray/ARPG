@@ -1,6 +1,4 @@
-﻿using Config;
-using Player;
-using Player.State;
+﻿using Player.State;
 using UnityEngine;
 
 namespace Skill.Behaviour
@@ -8,16 +6,14 @@ namespace Skill.Behaviour
     public class AnbiSkillBehaviour : SkillBehaviourBase
     {
         #region 配置
-        public float cdTime = 10;       // 整段技能结束的cd时间
         public float standingTime = 5;  // 等待下一段技能的释放的空窗时间
         #endregion
-        protected float cdTimer;
+        
         private int attackIndex = -1; // -1意味着没有进入技能，0,1,2...代表在技能中（并不是技能播放中）
-        private bool playing = false; // 是否在技能播放中
 
         public override SkillBehaviourBase DeepClone()
         {
-            return new AnbiSkillBehaviour { cdTime = cdTime };
+            return new AnbiSkillBehaviour();
         }
         
         public override void Release()
@@ -51,9 +47,8 @@ namespace Skill.Behaviour
             return checkCd && base.CheckRelease();
         }
 
-        public override void OnUpdate()
+        public override void UpdateCdTime()
         {
-            base.OnUpdate();
             if (playing)
             {
                 Debug.Log("正在播放技能");
@@ -76,13 +71,13 @@ namespace Skill.Behaviour
                 // 已经超时，应该进入到完整CD
                 if (cdTimer <= 0)
                 {
-                   cdTimer = cdTime;
-                   attackIndex = -1;
-                   Debug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
+                    cdTimer = cdTime;
+                    attackIndex = -1;
+                    Debug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
                 }
                 else
                 {
-                   Debug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
+                    Debug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
                 }
             }
             else
@@ -93,17 +88,13 @@ namespace Skill.Behaviour
 
         public override void OnSkillClipEnd()
         {
-            OnChangeState();
+            base.OnSkillClipEnd();
             player.ChangeState(PlayerState.Idle);
         }
-
-        public override void OnReleaseNew()
+        
+        public override void OnClipEndOrReleaseNewSkill()
         {
-            OnChangeState();
-        }
-
-        private void OnChangeState()
-        {
+            base.OnClipEndOrReleaseNewSkill();
             playing = false;
             // 当前结束的是最后一段，说明技能全部结束了
             if (attackIndex == skillConfig.Clips.Length - 1)
@@ -115,6 +106,13 @@ namespace Skill.Behaviour
             {
                 cdTimer = standingTime;
             }
+        }
+        
+        public override void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
+        {
+            deltaPos.y += Time.deltaTime * -9.8f;
+            player.CharacterController.Move(deltaPos);
+            player.ModelTransform.rotation *= deltaRot;
         }
     }
 }

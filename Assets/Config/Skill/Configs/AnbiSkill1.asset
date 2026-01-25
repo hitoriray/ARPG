@@ -50,15 +50,13 @@ MonoBehaviour:
     - Name: Behaviour
       Entry: 7
       Data: 2|Skill.Behaviour.AnbiSkillBehaviour, Assembly-CSharp
-    - Name: cdTime
-      Entry: 4
-      Data: 10
     - Name: standingTime
       Entry: 4
       Data: 5
     - Name: 
       Entry: 8
       Data: 
+  cdTime: 10
   Clips:
   - {fileID: 11400000, guid: 6288157b82a283d43a734b53d7c0b874, type: 2}
   - {fileID: 11400000, guid: c046c5ba89a63d84b874f65f33a1d692, type: 2}

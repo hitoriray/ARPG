@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 536b769e38304b3483cfd523159e7da1, type: 3}
-  m_Name: AnbiBasicAttack
+  m_Name: AnbiSkill2
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -49,19 +49,10 @@ MonoBehaviour:
       Data: 
     - Name: Behaviour
       Entry: 7
-      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
-    - Name: standAttackCount
-      Entry: 3
-      Data: 3
-    - Name: perfectClipIndex
-      Entry: 3
-      Data: 3
+      Data: 2|Skill.Behaviour.AnbiSkill2Behaviour, Assembly-CSharp
     - Name: 
       Entry: 8
       Data: 
   cdTime: 0
   Clips:
-  - {fileID: 11400000, guid: dd4bbcdbbb053d74a9a9aaa9a764a5e7, type: 2}
-  - {fileID: 11400000, guid: 38cdfd309f4301d499d65b732c41d17b, type: 2}
-  - {fileID: 11400000, guid: c04c3c0da2a235f4ab48cc3cf3f97677, type: 2}
-  - {fileID: 11400000, guid: 95d8e50186791fc4fb0badb5cdc892da, type: 2}
+  - {fileID: 11400000, guid: fc7055bdf870f1c4e9aa7f1ff931405f, type: 2}

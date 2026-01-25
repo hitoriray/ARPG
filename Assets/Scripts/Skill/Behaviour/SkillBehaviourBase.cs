@@ -11,6 +11,9 @@ namespace Skill.Behaviour
         protected SkillBrainBase skillBrain;
         protected SkillPlayer skillPlayer;
         protected bool canRotate = false;
+        protected bool playing = false; // 是否在技能播放中
+        protected float cdTime => skillConfig.cdTime;
+        protected float cdTimer;
 
         public abstract SkillBehaviourBase DeepClone();
 
@@ -24,12 +27,21 @@ namespace Skill.Behaviour
         
         public virtual void OnUpdate()
         {
+            UpdateCdTime();
             RotateOnUpdate();
+        }
+
+        public virtual void UpdateCdTime()
+        {
+            if (cdTimer <= 0)
+                return;
+            cdTimer += Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
         }
         
         public virtual void Release()
         {
             canRotate = false;
+            playing = true;
             skillBrain.SetCanReleaseFlag(false);
             ApplyCosts();
         }
@@ -73,17 +85,24 @@ namespace Skill.Behaviour
             }
         }
 
-        public virtual void OnReleaseNew()
+        public virtual void OnReleaseNewSkill()
         {
+            OnClipEndOrReleaseNewSkill();
+        }
+        
+        public virtual void OnSkillClipEnd()
+        {
+            OnClipEndOrReleaseNewSkill();
+        }
+
+        public virtual void OnClipEndOrReleaseNewSkill()
+        {
+            playing = false;
         }
         
         #region 技能驱动时的事件
 
         public virtual void OnTickSkill(int frameIndex)
-        {
-        }
-
-        public virtual void OnSkillClipEnd()
         {
         }
         

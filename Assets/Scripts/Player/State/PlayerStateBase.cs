@@ -20,17 +20,27 @@ namespace Player.State
         // TODO: 临时测试逻辑
         protected virtual bool CheckAndEnterSkillState()
         {
-            if (Input.GetMouseButtonDown(0) && PlayerController.SkillBrain.CheckReleaseSkill(0))
+            for (int i = 0; i < PlayerController.SkillBrain.SkillConfigCount; i++)
             {
-                currentReleaseSkillIndex = 0;
-                PlayerController.ChangeState(PlayerState.Skill);
-                return true;
-            }
-            else if (Input.GetMouseButtonDown(1) && PlayerController.SkillBrain.CheckReleaseSkill(1))
-            {
-                currentReleaseSkillIndex = 1;
-                PlayerController.ChangeState(PlayerState.Skill);
-                return true;
+                bool valid;
+                // 默认0是普攻
+                if (i == 0)
+                {
+                    valid = InputManager.Instance.GetBasicAttackKeyState() && 
+                            PlayerController.SkillBrain.CheckReleaseSkill(i);
+                }
+                else
+                {
+                    valid = InputManager.Instance.GetSkillKeyState(i - 1) &&
+                            PlayerController.SkillBrain.CheckReleaseSkill(i);
+                }
+                
+                if (valid)
+                {
+                    currentReleaseSkillIndex = i;
+                    PlayerController.ChangeState(PlayerState.Skill);
+                    return true;
+                }
             }
 
             return false;
