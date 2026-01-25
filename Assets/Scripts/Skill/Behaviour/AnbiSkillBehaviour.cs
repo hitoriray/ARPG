@@ -89,8 +89,6 @@ namespace Skill.Behaviour
             {
                 Debug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{cdTime}");
             }
-            
-            cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
         }
 
         public override void OnSkillClipEnd()
