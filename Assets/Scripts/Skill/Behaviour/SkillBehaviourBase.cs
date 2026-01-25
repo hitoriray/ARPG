@@ -75,6 +75,7 @@ namespace Skill.Behaviour
 
         public virtual void OnReleaseNew()
         {
+            
         }
         
         #region 技能驱动时的事件

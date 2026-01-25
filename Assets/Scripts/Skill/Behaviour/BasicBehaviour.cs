@@ -15,7 +15,6 @@ namespace Skill.Behaviour
         {
             base.Release();
             attackIndex += 1;
-            Debug.Log($"attackIndex={attackIndex}");
             if (attackIndex >= skillConfig.Clips.Length)
                 attackIndex = 0;
             skillPlayer.StartPlaySkillConfig(this);
@@ -36,7 +35,6 @@ namespace Skill.Behaviour
 
         public override void OnReleaseNew()
         {
-            Debug.Log("release new");
             attackIndex = -1;
         }
     }
