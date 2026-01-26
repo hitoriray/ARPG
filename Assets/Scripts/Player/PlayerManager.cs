@@ -28,6 +28,19 @@ namespace Player
             {
                 UISystem.Show<UI_SkillLearnWindow>().Init(DataManager.GameData.SkillLearnedDatas);
             }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                UI_SkillWindow window = UISystem.GetWindow<UI_SkillWindow>();
+                if (window == null || window.gameObject.activeInHierarchy == false)
+                {
+                    UISystem.Show<UI_SkillWindow>().Show(DataManager.GameData.SkillLearnedDatas);
+                }
+                else
+                {
+                    UISystem.Close<UI_SkillWindow>();
+                }
+            }
         }
 
         public List<SkillConfig> GetAllSkillConfig()
