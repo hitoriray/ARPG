@@ -16,15 +16,15 @@ namespace Skill.Behaviour
             return new AnbiSkillBehaviour();
         }
         
-        public override void Release()
+        public override void Release(bool calcCdTime = true)
         {
-            base.Release();
+            base.Release(false); // 如果有一套自己的计算cd的逻辑，那么也需要写死false，表示不需要基类的计算
             playing = true;
             attackIndex += 1;
             // 如果技能是最后一段，立刻进入完整的cd
             if (attackIndex == skillConfig.Clips.Length - 1)
             {
-                cdTimer = cdTime;
+                cdTimer = GetCdTime();
             }
             skillPlayer.StartPlaySkillConfig(this);
             skillPlayer.PlaySkillClip(skillConfig.Clips[attackIndex]);
@@ -44,7 +44,7 @@ namespace Skill.Behaviour
             {
                 checkCd = cdTimer <= 0;
             }
-            return checkCd && base.CheckRelease();
+            return checkCd && base.CheckCost();
         }
 
         public override void UpdateCdTime()
@@ -55,7 +55,7 @@ namespace Skill.Behaviour
                 if (attackIndex == skillConfig.Clips.Length - 1)
                 {
                     cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
-                    Debug.Log($"播放状态：技能处于最后一段，已经在计算CD中:{cdTimer}/{cdTime}");
+                    Debug.Log($"播放状态：技能处于最后一段，已经在计算CD中:{cdTimer}/{GetCdTime()}");
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace Skill.Behaviour
                 // 已经超时，应该进入到完整CD
                 if (cdTimer <= 0)
                 {
-                    cdTimer = cdTime;
+                    cdTimer = GetCdTime();
                     attackIndex = -1;
                     Debug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
                 }
@@ -82,7 +82,7 @@ namespace Skill.Behaviour
             }
             else
             {
-                Debug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{cdTime}");
+                Debug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Config;
+using Data;
 using JKFrame;
 using Player;
 using Sirenix.OdinInspector;
@@ -24,15 +25,17 @@ namespace Skill
             CanRelease = newValue;
         }
 
-        public virtual void Init(PlayerController player)
+        public virtual void Init(PlayerController player, SkillLearnedDatas skillLearnedDatas)
         {
             CanRelease = true;
             skillPlayer.Init(player.AnimationController, player.ModelTransform);
-            skillBehaviours = new(skillConfigs.Count);
-            foreach (var skillConfig in skillConfigs)
+            // TODO: 基于所学技能去初始化，后续是要通过学习修改
+            skillBehaviours = new(skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count);
+            foreach (var item in skillLearnedDatas.SkillLearnedDataDict.Dictionary)
             {
+                var skillConfig = skillConfigs[item.Key];
                 var skillBehaviour = skillConfig.Behaviour.DeepClone();
-                skillBehaviour.Init(player, skillConfig, this, skillPlayer);
+                skillBehaviour.Init(player, skillConfig, this, skillPlayer, item.Value);
                 skillBehaviours.Add(skillBehaviour);
             }
         }

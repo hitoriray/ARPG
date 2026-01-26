@@ -40,35 +40,38 @@ namespace Data
 
         public static void LoadCurrentArchive()
         {
-            CustomCharacterData = SaveSystem.LoadObject<CustomCharacterData>();
+            GameData = SaveSystem.LoadObject<GameData>();
         }
 
         #region 玩家数据
 
-        public static CustomCharacterData CustomCharacterData { get; private set; }
+        public static GameData GameData { get; private set; }
         public static void InitCustomCharacterData()
         {
-            CustomCharacterData = new CustomCharacterData();
-            CustomCharacterData.CustomPartDataDict = new Serialized_Dic<int, CustomCharacterPartData>();
-            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Face, 
+            GameData = new GameData();
+            GameData.CustomPartDataDict = new Serialized_Dic<int, CustomCharacterPartData>();
+            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Face, 
                 new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } );
-            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Hair,
+            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Hair,
                 new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConverToSerializationColor(), });
-            CustomCharacterData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Cloth,
+            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Cloth,
                 new CustomCharacterPartData
                 {
                     Index = 1, Color1 = Color.white.ConverToSerializationColor(),
                     Color2 = Color.black.ConverToSerializationColor(),
                 });
-            CustomCharacterData.SkillLearnedDatas = new()
+            GameData.SkillLearnedDatas = new()
             {
                 SkillTotalPoint = 1000,
             };
+            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData(){lv=1});
+            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData(){lv=2});
+            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(2, new SkillLearnedData(){lv=3});
         }
 
         public static void SaveCustomCharacterData()
         {
-            SaveSystem.SaveObject(CustomCharacterData);
+            SaveSystem.SaveObject(GameData);
         }
 
         #endregion

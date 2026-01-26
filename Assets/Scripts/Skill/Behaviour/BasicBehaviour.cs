@@ -17,9 +17,9 @@ namespace Skill.Behaviour
             };
         }
 
-        public override void Release()
+        public override void Release(bool calcCdTime = true)
         {
-            base.Release();
+            base.Release(false); // 普攻永远是false，所以其实可以写死false
             // 特殊技能
             if (skillBrain.TryGetShareData(AnbiSkillBrain.PerfectAttackClip1, out bool hasPerfectClip) && hasPerfectClip)
             {

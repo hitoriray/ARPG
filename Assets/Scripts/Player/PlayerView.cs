@@ -19,7 +19,7 @@ namespace Player
         [SerializeField] private SkinnedMeshRenderer[] partSkinnedMeshRenderers;    // 部位渲染器
         [SerializeField] private Material[] partMaterials;                          // 部位的材质
         [SerializeField] private Transform neckRootTransform;                       // 头部的根节点，用于修改头部的大小和高度
-        private CustomCharacterData customCharacterData;                            // 玩家定义的角色数据，用于存档
+        private GameData gameData;                            // 玩家定义的角色数据，用于存档
         private readonly Dictionary<int, CharacterPartConfigBase> characterPartDict = new (); // 角色部位字典
 
         public void Init()
@@ -27,7 +27,7 @@ namespace Player
             animationController.Init();
         }
         
-        public void Init(CustomCharacterData data)
+        public void Init(GameData data)
         {
             animationController.Init();
             
@@ -39,18 +39,18 @@ namespace Player
                 partSkinnedMeshRenderers[(int)CharacterPartType.Cloth].material = Instantiate(partMaterials[2]);
             }
 
-            customCharacterData = data;
+            gameData = data;
         }
 
-        public void InitOnGame(CustomCharacterData data)
+        public void InitOnGame(GameData data)
         {
             Init(data);
             
             // 基于数据设置当前部位
-            var hairConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Hair, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Hair].Index);
-            var faceConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Face, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face].Index);
-            var clothConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Cloth, customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Cloth].Index);
-            var facePartData = customCharacterData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face];
+            var hairConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Hair, gameData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Hair].Index);
+            var faceConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Face, gameData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face].Index);
+            var clothConfig = ConfigTool.LoadCharacterPartConfig(CharacterPartType.Cloth, gameData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Cloth].Index);
+            var facePartData = gameData.CustomPartDataDict.Dictionary[(int)CharacterPartType.Face];
 
             SetPart(hairConfig, true);
             SetPart(faceConfig, true);
@@ -91,7 +91,7 @@ namespace Player
                     var hairConfig = partConfig as HairConfig;
                     if (hairConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = hairConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
+                    SetColor1(partType, gameData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
                     break;
                 case CharacterPartType.Face:
                     var faceConfig = partConfig as FaceConfig;
@@ -102,8 +102,8 @@ namespace Player
                     var clothConfig = partConfig as ClothConfig;
                     if (clothConfig == null) break;
                     partSkinnedMeshRenderers[(int)partType].sharedMesh = clothConfig.Mesh1;
-                    SetColor1(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
-                    SetColor2(partType, customCharacterData.CustomPartDataDict.Dictionary[(int)partType].Color2.ConverToUnityColor());
+                    SetColor1(partType, gameData.CustomPartDataDict.Dictionary[(int)partType].Color1.ConverToUnityColor());
+                    SetColor2(partType, gameData.CustomPartDataDict.Dictionary[(int)partType].Color2.ConverToUnityColor());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

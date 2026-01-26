@@ -1,4 +1,5 @@
 ﻿using Config;
+using Data;
 using Player;
 using UnityEngine;
 
@@ -12,17 +13,18 @@ namespace Skill.Behaviour
         protected SkillPlayer skillPlayer;
         protected bool canRotate = false;
         protected bool playing = false; // 是否在技能播放中
-        protected float cdTime => skillConfig.basicCdTime;
         protected float cdTimer;
+        protected SkillLearnedData skillLearnedData;
 
         public abstract SkillBehaviourBase DeepClone();
 
-        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer)
+        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer, SkillLearnedData skillLearnedData)
         {
             this.player = player;
             this.skillConfig = skillConfig;
             this.skillBrain = skillBrain;
             this.skillPlayer = skillPlayer;
+            this.skillLearnedData = skillLearnedData;
         }
         
         public virtual void OnUpdate()
@@ -35,11 +37,22 @@ namespace Skill.Behaviour
         {
             if (cdTimer <= 0)
                 return;
-            cdTimer += Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
+            cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
+        }
+
+        public virtual float GetCdTime()
+        {
+            return skillConfig.GetCdTimeByLv(skillLearnedData.lv);
+        }
+
+        public virtual bool CheckCdTime()
+        {
+            return cdTimer <= 0;
         }
         
-        public virtual void Release()
+        public virtual void Release(bool calcCdTime = true)
         {
+            if (calcCdTime) cdTimer = GetCdTime();
             canRotate = false;
             playing = true;
             skillBrain.SetCanReleaseFlag(false);
@@ -48,7 +61,7 @@ namespace Skill.Behaviour
         
         public virtual bool CheckRelease()
         {
-            return CheckCost();
+            return CheckCost() && CheckCdTime();
         }
 
         public virtual void ApplyCosts()

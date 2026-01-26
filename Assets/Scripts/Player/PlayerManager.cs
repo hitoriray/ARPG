@@ -13,12 +13,12 @@ namespace Player
         [SerializeField] public PlayerController player;
         public CharacterConfig characterConfig { get;private set; }
 
-        public void Init(CustomCharacterData characterData)
+        public void Init(GameData gameData)
         {
             // 根据不同的职业获取不同的角色配置
-            // CharacterConfig characterConfig = ResSystem.LoadAsset<CharacterConfig>(characterData.ProfessionType.ToString() + "Config");
+            // CharacterConfig characterConfig = ResSystem.LoadAsset<CharacterConfig>(gameData.ProfessionType.ToString() + "Config");
             characterConfig = ResSystem.LoadAsset<CharacterConfig>("AnbiConfig");
-            player.Init(characterConfig, characterData);
+            player.Init(characterConfig, gameData);
             Cursor.lockState = CursorLockMode.Locked; // 锁定鼠标
         }
 
@@ -26,7 +26,7 @@ namespace Player
         {
             if (Input.GetKeyDown(KeyCode.I) && UISystem.GetWindow<UI_SkillLearnWindow>() == null)
             {
-                UISystem.Show<UI_SkillLearnWindow>().Init(DataManager.CustomCharacterData.SkillLearnedDatas);
+                UISystem.Show<UI_SkillLearnWindow>().Init(DataManager.GameData.SkillLearnedDatas);
             }
         }
 

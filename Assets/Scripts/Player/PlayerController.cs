@@ -28,15 +28,15 @@ namespace Player
         private CharacterConfig characterConfig;
         public CharacterConfig CharacterConfig => characterConfig;
         
-        public void Init(CharacterConfig characterConfig, CustomCharacterData characterData)
+        public void Init(CharacterConfig characterConfig, GameData gameData)
         {
             this.characterConfig = characterConfig;
             
             playerView = GetComponentInChildren<PlayerView>();
             playerView?.Init();
-            // playerView?.InitOnGame(characterData);
+            // playerView?.InitOnGame(gameData);
             
-            skillBrain.Init(this);
+            skillBrain.Init(this, gameData.SkillLearnedDatas);
             // 初始化状态机
             stateMachine = ResSystem.GetOrNew<StateMachine>();
             stateMachine.Init(this);

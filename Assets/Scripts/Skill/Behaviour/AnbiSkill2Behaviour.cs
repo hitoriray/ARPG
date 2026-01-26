@@ -10,9 +10,9 @@ namespace Skill.Behaviour
             return new AnbiSkill2Behaviour();
         }
         
-        public override void Release()
+        public override void Release(bool calcCdTime = true)
         {
-            base.Release();
+            base.Release(calcCdTime);
             skillPlayer.StartPlaySkillConfig(this);
             skillPlayer.PlaySkillClip(skillConfig.Clips[0]);
             skillBrain.AddOrUpdateShareData(AnbiSkillBrain.PerfectAttackClip1, true);

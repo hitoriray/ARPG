@@ -26,7 +26,7 @@ namespace Scene
     
         public void Init()
         {
-            playerView.Init(DataManager.CustomCharacterData);
+            playerView.Init(DataManager.GameData);
         }
 
         /// <summary>

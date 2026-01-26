@@ -33,7 +33,7 @@ namespace Scene
             #endregion
             
             // 初始化角色
-            PlayerManager.Instance.Init(DataManager.CustomCharacterData);
+            PlayerManager.Instance.Init(DataManager.GameData);
         }
     }
 }
