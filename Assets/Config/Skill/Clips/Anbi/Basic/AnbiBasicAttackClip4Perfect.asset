@@ -312,4 +312,4 @@ MonoBehaviour:
       Data: 
   SkillName: AnbiBasicAttackClip2
   FrameCount: 109
-  FrameRate: 60
+  FrameRate: 30

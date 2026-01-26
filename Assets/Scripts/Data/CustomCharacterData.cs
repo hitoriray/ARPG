@@ -1,5 +1,5 @@
 using System;
-using JKFrame;
+using Config;
 
 namespace Data
 {
@@ -9,7 +9,9 @@ namespace Data
     [Serializable]
     public class CustomCharacterData
     {
+        public ProfessionType ProfessionType;
         public Serialized_Dic<int, CustomCharacterPartData> CustomPartDataDict;
+        public SkillLearnedDatas SkillLearnedDatas;
     }
 
     /// <summary>

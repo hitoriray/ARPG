@@ -45,7 +45,7 @@ namespace Data
 
         #region 玩家数据
 
-        public static CustomCharacterData CustomCharacterData;
+        public static CustomCharacterData CustomCharacterData { get; private set; }
         public static void InitCustomCharacterData()
         {
             CustomCharacterData = new CustomCharacterData();
@@ -60,6 +60,10 @@ namespace Data
                     Index = 1, Color1 = Color.white.ConverToSerializationColor(),
                     Color2 = Color.black.ConverToSerializationColor(),
                 });
+            CustomCharacterData.SkillLearnedDatas = new()
+            {
+                SkillTotalPoint = 1000,
+            };
         }
 
         public static void SaveCustomCharacterData()

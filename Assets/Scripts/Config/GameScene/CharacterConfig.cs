@@ -15,6 +15,7 @@ namespace Config
         [LabelText("为移动应用RootMotion")] public bool ApplyRootMotionForMove;
         [LabelText("标准动画配置")] public Dictionary<string, AnimationClip> StandAnimationDict;
         [LabelText("脚步声音资源")] public AudioClip[] FootStepAudioClips;
+        [LabelText("全部技能")] public List<SkillConfig> SkillConfigList;
 
         public AnimationClip GetAnimationClipByName(string clipName)
         {

@@ -56,7 +56,16 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  cdTime: 10
+  skillName: "\u6280\u80FD1"
+  skillIcon: {fileID: 21300000, guid: 11e106cd2cbc5fa4fa8863eedb8b05b8, type: 3}
+  skillDescription: "\u5B89\u6BD4\u7684\u6280\u80FD1\u8FDE\u62DB\uFF083\u6BB5\uFF09\uFF0CCD:5s"
+  skillPointRequired: 10
+  maxLv: 10
+  canRelease: 1
+  basicCdTime: 5
+  basicAttackValue: 500
+  cdTimeMultiplierPerLv: 0.05
+  attackValueMultiplierPerLv: 0.2
   Clips:
   - {fileID: 11400000, guid: 6288157b82a283d43a734b53d7c0b874, type: 2}
   - {fileID: 11400000, guid: c046c5ba89a63d84b874f65f33a1d692, type: 2}

@@ -1,5 +1,6 @@
 using System;
 using Config;
+using Data;
 using JKFrame;
 using Player.Animation;
 using Skill;
@@ -27,13 +28,13 @@ namespace Player
         private CharacterConfig characterConfig;
         public CharacterConfig CharacterConfig => characterConfig;
         
-        public void Init()
+        public void Init(CharacterConfig characterConfig, CustomCharacterData characterData)
         {
-            characterConfig = ResSystem.LoadAsset<CharacterConfig>("AnbiConfig");
+            this.characterConfig = characterConfig;
             
             playerView = GetComponentInChildren<PlayerView>();
             playerView?.Init();
-            // playerView?.InitOnGame(DataManager.CustomCharacterData);
+            // playerView?.InitOnGame(characterData);
             
             skillBrain.Init(this);
             // 初始化状态机

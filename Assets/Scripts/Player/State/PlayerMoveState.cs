@@ -32,6 +32,11 @@ namespace Player.State
 
         public override void Update()
         {
+            if (UISystem.CheckMouseOnUI())
+            {
+                PlayerController.ChangeState(PlayerState.Idle);
+                return;
+            }
             if (CheckAndEnterSkillState())
                 return;
             

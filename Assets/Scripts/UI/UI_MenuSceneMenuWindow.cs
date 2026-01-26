@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    [UIWindowData("UI_MenuSceneMenuWindow", false, "UI_MenuSceneMenuWindow", 2)]
+    [UIWindowData(typeof(UI_MenuSceneMenuWindow), false, "UI_MenuSceneMenuWindow", 2)]
     public class UI_MenuSceneMenuWindow : UI_WindowBase
     {
         [SerializeField] private Button startButton;

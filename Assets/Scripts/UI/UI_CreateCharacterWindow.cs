@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    [UIWindowData(nameof(UI_CreateCharacterWindow), false, "UI_CreateCharacterWindow", 2)]
+    [UIWindowData(typeof(UI_CreateCharacterWindow), false, "UI_CreateCharacterWindow", 2)]
     public class UI_CreateCharacterWindow : UI_WindowBase
     {
         // 模型交互Image
@@ -242,6 +242,8 @@ namespace UI
         /// </summary>
         private void SelectProfession(ProfessionType newProfession)
         {
+            CustomCharacterData.ProfessionType = newProfession;
+            // 处理实际的职业切换逻辑
             CharacterCreator.Instance.SetProfession(newProfession);
             
             // 检查服装是否与职业相符

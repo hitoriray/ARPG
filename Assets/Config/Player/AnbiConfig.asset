@@ -186,3 +186,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9e6d1d31261ce234dab29108ebe2ff8e, type: 3}
   - {fileID: 8300000, guid: 4148ff86046dcce4dbf204f482831839, type: 3}
   - {fileID: 8300000, guid: eaadf3de69efd9b4884f98b04e496220, type: 3}
+  SkillConfigList:
+  - {fileID: 11400000, guid: fcbcde5f2fc254b41ab233f04b7a5621, type: 2}
+  - {fileID: 11400000, guid: 4b6b1cd84bd24a74999000d9d120205a, type: 2}
+  - {fileID: 11400000, guid: d94274c67fdd36844a54f5d55a7b90ab, type: 2}

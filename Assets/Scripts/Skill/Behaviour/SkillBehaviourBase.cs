@@ -12,7 +12,7 @@ namespace Skill.Behaviour
         protected SkillPlayer skillPlayer;
         protected bool canRotate = false;
         protected bool playing = false; // 是否在技能播放中
-        protected float cdTime => skillConfig.cdTime;
+        protected float cdTime => skillConfig.basicCdTime;
         protected float cdTimer;
 
         public abstract SkillBehaviourBase DeepClone();

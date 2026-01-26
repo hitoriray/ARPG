@@ -32,9 +32,8 @@ namespace Scene
             
             #endregion
             
-            Cursor.lockState = CursorLockMode.Locked;
             // 初始化角色
-            PlayerController.Instance.Init();
+            PlayerManager.Instance.Init(DataManager.CustomCharacterData);
         }
     }
 }

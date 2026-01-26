@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JKFrame;
+using UnityEngine;
 
 namespace Player.State
 {
@@ -12,6 +13,8 @@ namespace Player.State
 
         public override void Update()
         {
+            if (UISystem.CheckMouseOnUI())
+                return;
             if (CheckAndEnterSkillState())
                 return;
             

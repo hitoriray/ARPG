@@ -20,6 +20,9 @@ namespace Player.State
         // TODO: 临时测试逻辑
         protected virtual bool CheckAndEnterSkillState()
         {
+            if (UISystem.CheckMouseOnUI())
+                return false;
+            
             for (int i = 0; i < PlayerController.SkillBrain.SkillConfigCount; i++)
             {
                 bool valid;
