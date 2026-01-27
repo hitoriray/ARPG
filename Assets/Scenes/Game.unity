@@ -632,6 +632,7 @@ MonoBehaviour:
     isCache: 1
     cacheTime: 0.25
     valid: 0
+  cineMachine: {fileID: 1884134366}
 --- !u!4 &984512252 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
@@ -662,7 +663,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021295992}
   m_LocalRotation: {x: -0.19930229, y: 0.23087306, z: -0.040191803, w: 0.9515045}
-  m_LocalPosition: {x: -0.00000005238573, y: 0.000000010515673, z: 0.00000002641722}
+  m_LocalPosition: {x: -0.00000010477146, y: -0.00000008972559, z: 0.00000009692249}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -818,8 +819,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184106534}
-  m_LocalRotation: {x: -0.17012466, y: 0.22980584, z: -0.04728257, w: 0.95708483}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.17012474, y: 0.22980586, z: -0.047282565, w: 0.9570848}
+  m_LocalPosition: {x: -0.00000005238573, y: -0.000000100241266, z: 0.00000007050527}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1350,8 +1351,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843014546}
-  m_LocalRotation: {x: -0.20036595, y: 0.23118865, z: -0.039977077, w: 0.9512135}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.20036604, y: 0.23118867, z: -0.039977066, w: 0.95121354}
+  m_LocalPosition: {x: -0.00000005238573, y: -0.000000100241266, z: 0.00000007050527}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

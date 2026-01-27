@@ -35,7 +35,7 @@ namespace Data
             
             // 初始化角色外观数据
             InitCustomCharacterData();
-            SaveCustomCharacterData();
+            SaveGameData();
         }
 
         public static void LoadCurrentArchive()
@@ -67,9 +67,11 @@ namespace Data
             GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData(){lv=1});
             GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData(){lv=2});
             GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(2, new SkillLearnedData(){lv=3});
+            GameData.ShortcutSkillSlotData = new();
+            GameData.ShortcutSkillSlotData.skillIds = new int[6] { 1, 2, -1, -1, -1, -1 };
         }
 
-        public static void SaveCustomCharacterData()
+        public static void SaveGameData()
         {
             SaveSystem.SaveObject(GameData);
         }

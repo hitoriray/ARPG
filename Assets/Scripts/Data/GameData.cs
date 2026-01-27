@@ -12,6 +12,7 @@ namespace Data
         public ProfessionType ProfessionType;
         public Serialized_Dic<int, CustomCharacterPartData> CustomPartDataDict;
         public SkillLearnedDatas SkillLearnedDatas;
+        public ShortcutSkillSlotData ShortcutSkillSlotData;
     }
 
     /// <summary>
@@ -25,5 +26,14 @@ namespace Data
         public float Height;
         public Serialized_Color Color1;
         public Serialized_Color Color2;
+    }
+
+    /// <summary>
+    /// 技能快捷栏的数据
+    /// </summary>
+    [Serializable]
+    public class ShortcutSkillSlotData
+    {
+        public int[] skillIds; // -1代表空格子，其他代表技能索引
     }
 }

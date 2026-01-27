@@ -211,7 +211,7 @@ namespace UI
         {
             UISystem.Close<UI_CreateCharacterWindow>();
             // 保存数据
-            DataManager.SaveCustomCharacterData();
+            DataManager.SaveGameData();
             // 进入游戏场景
             SceneSystem.LoadScene("Game");
         }

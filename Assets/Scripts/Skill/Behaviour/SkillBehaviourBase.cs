@@ -89,11 +89,10 @@ namespace Skill.Behaviour
             // TODO: 怪物不能基于玩家的控制进行旋转
             if (canRotate)
             {
-                float h = Input.GetAxis("Horizontal");
-                float v = Input.GetAxis("Vertical");
-                if (h != 0 || v != 0)
+                Vector2 moveInput = InputManager.Instance.GetMoveInput();
+                if (moveInput.x != 0 || moveInput.y != 0)
                 {
-                    player.Rotate(new Vector3(h, 0, v));
+                    player.Rotate(new Vector3(moveInput.x, 0, moveInput.y));
                 }
             }
         }

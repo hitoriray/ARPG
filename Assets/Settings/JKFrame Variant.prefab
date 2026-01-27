@@ -59,6 +59,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: JKFrame
       objectReference: {fileID: 0}
+    - target: {fileID: 6029324473076240864, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
+      propertyPath: uiLayers.Array.data[1].enableMask
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
 --- !u!1 &4055172120462711845 stripped

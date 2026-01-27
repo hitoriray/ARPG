@@ -62,9 +62,27 @@ public class InputManager : SingletonMono<InputManager>
         }
     }
 
-    public Key[] skillKeys;
-    public MouseKey basicAttackKey;
+    [SerializeField] private Key[] skillKeys;
+    [SerializeField] private MouseKey basicAttackKey;
+    [SerializeField] private GameObject cineMachine;
+    
+    private bool characterControl;
+    public bool CharacterControl
+    {
+        get => characterControl;
+        set
+        {
+            characterControl = value;
+            Cursor.lockState = characterControl ? CursorLockMode.Locked : CursorLockMode.None;
+            cineMachine.SetActive(characterControl);
+        }
+    }
 
+    public void Init(bool characterControl)
+    {
+        this.characterControl = characterControl;
+    }
+    
     private void Update()
     {
         basicAttackKey.Update();
@@ -83,11 +101,28 @@ public class InputManager : SingletonMono<InputManager>
 
     public bool GetSkillKeyState(int skillIndex)
     {
-        return skillKeys[skillIndex].GetState();
+        return characterControl && GetSkillKey(skillIndex).GetState();
     }
     
     public bool GetBasicAttackKeyState()
     {
-        return basicAttackKey.GetState();
+        return characterControl && basicAttackKey.GetState();
+    }
+
+    public Vector2 GetMoveInput()
+    {
+        if (characterControl)
+        {
+            // 检测玩家输入
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+            Vector2 dir = new Vector2(h, v);
+            if (dir.magnitude > 1)
+            {
+                dir.Normalize();
+            }
+            return dir;
+        }
+        return Vector2.zero;
     }
 }

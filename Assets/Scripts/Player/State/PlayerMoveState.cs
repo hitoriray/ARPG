@@ -40,16 +40,15 @@ namespace Player.State
             if (CheckAndEnterSkillState())
                 return;
             
-            float h = Input.GetAxis("Horizontal");
-            float v = Input.GetAxis("Vertical");
-            if (h == 0 && v == 0)
+            Vector2 moveInput = InputManager.Instance.GetMoveInput();
+            if (moveInput.x == 0 && moveInput.y == 0)
             {
                 PlayerController.ChangeState(PlayerState.Idle);
                 return;
             }
 
             // 处理移动
-            Vector3 input = new Vector3(h, 0, v);
+            Vector3 input = new Vector3(moveInput.x, 0, moveInput.y);
             if (Input.GetKey(KeyCode.LeftShift))
                 runTransition = Mathf.Clamp01(runTransition + Time.deltaTime * PlayerController.CharacterConfig.Walk2RunTransitionSpeed);
             else

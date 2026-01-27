@@ -1,8 +1,11 @@
 using Data;
 using JKFrame;
+using UnityEngine;
 
 public class GameManager : SingletonMono<GameManager>
 {
+    public static Vector2 canvasSize { get; private set; } = new Vector2(1920, 1080);
+
     /// <summary>
     /// 创建新存档并且进入游戏
     /// </summary>

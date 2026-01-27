@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
@@ -19,7 +18,8 @@ namespace Player
             // CharacterConfig characterConfig = ResSystem.LoadAsset<CharacterConfig>(gameData.ProfessionType.ToString() + "Config");
             characterConfig = ResSystem.LoadAsset<CharacterConfig>("AnbiConfig");
             player.Init(characterConfig, gameData);
-            Cursor.lockState = CursorLockMode.Locked; // 锁定鼠标
+            InputManager.Instance.Init(true);
+            UISystem.Show<UI_GameSceneMainWindow>().Show(gameData.ShortcutSkillSlotData);
         }
 
         private void Update()
