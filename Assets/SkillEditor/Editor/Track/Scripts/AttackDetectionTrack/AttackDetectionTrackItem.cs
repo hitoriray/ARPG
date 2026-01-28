@@ -22,6 +22,10 @@ namespace SkillEditor
             this.frameIndex = attackDetectionEvent.FrameIndex;
             this.childTrack = childTrack;
             this.attackDetectionEvent = attackDetectionEvent;
+            if (attackDetectionEvent.AttackHitConfig == null)
+            {
+                attackDetectionEvent.AttackHitConfig = new AttackHitConfig();
+            }
             normalColor = new Color(0.388f, 0.850f, 0.905f, 0.5f);
             selectColor = new Color(0.388f, 0.850f, 0.905f, 1f);
             audioItemStyle = new SkillAttackDetectionTrackItemStyle();

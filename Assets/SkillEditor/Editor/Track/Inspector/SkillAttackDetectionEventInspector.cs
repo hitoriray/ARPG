@@ -6,15 +6,24 @@ using Skill;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace SkillEditor
 {
     public class SkillAttackDetectionEventInspector : SkillEventDataInspectorBase<AttackDetectionTrackItem, AttackDetectionTrack>
     {
+        protected override void OnDraw()
+        {
+            DrawDetection();
+
+            DrawHitConfig();
+        }
+        
+        #region 检测部分
         private IntegerField detectionDurationFrameField;
         private List<string> detectionTypeChoiceList;
-
-        protected override void OnDraw()
+        
+        private void DrawDetection()
         {
             // 持续帧数
             detectionDurationFrameField = new IntegerField("持续帧数")
@@ -230,6 +239,83 @@ namespace SkillEditor
                 fanDetectionData.Angle = 360f;
                 SkillEditorInspector.Instance.Show();
             }
+        }
+        
+        #endregion
+        
+        #endregion
+        
+        #region 命中部分
+
+        private void DrawHitConfig()
+        {
+            root.Add(new Label()); // 换行
+            // 攻击力系数
+            FloatField attackMultiplyField = new("攻击力系数")
+            {
+                value = trackItem.AttackDetectionEvent.AttackHitConfig.AttackMultiply
+            };
+            attackMultiplyField.RegisterValueChangedCallback(OnAttackMultiplyFieldValueChanged);
+            root.Add(attackMultiplyField);
+            
+            // 击退程度
+            Vector3Field repelStrengthField = new("击退程度")
+            {
+                value = trackItem.AttackDetectionEvent.AttackHitConfig.RepelStrength
+            };
+            repelStrengthField.RegisterValueChangedCallback(OnRepelStrengthFieldValueChanged);
+            root.Add(repelStrengthField);
+
+            // 击退时间
+            FloatField repelTimeField = new("击退时间")
+            {
+                value = trackItem.AttackDetectionEvent.AttackHitConfig.RepelTime
+            };
+            repelTimeField.RegisterValueChangedCallback(OnRepelTimeFieldValueChanged);
+            root.Add(repelTimeField);
+            
+            // 命中特效预制体
+            ObjectField hitEffectPrefabField = new("命中特效预制体")
+            {
+                objectType = typeof(GameObject),
+                value = trackItem.AttackDetectionEvent.AttackHitConfig.HitEffectPrefab
+            };
+            hitEffectPrefabField.RegisterValueChangedCallback(OnHitEffectPrefabFieldValueChanged);
+            root.Add(hitEffectPrefabField);
+            
+            // 命中音效
+            ObjectField hitAudioClipField = new("命中音效")
+            {
+                objectType = typeof(AudioClip),
+                value = trackItem.AttackDetectionEvent.AttackHitConfig.HitAudioClip
+            };
+            hitAudioClipField.RegisterValueChangedCallback(OnHitAudioClipFieldValueChanged);
+            root.Add(hitAudioClipField);
+        }
+
+        private void OnAttackMultiplyFieldValueChanged(ChangeEvent<float> evt)
+        {
+            trackItem.AttackDetectionEvent.AttackHitConfig.AttackMultiply = evt.newValue;
+        }
+        
+        private void OnRepelStrengthFieldValueChanged(ChangeEvent<Vector3> evt)
+        {
+            trackItem.AttackDetectionEvent.AttackHitConfig.RepelStrength = evt.newValue;
+        }
+        
+        private void OnRepelTimeFieldValueChanged(ChangeEvent<float> evt)
+        {
+            trackItem.AttackDetectionEvent.AttackHitConfig.RepelTime = evt.newValue;
+        }
+        
+        private void OnHitEffectPrefabFieldValueChanged(ChangeEvent<Object> evt)
+        {
+            trackItem.AttackDetectionEvent.AttackHitConfig.HitEffectPrefab = (GameObject)evt.newValue;
+        }
+        
+        private void OnHitAudioClipFieldValueChanged(ChangeEvent<Object> evt)
+        {
+            trackItem.AttackDetectionEvent.AttackHitConfig.HitAudioClip = (AudioClip)evt.newValue;
         }
         
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Config
@@ -6,12 +7,13 @@ namespace Config
     public class SkillAttackDetectionEvent
     {
 #if UNITY_EDITOR
-        public string TrackName = "伤害检测轨道";
+        [LabelText("轨道名称")] public string TrackName = "伤害检测轨道";
 #endif
-        public int FrameIndex = 0;
-        public int DurationFrame = 10;
-        public AttackDetectionDataBase AttackDetectionData;
-
+        [LabelText("起始帧")] public int FrameIndex = 0;
+        [LabelText("持续帧数")] public int DurationFrame = 10;
+        [LabelText("攻击检测数据")] public AttackDetectionDataBase AttackDetectionData;
+        [LabelText("攻击命中数据")] public AttackHitConfig AttackHitConfig = new();
+        
         public AttackDetectionType GetAttackDetectionType()
         {
             switch (AttackDetectionData)
@@ -66,7 +68,8 @@ namespace Config
         }
 #endif
     }
-
+    
+    #region 检测
     /// <summary>
     /// 攻击检测类型
     /// </summary>
@@ -128,4 +131,22 @@ namespace Config
         public float Height = 0.5f;     // 厚度
         public float Angle = 90f;       // 角度
     }
+    #endregion
+        
+    #region 命中
+
+    /// <summary>
+    /// 攻击命中配置
+    /// </summary>
+    public class AttackHitConfig
+    {
+        [LabelText("攻击系数")] public float AttackMultiply;
+        [LabelText("击退程度（矢量）")] public Vector3 RepelStrength; // 击退程度，矢量
+        [LabelText("击退时间")] public float RepelTime;     // 击退时间
+        [LabelText("命中特效预制体")] public GameObject HitEffectPrefab;
+        [LabelText("命中音效")] public AudioClip HitAudioClip;
+        // TODO: 加特效位移，声音音量
+    }
+    
+    #endregion
 }

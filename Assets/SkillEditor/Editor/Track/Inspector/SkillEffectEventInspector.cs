@@ -98,7 +98,7 @@ namespace SkillEditor
         #region Field值改变事件
         private void OnEffectPrefabAssetFieldValueChanged(ChangeEvent<Object> evt)
         {
-            trackItem.EffectEvent.Prefab = evt.newValue as GameObject;
+            trackItem.EffectEvent.Prefab = (GameObject)evt.newValue;
             // 重新计时
             CalcEffectDuration();
             trackItem.ResetView();

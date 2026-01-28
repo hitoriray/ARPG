@@ -31,8 +31,7 @@ namespace SkillEditor
         
         private void OnAudioClipAssetFieldValueChanged(ChangeEvent<Object> evt)
         {
-            var clip = (AudioClip)evt.newValue;
-            trackItem.AudioEvent.AudioClip = clip;
+            trackItem.AudioEvent.AudioClip = (AudioClip)evt.newValue;
             trackItem.ResetView();
         }
         
@@ -51,6 +50,5 @@ namespace SkillEditor
             }
         }
         #endregion
-
     }
 }
