@@ -4,13 +4,13 @@ using JKFrame;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Buff
+namespace BuffSystem
 {
     public class BuffController : MonoBehaviour
     {
-        [ShowInInspector] private Dictionary<BuffConfig, Buff> buffDict = new();
-        [SerializeField] private BuffEffectResolverBase buffEffectResolver;
-        private List<Buff> destroyBuffs = new();
+        [ShowInInspector] protected Dictionary<BuffConfig, Buff> buffDict = new();
+        [SerializeField] protected BuffEffectResolverBase buffEffectResolver;
+        protected List<Buff> destroyBuffs = new();
 
         private void Update()
         {
@@ -31,16 +31,17 @@ namespace Buff
         }
         
         [Button]
-        public Buff AddBuff(BuffConfig buffConfig, int layer = -1)
+        public Buff AddBuff(BuffConfig buffConfig, int stack = 1)
         {
             if (buffDict.TryGetValue(buffConfig, out var buff))
             {
-                buff.AddLayer(layer);
+                buff.AddStack(stack);
             }
             else
             {
                 buff = ResSystem.GetOrNew<Buff>();
-                buff.Init(buffConfig, OnBuffStart, OnBuffPeriodic, OnBuffEnd);
+                buff.Init(buffConfig, OnBuffStart, OnBuffPeriodic, OnBuffEnd, OnBuffUpdate);
+                buff.AddStack(stack);
                 buff.Start();
                 buffDict.Add(buffConfig, buff);
             }
@@ -57,19 +58,29 @@ namespace Buff
             buffDict.Clear();
         }
         
-        private void OnBuffStart(Buff buff)
+        protected virtual void OnBuffStart(Buff buff)
         {
-            buffEffectResolver.Resolve(buff, buff.config.startEffect);
+            if (buff.config.startEffect != null)
+            {
+                buffEffectResolver.Resolve(buff, buff.config.startEffect);
+            }
         }
 
-        private void OnBuffPeriodic(Buff buff)
+        protected virtual void OnBuffPeriodic(Buff buff)
         {
             buffEffectResolver.Resolve(buff, buff.config.periodicEffect);
         }
 
-        private void OnBuffEnd(Buff buff)
+        protected virtual void OnBuffEnd(Buff buff)
         {
-            buffEffectResolver.Resolve(buff, buff.config.endEffect);
+            if (buff.config.endEffect != null)
+            {
+                buffEffectResolver.Resolve(buff, buff.config.endEffect);
+            }
+        }
+
+        protected virtual void OnBuffUpdate(Buff buff)
+        {
         }
     }
 }

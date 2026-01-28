@@ -1,7 +1,7 @@
 ﻿using Config;
 using UnityEngine;
 
-namespace Buff
+namespace BuffSystem
 {
     public abstract class BuffEffectResolverBase : MonoBehaviour
     {

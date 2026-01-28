@@ -16,5 +16,7 @@
         CanSkillRelease,    // 取消后摇
         CanRotate,          // 可以旋转
         CannotRotate,       // 不可以旋转
+        AddBuff,            // 添加Buff
+        RemoveBuff,         // 移除Buff
     }
 }

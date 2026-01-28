@@ -91,7 +91,15 @@ namespace UI
             skillPointRequire.text = $"升级所需技能点数: {itemInfo.skillConfig.skillPointRequired}";
             int lv = itemInfo.skillLearnedData == null ? 1 : itemInfo.skillLearnedData.lv;
             skillCd.text = $"冷却时间: {itemInfo.skillConfig.GetCdTimeByLv(lv)}/{itemInfo.skillConfig.basicCdTime}秒";
-            attack.text = $"攻击力: {itemInfo.skillConfig.GetAttackValueByLv(lv)}/{itemInfo.skillConfig.basicAttackValue}";
+            if (itemInfo.skillConfig.basicAttackValue == 0)
+            {
+                attack.gameObject.SetActive(false);
+            }
+            else
+            {
+                attack.gameObject.SetActive(true);
+                attack.text = $"攻击力: {itemInfo.skillConfig.GetAttackValueByLv(lv)}/{itemInfo.skillConfig.basicAttackValue}";
+            }
             // 如果满级，禁止学习
             if (itemInfo.skillLearnedData != null && itemInfo.skillLearnedData.lv == itemInfo.skillConfig.maxLv)
             {

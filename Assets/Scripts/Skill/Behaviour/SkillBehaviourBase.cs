@@ -200,6 +200,10 @@ namespace Skill.Behaviour
             {
                 canRotate = false;
             }
+            else if (evt.EventType == SkillEventType.AddBuff)
+            {
+                player.AddBuff((BuffConfig)evt.ObjectArg, evt.IntArg);
+            }
         }
 
         public virtual void OnAttackDetection(Collider col)

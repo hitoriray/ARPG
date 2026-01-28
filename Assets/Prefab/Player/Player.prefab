@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5647307152969126734}
   - component: {fileID: 5647307152969126577}
   - component: {fileID: 5647307152969126735}
-  - component: {fileID: 5647307153343587763}
   - component: {fileID: 2738135138085171718}
+  - component: {fileID: 8587164493213867897}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -53,6 +53,7 @@ MonoBehaviour:
   skillBrain: {fileID: 5647307152969126577}
   playerView: {fileID: 5647307152608657834}
   characterController: {fileID: 5647307152969126735}
+  buffController: {fileID: 8587164493213867897}
 --- !u!114 &5647307152969126734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,19 +143,6 @@ CharacterController:
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.79, z: 0}
---- !u!114 &5647307153343587763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5647307152969126730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7824d1f37771cef41ba97ec8a85ffba0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buffEffectResolver: {fileID: 2738135138085171718}
 --- !u!114 &2738135138085171718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,6 +156,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 5647307152969126732}
+--- !u!114 &8587164493213867897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5647307152969126730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7276b050807d4da3a6070636cc6dacd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffEffectResolver: {fileID: 2738135138085171718}
 --- !u!1001 &3599366579649680786
 PrefabInstance:
   m_ObjectHideFlags: 0

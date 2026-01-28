@@ -1,5 +1,5 @@
 ﻿using System;
-using Buff;
+using BuffSystem;
 using Config;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ namespace Player
     {
         [SerializeField] private PlayerController player;
         
-        public override void Resolve(Buff.Buff buff, BuffEffectDataBase effectData)
+        public override void Resolve(Buff buff, BuffEffectDataBase effectData)
         {
             if (effectData is SimpleBuffEffectData)
             {
@@ -18,6 +18,12 @@ namespace Player
                 {
                     case BuffEffectType.Hp:
                         Debug.Log($"由于{buff.config.name}Buff增加Hp:{simpleEffectData.value * buff.stack}");
+                        break;
+                    case BuffEffectType.AttackFixed:
+                        Debug.Log($"由于{buff.config.name}Buff增加攻击力值:{simpleEffectData.value * buff.stack}");
+                        break;
+                    case BuffEffectType.AttackMultiplier:
+                        Debug.Log($"由于{buff.config.name}Buff增加攻击力系数:{simpleEffectData.value * buff.stack}");
                         break;
                 }
             }

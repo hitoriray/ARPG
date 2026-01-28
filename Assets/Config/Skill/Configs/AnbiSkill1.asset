@@ -49,7 +49,7 @@ MonoBehaviour:
       Data: 
     - Name: Behaviour
       Entry: 7
-      Data: 2|Skill.Behaviour.AnbiSkillBehaviour, Assembly-CSharp
+      Data: 2|Skill.Behaviour.AnbiSkill1Behaviour, Assembly-CSharp
     - Name: standingTime
       Entry: 4
       Data: 5

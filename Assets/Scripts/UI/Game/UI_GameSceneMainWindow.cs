@@ -10,6 +10,7 @@ namespace UI
     [UIWindowData(typeof(UI_GameSceneMainWindow), true, nameof(UI_GameSceneMainWindow), 1)]
     public class UI_GameSceneMainWindow : UI_WindowBase
     {
+        #region 技能快捷栏
         [SerializeField] private UI_ShortcutSkill_Slot[] shortcutSkillSlots;
 
         public void Show(ShortcutSkillSlotData shortcutSkillSlotData)
@@ -68,5 +69,27 @@ namespace UI
             }
             shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
         }
+        #endregion
+        
+        #region buff栏
+        [SerializeField] private GameObject buffSlotPrefab;
+        [SerializeField] private Transform buffSlotParent;
+        private List<UI_Buff_Slot> buffSlotList = new();
+
+        public UI_Buff_Slot AddBuff(BuffConfig buffConfig)
+        {
+            var buffSlot = ProjectUtility.GetOrInstantiateGameObject(buffSlotPrefab, buffSlotParent).GetComponent<UI_Buff_Slot>();
+            buffSlotList.Add(buffSlot);
+            buffSlot.Init(buffConfig);
+            return buffSlot;
+        }
+
+        public void RemoveBuff(UI_Buff_Slot buffSlot)
+        {
+            buffSlot.Destroy();
+            buffSlotList.Remove(buffSlot);
+        }
+        
+        #endregion
     }
 }

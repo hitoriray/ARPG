@@ -1,4 +1,5 @@
 using System;
+using BuffSystem;
 using Config;
 using Data;
 using JKFrame;
@@ -14,6 +15,7 @@ namespace Player
         [SerializeField] private SkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
+        [SerializeField] private BuffController buffController;
 
         public SkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
@@ -102,6 +104,11 @@ namespace Player
             // 处理旋转
             ModelTransform.rotation = Quaternion.Slerp(ModelTransform.rotation,
                 Quaternion.LookRotation(moveDir), Time.deltaTime * rotateSpeed);
+        }
+
+        public void AddBuff(BuffConfig buffConfig, int stack)
+        {
+            buffController.AddBuff(buffConfig, stack);
         }
     }
 }
