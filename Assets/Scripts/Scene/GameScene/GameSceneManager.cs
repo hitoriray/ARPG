@@ -1,3 +1,4 @@
+using System;
 using Data;
 using JKFrame;
 using Player;
@@ -34,6 +35,12 @@ namespace Scene
             
             // 初始化角色
             PlayerManager.Instance.Init(DataManager.GameData);
+        }
+
+        private void OnDestroy()
+        {
+            // TODO：模拟游戏退出时的存档
+            DataManager.SaveGameData();
         }
     }
 }

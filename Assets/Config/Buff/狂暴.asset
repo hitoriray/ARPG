@@ -34,20 +34,11 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: periodicEffect
-      Entry: 7
-      Data: 1|Config.SimpleBuffEffectData, Assembly-CSharp
-    - Name: type
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 4
-      Data: -5
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: endEffect
       Entry: 7
-      Data: 2|Config.SimpleBuffEffectData, Assembly-CSharp
+      Data: 1|Config.SimpleBuffEffectData, Assembly-CSharp
     - Name: type
       Entry: 3
       Data: 2

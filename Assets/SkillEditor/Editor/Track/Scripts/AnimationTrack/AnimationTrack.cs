@@ -103,8 +103,7 @@ namespace SkillEditor
                     if (nextTrackItem != -1)
                     {
                         int offset = clipFrameCount - currentOffset;
-                        if (offset < 0) durationFrame = clipFrameCount;
-                        else durationFrame = currentOffset;
+                        durationFrame = offset < 0 ? clipFrameCount : currentOffset;
                     }
                     else
                     {
@@ -224,8 +223,7 @@ namespace SkillEditor
                 if (durationFrameCount > 0)
                 {
                     // 获取动画资源的总帧数
-                    var clipFrameCnt = animationEvt.AnimationClip.length *
-                                         SkillEditorWindow.Instance.SkillClip.FrameRate;
+                    var clipFrameCnt = animationEvt.AnimationClip.length * SkillEditorWindow.Instance.SkillClip.FrameRate;
                     // 计算当前的播放进度
                     var totalProgress = durationFrameCount / clipFrameCnt;
                     // 播放次数

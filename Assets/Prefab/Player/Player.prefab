@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5647307152969126735}
   - component: {fileID: 2738135138085171718}
   - component: {fileID: 8587164493213867897}
+  - component: {fileID: 6774350916955439809}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -54,6 +55,7 @@ MonoBehaviour:
   playerView: {fileID: 5647307152608657834}
   characterController: {fileID: 5647307152969126735}
   buffController: {fileID: 8587164493213867897}
+  characterAttribute: {fileID: 6774350916955439809}
 --- !u!114 &5647307152969126734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,6 +171,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffEffectResolver: {fileID: 2738135138085171718}
+--- !u!114 &6774350916955439809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5647307152969126730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9220a648e1f4971b877b22048f76661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: hp
+      Entry: 7
+      Data: 0|Attribute.FloatAttr, Assembly-CSharp
+    - Name: baseValue
+      Entry: 4
+      Data: 0
+    - Name: fixedBonus
+      Entry: 4
+      Data: 0
+    - Name: percentageBonus
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: attack
+      Entry: 7
+      Data: 1|Attribute.FloatAttr, Assembly-CSharp
+    - Name: baseValue
+      Entry: 4
+      Data: 0
+    - Name: fixedBonus
+      Entry: 4
+      Data: 0
+    - Name: percentageBonus
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1001 &3599366579649680786
 PrefabInstance:
   m_ObjectHideFlags: 0

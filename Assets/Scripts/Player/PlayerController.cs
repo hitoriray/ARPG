@@ -1,4 +1,5 @@
 using System;
+using Attribute;
 using BuffSystem;
 using Config;
 using Data;
@@ -16,11 +17,14 @@ namespace Player
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private BuffController buffController;
+        [SerializeField] private CharacterAttribute characterAttribute;
 
         public SkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
         public AnimationController AnimationController => playerView.AnimationController;
         public Transform ModelTransform => playerView.transform;
+        public CharacterAttribute CharacterAttribute => characterAttribute;
+
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
@@ -38,6 +42,7 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(gameData);
             
+            characterAttribute.Init(characterConfig);
             skillBrain.Init(this, gameData.SkillLearnedDatas);
             // 初始化状态机
             stateMachine = ResSystem.GetOrNew<StateMachine>();

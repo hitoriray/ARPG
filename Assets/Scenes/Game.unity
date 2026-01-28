@@ -679,7 +679,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021295992}
   m_LocalRotation: {x: -0.19930229, y: 0.23087306, z: -0.040191803, w: 0.9515045}
-  m_LocalPosition: {x: -0.0000000785786, y: -0.00000042725424, z: 0.00000021597803}
+  m_LocalPosition: {x: -0.000000052385737, y: -0.00000043251208, z: 0.00000020276943}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -835,8 +835,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184106534}
-  m_LocalRotation: {x: -0.17012466, y: 0.22980581, z: -0.047282577, w: 0.95708483}
-  m_LocalPosition: {x: -0.00000005238573, y: 0.000000010515673, z: 0.00000002641722}
+  m_LocalRotation: {x: -0.1701247, y: 0.22980589, z: -0.04728258, w: 0.9570848}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1367,8 +1367,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843014546}
-  m_LocalRotation: {x: -0.20036593, y: 0.23118865, z: -0.039977085, w: 0.9512135}
-  m_LocalPosition: {x: -0.00000005238573, y: 0.000000010515673, z: 0.00000002641722}
+  m_LocalRotation: {x: -0.20036599, y: 0.23118873, z: -0.039977085, w: 0.95121354}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1574,7 +1574,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884134366}
   m_LocalRotation: {x: 0.18249631, y: -0.24168119, z: 0.046333987, w: 0.9519131}
-  m_LocalPosition: {x: -0.4491514, y: 0.20000005, z: 1.2808368}
+  m_LocalPosition: {x: -0.44915146, y: 0.20000005, z: 1.2808368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1932,6 +1932,10 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+    - target: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
 --- !u!114 &5647307153343587763 stripped

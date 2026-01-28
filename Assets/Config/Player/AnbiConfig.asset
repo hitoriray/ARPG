@@ -191,3 +191,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4b6b1cd84bd24a74999000d9d120205a, type: 2}
   - {fileID: 11400000, guid: d94274c67fdd36844a54f5d55a7b90ab, type: 2}
   - {fileID: 11400000, guid: 52f822b30b071f74fb7f790ecabf8c98, type: 2}
+  hpBaseValue: 1000
+  attackBaseValue: 100

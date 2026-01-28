@@ -68,6 +68,7 @@ namespace UI
                 skillConfig = PlayerManager.Instance.GetAllSkillConfig()[newSkillIndex];
             }
             shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
+            DataManager.GameData.ShortcutSkillSlotData.skillIds[slotIndex] = newSkillIndex;
         }
         #endregion
         

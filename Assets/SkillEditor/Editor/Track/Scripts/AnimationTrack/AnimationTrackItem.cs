@@ -58,7 +58,7 @@ namespace SkillEditor
         }
 
         #region 鼠标拖拽事件
-        private bool mouseDrag = false;
+        private bool mouseDrag;
         private float startDragPosX;
         private int startDragFrameIndex;
         
