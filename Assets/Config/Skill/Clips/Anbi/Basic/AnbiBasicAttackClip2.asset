@@ -246,16 +246,49 @@ MonoBehaviour:
       Data: Weapon
     - Name: FrameIndex
       Entry: 3
-      Data: 10
+      Data: 1
     - Name: DurationFrame
       Entry: 3
-      Data: 9
+      Data: 18
     - Name: AttackDetectionData
       Entry: 7
       Data: 14|Config.WeaponDetectionData, Assembly-CSharp
     - Name: WeaponName
       Entry: 1
       Data: Weapon1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: AttackHitConfig
+      Entry: 7
+      Data: 15|Config.AttackHitConfig, Assembly-CSharp
+    - Name: AttackMultiply
+      Entry: 4
+      Data: 0
+    - Name: RepelStrength
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: RepelTime
+      Entry: 4
+      Data: 0
+    - Name: HitEffectPrefab
+      Entry: 6
+      Data: 
+    - Name: HitAudioClip
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -273,14 +306,14 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 15|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 16|Config.SkillCustomEventData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 16|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
+      Data: 17|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 17|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+      Data: 18|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
         mscorlib]], mscorlib
     - Name: 
       Entry: 8
@@ -296,7 +329,7 @@ MonoBehaviour:
       Data: 19
     - Name: $v
       Entry: 7
-      Data: 18|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 19|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 1
@@ -329,7 +362,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 19|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 20|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 2
@@ -362,7 +395,7 @@ MonoBehaviour:
       Data: 4
     - Name: $v
       Entry: 7
-      Data: 20|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 21|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 3

@@ -3,18 +3,17 @@ using UnityEngine;
 
 namespace Skill
 {
-    public class SkillWeapon : MonoBehaviour
+    public class WeaponController : MonoBehaviour
     {
         [SerializeField] private Collider detectionCollider;
         private LayerMask detectionLayerMask;
-        private Action<Collider> onDetection;
+        private Action<IHitTarget> onDetection;
 
-        public void Init(LayerMask detectionLayerMask, Action<Collider> onDetection)
+        public void Init(LayerMask detectionLayerMask, Action<IHitTarget> onDetection)
         {
             this.detectionLayerMask = detectionLayerMask;
             this.onDetection = onDetection;
             detectionCollider.enabled = false;
-            
         }
 
         public void StartDetection()
@@ -32,7 +31,11 @@ namespace Skill
             // 判断是否在LayerMask里
             if ((detectionLayerMask & (1 << other.gameObject.layer)) != 0)
             {
-                onDetection?.Invoke(other);
+                IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
+                if (hitTarget != null)
+                {
+                    onDetection?.Invoke(hitTarget);
+                }
             }
         }
     }

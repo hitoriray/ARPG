@@ -1,4 +1,5 @@
-﻿using Config;
+﻿using System.Collections.Generic;
+using Config;
 using Data;
 using JKFrame;
 using Player;
@@ -18,6 +19,7 @@ namespace Skill.Behaviour
         protected float cdTimer;
         protected SkillLearnedData skillLearnedData;
         public int skillIndex { get; private set; } // 角色配置中的技能索引
+        private HashSet<IHitTarget> hitTargets;
         public virtual bool autoUpdateSlot { get => true; }
 
         public abstract SkillBehaviourBase DeepClone();
@@ -30,6 +32,7 @@ namespace Skill.Behaviour
             this.skillPlayer = skillPlayer;
             this.skillLearnedData = skillLearnedData;
             this.skillIndex = skillIndex;
+            hitTargets = new HashSet<IHitTarget>();
         }
         
         public virtual void OnUpdate()
@@ -80,6 +83,7 @@ namespace Skill.Behaviour
         public virtual void Release(bool calcCdTime = true)
         {
             if (calcCdTime) cdTimer = GetCdTime();
+            hitTargets.Clear();
             canRotate = false;
             playing = true;
             skillBrain.SetCanReleaseFlag(false);
@@ -137,6 +141,7 @@ namespace Skill.Behaviour
         public virtual void OnClipEndOrReleaseNewSkill()
         {
             playing = false;
+            hitTargets.Clear();
         }
         
         #region 技能驱动时的事件
@@ -206,8 +211,18 @@ namespace Skill.Behaviour
             }
         }
 
-        public virtual void OnAttackDetection(Collider col)
+        public virtual void OnAttackDetection(IHitTarget hitTarget)
         {
+            // 避免重复命中
+            if (hitTargets.Add(hitTarget))
+            {
+                OnHitTarget(hitTarget);
+            }
+        }
+
+        public virtual void OnHitTarget(IHitTarget hitTarget)
+        {
+            hitTarget.OnHit();
         }
 
         public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)

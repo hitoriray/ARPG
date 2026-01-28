@@ -41,12 +41,12 @@ namespace Skill
         
         #region 武器
 
-        [SerializeField] private Dictionary<string, SkillWeapon> weaponDict = new();
-        public Dictionary<string, SkillWeapon> WeaponDict => weaponDict;
+        [SerializeField] private Dictionary<string, WeaponController> weaponDict = new();
+        public Dictionary<string, WeaponController> WeaponDict => weaponDict;
 
-        private void OnWeaponDetection(Collider col)
+        private void OnWeaponDetection(IHitTarget other)
         {
-            skillBehaviour.OnAttackDetection(col);
+            skillBehaviour.OnAttackDetection(other);
         }
 
         #endregion
@@ -271,7 +271,11 @@ namespace Skill
                             {
                                 if (col != null)
                                 {
-                                    skillBehaviour.OnAttackDetection(col);
+                                    IHitTarget hitTarget = col.GetComponentInChildren<IHitTarget>();
+                                    if (hitTarget != null)
+                                    {
+                                        skillBehaviour.OnAttackDetection(hitTarget);
+                                    }
                                 }
                             }
                         }
