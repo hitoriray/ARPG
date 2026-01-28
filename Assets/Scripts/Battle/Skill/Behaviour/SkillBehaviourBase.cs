@@ -211,18 +211,18 @@ namespace Skill.Behaviour
             }
         }
 
-        public virtual void OnAttackDetection(IHitTarget hitTarget)
+        public virtual void OnAttackDetection(IHitTarget hitTarget, AttackData attackData)
         {
             // 避免重复命中
             if (hitTargets.Add(hitTarget))
             {
-                OnHitTarget(hitTarget);
+                OnHitTarget(hitTarget, attackData);
             }
         }
 
-        public virtual void OnHitTarget(IHitTarget hitTarget)
+        public virtual void OnHitTarget(IHitTarget hitTarget, AttackData attackData)
         {
-            hitTarget.OnHit();
+            hitTarget.OnHit(attackData);
         }
 
         public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)

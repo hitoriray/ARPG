@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner
+    public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter
     {
         [SerializeField] private SkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
@@ -114,6 +114,16 @@ namespace Player
         public void AddBuff(BuffConfig buffConfig, int stack)
         {
             buffController.AddBuff(buffConfig, stack);
+        }
+
+        public void OnHit(AttackData attackData)
+        {
+            Debug.Log("玩家被命中！");
+        }
+
+        public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)
+        {
+            return characterAttribute.attack.Total * detectionEvent.AttackHitConfig.AttackMultiply;
         }
     }
 }

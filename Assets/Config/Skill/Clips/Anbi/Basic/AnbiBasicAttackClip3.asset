@@ -20,6 +20,8 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 055cba0d9b5f4f14bb6827195e7a135a, type: 2}
     - {fileID: 8300000, guid: 6821383a375d63a42b2243b9e5f8a1f0, type: 3}
     - {fileID: 9068624454220128171, guid: b3f3a6218be24254f9ce07de1db0c92d, type: 3}
+    - {fileID: 2955623459812423943, guid: 8ba6be69675fcd74b80c05fa2c2e588c, type: 3}
+    - {fileID: 8300000, guid: d186d82566939804890f0c3754a9c020, type: 3}
     - {fileID: -4154861007912953267, guid: 4441c0af830797540b5320f34b41f7ec, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -264,31 +266,31 @@ MonoBehaviour:
       Data: 15|Config.AttackHitConfig, Assembly-CSharp
     - Name: AttackMultiply
       Entry: 4
-      Data: 0
+      Data: 1.8
     - Name: RepelStrength
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: RepelTime
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: HitEffectPrefab
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 4
     - Name: HitAudioClip
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 5
     - Name: 
       Entry: 8
       Data: 
@@ -347,7 +349,7 @@ MonoBehaviour:
       Data: 3
     - Name: ObjectArg
       Entry: 10
-      Data: 4
+      Data: 6
     - Name: 
       Entry: 8
       Data: 

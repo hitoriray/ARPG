@@ -18,6 +18,8 @@ MonoBehaviour:
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 3ec2b3914dacb504482ba8cbfa7a21aa, type: 2}
     - {fileID: 7400000, guid: 1f79d271626018a4a98742c3fe2f1ef5, type: 2}
+    - {fileID: 8443315704496310910, guid: be820580633d15e4f9b4b7ac05d8ad94, type: 3}
+    - {fileID: 8300000, guid: 7748e5c612da6f04f9895e4cc9780e14, type: 3}
     - {fileID: -4154861007912953267, guid: 4441c0af830797540b5320f34b41f7ec, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
@@ -160,16 +162,49 @@ MonoBehaviour:
       Data: Weapon
     - Name: FrameIndex
       Entry: 3
-      Data: 15
+      Data: 4
     - Name: DurationFrame
       Entry: 3
-      Data: 7
+      Data: 24
     - Name: AttackDetectionData
       Entry: 7
       Data: 12|Config.WeaponDetectionData, Assembly-CSharp
     - Name: WeaponName
       Entry: 1
       Data: Weapon1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: AttackHitConfig
+      Entry: 7
+      Data: 13|Config.AttackHitConfig, Assembly-CSharp
+    - Name: AttackMultiply
+      Entry: 4
+      Data: 3
+    - Name: RepelStrength
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: RepelTime
+      Entry: 4
+      Data: 0
+    - Name: HitEffectPrefab
+      Entry: 10
+      Data: 2
+    - Name: HitAudioClip
+      Entry: 10
+      Data: 3
     - Name: 
       Entry: 8
       Data: 
@@ -187,14 +222,14 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 13|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 14|Config.SkillCustomEventData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 14|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
+      Data: 15|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
-      Data: 15|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+      Data: 16|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
         mscorlib]], mscorlib
     - Name: 
       Entry: 8
@@ -210,7 +245,7 @@ MonoBehaviour:
       Data: 31
     - Name: $v
       Entry: 7
-      Data: 16|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 17|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 1
@@ -228,7 +263,7 @@ MonoBehaviour:
       Data: 3
     - Name: ObjectArg
       Entry: 10
-      Data: 2
+      Data: 4
     - Name: 
       Entry: 8
       Data: 
@@ -243,7 +278,7 @@ MonoBehaviour:
       Data: 5
     - Name: $v
       Entry: 7
-      Data: 17|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 18|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 2
@@ -276,7 +311,7 @@ MonoBehaviour:
       Data: 8
     - Name: $v
       Entry: 7
-      Data: 18|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 19|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 3

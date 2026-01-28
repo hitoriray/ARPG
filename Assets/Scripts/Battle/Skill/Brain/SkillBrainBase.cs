@@ -22,7 +22,7 @@ namespace Skill
         public virtual void Init(PlayerController player, SkillLearnedDatas skillLearnedDatas)
         {
             CanRelease = true;
-            skillPlayer.Init(player.AnimationController, player.ModelTransform);
+            skillPlayer.Init(player, player.AnimationController, player.ModelTransform);
             // 基于所学技能去初始化，后续是要通过学习修改
             skillBehaviours = new(skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count);
             List<SkillConfig> skillConfigs = PlayerManager.Instance.GetAllSkillConfig();

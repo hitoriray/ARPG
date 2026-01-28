@@ -23,13 +23,15 @@ namespace Skill
         private bool isPlaying = false;
         public bool IsPlaying => isPlaying;
 
+        private ICharacter owner;
         private Transform modelTransform;
         public Transform ModelTransform => modelTransform;
         
         public LayerMask attackDetectionLayer; // 攻击检测的Layer
 
-        public void Init(AnimationController animationController, Transform modelTransform)
+        public void Init(ICharacter owner, AnimationController animationController, Transform modelTransform)
         {
+            this.owner = owner;
             this.animationController = animationController;
             this.modelTransform = modelTransform;
 
@@ -44,9 +46,9 @@ namespace Skill
         [SerializeField] private Dictionary<string, WeaponController> weaponDict = new();
         public Dictionary<string, WeaponController> WeaponDict => weaponDict;
 
-        private void OnWeaponDetection(IHitTarget other)
+        private void OnWeaponDetection(IHitTarget other, AttackData attackData)
         {
-            skillBehaviour.OnAttackDetection(other);
+            skillBehaviour.OnAttackDetection(other, attackData);
         }
 
         #endregion
@@ -234,7 +236,13 @@ namespace Skill
                             var weaponDetectionData = (WeaponDetectionData)detectionEvent.AttackDetectionData;
                             if (weaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weapon))
                             {
-                                weapon.StartDetection();
+                                AttackData attackData = new AttackData()
+                                {
+                                    detectionEvent = detectionEvent,
+                                    source = owner,
+                                    attackValue = owner.GetAttackValue(detectionEvent),
+                                };
+                                weapon.StartDetection(attackData);
                             }
                             else
                             {
@@ -274,7 +282,16 @@ namespace Skill
                                     IHitTarget hitTarget = col.GetComponentInChildren<IHitTarget>();
                                     if (hitTarget != null)
                                     {
-                                        skillBehaviour.OnAttackDetection(hitTarget);
+                                        Vector3 pos = ((ShapeDetectionDataBase)detectionEvent.AttackDetectionData).Position;
+                                        AttackData attackData = new AttackData()
+                                        {
+                                            detectionEvent = detectionEvent,
+                                            source = owner,
+                                            attackValue = owner.GetAttackValue(detectionEvent),
+                                            // TODO: hitPoint = col.ClosestPoint(pos),
+                                            hitPoint = pos,
+                                        };
+                                        skillBehaviour.OnAttackDetection(hitTarget, attackData);
                                     }
                                 }
                             }

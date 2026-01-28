@@ -7,18 +7,20 @@ namespace Skill
     {
         [SerializeField] private Collider detectionCollider;
         private LayerMask detectionLayerMask;
-        private Action<IHitTarget> onDetection;
+        private Action<IHitTarget, AttackData> onDetection;
+        private AttackData attackData;
 
-        public void Init(LayerMask detectionLayerMask, Action<IHitTarget> onDetection)
+        public void Init(LayerMask detectionLayerMask, Action<IHitTarget, AttackData> onDetection)
         {
             this.detectionLayerMask = detectionLayerMask;
             this.onDetection = onDetection;
             detectionCollider.enabled = false;
         }
 
-        public void StartDetection()
+        public void StartDetection(AttackData attackData)
         {
             detectionCollider.enabled = true;
+            this.attackData = attackData;
         }
 
         public void StopDetection()
@@ -34,7 +36,8 @@ namespace Skill
                 IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
                 if (hitTarget != null)
                 {
-                    onDetection?.Invoke(hitTarget);
+                    attackData.hitPoint = other.ClosestPoint(transform.position);
+                    onDetection?.Invoke(hitTarget, attackData);
                 }
             }
         }
