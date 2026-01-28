@@ -1,6 +1,8 @@
 ﻿using Config;
 using Data;
+using JKFrame;
 using Player;
+using UI;
 using UnityEngine;
 
 namespace Skill.Behaviour
@@ -15,22 +17,29 @@ namespace Skill.Behaviour
         protected bool playing = false; // 是否在技能播放中
         protected float cdTimer;
         protected SkillLearnedData skillLearnedData;
+        public int skillIndex { get; private set; } // 角色配置中的技能索引
+        public virtual bool autoUpdateSlot { get => true; }
 
         public abstract SkillBehaviourBase DeepClone();
 
-        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer, SkillLearnedData skillLearnedData)
+        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer, SkillLearnedData skillLearnedData, int skillIndex)
         {
             this.player = player;
             this.skillConfig = skillConfig;
             this.skillBrain = skillBrain;
             this.skillPlayer = skillPlayer;
             this.skillLearnedData = skillLearnedData;
+            this.skillIndex = skillIndex;
         }
         
         public virtual void OnUpdate()
         {
             UpdateCdTime();
             RotateOnUpdate();
+            if (autoUpdateSlot)
+            {
+                UpdateSkillSlot();
+            }
         }
 
         public virtual void UpdateCdTime()
@@ -38,6 +47,24 @@ namespace Skill.Behaviour
             if (cdTimer <= 0)
                 return;
             cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
+        }
+
+        protected void UpdateSkillSlot()
+        {
+            if (TryGetSkillSlot(out var slot))
+            {
+                OnUpdateSkillSlot(slot);
+            }
+        }
+
+        protected bool TryGetSkillSlot(out UI_ShortcutSkill_Slot slot)
+        {
+            return UISystem.GetWindow<UI_GameSceneMainWindow>().TryGetShortcutSkillSlot(skillIndex, out slot);
+        }
+
+        protected virtual void OnUpdateSkillSlot(UI_ShortcutSkill_Slot slot)
+        {
+            slot.UpdateCdTime(cdTimer / skillConfig.GetCdTimeByLv(skillLearnedData.lv));
         }
 
         public virtual float GetCdTime()

@@ -14,7 +14,7 @@ namespace UI
     {
         private class ItemInfo
         {
-            public int itemIndex;
+            public int skillIndex;
             public SkillConfig skillConfig;
             public SkillLearnedData skillLearnedData;
             public UI_SkillLearnWindow_Item item;
@@ -52,7 +52,7 @@ namespace UI
                 item.Init(skillConfigList[i], skillLearnedData);
                 ItemInfo info = new ItemInfo
                 {
-                    itemIndex = i, 
+                    skillIndex = i, 
                     skillLearnedData = skillLearnedData, 
                     skillConfig = skillConfigList[i],
                     item = item,
@@ -130,13 +130,15 @@ namespace UI
 
         private void OnLearnBtnClicked()
         {
-            if (!skillLearnedDatas.SkillLearnedDataDict.Dictionary.TryGetValue(selectedItemInfo.itemIndex,
+            if (!skillLearnedDatas.SkillLearnedDataDict.Dictionary.TryGetValue(selectedItemInfo.skillIndex,
                     out var skillLearnedData))
             {
-                skillLearnedData = new();
+                skillLearnedData = new SkillLearnedData();
                 skillLearnedData.lv = 1;
                 selectedItemInfo.skillLearnedData = skillLearnedData;
-                skillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(selectedItemInfo.itemIndex, skillLearnedData);
+                skillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(selectedItemInfo.skillIndex, skillLearnedData);
+                // 新学习的技能需要通知玩家更新
+                PlayerManager.Instance.AddSkill(selectedItemInfo.skillIndex, skillLearnedData);
             }
             else
             {

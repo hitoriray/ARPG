@@ -47,5 +47,10 @@ namespace Player
         {
             return characterConfig.SkillConfigList;
         }
+
+        public void AddSkill(int skillIndex, SkillLearnedData skillLearnedData)
+        {
+            player.SkillBrain.AddSkill(player, GetAllSkillConfig(), skillIndex, skillLearnedData);
+        }
     }
 }

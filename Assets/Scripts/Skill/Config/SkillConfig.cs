@@ -11,6 +11,7 @@ namespace Config
     {
         public string skillName;
         public Sprite skillIcon;
+        public Sprite[] skillIcons;
         public string skillDescription;
         public int skillPointRequired;
         public int maxLv;

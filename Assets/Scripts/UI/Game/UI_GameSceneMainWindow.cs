@@ -17,6 +17,17 @@ namespace UI
             ShowShortcutSkillSlots(shortcutSkillSlotData);
         }
 
+        public bool TryGetShortcutSkillSlot(int skillIndex, out UI_ShortcutSkill_Slot slot)
+        {
+            if (TryGetShortcutSkillSlotIndex(skillIndex, out int slotIndex))
+            {
+                slot = shortcutSkillSlots[slotIndex];
+                return true;
+            }
+            slot = null;
+            return false;
+        }
+
         public bool TryGetShortcutSkillSlotIndex(int skillIndex, out int slotIndex)
         {
             for (int i = 0; i < shortcutSkillSlots.Length; i++)
@@ -42,7 +53,7 @@ namespace UI
                 {
                     skillConfig = skillConfigs[skillIndex];
                 }
-                // TODO: 
+                // TODO: 技能格子与玩家实际的技能之间的绑定
                 shortcutSkillSlots[i].Init(i);
                 shortcutSkillSlots[i].Show(skillIndex, skillConfig);
             }

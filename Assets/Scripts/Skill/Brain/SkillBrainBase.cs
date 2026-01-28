@@ -13,31 +13,41 @@ namespace Skill
     public abstract class SkillBrainBase : MonoBehaviour
     {
         [SerializeField] protected SkillPlayer skillPlayer;
-        [SerializeField] protected List<SkillConfig> skillConfigs = new();  // 技能
         [ShowInInspector] protected List<SkillBehaviourBase> skillBehaviours;
 
         public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
-        public int SkillConfigCount => skillConfigs.Count;
-
-        public virtual void SetCanReleaseFlag(bool newValue)
-        {
-            CanRelease = newValue;
-        }
-
+        public int SkillCount => skillBehaviours.Count;
+        
         public virtual void Init(PlayerController player, SkillLearnedDatas skillLearnedDatas)
         {
             CanRelease = true;
             skillPlayer.Init(player.AnimationController, player.ModelTransform);
-            // TODO: 基于所学技能去初始化，后续是要通过学习修改
+            // 基于所学技能去初始化，后续是要通过学习修改
             skillBehaviours = new(skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count);
+            List<SkillConfig> skillConfigs = PlayerManager.Instance.GetAllSkillConfig();
             foreach (var item in skillLearnedDatas.SkillLearnedDataDict.Dictionary)
             {
-                var skillConfig = skillConfigs[item.Key];
-                var skillBehaviour = skillConfig.Behaviour.DeepClone();
-                skillBehaviour.Init(player, skillConfig, this, skillPlayer, item.Value);
-                skillBehaviours.Add(skillBehaviour);
+                AddSkill(player, skillConfigs, item.Key, item.Value);
             }
+        }
+
+        public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData)
+        {
+            var skillConfig = skillConfigs[skillIndex];
+            var skillBehaviour = skillConfig.Behaviour.DeepClone();
+            skillBehaviour.Init(player, skillConfig, this, skillPlayer, skillLearnedData, skillIndex);
+            skillBehaviours.Add(skillBehaviour);
+        }
+
+        public int GetSkillIndex(int index)
+        {
+            return skillBehaviours[index].skillIndex;
+        }
+        
+        public virtual void SetCanReleaseFlag(bool newValue)
+        {
+            CanRelease = newValue;
         }
 
         protected virtual void Update()
@@ -48,14 +58,14 @@ namespace Skill
             }
         }
 
-        public virtual void ReleaseSkill(int index)
+        public virtual void ReleaseSkill(int behaviourIndex)
         {
-            if (LastReleaseBehaviourIndex != -1 && LastReleaseBehaviourIndex != index)
+            if (LastReleaseBehaviourIndex != -1 && LastReleaseBehaviourIndex != behaviourIndex)
             {
-                skillBehaviours[index].OnReleaseNewSkill();
+                skillBehaviours[LastReleaseBehaviourIndex].OnReleaseNewSkill();
             }
-            skillBehaviours[index].Release();
-            LastReleaseBehaviourIndex = index;
+            skillBehaviours[behaviourIndex].Release();
+            LastReleaseBehaviourIndex = behaviourIndex;
         }
         
         public virtual bool CheckCost(SkillCostType costType, float costValue)
@@ -64,9 +74,9 @@ namespace Skill
             return true;
         }
         
-        public virtual bool CheckReleaseSkill(int index)
+        public virtual bool CheckReleaseSkill(int behaviourIndex)
         {
-            return CanRelease && skillBehaviours[index].CheckRelease();
+            return CanRelease && skillBehaviours[behaviourIndex].CheckRelease();
         }
         
         /// <summary>

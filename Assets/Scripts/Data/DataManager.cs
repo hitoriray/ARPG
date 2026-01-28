@@ -65,10 +65,8 @@ namespace Data
                 SkillTotalPoint = 1000,
             };
             GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData(){lv=1});
-            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData(){lv=2});
-            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(2, new SkillLearnedData(){lv=3});
             GameData.ShortcutSkillSlotData = new();
-            GameData.ShortcutSkillSlotData.skillIds = new int[6] { 1, 2, -1, -1, -1, -1 };
+            GameData.ShortcutSkillSlotData.skillIds = new int[6] { -1, -1, -1, -1, -1, -1 };
         }
 
         public static void SaveGameData()

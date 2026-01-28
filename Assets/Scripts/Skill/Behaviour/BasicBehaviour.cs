@@ -8,6 +8,8 @@ namespace Skill.Behaviour
         private int attackIndex = -1;  // 当前的普攻段数索引
         [SerializeField] private int standAttackCount = 3; // 标准的普攻段数
         [SerializeField] private int perfectClipIndex = 3; // 特殊攻击索引
+        public override bool autoUpdateSlot => false;
+        
         public override SkillBehaviourBase DeepClone()
         {
             return new BasicBehaviour

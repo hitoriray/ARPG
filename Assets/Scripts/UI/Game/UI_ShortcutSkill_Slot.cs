@@ -1,16 +1,20 @@
 using Config;
 using JKFrame;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
     public class UI_ShortcutSkill_Slot : UI_SkillSlotBase
     {
+        [SerializeField] private Image cdMask;
         private int slotIndex;
         public int skillIndex { get; private set; }
 
         public void Init(int slotIndex)
         {
             this.slotIndex = slotIndex;
+            UpdateCdTime(0);
             Init();
         }
 
@@ -19,6 +23,7 @@ namespace UI
             this.skillIndex = skillIndex;
             this.skillConfig = skillConfig;
             Show(skillConfig);
+            InputManager.Instance.BindSkillKeyCode(slotIndex, skillIndex);
         }
 
         public void ChangeSkill(int newSkillIndex)
@@ -40,6 +45,22 @@ namespace UI
             this.ChangeSkill(otherSlot.skillIndex);
             // 对方变成自己
             otherSlot.ChangeSkill(tmpIndex);
+        }
+
+        public void UpdateCdTime(float fillAmount)
+        {
+            cdMask.fillAmount = fillAmount;
+        }
+
+        public void UpdateCdTimeAndMaskColor(float fillAmount, Color color)
+        {
+            UpdateCdTime(fillAmount);
+            cdMask.color = color;
+        }
+
+        public void UpdateIcon(Sprite sprite)
+        {
+            this.icon.sprite = sprite;
         }
     }
 }

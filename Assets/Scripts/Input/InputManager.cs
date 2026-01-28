@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Data;
 using JKFrame;
 using UnityEngine;
 
@@ -31,6 +33,11 @@ public class InputManager : SingletonMono<InputManager>
             }
             valid = GetState();
         }
+
+        public void ResetCacheTimer()
+        {
+            lastInputTime = float.MinValue;
+        }
     }
     
     [Serializable]
@@ -60,12 +67,18 @@ public class InputManager : SingletonMono<InputManager>
             }
             valid = GetState();
         }
+        
+        public void ResetCacheTimer()
+        {
+            lastInputTime = float.MinValue;
+        }
     }
 
     [SerializeField] private Key[] skillKeys;
     [SerializeField] private MouseKey basicAttackKey;
     [SerializeField] private GameObject cineMachine;
-    
+    // Key: 角色配置中技能的索引，而不是目前角色已学技能列表中的索引
+    private Dictionary<int, Key> skillKeyMap = new();
     private bool characterControl;
     public bool CharacterControl
     {
@@ -92,6 +105,16 @@ public class InputManager : SingletonMono<InputManager>
         }
     }
 
+    /// <summary>
+    /// 将keyCodeIndex绑定到第skillIndex个技能
+    /// </summary>
+    /// <param name="keyCodeIndex"></param>
+    /// <param name="skillIndex"></param>
+    public void BindSkillKeyCode(int keyCodeIndex, int skillIndex)
+    {
+        skillKeyMap[skillIndex] = skillKeys[keyCodeIndex];
+    }
+
     public Key GetSkillKey(int skillIndex)
     {
         if (skillIndex < 0 || skillIndex >= skillKeys.Length)
@@ -101,12 +124,29 @@ public class InputManager : SingletonMono<InputManager>
 
     public bool GetSkillKeyState(int skillIndex)
     {
-        return characterControl && GetSkillKey(skillIndex).GetState();
+        if (skillKeyMap.TryGetValue(skillIndex, out var skillKey))
+        {
+            return characterControl && skillKey.GetState();
+        }
+        return false;
     }
     
     public bool GetBasicAttackKeyState()
     {
         return characterControl && basicAttackKey.GetState();
+    }
+
+    public void ResetSkillKeyCodeCacheTimer(int skillIndex)
+    {
+        if (skillKeyMap.TryGetValue(skillIndex, out var skillKey))
+        {
+            skillKey.ResetCacheTimer();
+        }
+    }
+    
+    public void ResetBasicAttackKeyCodeCacheTimer()
+    {
+        basicAttackKey.ResetCacheTimer();
     }
 
     public Vector2 GetMoveInput()
