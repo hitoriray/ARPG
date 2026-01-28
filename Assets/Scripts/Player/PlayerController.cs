@@ -13,13 +13,13 @@ namespace Player
 {
     public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter
     {
-        [SerializeField] private SkillBrainBase skillBrain;
+        [SerializeField] private PlayerSkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
 
-        public SkillBrainBase SkillBrain => skillBrain;
+        public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
         public AnimationController AnimationController => playerView.AnimationController;
         public Transform ModelTransform => playerView.transform;
@@ -42,7 +42,7 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(gameData);
             
-            characterAttribute.Init(characterConfig);
+            characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
             skillBrain.Init(this, gameData.SkillLearnedDatas);
             // 初始化状态机
             stateMachine = ResSystem.GetOrNew<StateMachine>();
@@ -115,7 +115,7 @@ namespace Player
         {
             buffController.AddBuff(buffConfig, stack);
         }
-
+        
         public void OnHit(AttackData attackData)
         {
             Debug.Log("玩家被命中！");
@@ -124,6 +124,30 @@ namespace Player
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)
         {
             return characterAttribute.attack.Total * detectionEvent.AttackHitConfig.AttackMultiply;
+        }
+
+        public void OnSkillRotate()
+        {
+            Vector2 moveInput = InputManager.Instance.GetMoveInput();
+            if (moveInput.x != 0 || moveInput.y != 0)
+            {
+                Rotate(new Vector3(moveInput.x, 0, moveInput.y));
+            }
+        }
+        
+        public void Change2IdleState()
+        {
+            ChangeState(PlayerState.Idle);
+        }
+
+        public void OnSkillMove(Vector3 deltaPos)
+        {
+            CharacterController.Move(deltaPos);
+        }
+
+        public void OnSkillRotate(Quaternion deltaRot)
+        {
+            ModelTransform.rotation *= deltaRot;
         }
     }
 }

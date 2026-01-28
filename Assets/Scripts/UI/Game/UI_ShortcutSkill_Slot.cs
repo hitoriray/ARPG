@@ -58,6 +58,14 @@ namespace UI
             cdMask.color = color;
         }
 
+        /// <summary>
+        /// 更新技能能否被释放的状态
+        /// </summary>
+        public void UpdateSkillReleaseState(bool canRelease)
+        {
+            icon.color = canRelease ? Color.white : Color.black;
+        }
+
         public void UpdateIcon(Sprite sprite)
         {
             this.icon.sprite = sprite;

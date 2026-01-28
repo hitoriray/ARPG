@@ -18,7 +18,7 @@ namespace Player
                 {
                     case BuffEffectType.Hp:
                         Debug.Log($"由于{buff.config.name}Buff增加Hp:{simpleEffectData.value * buff.stack}");
-                        player.CharacterAttribute.currentHp += simpleEffectData.value;
+                        player.CharacterAttribute.AddHp(simpleEffectData.value);
                         break;
                     case BuffEffectType.AttackFixed:
                         Debug.Log($"由于{buff.config.name}Buff增加攻击力值:{simpleEffectData.value * buff.stack}");

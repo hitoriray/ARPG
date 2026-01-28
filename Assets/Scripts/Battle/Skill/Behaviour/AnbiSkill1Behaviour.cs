@@ -1,9 +1,10 @@
-﻿using Player.State;
+﻿using Player;
+using Player.State;
 using UnityEngine;
 
 namespace Skill.Behaviour
 {
-    public class AnbiSkill1Behaviour : SkillBehaviourBase
+    public class AnbiSkill1Behaviour : PlayerSkillBehaviourBase
     {
         #region 配置
         public float standingTime = 5;  // 等待下一段技能的释放的空窗时间
@@ -33,7 +34,7 @@ namespace Skill.Behaviour
             {
                 cdTimer = standingTime;
             }
-            skillPlayer.StartPlaySkillConfig(this);
+            skillPlayer.StartPlaySkillBehaviour(this);
             skillPlayer.PlaySkillClip(skillConfig.Clips[attackIndex]);
             // 让普攻连续
             skillBrain.AddOrUpdateShareData(AnbiSkillBrain.ContinueBasicAttackDataKey, true);
@@ -116,7 +117,7 @@ namespace Skill.Behaviour
         public override void OnSkillClipEnd()
         {
             base.OnSkillClipEnd();
-            player.ChangeState(PlayerState.Idle);
+            owner.Change2IdleState();
         }
         
         public override void OnClipEndOrReleaseNewSkill()
@@ -141,8 +142,8 @@ namespace Skill.Behaviour
         public override void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
             deltaPos.y += Time.deltaTime * -9.8f;
-            player.CharacterController.Move(deltaPos);
-            player.ModelTransform.rotation *= deltaRot;
+            owner.OnSkillMove(deltaPos);
+            owner.OnSkillRotate(deltaRot);
         }
     }
 }

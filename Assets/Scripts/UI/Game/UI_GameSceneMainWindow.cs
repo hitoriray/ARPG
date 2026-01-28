@@ -54,7 +54,6 @@ namespace UI
                 {
                     skillConfig = skillConfigs[skillIndex];
                 }
-                // TODO: 技能格子与玩家实际的技能之间的绑定
                 shortcutSkillSlots[i].Init(i);
                 shortcutSkillSlots[i].Show(skillIndex, skillConfig);
             }

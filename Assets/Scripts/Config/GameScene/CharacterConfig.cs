@@ -17,6 +17,7 @@ namespace Config
         [LabelText("脚步声音资源")] public AudioClip[] FootStepAudioClips;
         [LabelText("全部技能")] public List<SkillConfig> SkillConfigList;
         [LabelText("基础生命值")] public float hpBaseValue;
+        [LabelText("基础魔力值")] public float mpBaseValue;
         [LabelText("基础攻击力")] public float attackBaseValue;
 
         public AnimationClip GetAnimationClipByName(string clipName)

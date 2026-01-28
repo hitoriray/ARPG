@@ -10,7 +10,7 @@ namespace Skill.Behaviour
 {
     public abstract class SkillBehaviourBase
     {
-        protected PlayerController player;
+        protected ICharacter owner;
         protected SkillConfig skillConfig;
         protected SkillBrainBase skillBrain;
         protected SkillPlayer skillPlayer;
@@ -21,12 +21,13 @@ namespace Skill.Behaviour
         public int skillIndex { get; private set; } // 角色配置中的技能索引
         private HashSet<IHitTarget> hitTargets;
         public virtual bool autoUpdateSlot { get => true; }
+        public int SkillLv => skillLearnedData == null ? 1 : skillLearnedData.lv;
 
         public abstract SkillBehaviourBase DeepClone();
 
-        public virtual void Init(PlayerController player, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer, SkillLearnedData skillLearnedData, int skillIndex)
+        public virtual void Init(ICharacter owner, SkillConfig skillConfig, SkillBrainBase skillBrain, SkillPlayer skillPlayer, SkillLearnedData skillLearnedData, int skillIndex)
         {
-            this.player = player;
+            this.owner = owner;
             this.skillConfig = skillConfig;
             this.skillBrain = skillBrain;
             this.skillPlayer = skillPlayer;
@@ -67,12 +68,16 @@ namespace Skill.Behaviour
 
         protected virtual void OnUpdateSkillSlot(UI_ShortcutSkill_Slot slot)
         {
-            slot.UpdateCdTime(cdTimer / skillConfig.GetCdTimeByLv(skillLearnedData.lv));
+            float max = skillConfig.GetCdTimeByLv(SkillLv);
+            float value = 0;
+            if (max != 0) value = cdTimer / max;
+            slot.UpdateCdTime(value);
+            slot.UpdateSkillReleaseState(CheckRelease());
         }
 
         public virtual float GetCdTime()
         {
-            return skillConfig.GetCdTimeByLv(skillLearnedData.lv);
+            return skillConfig.GetCdTimeByLv(SkillLv);
         }
 
         public virtual bool CheckCdTime()
@@ -117,14 +122,9 @@ namespace Skill.Behaviour
 
         protected virtual void RotateOnUpdate()
         {
-            // TODO: 怪物不能基于玩家的控制进行旋转
             if (canRotate)
             {
-                Vector2 moveInput = InputManager.Instance.GetMoveInput();
-                if (moveInput.x != 0 || moveInput.y != 0)
-                {
-                    player.Rotate(new Vector3(moveInput.x, 0, moveInput.y));
-                }
+                owner.OnSkillRotate();
             }
         }
 
@@ -207,7 +207,7 @@ namespace Skill.Behaviour
             }
             else if (evt.EventType == SkillEventType.AddBuff)
             {
-                player.AddBuff((BuffConfig)evt.ObjectArg, evt.IntArg);
+                owner.AddBuff((BuffConfig)evt.ObjectArg, evt.IntArg);
             }
         }
 
@@ -222,7 +222,31 @@ namespace Skill.Behaviour
 
         public virtual void OnHitTarget(IHitTarget hitTarget, AttackData attackData)
         {
+            if (attackData.detectionEvent.AttackHitConfig != null)
+            {
+                DoHitEffect(attackData);
+            }
             hitTarget.OnHit(attackData);
+        }
+
+        protected void DoHitEffect(AttackData attackData)
+        {
+            var attackHitConfig = attackData.detectionEvent.AttackHitConfig;
+            if (attackHitConfig != null)
+            {
+                if (attackHitConfig.HitAudioClip != null)
+                {
+                    AudioSystem.PlayOneShot(attackHitConfig.HitAudioClip, attackData.hitPoint);
+                }
+
+                if (attackHitConfig.HitEffectPrefab != null)
+                {
+                    var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
+                    effect.transform.position = attackData.hitPoint;
+                    effect.transform.LookAt(Camera.main.transform.position);
+                    effect.GetComponent<EffectController>().Init();
+                }
+            }
         }
 
         public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)

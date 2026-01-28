@@ -1,6 +1,8 @@
+using Player;
+
 namespace Skill
 {
-    public class AnbiSkillBrain : SkillBrainBase
+    public class AnbiSkillBrain : PlayerSkillBrainBase
     {
         // 连续普通攻击模式
         public const string ContinueBasicAttackDataKey = "ContinueBasicAttackDataKey";

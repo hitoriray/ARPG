@@ -55,7 +55,7 @@ namespace Skill
         
         private SkillBehaviourBase skillBehaviour;
 
-        public void StartPlaySkillConfig(SkillBehaviourBase skillBehaviour)
+        public void StartPlaySkillBehaviour(SkillBehaviourBase skillBehaviour)
         {
             this.skillBehaviour = skillBehaviour;
         }

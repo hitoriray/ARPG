@@ -18,21 +18,15 @@ namespace Skill
         public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
         public int SkillCount => skillBehaviours.Count;
-        
-        public virtual void Init(PlayerController player, SkillLearnedDatas skillLearnedDatas)
+
+        public virtual void Init(ICharacter owner)
         {
             CanRelease = true;
-            skillPlayer.Init(player, player.AnimationController, player.ModelTransform);
-            // 基于所学技能去初始化，后续是要通过学习修改
-            skillBehaviours = new(skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count);
-            List<SkillConfig> skillConfigs = PlayerManager.Instance.GetAllSkillConfig();
-            foreach (var item in skillLearnedDatas.SkillLearnedDataDict.Dictionary)
-            {
-                AddSkill(player, skillConfigs, item.Key, item.Value);
-            }
+            skillPlayer.Init(owner, owner.AnimationController, owner.ModelTransform);
+
         }
 
-        public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData)
+        public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
         {
             var skillConfig = skillConfigs[skillIndex];
             var skillBehaviour = skillConfig.Behaviour.DeepClone();

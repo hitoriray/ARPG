@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Player;
+using UnityEngine;
 using Player.State;
 
 namespace Skill.Behaviour
 {
-    public class BasicBehaviour : SkillBehaviourBase
+    public class BasicBehaviour : PlayerSkillBehaviourBase
     {
         private int attackIndex = -1;  // 当前的普攻段数索引
         [SerializeField] private int standAttackCount = 3; // 标准的普攻段数
@@ -34,21 +35,21 @@ namespace Skill.Behaviour
                 if (attackIndex >= standAttackCount)
                     attackIndex = 0;
             }
-            skillPlayer.StartPlaySkillConfig(this);
+            skillPlayer.StartPlaySkillBehaviour(this);
             skillPlayer.PlaySkillClip(skillConfig.Clips[attackIndex]);
         }
         
         public override void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
             deltaPos.y += Time.deltaTime * -9.8f;
-            player.CharacterController.Move(deltaPos);
-            player.ModelTransform.rotation *= deltaRot;
+            owner.OnSkillMove(deltaPos);
+            owner.OnSkillRotate(deltaRot);
         }
         
         public override void OnSkillClipEnd()
         {
             base.OnSkillClipEnd();
-            player.ChangeState(PlayerState.Idle);
+            owner.Change2IdleState();
         }
 
         public override void OnClipEndOrReleaseNewSkill()

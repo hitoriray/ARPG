@@ -7,16 +7,45 @@ namespace Attribute
 {
     public class CharacterAttribute : SerializedMonoBehaviour
     {
-        public float currentHp;
+        [ShowInInspector] public float currentHp { get; private set; }
+        [ShowInInspector] public float currentMp { get; private set; }
+        
         public FloatAttr maxHp = new();
+        public FloatAttr maxMp = new();
         public FloatAttr attack = new();
 
-        public void Init(CharacterConfig characterConfig)
+        // TODO: 基于存档恢复当前血量等信息
+        public void Init(CharacterConfig characterConfig, float currentHp = 100, float currentMp = 100)
         {
             maxHp.Init(characterConfig.hpBaseValue, null, null, null, OnMaxHpChanged);
+            maxMp.Init(characterConfig.mpBaseValue, null, null, null, OnMaxMpChanged);
             attack.Init(characterConfig.attackBaseValue);
+            this.currentHp = currentHp;
+            this.currentMp = currentMp;
         }
 
+        public void AddHp(float value)
+        {
+            SetHp(currentHp + value);
+        }
+
+        public void SetHp(float value)
+        {
+            currentHp = Mathf.Clamp(value, 0, maxHp.Total);
+            // TODO: 同步给UI
+        }
+
+        public void AddMp(float value)
+        {
+            SetMp(currentMp + value);
+        }
+
+        public void SetMp(float value)
+        {
+            currentMp = Mathf.Clamp(value, 0, maxMp.Total);
+            // TODO: 同步给UI
+        }
+        
         private void OnMaxHpChanged(float oldMaxHp, float newMaxHp)
         {
             // 当最大生命值发生变化时，当前生命值同步按比例变化
@@ -24,10 +53,10 @@ namespace Attribute
             // TODO: 同步给UI
         }
         
-        [Button]
-        public void TestAddMaxHp(float value)
+        private void OnMaxMpChanged(float oldMaxMp, float newMaxMp)
         {
-            maxHp.FixedBonus += value;
+            currentMp = newMaxMp * currentMp / oldMaxMp;
+            // TODO: 同步给UI
         }
     }
 
