@@ -7,6 +7,7 @@ namespace Config
     [CreateAssetMenu(menuName = "Config/BuffConfig")]
     public class BuffConfig : ConfigBase
     {
+        [LabelText("Buff ID")] public int buffId;
         [LabelText("名称")] public string buffName;
         [LabelText("描述")] [Multiline] public string description;
         [LabelText("图标")] public Sprite icon;

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Config;
+using Battle.ECS;
+using Battle.ECS.View.Helper;
 using JKFrame;
 using Player.Animation;
 using Sirenix.OdinInspector;
@@ -190,23 +192,27 @@ namespace Skill
                 {
                     if (effectEvent.Prefab != null && effectEvent.FrameIndex == currentFrameIndex)
                     {
-                        // 实例化特效
-                        var effectObj = PoolSystem.GetGameObject(effectEvent.Prefab.name);
-                        if (effectObj == null)
+                        // 交给ECS生成特效（若ECS未就绪则回落到原逻辑）
+                        if (!VfxEmitterHelper.EmitSkillVfx(modelTransform, effectEvent, skillClip.FrameRate) && false)
                         {
-                            effectObj = GameObject.Instantiate(effectEvent.Prefab);
-                            effectObj.name = effectEvent.Prefab.name;
-                        }
+                            Debug.Log("由Mono生成技能特效");
+                            var effectObj = PoolSystem.GetGameObject(effectEvent.Prefab.name);
+                            if (effectObj == null)
+                            {
+                                effectObj = GameObject.Instantiate(effectEvent.Prefab);
+                                effectObj.name = effectEvent.Prefab.name;
+                            }
 
-                        effectObj.transform.position = modelTransform.TransformPoint(effectEvent.Position);
-                        effectObj.transform.rotation =
-                            Quaternion.Euler(modelTransform.eulerAngles + effectEvent.Rotation);
-                        effectObj.transform.localScale = effectEvent.Scale;
-                        if (effectEvent.AutoDestroy)
-                        {
-                            StartCoroutine(
-                                AutoDestructEffectGameObject((float)effectEvent.Duration / skillClip.FrameRate,
-                                    effectObj));
+                            effectObj.transform.position = modelTransform.TransformPoint(effectEvent.Position);
+                            effectObj.transform.rotation =
+                                Quaternion.Euler(modelTransform.eulerAngles + effectEvent.Rotation);
+                            effectObj.transform.localScale = effectEvent.Scale;
+                            if (effectEvent.AutoDestroy)
+                            {
+                                StartCoroutine(
+                                    AutoDestructEffectGameObject((float)effectEvent.Duration / skillClip.FrameRate,
+                                        effectObj));
+                            }
                         }
                     }
                     skillBehaviour.AfterSkillEffectEvent(effectEvent);

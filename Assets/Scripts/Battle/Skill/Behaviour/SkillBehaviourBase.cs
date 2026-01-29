@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Battle.ECS.View.Helper;
 using Config;
 using Data;
 using JKFrame;
-using Player;
 using UI;
 using UnityEngine;
 
@@ -241,10 +241,17 @@ namespace Skill.Behaviour
 
                 if (attackHitConfig.HitEffectPrefab != null)
                 {
-                    var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
-                    effect.transform.position = attackData.hitPoint;
-                    effect.transform.LookAt(Camera.main.transform.position);
-                    effect.GetComponent<EffectController>().Init();
+                    if (false && !VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true))
+                    {
+                        Debug.Log("由Mono生成命中特效");
+                        var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
+                        effect.transform.position = attackData.hitPoint;
+                        if (Camera.main != null)
+                            effect.transform.LookAt(Camera.main.transform.position);
+                        var ctrl = effect.GetComponent<EffectController>();
+                        if (ctrl != null)
+                            ctrl.Init();
+                    }
                 }
             }
         }

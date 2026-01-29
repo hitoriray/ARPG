@@ -10,6 +10,7 @@ namespace Config
     [CreateAssetMenu(fileName = "SkillConfig", menuName = "Config/Skill/SkillConfig")]
     public class SkillConfig : ConfigBase
     {
+        [LabelText("技能ID")] public int skillId;
         [LabelText("技能名称")] public string skillName;
         [LabelText("技能图标")] public Sprite skillIcon;
         [LabelText("多段技能图标")]

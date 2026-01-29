@@ -1,8 +1,7 @@
-using System;
+using Battle.ECS;
 using Data;
 using JKFrame;
 using Player;
-using UnityEngine;
 
 namespace Scene
 {
@@ -57,6 +56,10 @@ namespace Scene
             // 初始化角色
             await PlayerManager.Instance.InitAsync();
             JKLog.Log($"[{nameof(GameSceneManager)}] 游戏开始！当前角色ID: {DataManager.GameData.SelectedCharacterId}");
+            // 初始化ECS并注册玩家
+            var ecsRunner = BattleEcsRunner.Ensure();
+            ecsRunner.RegisterPlayer(PlayerManager.Instance.player);
+
         }
 
         private void OnDestroy()
