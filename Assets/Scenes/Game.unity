@@ -570,6 +570,7 @@ GameObject:
   - component: {fileID: 812675501}
   - component: {fileID: 812675502}
   - component: {fileID: 812675503}
+  - component: {fileID: 812675504}
   m_Layer: 0
   m_Name: GameSceneManager
   m_TagString: Untagged
@@ -649,6 +650,31 @@ MonoBehaviour:
     cacheTime: 0.25
     valid: 0
   cineMachine: {fileID: 1884134366}
+--- !u!114 &812675504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812675500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c7f66756cc340e89f62a43165473b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: globalStates
+      Entry: 6
+      Data: 
+  config: {fileID: 11400000, guid: 6e32adb42701132408694fee4b429b73, type: 2}
 --- !u!4 &984512252 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
@@ -679,7 +705,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021295992}
   m_LocalRotation: {x: -0.19930229, y: 0.23087311, z: -0.04019181, w: 0.9515045}
-  m_LocalPosition: {x: -0.0000000785786, y: -0.00000042725424, z: 0.00000021597803}
+  m_LocalPosition: {x: -0.00000015715719, y: -0.00000041148073, z: 0.00000025560388}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -835,7 +861,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1184106534}
-  m_LocalRotation: {x: -0.1701247, y: 0.22980589, z: -0.04728258, w: 0.9570848}
+  m_LocalRotation: {x: -0.1701247, y: 0.22980589, z: -0.047282584, w: 0.9570848}
   m_LocalPosition: {x: -0.000000026192865, y: 0.0000000052578364, z: 0.00000001320861}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1161,6 +1187,7 @@ GameObject:
   - component: {fileID: 1735543459}
   - component: {fileID: 1735543458}
   - component: {fileID: 1735543462}
+  - component: {fileID: 1735543463}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -1258,6 +1285,366 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d4808ac48b147c1b4f7c8a52b0ff425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1735543463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735543457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74794510008042f0b9555c15e1fbeda1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: goals
+      Entry: 7
+      Data: 0|GOAP.Goals.GOAPGoals, Assembly-CSharp
+    - Name: goalItemDict
+      Entry: 7
+      Data: 1|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[GOAP.Goals.GOAPGoals+GoalItem,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 2|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u751F\u547D\u503C\u4E0A\u5347"
+    - Name: $v
+      Entry: 7
+      Data: 3|GOAP.Goals.GOAPGoals+GoalItem, Assembly-CSharp
+    - Name: targetState
+      Entry: 3
+      Data: 1
+    - Name: targetValue
+      Entry: 7
+      Data: 4|GOAP.FloatStateComparer, Assembly-CSharp
+    - Name: symbol
+      Entry: 3
+      Data: 4
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: proirityMultiply
+      Entry: 4
+      Data: 1
+    - Name: runtimeProirity
+      Entry: 4
+      Data: 0
+    - Name: goalChecker
+      Entry: 7
+      Data: 5|GOAP.TestHpGoalChecker, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u4F11\u606F"
+    - Name: $v
+      Entry: 7
+      Data: 6|GOAP.Goals.GOAPGoals+GoalItem, Assembly-CSharp
+    - Name: targetState
+      Entry: 3
+      Data: 2
+    - Name: targetValue
+      Entry: 7
+      Data: 7|GOAP.BoolStateComparer, Assembly-CSharp
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: proirityMultiply
+      Entry: 4
+      Data: 1
+    - Name: runtimeProirity
+      Entry: 4
+      Data: 3
+    - Name: goalChecker
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: states
+      Entry: 7
+      Data: 8|GOAP.GOAPStates, Assembly-CSharp
+    - Name: StateDict
+      Entry: 7
+      Data: 9|System.Collections.Generic.Dictionary`2[[GOAP.GOAPStateType, Assembly-CSharp],[GOAP.GOAPStateBase,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 10|System.Collections.Generic.EnumEqualityComparer`1[[GOAP.GOAPStateType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 11|GOAP.FloatState, Assembly-CSharp
+    - Name: value
+      Entry: 4
+      Data: 100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 7
+      Data: 12|GOAP.BoolState, Assembly-CSharp
+    - Name: value
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: actions
+      Entry: 7
+      Data: 13|GOAP.Action.GOAPActions, Assembly-CSharp
+    - Name: actions
+      Entry: 7
+      Data: 14|System.Collections.Generic.List`1[[GOAP.Action.GOAPActionBase, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 15|GOAP.Action.TestAction, Assembly-CSharp
+    - Name: preconditions
+      Entry: 7
+      Data: 16|System.Collections.Generic.List`1[[GOAP.Action.GOAPTypeAndComparer,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 17|GOAP.Action.GOAPTypeAndComparer, Assembly-CSharp
+    - Name: stateType
+      Entry: 3
+      Data: 2
+    - Name: stateComparer
+      Entry: 7
+      Data: 18|GOAP.BoolStateComparer, Assembly-CSharp
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: effects
+      Entry: 7
+      Data: 19|System.Collections.Generic.List`1[[GOAP.Action.GOAPTypeAndComparer,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 20|GOAP.Action.GOAPTypeAndComparer, Assembly-CSharp
+    - Name: stateType
+      Entry: 3
+      Data: 1
+    - Name: stateComparer
+      Entry: 7
+      Data: 21|GOAP.FloatStateComparer, Assembly-CSharp
+    - Name: symbol
+      Entry: 3
+      Data: 4
+    - Name: value
+      Entry: 4
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: costValue
+      Entry: 4
+      Data: 0
+    - Name: effectValue
+      Entry: 4
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 22|GOAP.Action.TestAction, Assembly-CSharp
+    - Name: preconditions
+      Entry: 7
+      Data: 23|System.Collections.Generic.List`1[[GOAP.Action.GOAPTypeAndComparer,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: effects
+      Entry: 7
+      Data: 24|System.Collections.Generic.List`1[[GOAP.Action.GOAPTypeAndComparer,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 25|GOAP.Action.GOAPTypeAndComparer, Assembly-CSharp
+    - Name: stateType
+      Entry: 3
+      Data: 2
+    - Name: stateComparer
+      Entry: 7
+      Data: 26|GOAP.BoolStateComparer, Assembly-CSharp
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: costValue
+      Entry: 4
+      Data: 1
+    - Name: effectValue
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: plan
+      Entry: 7
+      Data: 27|GOAP.Plan.GOAPPlan, Assembly-CSharp
+    - Name: root
+      Entry: 6
+      Data: 
+    - Name: runningNode
+      Entry: 6
+      Data: 
+    - Name: goalName
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
 --- !u!1 &1751366820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1380,7 +1767,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843014546}
-  m_LocalRotation: {x: -0.20036599, y: 0.23118873, z: -0.039977085, w: 0.95121354}
+  m_LocalRotation: {x: -0.20036598, y: 0.23118871, z: -0.039977085, w: 0.95121354}
   m_LocalPosition: {x: -0.000000026192865, y: 0.0000000052578364, z: 0.00000001320861}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1587,7 +1974,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884134366}
   m_LocalRotation: {x: 0.18249631, y: -0.24168119, z: 0.046333987, w: 0.9519131}
-  m_LocalPosition: {x: -0.4491515, y: 0.20000005, z: 1.2808368}
+  m_LocalPosition: {x: -0.44915155, y: 0.20000005, z: 1.2808368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1961,6 +2348,10 @@ PrefabInstance:
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]
       value: 
       objectReference: {fileID: 5647307153343587762}
+    - target: {fileID: 6154682923446032345, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6154682923446032345, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
     - target: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: serializationData.Prefab
       value: 

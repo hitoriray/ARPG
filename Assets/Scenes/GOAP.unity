@@ -122,6 +122,92 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &72309791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 72309793}
+  - component: {fileID: 72309792}
+  m_Layer: 0
+  m_Name: GOAPGlobal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &72309792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72309791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c7f66756cc340e89f62a43165473b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: globalStates
+      Entry: 7
+      Data: 0|GOAP.GOAPStates, Assembly-CSharp
+    - Name: StateDict
+      Entry: 7
+      Data: 1|System.Collections.Generic.Dictionary`2[[GOAP.GOAPStateType, Assembly-CSharp],[GOAP.GOAPStateBase,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 2|System.Collections.Generic.EnumEqualityComparer`1[[GOAP.GOAPStateType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  config: {fileID: 11400000, guid: 6e32adb42701132408694fee4b429b73, type: 2}
+--- !u!4 &72309793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72309791}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.7275, y: -6.4882426, z: 9.582995}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &822819524
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,6 +218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 822819526}
   - component: {fileID: 822819525}
+  - component: {fileID: 822819527}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -151,6 +238,157 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb562bf5991843a0912175ef2bd4d251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: stateBase
+      Entry: 7
+      Data: 0|GOAP.BoolState, Assembly-CSharp
+    - Name: value
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: stateComparer
+      Entry: 7
+      Data: 1|GOAP.UnityObjectStateComparer, Assembly-CSharp
+    - Name: symbol
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: states
+      Entry: 7
+      Data: 2|GOAP.GOAPStates, Assembly-CSharp
+    - Name: StateDict
+      Entry: 7
+      Data: 3|System.Collections.Generic.Dictionary`2[[GOAP.GOAPStateType, Assembly-CSharp],[GOAP.GOAPStateBase,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 4|System.Collections.Generic.EnumEqualityComparer`1[[GOAP.GOAPStateType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 5|GOAP.FloatState, Assembly-CSharp
+    - Name: value
+      Entry: 4
+      Data: 100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: goals
+      Entry: 7
+      Data: 6|GOAP.Goals.GOAPGoals, Assembly-CSharp
+    - Name: goalItemDict
+      Entry: 7
+      Data: 7|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[GOAP.Goals.GOAPGoals+GoalItem,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 8|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u751F\u547D\u503C\u4E0A\u5347"
+    - Name: $v
+      Entry: 7
+      Data: 9|GOAP.Goals.GOAPGoals+GoalItem, Assembly-CSharp
+    - Name: targetState
+      Entry: 3
+      Data: 1
+    - Name: targetValue
+      Entry: 7
+      Data: 10|GOAP.FloatStateComparer, Assembly-CSharp
+    - Name: symbol
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: proirityMultiply
+      Entry: 4
+      Data: 1
+    - Name: runtimeProirity
+      Entry: 4
+      Data: 0
+    - Name: goalChecker
+      Entry: 7
+      Data: 11|GOAP.TestHpGoalChecker, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: testAction
+      Entry: 6
+      Data: 
 --- !u!4 &822819526
 Transform:
   m_ObjectHideFlags: 0
@@ -166,6 +404,187 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &822819527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822819524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74794510008042f0b9555c15e1fbeda1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: goals
+      Entry: 7
+      Data: 0|GOAP.Goals.GOAPGoals, Assembly-CSharp
+    - Name: goalItemDict
+      Entry: 7
+      Data: 1|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[GOAP.Goals.GOAPGoals+GoalItem,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 2|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u751F\u547D\u503C\u4E0A\u5347"
+    - Name: $v
+      Entry: 7
+      Data: 3|GOAP.Goals.GOAPGoals+GoalItem, Assembly-CSharp
+    - Name: targetState
+      Entry: 3
+      Data: 1
+    - Name: targetValue
+      Entry: 7
+      Data: 4|GOAP.FloatStateComparer, Assembly-CSharp
+    - Name: symbol
+      Entry: 3
+      Data: 0
+    - Name: value
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: proirityMultiply
+      Entry: 4
+      Data: 1
+    - Name: runtimeProirity
+      Entry: 4
+      Data: 0
+    - Name: goalChecker
+      Entry: 7
+      Data: 5|GOAP.TestHpGoalChecker, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: "\u4F11\u606F"
+    - Name: $v
+      Entry: 7
+      Data: 6|GOAP.Goals.GOAPGoals+GoalItem, Assembly-CSharp
+    - Name: targetState
+      Entry: 3
+      Data: 2
+    - Name: targetValue
+      Entry: 7
+      Data: 7|GOAP.BoolStateComparer, Assembly-CSharp
+    - Name: value
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: proirityMultiply
+      Entry: 4
+      Data: 1
+    - Name: runtimeProirity
+      Entry: 4
+      Data: 3
+    - Name: goalChecker
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: states
+      Entry: 7
+      Data: 8|GOAP.GOAPStates, Assembly-CSharp
+    - Name: StateDict
+      Entry: 7
+      Data: 9|System.Collections.Generic.Dictionary`2[[GOAP.GOAPStateType, Assembly-CSharp],[GOAP.GOAPStateBase,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 10|System.Collections.Generic.EnumEqualityComparer`1[[GOAP.GOAPStateType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 7
+      Data: 11|GOAP.FloatState, Assembly-CSharp
+    - Name: value
+      Entry: 4
+      Data: 100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: actions
+      Entry: 6
+      Data: 
+    - Name: plan
+      Entry: 6
+      Data: 
 --- !u!1 &915565519
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,3 +763,122 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1679374401
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5647307152969126730, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 822819527}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+    - target: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[0]
+      value: '"path":"plan","value":{"$id":0,"$type":"GOAP.Plan.GOAPPlan, Assembly-CSharp","root":{"$id":1,"$type":"GOAP.Plan.GOAPPlanNode,
+        Assembly-CSharp","action":null,"parent":null,"indexAtParent":0,"children":{"$id":2,"$type":"System.Collections.Generic.List`1[[GOAP.Plan.GOAPPlanNode,
+        Assembly-CSharp]], mscorlib","$rlength":0,"$rcontent":[]}},"runningNode":null,"goalName":null}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[1]
+      value: '"path":"plan.goalName","value":null'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[2]
+      value: '"path":"plan.root","value":{"$id":0,"$type":"GOAP.Plan.GOAPPlanNode,
+        Assembly-CSharp","action":null,"parent":null,"indexAtParent":0,"children":{"$id":1,"$type":"System.Collections.Generic.List`1[[GOAP.Plan.GOAPPlanNode,
+        Assembly-CSharp]], mscorlib","$rlength":0,"$rcontent":[]}}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[3]
+      value: '"path":"plan.root.action","value":null'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[4]
+      value: '"path":"plan.root.children","value":{"$id":0,"$type":"System.Collections.Generic.List`1[[GOAP.Plan.GOAPPlanNode,
+        Assembly-CSharp]], mscorlib","$rlength":0,"$rcontent":[]}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[5]
+      value: '"path":"plan.root.indexAtParent","value":{"$id":0,"$type":"System.Int32,
+        mscorlib",0}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[6]
+      value: '"path":"plan.root.parent","value":null'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[7]
+      value: '"path":"plan.runningNode","value":null'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6948362435321862696, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}

@@ -4,7 +4,7 @@
     {
         public override bool EqualsValue(IntState other)
         {
-            return this.value == other.value;
+            return value == other.value;
         }
 
         public override bool Compare(IntStateComparer comparer)

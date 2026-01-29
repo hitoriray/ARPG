@@ -6,7 +6,7 @@ namespace GOAP
     {
         public override bool EqualsValue(UnityObjectState other)
         {
-            return this.value == other.value;
+            return value == other.value;
         }
 
         public override bool Compare(UnityObjectStateComparer comparer)
@@ -14,20 +14,18 @@ namespace GOAP
             switch (comparer.symbol)
             {
                 case BoolValue.是:
-                    return this.value == comparer.value;
-                    break;
+                    return value == comparer.value;
                 case BoolValue.否:
-                    return this.value == comparer.value;
-                    break;
+                    return value != comparer.value;
             }
-            return this.value == comparer.value;
+            return value == comparer.value;
         }
 
         public override void ApplyEffect(UnityObjectStateComparer comparer)
         {
             if (comparer.symbol == BoolValue.是)
             {
-                this.value = comparer.value;
+                value = comparer.value;
             }
         }
     }
@@ -41,13 +39,10 @@ namespace GOAP
             switch (other.symbol)
             {
                 case BoolValue.是:
-                    return this.value == other.value;
-                    break;
+                    return value == other.value;
                 case BoolValue.否:
-                    return this.value != other.value;
-                    break;
+                    return value != other.value;
             }
-
             return false;
         }
     }

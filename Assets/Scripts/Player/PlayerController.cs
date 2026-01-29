@@ -3,6 +3,7 @@ using Attribute;
 using BuffSystem;
 using Config;
 using Data;
+using GOAP;
 using JKFrame;
 using Player.Animation;
 using Skill;
@@ -11,14 +12,15 @@ using UnityEngine;
 
 namespace Player
 {
-    public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter
+    public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter, IGOAPOwner
     {
         [SerializeField] private PlayerSkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
-
+        [SerializeField] private GOAPAgent agent;
+        
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
         public AnimationController AnimationController => playerView.AnimationController;
@@ -42,6 +44,7 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(gameData);
             
+            agent.Init(this);
             characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
             skillBrain.Init(this, gameData.SkillLearnedDatas);
             // 初始化状态机
@@ -49,6 +52,11 @@ namespace Player
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
+        }
+
+        private void Update()
+        {
+            agent.OnUpdate();
         }
 
         /// <summary>

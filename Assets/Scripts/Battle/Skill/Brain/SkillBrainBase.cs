@@ -48,7 +48,7 @@ namespace Skill
         {
             foreach (var skillBehaviour in skillBehaviours)
             {
-                skillBehaviour.OnUpdate();
+                skillBehaviour?.OnUpdate();
             }
         }
 

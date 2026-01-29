@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using GOAP.Action;
+using Sirenix.OdinInspector;
 
 namespace GOAP
 {
@@ -40,5 +42,34 @@ namespace GOAP
             }
             return false;
         }
+        
+        public void ApplyEffect(GOAPTypeAndComparer effect)
+        {
+            if (StateDict.TryGetValue(effect.stateType, out GOAPStateBase state))
+            {
+                state.ApplyEffect(effect.stateComparer);
+            }
+        }
+        
+#if UNITY_EDITOR
+        [Button]
+        private void CheckStates()
+        {
+            List<GOAPStateType> createTypeList = new();
+            foreach (var item in StateDict)
+            {
+                if (item.Value == null ||
+                    GOAPGlobalConfig.GetStateValueType(item.Key) != item.Value.GetType())
+                {
+                    createTypeList.Add(item.Key);
+                }
+            }
+
+            foreach (var state in createTypeList)
+            {
+                StateDict[state] = GOAPGlobalConfig.CopyState(state);
+            }
+        }
+#endif
     }
 }
