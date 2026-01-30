@@ -6,7 +6,7 @@ namespace GOAP
 {
     public class GOAPStates
     {
-        public Dictionary<GOAPStateType, GOAPStateBase> StateDict = new();
+        public Dictionary<string, GOAPStateBase> StateDict = new();
 
         public bool TryAddState(GOAPStateType type, GOAPStateBase state)
         {
@@ -18,27 +18,45 @@ namespace GOAP
             return StateDict.Remove(type);
         }
 
-        public T GetStateBase<T>(GOAPStateType type) where T : GOAPStateBase
+        public T GetState<T>(GOAPStateType type) where T : GOAPStateBase
         {
             return (T)StateDict[type];
         }
 
+        public bool TryGetState(GOAPStateType type, out GOAPStateBase state)
+        {
+            state = default;
+            if (StateDict == null || type.name == null)
+                return false;
+            return StateDict.TryGetValue(type, out state);
+        }
+
         public bool TryGetState<T>(GOAPStateType type, out T state) where T : GOAPStateBase
         {
+            state = default;
+            if (StateDict == null)
+                return false;
             if (StateDict.TryGetValue(type, out GOAPStateBase stateBase))
             {
                 state = (T)stateBase;
                 return true;
             }
-            state = default;
             return false;
         }
 
-        public bool CheckState(GOAPStateType type, GOAPStateComparer comparer)
+        public bool CheckStateForPrecondition(GOAPStateType type, GOAPStateComparer comparer)
         {
             if (TryGetState(type, out GOAPStateBase state))
             {
-                return state.Compare(comparer);
+                return state.CompareForPrecondition(comparer);
+            }
+            return false;
+        }
+        public bool CheckStateForEffect(GOAPStateType type, GOAPStateComparer comparer)
+        {
+            if (TryGetState(type, out GOAPStateBase state))
+            {
+                return state.CompareForEffect(comparer);
             }
             return false;
         }
@@ -50,26 +68,5 @@ namespace GOAP
                 state.ApplyEffect(effect.stateComparer);
             }
         }
-        
-#if UNITY_EDITOR
-        [Button]
-        private void CheckStates()
-        {
-            List<GOAPStateType> createTypeList = new();
-            foreach (var item in StateDict)
-            {
-                if (item.Value == null ||
-                    GOAPGlobalConfig.GetStateValueType(item.Key) != item.Value.GetType())
-                {
-                    createTypeList.Add(item.Key);
-                }
-            }
-
-            foreach (var state in createTypeList)
-            {
-                StateDict[state] = GOAPGlobalConfig.CopyState(state);
-            }
-        }
-#endif
     }
 }

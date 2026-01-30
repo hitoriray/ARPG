@@ -7,17 +7,23 @@ namespace GOAP
     public class GOAPGlobalManager : SerializedMonoBehaviour
     {
         public static GOAPGlobalManager Instance { get; private set; }
-        [SerializeField] private GOAPGlobalConfig config;
-        public GOAPGlobalConfig Config => config;
         [SerializeField] private GOAPStates globalStates;
         public GOAPStates GlobalStates => globalStates;
 
-        private void OnEnable()
+        private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
             }
+        }
+
+        public bool TryGetGlobalState(string targetState, out GOAPStateBase state)
+        {
+            state = default;
+            if (globalStates == null || globalStates.StateDict == null)
+                return false;
+            return globalStates.TryGetState(targetState, out state);
         }
     }
 }

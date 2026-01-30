@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
+using GOAP.Editor;
+using GOAP.Plan;
 using Sirenix.OdinInspector;
 
 namespace GOAP.Action
 {
-    public class GOAPTypeAndComparer
-    {
-        public GOAPStateType stateType;
-        public GOAPStateComparer stateComparer;
-    }
-    
     public abstract class GOAPActionBase
     {
         [LabelText("前提")] public List<GOAPTypeAndComparer> preconditions = new();
@@ -27,7 +23,7 @@ namespace GOAP.Action
         {
             foreach (var condition in preconditions)
             {
-                if (!agent.CheckState(condition.stateType, condition.stateComparer))
+                if (!agent.CheckStateForPrecondition(condition.stateType, condition.stateComparer))
                 {
                     return false;
                 }
@@ -35,33 +31,46 @@ namespace GOAP.Action
             return true;
         }
 
-        public virtual void OnStart()
+        public virtual bool CheckEffect()
         {
+            foreach (var effect in effects)
+            {
+                if (!agent.CheckStateForEffect(effect.stateType, effect.stateComparer))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
-        public virtual void OnUpdate()
+        public virtual GOAPRunState StartRun()
         {
+            if (CheckEffect())
+                return GOAPRunState.Succeed;
+            if (CheckPreconditions())
+            {
+                OnStart();
+                return GOAPRunState.Running;
+            }
+            return GOAPRunState.Failed;
         }
 
-        public virtual void OnStop()
-        {
-        }
+        public virtual void OnStart() { }
+        public virtual GOAPRunState OnUpdate() { return default; }
+        public virtual void OnStop() { }
         
         /// <summary>
         /// 如果正常Stop，则不需要Destroy，如果在Update中销毁则调用OnDestroy
         /// </summary>
-        public virtual void OnDestroy()
-        {
-        }
+        public virtual void OnDestroy() { }
 
-        public virtual void ApplyEffect()
+        public void ApplyEffect()
         {
-            for (int i = 0; i < effects.Count; i++)
+            foreach (var effect in effects)
             {
-                GOAPTypeAndComparer effect = effects[i];
-                if (GOAPGlobalConfig.IsGlobalState(effect.stateType))
+                if (GOAPGlobalManager.Instance.TryGetGlobalState(effect.stateType, out GOAPStateBase state))
                 {
-                    GOAPGlobalManager.Instance.GlobalStates.ApplyEffect(effect);
+                    state.ApplyEffect(effect.stateComparer);
                 }
                 else
                 {
@@ -70,8 +79,29 @@ namespace GOAP.Action
             }
         }
 
-        public virtual void UpdatePriority()
+        public virtual void UpdatePriority() { }
+    }
+    
+    public class GOAPTypeAndComparer
+    {
+        [OnValueChanged("CheckState")] public GOAPStateType stateType;
+        public GOAPStateComparer stateComparer;
+#if UNITY_EDITOR
+        public void CheckState()
         {
+            if (GOAPEditorUtility.GlobalManager != null
+                && GOAPEditorUtility.GlobalManager.TryGetGlobalState(stateType, out GOAPStateBase state)
+                && (stateComparer == null || stateComparer.GetType() != state.GetComparerType()))
+            {
+                stateComparer = state.GetComparer();
+            }
+            else if (GOAPEditorUtility.agent != null 
+                     && GOAPEditorUtility.agent.states.TryGetState(stateType, out state)
+                     && (stateComparer == null || stateComparer.GetType() != state.GetComparerType()))
+            {
+                stateComparer = state.GetComparer();
+            }
         }
+#endif
     }
 }

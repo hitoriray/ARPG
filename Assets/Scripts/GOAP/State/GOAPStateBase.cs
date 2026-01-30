@@ -9,7 +9,8 @@ namespace GOAP
         public abstract GOAPStateBase Copy();
         public abstract GOAPStateComparer GetComparer();
         public abstract Type GetComparerType();
-        public abstract bool Compare(GOAPStateComparer comparer);
+        public abstract bool CompareForPrecondition(GOAPStateComparer comparer);
+        public abstract bool CompareForEffect(GOAPStateComparer comparer);
         public abstract void ApplyEffect(GOAPStateComparer comparer);
     }
 
@@ -20,7 +21,6 @@ namespace GOAP
         public V value;
 
         public abstract bool EqualsValue(T other);
-        
         public override bool EqualsValue(GOAPStateBase other)
         {
             return EqualsValue((T)other);
@@ -30,12 +30,10 @@ namespace GOAP
         {
             this.value = other.value;
         }
-
         public override void SetValue(GOAPStateBase other)
         {
             SetValue((T)other);
         }
-
         public virtual void SetValue(V value)
         {
             this.value = value;
@@ -61,11 +59,17 @@ namespace GOAP
             return typeof(C);
         }
 
-        public abstract bool Compare(C comparer);
+        public abstract bool CompareForPrecondition(C comparer);
         
-        public override bool Compare(GOAPStateComparer comparer)
+        public override bool CompareForPrecondition(GOAPStateComparer comparer)
         {
-            return Compare((C)comparer);
+            return CompareForPrecondition((C)comparer);
+        }
+        
+        public abstract bool CompareForEffect(C comparer);
+        public override bool CompareForEffect(GOAPStateComparer comparer)
+        {
+            return CompareForEffect((C)comparer);
         }
 
         public abstract void ApplyEffect(C comparer);

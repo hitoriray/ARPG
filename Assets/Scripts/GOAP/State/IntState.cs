@@ -7,7 +7,7 @@
             return value == other.value;
         }
 
-        public override bool Compare(IntStateComparer comparer)
+        public override bool CompareForPrecondition(IntStateComparer comparer)
         {
             switch (comparer.symbol)
             {
@@ -23,6 +23,28 @@
                     return value > 0;
                 case NumberCompareSymbol.下降即可:
                     return value < 0;
+                case NumberCompareSymbol.等于:
+                    return value == comparer.value;
+            }
+            return false;
+        }
+
+        public override bool CompareForEffect(IntStateComparer comparer)
+        {
+            switch (comparer.symbol)
+            {
+                case NumberCompareSymbol.大于:
+                    return value > comparer.value;
+                case NumberCompareSymbol.小于:
+                    return value < comparer.value;
+                case NumberCompareSymbol.大于等于:
+                    return value >= comparer.value;
+                case NumberCompareSymbol.小于等于:
+                    return value <= comparer.value;
+                case NumberCompareSymbol.提升即可:
+                    return false;
+                case NumberCompareSymbol.下降即可:
+                    return false;
                 case NumberCompareSymbol.等于:
                     return value == comparer.value;
             }
@@ -47,7 +69,7 @@
     {
         public NumberCompareSymbol symbol;
         public int value;
-        public override bool EqualsComparator(IntStateComparer other)
+        public override bool EqualsComparer(IntStateComparer other)
         {
             return symbol == other.symbol;
         }

@@ -15,12 +15,11 @@ namespace GOAP
     /// </summary>
     public class GOAPAgent : SerializedMonoBehaviour
     {
-        [LabelText("目标")] public GOAPGoals goals;
-        [LabelText("局部状态")] public GOAPStates states;
-        [LabelText("全部行为")] public GOAPActions actions;
-        [LabelText("计划树")] public GOAPPlan plan;
-        
-        private IGOAPOwner owner;
+        [LabelText("目标")] public GOAPGoals goals = new();
+        [LabelText("局部状态")] public GOAPStates states = new();
+        [LabelText("全部行为")] public GOAPActions actions = new();
+        [LabelText("计划树")] public GOAPPlan plan = new();
+        public IGOAPOwner owner { get; private set; }
         
         public void Init(IGOAPOwner owner)
         {
@@ -33,30 +32,48 @@ namespace GOAP
         {
             if (owner == null) 
                 return;
-            // TODO：计划在执行就不需要去构建任务了
-            SortedList<string, GOAPGoals.GoalItem> sortedGoals = goals.UpdateGoals();
-            foreach (var item in sortedGoals)
+            if (!plan.Running)
             {
-                // 优先级为正 且 可以基于这个目标生成计划
-                if (item.Value.Priority > 0 && GeneratePlan(item.Key))
+                SortedList<string, GOAPGoals.GoalItem> sortedGoals = goals.UpdateGoals();
+                foreach (var item in sortedGoals)
                 {
-                    Debug.Log($"任务构建成功:{item.Key}");
-                    break;
+                    // 优先级为正 且 可以基于这个目标生成计划
+                    if (item.Value.Priority > 0 && GeneratePlan(item.Key, out GOAPPlanNode targetNode))
+                    {
+                        Debug.Log($"任务构建成功:{item.Key}");
+                        RunPlan(item.Key, targetNode);
+                        break;
+                    }
                 }
+                
             }
         }
 
+        private void OnDestroy()
+        {
+            plan.OnDestroy();
+        }
+
+        #region 状态
         public void ApplyEffect(GOAPTypeAndComparer effect)
         {
             states.ApplyEffect(effect);
         }
         
-        public bool CheckState(GOAPStateType stateType, GOAPStateComparer stateComparer)
+        public bool CheckStateForPrecondition(GOAPStateType stateType, GOAPStateComparer stateComparer)
         {
-            if (GOAPGlobalConfig.IsGlobalState(stateType))
-                return GOAPGlobalManager.Instance.GlobalStates.CheckState(stateType, stateComparer);
-            return states.CheckState(stateType, stateComparer);
+            if (GOAPGlobalManager.Instance.TryGetGlobalState(stateType, out GOAPStateBase state))
+                return state.CompareForPrecondition(stateComparer);
+            return states.CheckStateForPrecondition(stateType, stateComparer);
         }
+
+        public bool CheckStateForEffect(GOAPStateType stateType, GOAPStateComparer stateComparer)
+        {
+            if (GOAPGlobalManager.Instance.TryGetGlobalState(stateType, out GOAPStateBase state))
+                return state.CompareForEffect(stateComparer);
+            return states.CheckStateForEffect(stateType, stateComparer);
+        }
+        #endregion
         
         #region 生成计划
 
@@ -78,14 +95,14 @@ namespace GOAP
             return nodes;
         }
 
-        private void RecycleSortedPlanNode(SortedSet<GOAPPlanNode> planNode)
+        private void RecycleSortedPlanNode(SortedSet<GOAPPlanNode> nodes)
         {
-            foreach (var node in planNode)
+            foreach (var node in nodes)
             {
                 node.Destroy();
             }
-            planNode.Clear();
-            planNode.ObjectPushPool();
+            nodes.Clear();
+            nodes.ObjectPushPool();
         }
 
         /// <summary>
@@ -103,7 +120,7 @@ namespace GOAP
                 {
                     foreach (var effect in action.effects)
                     {
-                        if (effect.stateType == targetStateType && effect.stateComparer.EqualsComparator(comparer))
+                        if (effect.stateType == targetStateType && effect.stateComparer.EqualsComparer(comparer))
                         {
                             action.UpdatePriority();
                             GOAPPlanNode node = ResSystem.GetOrNew<GOAPPlanNode>();
@@ -128,8 +145,8 @@ namespace GOAP
             // 遍历所有条件，必须全部满足才能构建成功
             foreach (var precondition in root.action.preconditions)
             {
+                bool check = CheckStateForPrecondition(precondition.stateType, precondition.stateComparer);
                 // 当前状态不满足，需要寻找其他可以满足的Action作为子节点
-                bool check = CheckState(precondition.stateType, precondition.stateComparer);
                 if (!check)
                 {
                     SortedSet<GOAPPlanNode> preNodes = GetPlanNodes(precondition.stateType, precondition.stateComparer);
@@ -164,14 +181,19 @@ namespace GOAP
             return true;
         }
 
-        private bool GeneratePlan(string goalName)
+        private bool GeneratePlan(string goalName, out GOAPPlanNode targetNode)
         {
             bool success = false;
             GOAPGoals.GoalItem goal = goals.goalItemDict[goalName];
-            var targetState = goal.targetState;
+            targetNode = null;
+            if (CheckStateForEffect(goal.targetState, goal.targetValue))
+            {
+                return false;
+            }
+            
+            GOAPStateType targetState = goal.targetState;
             // 获取符合效果的全部 Action 以此尝试构建计划，成功的作为初始Action
             SortedSet<GOAPPlanNode> nodes = GetPlanNodes(targetState, goal.targetValue);
-            GOAPPlanNode targetNode = null;
             foreach (var node in nodes)
             {
                 if (TryBuildPlanPath(node))
@@ -180,8 +202,6 @@ namespace GOAP
                     targetNode = node;
                     node.parent = null;
                     node.indexAtParent = 0;
-                    plan.goalName = goalName;
-                    plan.root = node;
                     break;
                 }
             }
@@ -193,6 +213,20 @@ namespace GOAP
             RecycleSortedPlanNode(nodes);
 
             return success;
+        }
+        
+        #endregion
+        
+        #region 执行任务
+
+        private void RunPlan(string goalName, GOAPPlanNode targetNode)
+        {
+            plan.StartRun(goalName, targetNode);
+        }
+
+        public void StopPlan()
+        {
+            plan.Stop();
         }
         
         #endregion

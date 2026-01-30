@@ -9,7 +9,7 @@ namespace GOAP
             return this.value == other.value;
         }
         
-        public override bool Compare(BoolStateComparer comparer)
+        public override bool CompareForPrecondition(BoolStateComparer comparer)
         {
             switch (comparer.value)
             {
@@ -19,6 +19,11 @@ namespace GOAP
                     return !value;
             }
             return false;
+        }
+
+        public override bool CompareForEffect(BoolStateComparer comparer)
+        {
+            return CompareForPrecondition(comparer);
         }
 
         public override void ApplyEffect(BoolStateComparer comparer)
@@ -38,7 +43,7 @@ namespace GOAP
     public class BoolStateComparer : GOAPStateComparer<BoolState, BoolStateComparer>
     {
         public BoolValue value;
-        public override bool EqualsComparator(BoolStateComparer other)
+        public override bool EqualsComparer(BoolStateComparer other)
         {
             return this.value == other.value;
         }
