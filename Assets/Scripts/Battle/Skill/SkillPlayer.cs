@@ -59,10 +59,10 @@ namespace Skill
         {
             if (GameSceneManager.Instance.isEcs)
             {
-                Debug.Log("由Ecs发送武器命中检测");
                 bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
                 if (ok) return;
             }
+            Debug.Log("由Mono触发WeaponDetection");
             skillBehaviour.OnAttackDetection(other, attackData);
         }
 
@@ -295,15 +295,14 @@ namespace Skill
                         if (currentFrameIndex >= detectionEvent.FrameIndex &&
                             currentFrameIndex <= detectionEvent.FrameIndex + detectionEvent.DurationFrame)
                         {
-                            bool handledByEcs = false;
+                            bool success = false;
                             if (GameSceneManager.Instance.isEcs)
                             {
-                                Debug.Log("由Ecs发送Shape攻击检测");
-                                handledByEcs = AttackDetectionEmitterHelper.Emit(modelTransform, detectionEvent, skillBehaviour, owner, attackDetectionLayer);
+                                success = AttackDetectionEmitterHelper.Emit(modelTransform, detectionEvent, skillBehaviour, owner, attackDetectionLayer);
                             }
-
-                            if (!handledByEcs)
+                            if (!success)
                             {
+                                Debug.Log("由Mono触发ShapeDetection");
                                 var colliders = SkillAttackDetectionHelper.ShapeDetection(modelTransform,
                                     detectionEvent.AttackDetectionData, detectionType, attackDetectionLayer);
                                 if (colliders == null)

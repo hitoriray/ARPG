@@ -14,11 +14,9 @@ namespace Battle.ECS.Core.Helper
             if (modelTransform == null || detectionEvent == null || behaviour == null || source == null)
                 return false;
 
-            if (BattleEcsRunner.Instance == null || BattleEcsRunner.Instance.Context == null)
-                return false;
-
+            Debug.Log($"[{nameof(AttackDetectionEmitterHelper)}]: 由Ecs发射{nameof(ShapeDetectionRequest)}");
             BattleEcsRunner.Instance.Context.World.Create(
-                new AttackDetectionRequest
+                new ShapeDetectionRequest
                 {
                     Behaviour = behaviour,
                     DetectionEvent = detectionEvent,

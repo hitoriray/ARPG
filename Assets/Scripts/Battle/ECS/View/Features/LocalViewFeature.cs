@@ -12,6 +12,7 @@ namespace Battle.ECS.Features
         {
             Add(new VfxSpawnSystem(context));
             Add(new ViewSyncSystem(context));
+            
             Add(new DeathSystem(context));
             Add(new DestroySystem(context));
         }

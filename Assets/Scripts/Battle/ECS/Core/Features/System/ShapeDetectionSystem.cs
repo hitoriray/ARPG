@@ -12,12 +12,12 @@ namespace Battle.ECS.System
     /// <summary>
     /// 攻击检测系统 - 处理技能检测请求
     /// </summary>
-    public sealed class AttackDetectionSystem : IUpdateLevelSystem<GameLogic>
+    public sealed class ShapeDetectionSystem : IUpdateLevelSystem<GameLogic>
     {
         private readonly BattleContext _context;
-        private readonly QueryDescription _query = new QueryDescription().WithAll<AttackDetectionRequest>().WithNone<Death, Destroy>();
+        private readonly QueryDescription _query = new QueryDescription().WithAll<ShapeDetectionRequest>().WithNone<Death, Destroy>();
 
-        public AttackDetectionSystem(BattleContext context)
+        public ShapeDetectionSystem(BattleContext context)
         {
             _context = context;
         }
@@ -25,12 +25,12 @@ namespace Battle.ECS.System
         public void Update()
         {
             var processor = new AttackDetectionProcessor();
-            _context.World.InlineEntityQuery<AttackDetectionProcessor, AttackDetectionRequest>(in _query, ref processor);
+            _context.World.InlineEntityQuery<AttackDetectionProcessor, ShapeDetectionRequest>(in _query, ref processor);
         }
 
-        private struct AttackDetectionProcessor : IForEachWithEntity<AttackDetectionRequest>
+        private struct AttackDetectionProcessor : IForEachWithEntity<ShapeDetectionRequest>
         {
-            public void Update(Entity entity, ref AttackDetectionRequest req)
+            public void Update(Entity entity, ref ShapeDetectionRequest req)
             {
                 if (req.DetectionEvent == null || req.ModelTransform == null || req.Behaviour == null || req.Source == null)
                     return;
@@ -64,9 +64,10 @@ namespace Battle.ECS.System
                         attackValue = attackValue,
                         hitPoint = hitPoint
                     };
+                    Debug.Log($"由Ecs触发Shape命中检测:{col.name}");
                     req.Behaviour.OnAttackDetection(hitTarget, attackData);
                 }
-
+                
                 entity.TryAdd(new Death());
             }
         }

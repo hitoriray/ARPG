@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Battle.ECS.Component
 {
     /// <summary>
-    /// 攻击检测请求（由外部技能系统发起）
+    /// Shape攻击检测请求（由外部技能系统发起）
     /// </summary>
-    public struct AttackDetectionRequest
+    public struct ShapeDetectionRequest
     {
         public SkillBehaviourBase Behaviour;
         public SkillAttackDetectionEvent DetectionEvent;

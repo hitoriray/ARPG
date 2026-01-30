@@ -12,7 +12,7 @@ public class InputManager : SingletonMono<InputManager>
         public KeyCode keyCode;
         public bool isCache;
         public float cacheTime;
-        private float lastInputTime;
+        private float lastInputTime = float.MinValue;  // 修复：初始化为极小值，避免游戏启动时误判
         public bool valid;
 
         public bool GetState()
@@ -46,7 +46,7 @@ public class InputManager : SingletonMono<InputManager>
         public int mouseButtonId;
         public bool isCache;
         public float cacheTime;
-        private float lastInputTime;
+        private float lastInputTime = float.MinValue;  // 修复：初始化为极小值，避免游戏启动时误判
         public bool valid;
 
         public bool GetState()
@@ -87,6 +87,7 @@ public class InputManager : SingletonMono<InputManager>
         {
             characterControl = value;
             Cursor.lockState = characterControl ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !characterControl;  // 修复：显式设置鼠标可见性
             cineMachine.SetActive(characterControl);
         }
     }
