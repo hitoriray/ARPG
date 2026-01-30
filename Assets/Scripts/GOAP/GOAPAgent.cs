@@ -45,7 +45,28 @@ namespace GOAP
                         break;
                     }
                 }
-                
+            }
+            else
+            {
+                // 如果当前目标是可以被中断的，可以尝试找优先级更高的目标
+                GOAPGoals.GoalItem currentGoal = goals.goalItemDict[plan.goalName];
+                if (currentGoal.canBeBreak)
+                {
+                    SortedList<string, GOAPGoals.GoalItem> sortedGoals = goals.UpdateGoals();
+                    foreach (KeyValuePair<string, GOAPGoals.GoalItem> item in sortedGoals)
+                    {
+                        if (item.Key != plan.goalName
+                            && item.Value.canBreak
+                            && item.Value.Priority > currentGoal.Priority
+                            && GeneratePlan(item.Key, out GOAPPlanNode targetNode))
+                        {
+                            Debug.Log("目标被替换为优先级更高的，并构建计划成功:" + item.Key);
+                            StopPlan();
+                            RunPlan(item.Key, targetNode);
+                        }
+                    }
+                }
+                plan.OnUpdate();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GOAP.Editor;
 using Sirenix.OdinInspector;
 
 namespace GOAP.Goals
@@ -11,11 +12,30 @@ namespace GOAP.Goals
             [LabelText("目标趋势")] public GOAPStateComparer targetValue;
             [LabelText("优先级系数"), HorizontalGroup("1")] public float proirityMultiply;
             [LabelText("实时优先级"), HorizontalGroup("1")] public float runtimeProirity;
+            [LabelText("可以中断其他目标")] public bool canBreak;
+            [LabelText("可以被其他目标中断")] public bool canBeBreak;
             [LabelText("最终优先级"), ShowInInspector, ReadOnly, HorizontalGroup("1")] public float Priority => proirityMultiply * runtimeProirity;
             [LabelText("目标检查器")] public IGOAPGoalChecker goalChecker;
+#if UNITY_EDITOR
+            public void CheckState()
+            {
+                if (GOAPEditorUtility.GlobalManager != null 
+                    && GOAPEditorUtility.GlobalManager.TryGetGlobalState(targetState, out GOAPStateBase state)
+                    && (targetValue == null || targetValue.GetType() != state.GetComparerType()))
+                {
+                    targetValue = state.GetComparer();
+                }
+                else if (GOAPEditorUtility.agent != null 
+                         && GOAPEditorUtility.agent.states.TryGetState(targetState, out state)
+                         && (targetValue == null || targetValue.GetType() != state.GetComparerType()))
+                {
+                    targetValue = state.GetComparer();
+                }
+            }
+#endif
         }
 
-        private partial class SortedGoalComparer : IComparer<string>
+        private class SortedGoalComparer : IComparer<string>
         {
             public Dictionary<string, GoalItem> dict;
 
@@ -68,22 +88,9 @@ namespace GOAP.Goals
         [Button("检查目标状态类型")]
         public void CheckGoalsTargetValueType()
         {
-            List<string> createList = new();
             foreach (var item in goalItemDict)
             {
-                if (item.Value == null || 
-                    item.Value.targetValue == null ||
-                    item.Value.targetValue.GetType() != GOAPGlobalConfig.GetStateValueType(item.Value.targetState))
-                {
-                    createList.Add(item.Key);
-                }
-            }
-
-            foreach (var goalName in createList)
-            {
-                var item = goalItemDict[goalName];
-                if (item == null) continue;
-                item.targetValue = GOAPGlobalConfig.CopyState(item.targetState).GetComparer();
+                item.Value.CheckState();
             }
         }
 #endif
