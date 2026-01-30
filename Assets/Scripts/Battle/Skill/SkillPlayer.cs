@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Config;
 using Battle.ECS;
+using Battle.ECS.Core.Helper;
 using Battle.ECS.View.Helper;
 using JKFrame;
 using Player.Animation;
+using Scene;
 using Sirenix.OdinInspector;
 using Skill.Behaviour;
 using UnityEngine;
@@ -55,6 +57,12 @@ namespace Skill
 
         private void OnWeaponDetection(IHitTarget other, AttackData attackData)
         {
+            if (GameSceneManager.Instance.isEcs)
+            {
+                Debug.Log("由Ecs发送武器命中检测");
+                bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
+                if (ok) return;
+            }
             skillBehaviour.OnAttackDetection(other, attackData);
         }
 
@@ -193,7 +201,12 @@ namespace Skill
                     if (effectEvent.Prefab != null && effectEvent.FrameIndex == currentFrameIndex)
                     {
                         // 交给ECS生成特效（若ECS未就绪则回落到原逻辑）
-                        if (!VfxEmitterHelper.EmitSkillVfx(modelTransform, effectEvent, skillClip.FrameRate) && false)
+                        bool success = false;
+                        if (GameSceneManager.Instance.isEcs)
+                        {
+                            success = VfxEmitterHelper.EmitSkillVfx(modelTransform, effectEvent, skillClip.FrameRate);
+                        }
+                        if (!success)
                         {
                             Debug.Log("由Mono生成技能特效");
                             var effectObj = PoolSystem.GetGameObject(effectEvent.Prefab.name);
@@ -282,27 +295,37 @@ namespace Skill
                         if (currentFrameIndex >= detectionEvent.FrameIndex &&
                             currentFrameIndex <= detectionEvent.FrameIndex + detectionEvent.DurationFrame)
                         {
-                            var colliders = SkillAttackDetectionTool.ShapeDetection(modelTransform,
-                                detectionEvent.AttackDetectionData, detectionType, attackDetectionLayer);
-                            if (colliders == null)
-                                break;
-                            foreach (var col in colliders)
+                            bool handledByEcs = false;
+                            if (GameSceneManager.Instance.isEcs)
                             {
-                                if (col != null)
+                                Debug.Log("由Ecs发送Shape攻击检测");
+                                handledByEcs = AttackDetectionEmitterHelper.Emit(modelTransform, detectionEvent, skillBehaviour, owner, attackDetectionLayer);
+                            }
+
+                            if (!handledByEcs)
+                            {
+                                var colliders = SkillAttackDetectionHelper.ShapeDetection(modelTransform,
+                                    detectionEvent.AttackDetectionData, detectionType, attackDetectionLayer);
+                                if (colliders == null)
+                                    break;
+                                foreach (var col in colliders)
                                 {
-                                    IHitTarget hitTarget = col.GetComponentInChildren<IHitTarget>();
-                                    if (hitTarget != null)
+                                    if (col != null)
                                     {
-                                        Vector3 pos = ((ShapeDetectionDataBase)detectionEvent.AttackDetectionData).Position;
-                                        AttackData attackData = new AttackData()
+                                        IHitTarget hitTarget = col.GetComponentInChildren<IHitTarget>();
+                                        if (hitTarget != null)
                                         {
-                                            detectionEvent = detectionEvent,
-                                            source = owner,
-                                            attackValue = owner.GetAttackValue(detectionEvent),
-                                            // TODO: hitPoint = col.ClosestPoint(pos),
-                                            hitPoint = pos,
-                                        };
-                                        skillBehaviour.OnAttackDetection(hitTarget, attackData);
+                                            Vector3 pos = ((ShapeDetectionDataBase)detectionEvent.AttackDetectionData).Position;
+                                            AttackData attackData = new AttackData()
+                                            {
+                                                detectionEvent = detectionEvent,
+                                                source = owner,
+                                                attackValue = owner.GetAttackValue(detectionEvent),
+                                                // TODO: hitPoint = col.ClosestPoint(pos),
+                                                hitPoint = pos,
+                                            };
+                                            skillBehaviour.OnAttackDetection(hitTarget, attackData);
+                                        }
                                     }
                                 }
                             }

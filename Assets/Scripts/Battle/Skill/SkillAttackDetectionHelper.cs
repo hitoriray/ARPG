@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Skill
 {
-    public static class SkillAttackDetectionTool
+    public static class SkillAttackDetectionHelper
     {
         private static Collider[] detectionResults = new Collider[20];
         

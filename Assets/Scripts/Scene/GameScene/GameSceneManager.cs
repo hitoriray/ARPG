@@ -2,6 +2,7 @@ using Battle.ECS;
 using Data;
 using JKFrame;
 using Player;
+using Sirenix.OdinInspector;
 
 namespace Scene
 {
@@ -9,8 +10,9 @@ namespace Scene
     {
         #region Test
 
-        public bool isTest;
-        public bool isCreateArchive;
+        [LabelText("测试（使用已有存档）")] public bool isTest;
+        [LabelText("是否创建新存档")] public bool isCreateArchive;
+        [LabelText("是否启用ECS")] public bool isEcs;
         
         #endregion
         

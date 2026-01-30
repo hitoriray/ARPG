@@ -3,6 +3,7 @@ using Battle.ECS.View.Helper;
 using Config;
 using Data;
 using JKFrame;
+using Scene;
 using UI;
 using UnityEngine;
 
@@ -241,7 +242,12 @@ namespace Skill.Behaviour
 
                 if (attackHitConfig.HitEffectPrefab != null)
                 {
-                    if (false && !VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true))
+                    bool success = false;
+                    if (GameSceneManager.Instance.isEcs)
+                    {
+                        success = VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true);
+                    }
+                    if (!success)
                     {
                         Debug.Log("由Mono生成命中特效");
                         var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);

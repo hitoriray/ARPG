@@ -19,6 +19,8 @@ namespace Skill
         private LayerMask detectionLayerMask;
         private Action<IHitTarget, AttackData> onDetection;
         private AttackData attackData;
+        private bool isDetecting;
+        private readonly HashSet<Collider> hitCache = new(32);
 
         public void Init(LayerMask detectionLayerMask, Action<IHitTarget, AttackData> onDetection)
         {
@@ -31,24 +33,47 @@ namespace Skill
         {
             detectionCollider.enabled = true;
             this.attackData = attackData;
+            isDetecting = true;
+            hitCache.Clear();
         }
 
         public void StopDetection()
         {
             detectionCollider.enabled = false;
+            isDetecting = false;
+            hitCache.Clear();
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!isDetecting) return;
+            TryHit(other);
         }
 
         private void OnTriggerStay(Collider other)
         {
-            // 判断是否在LayerMask里
-            if ((detectionLayerMask & (1 << other.gameObject.layer)) != 0)
+            if (!isDetecting || hitCache.Contains(other)) return;
+            // 避免启用武器碰撞体时，它已经与目标发生重叠，这时 Unity 不一定会触发 OnTriggerEnter，但会持续触发 OnTriggerStay
+            TryHit(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            hitCache.Remove(other);
+        }
+
+        private void TryHit(Collider other)
+        {
+            if ((detectionLayerMask & (1 << other.gameObject.layer)) == 0)
+                return;
+            if (hitCache.Contains(other))
+                return;
+            IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
+            if (hitTarget != null)
             {
-                IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
-                if (hitTarget != null)
-                {
-                    attackData.hitPoint = other.ClosestPoint(transform.position);
-                    onDetection?.Invoke(hitTarget, attackData);
-                }
+                hitCache.Add(other);
+                attackData.hitPoint = other.ClosestPoint(transform.position);
+                onDetection?.Invoke(hitTarget, attackData);
             }
         }
         
