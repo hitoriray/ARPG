@@ -19,7 +19,6 @@ namespace Player
         [SerializeField] private CharacterController characterController;
         [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
-        [SerializeField] private GOAPAgent agent;
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
@@ -44,9 +43,9 @@ namespace Player
             playerView?.Init();
             // playerView?.InitOnGame(gameData);
             
-            agent.Init(this);
+            // agent.Init(this);
             characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
-            skillBrain.Init(this, gameData.SkillLearnedDatas);
+            skillBrain.Init(this, DataManager.GetCurrentCharacterSkills());
             // 初始化状态机
             stateMachine = ResSystem.GetOrNew<StateMachine>();
             stateMachine.Init(this);
@@ -56,7 +55,7 @@ namespace Player
 
         private void Update()
         {
-            agent.OnUpdate();
+            // agent.OnUpdate();
         }
 
         /// <summary>

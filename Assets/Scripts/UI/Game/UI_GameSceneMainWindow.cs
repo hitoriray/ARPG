@@ -67,7 +67,11 @@ namespace UI
                 skillConfig = PlayerManager.Instance.GetAllSkillConfig()[newSkillIndex];
             }
             shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
-            DataManager.GameData.ShortcutSkillSlotData.skillIds[slotIndex] = newSkillIndex;
+
+            // 使用新接口：更新当前角色的快捷栏数据
+            var currentShortcutData = DataManager.GetCurrentCharacterShortcutSkills();
+            currentShortcutData.skillIds[slotIndex] = newSkillIndex;
+            DataManager.SaveGameData();
         }
         #endregion
         

@@ -12,7 +12,7 @@ namespace Data
         /// </summary>
         public Serialized_Dic<int, SkillLearnedData> SkillLearnedDataDict = new();
 
-        [FormerlySerializedAs("SkillPoints")] public int SkillTotalPoint;
+        public int SkillTotalPoint;
     }
     
     [Serializable]

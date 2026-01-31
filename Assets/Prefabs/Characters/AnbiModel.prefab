@@ -1097,6 +1097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2845f6bdb8d34ea6a1916639707ffca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponName: "\u53F3\u624B\u6B66\u5668"
   detectionCollider: {fileID: 3444647899508944611}
 --- !u!54 &1682335953065539279
 Rigidbody:
@@ -4806,7 +4807,7 @@ GameObject:
   - component: {fileID: 9199947191751119929}
   - component: {fileID: 9199947191751119928}
   m_Layer: 0
-  m_Name: PlayerModel(Game)
+  m_Name: AnbiModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4878,13 +4879,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8317496414798129508}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a95a54a5585410645b0b0c4d97ee156e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ab63d625c3414d42b3c78e666ba842b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animationController: {fileID: 9199947191751119929}
-  partSkinnedMeshRenderers: []
-  partMaterials: []
-  neckRootTransform: {fileID: 0}
 --- !u!1 &8367043976108584300
 GameObject:
   m_ObjectHideFlags: 0

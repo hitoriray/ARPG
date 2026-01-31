@@ -257,7 +257,7 @@ MonoBehaviour:
       Data: 14|Config.WeaponDetectionData, Assembly-CSharp
     - Name: WeaponName
       Entry: 1
-      Data: Weapon1
+      Data: "\u53F3\u624B\u6B66\u5668"
     - Name: 
       Entry: 8
       Data: 

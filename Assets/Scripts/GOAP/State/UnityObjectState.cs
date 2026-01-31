@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GOAP
+﻿namespace GOAP
 {
     public class UnityObjectState : GOAPStateBase<UnityObjectState, UnityEngine.Object, UnityObjectStateComparer>
     {

@@ -10,13 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: AnbiConfig
+  m_Name: Character_Anbi
   m_EditorClassIdentifier: 
-  m_GroupName: AnbiConfig
+  m_GroupName: Character_Anbi
   m_Data:
     m_SerializedData: []
-  m_GUID: 18c30a7a8b02e7f43a11c0c81d8d90ff
+  m_GUID: c609b40e3bdae8d41ac886947b1cea54
   m_SerializeEntries:
+  - m_GUID: 0cb3d94ba95e70f4cbe56b414cbd20fe
+    m_Address: AnbiModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb692bcb00d2beb47a836c8700499404
     m_Address: AnbiConfig
     m_ReadOnly: 0
@@ -41,5 +46,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: f20403200ab6bb64d9b2108733b053f1, type: 2}
-    - {fileID: 11400000, guid: 24db761739be45d46972f060df9c1c8c, type: 2}
+    - {fileID: 11400000, guid: 6153795c0679385428152e26af39256a, type: 2}
+    - {fileID: 11400000, guid: bea6d290b9f9da94fa98bf69cddaf642, type: 2}

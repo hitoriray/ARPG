@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using Skill;
+using Skill.Behaviour;
+using UnityEngine;
 
 namespace Player
 {
@@ -15,7 +17,9 @@ namespace Player
             base.Init(player);
             this.player = player;
             // 基于所学技能去初始化，后续是要通过学习修改
-            skillBehaviours = new(skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count);
+            int skillCount = skillLearnedDatas.SkillLearnedDataDict.Dictionary.Count;
+
+            skillBehaviours = new(skillCount);
             List<SkillConfig> skillConfigs = PlayerManager.Instance.GetAllSkillConfig();
             foreach (var item in skillLearnedDatas.SkillLearnedDataDict.Dictionary)
             {

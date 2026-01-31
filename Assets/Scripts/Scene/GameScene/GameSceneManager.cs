@@ -15,7 +15,7 @@ namespace Scene
         
         #endregion
         
-        private void Start()
+        private async void Start()
         {
             #region 测试逻辑
 
@@ -30,11 +30,33 @@ namespace Scene
                     DataManager.LoadCurrentArchive();
                 }
             }
-            
+            else
+            {
+                // 正常游戏流程：检查是否有存档
+                if (DataManager.HasArchive)
+                {
+                    DataManager.LoadCurrentArchive();
+                }
+                else
+                {
+                    // 没有存档，创建新存档（默认角色ID 1001）
+                    JKLog.Warning("[GameSceneManager] 未找到存档，创建新存档...");
+                    DataManager.CreateArchive(1001);
+                }
+            }
+
+            // ⚠️ 安全检查：确保 GameData 已正确初始化
+            if (DataManager.GameData == null)
+            {
+                JKLog.Error("[GameSceneManager] GameData 为空！强制创建新存档...");
+                DataManager.CreateArchive(1001);
+            }
+
             #endregion
-            
+
             // 初始化角色
-            PlayerManager.Instance.Init(DataManager.GameData);
+            await PlayerManager.Instance.InitAsync();
+            JKLog.Log($"[{nameof(GameSceneManager)}] 游戏开始！当前角色ID: {DataManager.GameData.SelectedCharacterId}");
         }
 
         private void OnDestroy()

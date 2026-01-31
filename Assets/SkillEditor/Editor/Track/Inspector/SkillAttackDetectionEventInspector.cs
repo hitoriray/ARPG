@@ -45,11 +45,17 @@ namespace SkillEditor
                 case AttackDetectionType.Weapon:
                     var weaponDetectionData = (WeaponDetectionData)trackItem.AttackDetectionEvent.AttackDetectionData;
                     DropdownField weaponDetectionDropdownField = new("武器选择");
-                    if (SkillEditorWindow.Instance.CurrentPreviewCharacterObj != null)
+                    // 从 WeaponConfig 配置文件读取
+                    var weaponConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponConfig>("Assets/Config/Weapon/WeaponConfig.asset");
+                    if (weaponConfig != null)
                     {
-                        var skillPlayer = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.GetComponent<SkillPlayer>();
-                        weaponDetectionDropdownField.choices = skillPlayer.WeaponDict.Keys.ToList();
+                        weaponDetectionDropdownField.choices = weaponConfig.GetAllWeaponNames();
                     }
+                    else
+                    {
+                        weaponDetectionDropdownField.choices = new List<string> { "请先创建 WeaponConfig.asset" };
+                    }
+
                     if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName))
                     {
                         weaponDetectionDropdownField.value = weaponDetectionData.WeaponName;

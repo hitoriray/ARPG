@@ -17,13 +17,12 @@ namespace Skill
 
         public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
-        public int SkillCount => skillBehaviours.Count;
+        public int SkillCount => skillBehaviours?.Count ?? 0;
 
         public virtual void Init(ICharacter owner)
         {
             CanRelease = true;
             skillPlayer.Init(owner, owner.AnimationController, owner.ModelTransform);
-
         }
 
         public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
@@ -46,6 +45,9 @@ namespace Skill
 
         protected virtual void Update()
         {
+            // ⚠️ 安全检查：初始化完成前不执行
+            if (skillBehaviours == null) return;
+
             foreach (var skillBehaviour in skillBehaviours)
             {
                 skillBehaviour?.OnUpdate();
@@ -54,6 +56,12 @@ namespace Skill
 
         public virtual void ReleaseSkill(int behaviourIndex)
         {
+            // ⚠️ 安全检查
+            if (skillBehaviours == null || behaviourIndex < 0 || behaviourIndex >= skillBehaviours.Count)
+            {
+                return;
+            }
+
             if (LastReleaseBehaviourIndex != -1 && LastReleaseBehaviourIndex != behaviourIndex)
             {
                 skillBehaviours[LastReleaseBehaviourIndex].OnReleaseNewSkill();
@@ -70,6 +78,12 @@ namespace Skill
         
         public virtual bool CheckReleaseSkill(int behaviourIndex)
         {
+            // ⚠️ 安全检查
+            if (skillBehaviours == null || behaviourIndex < 0 || behaviourIndex >= skillBehaviours.Count)
+            {
+                return false;
+            }
+
             return CanRelease && skillBehaviours[behaviourIndex].CheckRelease();
         }
         

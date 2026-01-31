@@ -34,6 +34,11 @@ namespace Skill
             this.owner = owner;
             this.animationController = animationController;
             this.modelTransform = modelTransform;
+            WeaponController[] weaponControllers = transform.GetComponentsInChildren<WeaponController>();
+            foreach (var weaponController in weaponControllers)
+            {
+                weaponDict.Add(weaponController.WeaponName, weaponController);
+            }
 
             foreach (var skillWeapon in weaponDict.Values)
             {
@@ -246,7 +251,7 @@ namespace Skill
                             }
                             else
                             {
-                                Debug.LogError("没有指定的武器");
+                                Debug.LogError($"没有指定的武器: {weaponDetectionData.WeaponName}");
                             }
                         }
 
