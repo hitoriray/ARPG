@@ -129,6 +129,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4055172118900952114, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
+      propertyPath: uiLayers.Array.data[1].enableMask
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4055172120462711845, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
       propertyPath: m_Name
       value: JKFrame Variant
@@ -367,6 +371,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1953786898}
   - component: {fileID: 1953786899}
+  - component: {fileID: 1953786900}
   m_Layer: 0
   m_Name: MenuSceneManager
   m_TagString: Untagged
@@ -399,5 +404,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a6580bad1226694785c8b9d9d101815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1953786900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953786897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe61a2f25764ad6a71b63663df62230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

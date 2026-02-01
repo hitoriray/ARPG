@@ -155,15 +155,21 @@ namespace Manager
         /// </summary>
         public void UnloadAllCharacters()
         {
-            foreach (var handle in _loadedPrefabs.Values)
+            foreach (var kvp in _loadedPrefabs)
             {
-                Addressables.Release(handle);
+                if (kvp.Value.IsValid())
+                {
+                    Addressables.Release(kvp.Value);
+                }
             }
             _loadedPrefabs.Clear();
 
-            foreach (var handle in _loadedConfigs.Values)
+            foreach (var kvp in _loadedConfigs)
             {
-                Addressables.Release(handle);
+                if (kvp.Value.IsValid())
+                {
+                    Addressables.Release(kvp.Value);
+                }
             }
             _loadedConfigs.Clear();
 

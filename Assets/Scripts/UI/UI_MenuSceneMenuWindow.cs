@@ -37,8 +37,10 @@ namespace UI
         #region 事件回调
         private void OnStartButtonClicked()
         {
+            // 打开角色选择窗口
+            UISystem.Show<UI_CharacterSelectionWindow>();
+            // 关闭主菜单窗口
             UISystem.Close<UI_MenuSceneMenuWindow>();
-            GameManager.Instance.CreateNewArchiveAndEnterGame();
         }
 
         private void OnContinueButtonClicked()

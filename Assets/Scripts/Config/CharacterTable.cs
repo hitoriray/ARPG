@@ -35,6 +35,8 @@ namespace Config
         public int CharacterId;
         [LabelText("角色名称")]
         public string CharacterName;
+        [LabelText("角色Icon")]
+        public Sprite CharacterIcon;
         [LabelText("角色模型预制体"), AssetSelector(Paths = "Assets/Prefabs/Characters")]
         public AssetReference CharacterModelPrefab;
         [LabelText("角色配置"), AssetSelector(Paths = "Assets/Config")]
