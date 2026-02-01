@@ -16,15 +16,16 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 7400000, guid: 07e6349126bc63a45a9468a5ac5385fc, type: 2}
-    - {fileID: 7400000, guid: f4008aac6cd44c749ae2f61dd9e41c24, type: 2}
-    - {fileID: 7400000, guid: a5f0543f21f092f4b8d2864a6f3ded28, type: 2}
-    - {fileID: 7400000, guid: e3b6f1e8d7d3f4b418d7d949e11cf56d, type: 2}
-    - {fileID: 7400000, guid: b557cd9bf52763c41b9a0c029f81fc2c, type: 2}
-    - {fileID: 7400000, guid: 8dc877b936984e1478f6763357fbbae6, type: 2}
-    - {fileID: 7400000, guid: 5de8d8b740c139e4b9c0a6d2d1063410, type: 2}
-    - {fileID: 7400000, guid: ff6519b16ff465b458971dd8eabbedf7, type: 2}
-    - {fileID: 7400000, guid: d0515bdafdb58ce4e963f8491be88427, type: 2}
+    - {fileID: 7400000, guid: 6662e4f9df9663046832dcd80a91c550, type: 2}
+    - {fileID: 7400000, guid: ed0ddbdd3c6a6524383e75f97fcc3a6d, type: 2}
+    - {fileID: 7400000, guid: 6ff472f09096b994489f1ce6b9bcb5aa, type: 2}
+    - {fileID: 7400000, guid: d0183c3e486dceb49b24d1b766980f71, type: 2}
+    - {fileID: 7400000, guid: 56e2e92a69876ce478852039380df69c, type: 2}
+    - {fileID: 7400000, guid: 1cc3f503950140e4f8bdddf105b56fa1, type: 2}
+    - {fileID: 7400000, guid: 7b4f1fcd649122642aad87f31fc8c351, type: 2}
+    - {fileID: 7400000, guid: 9bece185442e4cb48a20711479b28eb8, type: 2}
+    - {fileID: 7400000, guid: 3af88f397a24737419b21aabf68f3bfc, type: 2}
+    - {fileID: 7400000, guid: 7917b874b9231c64ca7c24545e752e1b, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -124,7 +125,7 @@ MonoBehaviour:
       Data: runEnd
     - Name: $v
       Entry: 10
-      Data: 3
+      Data: 6
     - Name: 
       Entry: 8
       Data: 
@@ -136,7 +137,7 @@ MonoBehaviour:
       Data: idleAFK
     - Name: $v
       Entry: 10
-      Data: 6
+      Data: 7
     - Name: 
       Entry: 8
       Data: 
@@ -148,7 +149,7 @@ MonoBehaviour:
       Data: die
     - Name: $v
       Entry: 10
-      Data: 7
+      Data: 8
     - Name: 
       Entry: 8
       Data: 
@@ -160,7 +161,7 @@ MonoBehaviour:
       Data: turnBack
     - Name: $v
       Entry: 10
-      Data: 8
+      Data: 9
     - Name: 
       Entry: 8
       Data: 
@@ -175,6 +176,9 @@ MonoBehaviour:
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 0
+  AnimationBlendTime: 0.25
+  ReverseInputAngle: 129.4
+  AnimationEndEarlyFactor: 1
   FootStepAudioClips:
   - {fileID: 8300000, guid: f7730f403e3ed3848a39f5f4d41c30a8, type: 3}
   - {fileID: 8300000, guid: c5212058eaf72594dbb061ac4573773b, type: 3}
