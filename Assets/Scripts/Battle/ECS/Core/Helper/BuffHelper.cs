@@ -17,26 +17,17 @@ namespace Battle.ECS.Core.Helper
         /// </summary>
         public static Entity AddBuff(BattleContext context, string track, Entity caster, Entity target, BuffConfig buffConfig, int stackCount = 1)
         {
-            if (!target.IsAlive())
+            // 检查目标是否有效
+            if (!target.IsAlive() || target.Has<Death>() || target.Has<Destroy>())
             {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: {nameof(target)} is invalid");
-                return Entity.Null;
-            }
-            if (target.IsAlive() == false)
-            {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: {nameof(target)} is not alive.");
+                Debug.LogError($"{track ?? nameof(AddBuff)}: target is invalid or dead.");
                 return Entity.Null;
             }
 
-            if (target.Has<Death>() || target.Has<Destroy>())
+            // 检查BuffConfig是否有效
+            if (buffConfig == null)
             {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: {target.GetDebugInfo()} is dead.");
-                return Entity.Null;
-            }
-
-            if (target.Has<Buff>())
-            {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: {nameof(target)} already has a {nameof(Buff)} component.");
+                Debug.LogError($"{track ?? nameof(AddBuff)}: BuffConfig is null.");
                 return Entity.Null;
             }
 
@@ -47,11 +38,6 @@ namespace Battle.ECS.Core.Helper
             ref var buffList = ref GetOrCreateBuffList(target);
 
             // 检查是否已存在相同Buff
-            if (buffConfig == null)
-            {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: {nameof(BuffConfig)} is null.");
-                return Entity.Null;
-            }
             var existingBuff = buffList.GetBuff(buffConfig.buffId);
             if (existingBuff.IsAlive())
             {
@@ -109,10 +95,7 @@ namespace Battle.ECS.Core.Helper
 
             // 应用属性修正
             ApplyAttrModifiers(buffEntity, target, stackCount);
-
-            // 更新事件计数器
-            UpdateEventCounters(buffEntity, ref buffList, true);
-
+            
             // 触发OnCreate回调
             buffProcess.OnCreate(buffEntity);
 
@@ -151,6 +134,13 @@ namespace Battle.ECS.Core.Helper
                 }
             }
 
+            // 根据叠加模式刷新时间
+            if (addedCount > 0 && buffProperty.StackMode == BattleBuffStackMode.RefreshDuration)
+            {
+                // RefreshDuration模式：叠加时刷新所有层的时间
+                RefreshAllStackTime(ref buffStack, buffProperty.Duration);
+            }
+
             if (addedCount > 0)
             {
                 // 应用属性修正
@@ -162,6 +152,18 @@ namespace Battle.ECS.Core.Helper
                     var process = buffEntity.Get<LogicProcess>().Value as BuffProcess;
                     process?.OnStackAdded(buffEntity, addedCount);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 刷新所有层的剩余时间（用于RefreshDuration模式）
+        /// </summary>
+        private static void RefreshAllStackTime(ref BuffStack buffStack, FP duration)
+        {
+            for (int i = 0; i < buffStack.Value.Count; i++)
+            {
+                ref var stackInfo = ref buffStack.Value[i];
+                stackInfo.RemainingTime = duration;
             }
         }
 
@@ -294,24 +296,6 @@ namespace Battle.ECS.Core.Helper
             }
 
             return ref entity.Get<BuffList>();
-        }
-
-        /// <summary>
-        /// 更新事件计数器
-        /// </summary>
-        public static void UpdateEventCounters(Entity buffEntity, ref BuffList buffList, bool isAdd)
-        {
-            ref var buff = ref buffEntity.Get<Buff>();
-            int delta = isAdd ? 1 : -1;
-
-            if (buff.HasHurtEvent) buffList.HurtEvent += delta;
-            if (buff.HasDealDamageEvent) buffList.DealDamageEvent += delta;
-            if (buff.HasHurtModifierEvent) buffList.HurtModifierEvent += delta;
-            if (buff.HasDealDamageModifierEvent) buffList.DealDamageModifierEvent += delta;
-            if (buff.HasOnCastEvent) buffList.OnCastEvent += delta;
-            if (buff.HasHealedEvent) buffList.HealedEvent += delta;
-            if (buff.HasAddShieldEvent) buffList.AddShieldEvent += delta;
-            if (buff.HasTargetDeathEvent) buffList.TargetDeathEvent += delta;
         }
 
         /// <summary>

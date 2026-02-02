@@ -1,5 +1,6 @@
 using Arch.Core;
 using Arch.Core.Extensions;
+using Arch.Extend.System;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using Battle.ECS.Features;
@@ -77,16 +78,24 @@ namespace Battle.ECS
                 Instance = null;
         }
 
-        public void RegisterPlayer(PlayerController player)
+        public Entity RegisterPlayer(PlayerController player)
         {
-            if (Context == null || player == null) return;
+            if (Context == null || player == null)
+                return Entity.Null;
 
             var viewComp = player.GetComponentInChildren<PlayerView>();
-            var view = viewComp as ICharacterView;
+            var view = (ICharacterView)viewComp;
             var viewObj = viewComp != null ? viewComp.gameObject : player.gameObject;
             var position = (TSVector3)viewObj.transform.position;
             var rotation = (TSQuaternion)viewObj.transform.rotation;
-
+            var playerAttr = player.CharacterAttribute;
+            var attribute = new Component.Attribute
+            {
+                Attack = (FP)playerAttr.attack.Total,
+                MaxHp = (FP)playerAttr.maxHp.Total,
+                MaxMp = (FP)playerAttr.maxMp.Total,
+            };
+            var health = new Health((FP)playerAttr.currentHp, (FP)playerAttr.currentMp);
             if (_playerEntity.IsAlive() == false)
             {
                 _playerEntity = Context.World.Create(
@@ -94,17 +103,24 @@ namespace Battle.ECS
                     new Position(position),
                     new Rotation(rotation),
                     new ViewReference(viewObj, view),
-                    new SyncFromView()
+                    new SyncFromView(),
+                    attribute,
+                    health,
+                    new BuffList(16)
                 );
             }
             else
             {
-                _playerEntity.Set(new Position(position));
-                _playerEntity.Set(new Rotation(rotation));
-                _playerEntity.Set(new ViewReference(viewObj, view));
-                if (!_playerEntity.Has<SyncFromView>())
-                    _playerEntity.Add<SyncFromView>();
+                _playerEntity.Replace(new Position(position));
+                _playerEntity.Replace(new Rotation(rotation));
+                _playerEntity.Replace(new ViewReference(viewObj, view));
+                _playerEntity.Replace(health);
+                _playerEntity.Replace(attribute);
+                _playerEntity.Replace(new BuffList(16));
+                _playerEntity.Replace(new SyncFromView());
             }
+
+            return _playerEntity;
         }
 
         private void Initialize()

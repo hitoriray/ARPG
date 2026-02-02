@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using Arch.Core.Extensions;
+using Attribute;
 using Battle.ECS.Component;
 using Battle.ECS.Core.Helper;
 using Config;
@@ -64,15 +65,19 @@ namespace Battle.ECS.Core.Process
             if (!buffEntity.IsAlive()) return;
 
             ref var buff = ref buffEntity.Get<Buff>();
+            ref var buffStack = ref buffEntity.Get<BuffStack>();
             var config = buff.Config;
 
-            // 执行周期效果
+            // 执行周期效果（根据当前层数执行多次）
             if (config.periodicEffect != null)
             {
-                ExecuteEffect(buffEntity, config.periodicEffect);
+                int stackCount = buffStack.Value.Count;
+                for (int i = 0; i < stackCount; i++)
+                {
+                    ExecuteEffect(buffEntity, config.periodicEffect);
+                }
+                Debug.Log($"[{nameof(BuffProcess)}] {nameof(OnTick)}: {config.buffName} x{stackCount}层");
             }
-
-            Debug.Log($"[{nameof(BuffProcess)}] {nameof(OnTick)}: {config.buffName}");
         }
 
         /// <summary>
@@ -96,9 +101,6 @@ namespace Battle.ECS.Core.Process
             {
                 ref var buffList = ref buff.Target.Get<BuffList>();
                 buffList.Remove(buffEntity);
-
-                // 更新事件计数器
-                BuffHelper.UpdateEventCounters(buffEntity, ref buffList, false);
             }
 
             // 销毁特效
@@ -107,8 +109,11 @@ namespace Battle.ECS.Core.Process
                 buff.Vfx.Add(new Death());
             }
 
-            // 添加Deth组件
-            buffEntity.Add(new Death());
+            // 标记销毁（不需要再添加Death，因为已经触发OnDeath了）
+            if (!buffEntity.Has<Destroy>())
+            {
+                buffEntity.Add(new Destroy());
+            }
 
             Debug.Log($"[{nameof(BuffProcess)}] Buff销毁: {config.buffName}");
         }
@@ -116,22 +121,33 @@ namespace Battle.ECS.Core.Process
         /// <summary>
         /// 执行效果（兼容旧系统）
         /// </summary>
-        private void ExecuteEffect(Entity buffEntity, Config.BuffEffectDataBase effectData)
+        private void ExecuteEffect(Entity buffEntity, BuffEffectDataBase effectData)
         {
             ref var buff = ref buffEntity.Get<Buff>();
             var target = buff.Target;
 
             if (!target.IsAlive()) return;
             
-            if (effectData is Config.SimpleBuffEffectData simpleEffect)
+            if (effectData is SimpleBuffEffectData simpleEffect)
             {
-                // TODO: 根据效果类型执行具体逻辑
-                // 这里需要对接你的属性系统
+                FP value = (FP)simpleEffect.value;
+                ref var buffStack = ref buff.Target.TryGetRef<BuffStack>(out var hasBuffStack);
+                if (hasBuffStack == false)
+                    return;
+                
+                int stackCount = buffStack.Value.Count;
                 switch (simpleEffect.type)
                 {
                     case BuffEffectType.Hp:
-                        ApplyHpChange(target, (FP)simpleEffect.value);
+                        ApplyHpChange(target, value * stackCount);
                         break;
+                    case BuffEffectType.AttackFixed:
+                        ApplyAttributeModifier(target, AttributeType.Attack, value * stackCount, false);
+                        break;
+                    case BuffEffectType.AttackMultiplier:
+                        ApplyAttributeModifier(target, AttributeType.Attack, value * stackCount, true);
+                        break;
+                    // TODO: 其他类型
                 }
                 Debug.Log($"[BuffProcess] 执行效果: {simpleEffect.type} = {simpleEffect.value}");
             }
@@ -139,23 +155,31 @@ namespace Battle.ECS.Core.Process
 
         private void ApplyHpChange(Entity target, FP value)
         {
-            if (!target.Has<Health>()) return;
+            ref var health = ref target.TryGetRef<Health>(out var hasHealth);
+            if (hasHealth == false)
+                return;
 
-            ref var hp = ref target.Get<Health>();
-            hp.Current += value;
-
+            health.Current += value;
             // 限制在 [0, MaxHp] 范围
             if (target.Has<Battle.ECS.Component.Attribute>())
             {
                 ref var attr = ref target.Get<Battle.ECS.Component.Attribute>();
-                hp.Current = TSMath.Clamp(hp.Current, FP.Zero, attr.MaxHp);
+                health.Current = TSMath.Clamp(health.Current, FP.Zero, attr.MaxHp);
             }
 
             // 如果血量归零，触发死亡
-            if (hp.Current <= FP.Zero && !target.Has<Death>())
+            if (health.Current <= FP.Zero && !target.Has<Death>())
             {
                 target.Add(new Death());
             }
+        }
+
+        private void ApplyAttributeModifier(Entity target, AttributeType type, FP value, bool isPercent)
+        {
+            ref var attr = ref target.TryGetRef<Component.Attribute>(out var hasAttr);
+            if (hasAttr == false)
+                return;
+            attr.AddModifier(type, value, isPercent);
         }
     }
 }

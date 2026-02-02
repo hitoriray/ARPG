@@ -18,7 +18,12 @@ namespace Config
         [TitleGroup("叠加配置")] [LabelText("最大层数")]
         public int maxStack = 1;
 
-        [LabelText("叠加模式")] public BattleBuffStackMode stackMode = BattleBuffStackMode.RefreshDuration;
+        [LabelText("叠加模式")]
+        [Tooltip("RefreshDuration: 叠加时刷新持续时间，时间结束后全部移除，溢出时替换\n" +
+                 "IndependentDuration: 每层同时计时，单独过期，溢出时替换\n" +
+                 "SequentialDuration: 逐层过期，溢出时替换\n" +
+                 "Permanent: 永久有效，保留所有堆叠信息")]
+        public BattleBuffStackMode stackMode = BattleBuffStackMode.RefreshDuration;
         [LabelText("溢出策略")] public BattleBuffOverflowPolicy overflowPolicy = BattleBuffOverflowPolicy.ReplaceOldest;
 
         [TitleGroup("时间配置")] [LabelText("每层持续时间（秒）")]

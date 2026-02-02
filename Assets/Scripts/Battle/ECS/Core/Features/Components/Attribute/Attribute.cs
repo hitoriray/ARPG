@@ -9,6 +9,7 @@ namespace Battle.ECS.Component
     {
         private Dictionary<AttributeType, List<FP>> modifierStacks;
 
+        public FP Attack;        // 攻击力
         public FP MaxHp;
         public FP MaxMp;
         public FP Defense;
@@ -16,8 +17,9 @@ namespace Battle.ECS.Component
         public FP CritRate;
         public FP CritDamage;
 
-        public Attribute(FP maxHp, FP maxMp, FP defense, FP speed)
+        public Attribute(FP attack, FP maxHp, FP maxMp, FP defense, FP speed)
         {
+            Attack = attack;
             MaxHp = maxHp;
             MaxMp = maxMp;
             Defense = defense;
@@ -54,6 +56,9 @@ namespace Battle.ECS.Component
             FP actualValue = value * sign;
             switch (type)
             {
+                case AttributeType.Attack:
+                    Attack += isPercent ? Attack * actualValue : actualValue;
+                    break;
                 case AttributeType.Defense:
                     Defense += isPercent ? Defense * actualValue : actualValue;
                     break;

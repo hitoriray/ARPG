@@ -15,6 +15,8 @@ namespace Editor.BattleDebug
         {
             new OverviewPage(),
             new EntityPage(),
+            new BuffPage(),
+            new AttributePage(),
             new MemoryPage(),
             new TestPage(),
             new SettingsPage(),
@@ -25,7 +27,7 @@ namespace Editor.BattleDebug
         private bool _autoRefresh = true;
         private IBattleDebugPage _currentPage;
         
-        [MenuItem("Tools/ARPG/ECS 调试窗口 %#D")]
+        [MenuItem("Tools/ECS 调试窗口 %#D")]
         public static void ShowWindow()
         {
             var window = GetWindow<BattleDebugWindow>("ECS 调试窗口");

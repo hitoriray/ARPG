@@ -1,5 +1,7 @@
 using System;
+using Arch.Core;
 using Attribute;
+using Battle.ECS;
 using BuffSystem;
 using Config;
 using Data;
@@ -14,6 +16,7 @@ namespace Player
 {
     public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter, IGOAPOwner
     {
+        public Entity PlayerEntity { get; private set; }
         [SerializeField] private PlayerSkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
@@ -51,6 +54,13 @@ namespace Player
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
+
+            var context = BattleEcsRunner.Instance.Context;
+            if (context != null)
+            {
+                PlayerEntity = BattleEcsRunner.Instance.RegisterPlayer(this);
+                Debug.Log($"[{nameof(PlayerController)}] ECS实体已创建: {PlayerEntity.Id}");
+            }
         }
 
         private void Update()
