@@ -16,9 +16,9 @@ namespace Skill
                 case AttackDetectionType.Weapon:
                     WeaponDetectionData weaponDetectionData = (WeaponDetectionData)attackDetectionEvent.AttackDetectionData;
                     if (!string.IsNullOrEmpty(weaponDetectionData.WeaponName) &&
-                        skillPlayer.WeaponDict.TryGetValue(weaponDetectionData.WeaponName, out var skillWeapon))
+                        skillPlayer.WeaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weaponController))
                     {
-                        Collider collider = skillWeapon.GetComponent<Collider>();
+                        Collider collider = weaponController.GetComponentInChildren<Collider>();
                         rotationMat.SetTRS(collider.transform.position, collider.transform.rotation, collider.transform.localScale);
                         Gizmos.matrix = rotationMat;
                         if (collider is BoxCollider boxCollider)

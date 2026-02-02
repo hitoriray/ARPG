@@ -16,14 +16,10 @@ namespace Manager
         
         [ShowInInspector, ReadOnly]
         public int SlotCount => slotDict.Count;
-        private void Awake()
-        {
-            RefreshSlots();
-        }
+        
         /// <summary>
         /// 刷新槽位缓存（在运行时动态添加槽位后调用）
         /// </summary>
-        [Button("刷新槽位")]
         public void RefreshSlots()
         {
             slotDict.Clear();

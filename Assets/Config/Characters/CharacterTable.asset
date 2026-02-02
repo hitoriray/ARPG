@@ -24,6 +24,7 @@ MonoBehaviour:
   Characters:
   - CharacterId: 1001
     CharacterName: "\u5B89\u6BD4"
+    CharacterIcon: {fileID: 0}
     CharacterModelPrefab:
       m_AssetGUID: 0cb3d94ba95e70f4cbe56b414cbd20fe
       m_SubObjectName: 
@@ -38,17 +39,66 @@ MonoBehaviour:
     IsPlayable: 1
     CharacterType: 0
   - CharacterId: 1002
-    CharacterName: "\u827E\u83B2"
+    CharacterName: "\u9ED1\u53D1\u5973\u5B69"
+    CharacterIcon: {fileID: 0}
     CharacterModelPrefab:
-      m_AssetGUID: 
+      m_AssetGUID: ee624fa4d9dff364dadfc364d9dd9140
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     CharacterConfig:
-      m_AssetGUID: 
+      m_AssetGUID: 5e136fc7b31dd7a428edd5fcded66a17
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 0
+    IsPlayable: 1
+    CharacterType: 0
+  - CharacterId: 1003
+    CharacterName: "\u5343Xiao"
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: 130df5fda18d56f44af072b53475e2e1
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: f19fbdbeaf1f75843bce905ad0fb835a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
+    CharacterType: 0
+  - CharacterId: 1004
+    CharacterName: "\u5361\u63D0\u5E0C\u5A05"
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: fb202925e51fc024083361751a29fc59
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: 52b50a48ea6fd7744b8d254a859f0947
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
+    CharacterType: 0
+  - CharacterId: 1005
+    CharacterName: "\u8299\u9732\u5FB7\u5229\u65AF"
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: c7e152a354e36154b87bbda67eb2f6a7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: 799d386e1cde462408802f18e4ea6109
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
     CharacterType: 0

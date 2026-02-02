@@ -24,3 +24,8 @@ MonoBehaviour:
   Weapons:
   - WeaponName: "\u53F3\u624B\u6B66\u5668"
   - WeaponName: "\u5DE6\u624B\u6B66\u5668"
+  - WeaponName: "\u80CC\u540E\u6B66\u56681(\u4F9B\u5C55\u793A)"
+  - WeaponName: "\u80CC\u540E\u6B66\u56682(\u4F9B\u5C55\u793A)"
+  - WeaponName: "\u80CC\u540E\u6B66\u56683(\u4F9B\u5C55\u793A)"
+  - WeaponName: "\u5DE6\u4E0B\u6B66\u5668"
+  - WeaponName: "\u53F3\u4E0B\u6B66\u5668"

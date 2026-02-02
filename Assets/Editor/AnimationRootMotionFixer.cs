@@ -13,6 +13,7 @@ public class AnimationRootMotionFixer : EditorWindow
     private string targetFolderPath = "Assets/Res/Animations/Anbi/Anbi_RootMotion";
     private bool includeYAxis = false; // 是否包含 Y 轴位移（用于跳跃等）
     private bool preserveBip001Y = true; // 保留 Bip001 的 Y 轴运动（身体起伏）
+    private bool verboseLog = false; // 是否输出详细日志（影响性能）
 
     // 统计变量
     private int newFileCount = 0;
@@ -127,12 +128,18 @@ public class AnimationRootMotionFixer : EditorWindow
             sourceFolderPath = "Assets/Models/绝区零/女主玲/fbx";
             targetFolderPath = "Assets/Res/Animations/Ling/Ling_RootMotion";
         }
+        if (GUILayout.Button("卡缇西娅", GUILayout.Width(70)))
+        {
+            sourceFolderPath = "Assets/Res/MC/Katixiya/fbx";
+            targetFolderPath = "Assets/Res/Animations/1004_Katixiya/RootMotion";
+        }
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space(5);
 
         includeYAxis = EditorGUILayout.Toggle("包含 Y 轴位移（跳跃）", includeYAxis);
         preserveBip001Y = EditorGUILayout.Toggle("保留 Bip001 Y 轴（身体起伏）", preserveBip001Y);
+        verboseLog = EditorGUILayout.Toggle("输出详细日志（影响速度）", verboseLog);
 
         EditorGUILayout.Space(5);
 
@@ -181,13 +188,42 @@ public class AnimationRootMotionFixer : EditorWindow
         int successCount = 0;
         int failCount = 0;
 
-        foreach (string guid in guids)
+        // ========== 性能优化：批量资源编辑模式 ==========
+        AssetDatabase.StartAssetEditing();
+
+        try
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            if (ExtractAndFixAnimation(path))
-                successCount++;
-            else
-                failCount++;
+            int totalCount = guids.Length;
+            for (int i = 0; i < totalCount; i++)
+            {
+                string guid = guids[i];
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+
+                // 显示进度条
+                float progress = (float)i / totalCount;
+                bool cancelled = EditorUtility.DisplayCancelableProgressBar(
+                    "修复根运动动画",
+                    $"正在处理: {fileName} ({i + 1}/{totalCount})",
+                    progress);
+
+                if (cancelled)
+                {
+                    RayDebug.Warn($"用户取消操作，已处理 {i}/{totalCount} 个文件");
+                    break;
+                }
+
+                if (ExtractAndFixAnimation(path))
+                    successCount++;
+                else
+                    failCount++;
+            }
+        }
+        finally
+        {
+            // 确保无论如何都会停止批量编辑模式
+            AssetDatabase.StopAssetEditing();
+            EditorUtility.ClearProgressBar();
         }
 
         AssetDatabase.Refresh();
@@ -222,14 +258,45 @@ public class AnimationRootMotionFixer : EditorWindow
         overwriteCount = 0;
         int successCount = 0;
 
-        foreach (Object obj in selections)
+        // ========== 性能优化：批量资源编辑模式 ==========
+        AssetDatabase.StartAssetEditing();
+
+        try
         {
-            string path = AssetDatabase.GetAssetPath(obj);
-            if (path.EndsWith(".FBX") || path.EndsWith(".fbx"))
+            int totalCount = selections.Length;
+            int currentIndex = 0;
+
+            foreach (Object obj in selections)
             {
-                if (ExtractAndFixAnimation(path))
+                string path = AssetDatabase.GetAssetPath(obj);
+                if (path.EndsWith(".FBX") || path.EndsWith(".fbx"))
+                {
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+
+                    // 显示进度条
+                    float progress = (float)currentIndex / totalCount;
+                    bool cancelled = EditorUtility.DisplayCancelableProgressBar(
+                        "修复选中的根运动动画",
+                        $"正在处理: {fileName} ({currentIndex + 1}/{totalCount})",
+                        progress);
+
+                    if (cancelled)
+                    {
+                        RayDebug.Warn($"用户取消操作，已处理 {currentIndex}/{totalCount} 个文件");
+                        break;
+                    }
+
+                    if (ExtractAndFixAnimation(path))
                     successCount++;
+                    currentIndex++;
+                }
             }
+        }
+        finally
+        {
+            // 确保无论如何都会停止批量编辑模式
+            AssetDatabase.StopAssetEditing();
+            EditorUtility.ClearProgressBar();
         }
 
         AssetDatabase.Refresh();
@@ -259,11 +326,13 @@ public class AnimationRootMotionFixer : EditorWindow
 
             if (sourceClip == null)
             {
-                RayDebug.Warn($"[跳过] 未在 {fbxPath} 中找到动画片段");
+                if (verboseLog)
+                    RayDebug.Warn($"[跳过] 未在 {fbxPath} 中找到动画片段");
                 return false;
             }
 
-            RayDebug.Log($"[处理] {sourceClip.name} (长度: {sourceClip.length:F2}s, 帧率: {sourceClip.frameRate})");
+            if (verboseLog)
+                RayDebug.Log($"[处理] {sourceClip.name} (长度: {sourceClip.length:F2}s, 帧率: {sourceClip.frameRate})");
 
             // 创建新的动画片段
             AnimationClip newClip = new AnimationClip();
@@ -277,16 +346,23 @@ public class AnimationRootMotionFixer : EditorWindow
             AnimationCurve bip001PosX = null;
             AnimationCurve bip001PosY = null;
             AnimationCurve bip001PosZ = null;
+            string bip001Path = ""; // 记录找到的 Bip001 路径
 
-            // 第一遍：提取 Bip001 的位置曲线
+            // 第一遍：提取 Bip001 的位置曲线（支持多层级：Bip001 或 Root/Bip001）
             foreach (EditorCurveBinding binding in bindings)
             {
-                if (binding.path == "Bip001" && binding.type == typeof(Transform))
+                // 检查路径是否为 "Bip001" 或以 "/Bip001" 结尾
+                bool isBip001 = binding.path == "Bip001" || binding.path.EndsWith("/Bip001");
+
+                if (isBip001 && binding.type == typeof(Transform))
                 {
                     AnimationCurve curve = AnimationUtility.GetEditorCurve(sourceClip, binding);
 
                     if (binding.propertyName == "m_LocalPosition.x")
+                    {
                         bip001PosX = curve;
+                        bip001Path = binding.path; // 记录路径
+                    }
                     else if (binding.propertyName == "m_LocalPosition.y")
                         bip001PosY = curve;
                     else if (binding.propertyName == "m_LocalPosition.z")
@@ -297,45 +373,57 @@ public class AnimationRootMotionFixer : EditorWindow
             // 检查是否找到了 Bip001 的位移数据
             if (bip001PosX == null && bip001PosZ == null)
             {
-                RayDebug.Warn($"[跳过] {sourceClip.name} 中未找到 Bip001 的位移数据");
+                if (verboseLog)
+                    RayDebug.Warn($"[跳过] {sourceClip.name} 中未找到 Bip001 的位移数据");
                 return false;
             }
 
-            // 计算位移量（用于日志）
-            float totalDisplacement = 0f;
-            if (bip001PosX != null && bip001PosZ != null)
+            // 计算位移量（仅用于日志）
+            if (verboseLog)
             {
-                float startX = bip001PosX.Evaluate(0);
-                float startZ = bip001PosZ.Evaluate(0);
-                float endX = bip001PosX.Evaluate(sourceClip.length);
-                float endZ = bip001PosZ.Evaluate(sourceClip.length);
-                totalDisplacement = Vector2.Distance(new Vector2(startX, startZ), new Vector2(endX, endZ));
-            }
+                float totalDisplacement = 0f;
+                float initialY = bip001PosY != null ? bip001PosY.Evaluate(0) : 0;
 
-            RayDebug.Log($"  → Bip001 总位移: {totalDisplacement:F3} 米");
+                if (bip001PosX != null && bip001PosZ != null)
+                {
+                    float startX = bip001PosX.Evaluate(0);
+                    float startZ = bip001PosZ.Evaluate(0);
+                    float endX = bip001PosX.Evaluate(sourceClip.length);
+                    float endZ = bip001PosZ.Evaluate(sourceClip.length);
+                    totalDisplacement = Vector2.Distance(new Vector2(startX, startZ), new Vector2(endX, endZ));
+                }
+
+                RayDebug.Log($"  → 检测到骨骼路径: {bip001Path}");
+                RayDebug.Log($"  → Bip001 初始位置: Y={initialY:F3}");
+                RayDebug.Log($"  → Bip001 总位移: {totalDisplacement:F3} 米");
+            }
 
             // 第二遍：复制曲线并转换
             foreach (EditorCurveBinding binding in bindings)
             {
                 AnimationCurve curve = AnimationUtility.GetEditorCurve(sourceClip, binding);
 
-                // 处理 Bip001 的位置
-                if (binding.path == "Bip001" && binding.type == typeof(Transform))
+                // 处理 Bip001 的位置（支持 Bip001 或 Root/Bip001）
+                bool isBip001 = binding.path == "Bip001" || binding.path.EndsWith("/Bip001");
+
+                if (isBip001 && binding.type == typeof(Transform))
                 {
                     if (binding.propertyName.StartsWith("m_LocalPosition"))
                     {
                         if (preserveBip001Y && binding.propertyName == "m_LocalPosition.y")
                         {
-                            // 保留 Y 轴的身体起伏
+                            // 保留 Y 轴的身体起伏（保持原始曲线）
                             AnimationUtility.SetEditorCurve(newClip, binding, curve);
                         }
                         else
                         {
-                            // 其他位移清零（已转移到根节点）
-                            AnimationCurve zeroCurve = new AnimationCurve();
-                            zeroCurve.AddKey(0, 0);
-                            zeroCurve.AddKey(sourceClip.length, 0);
-                            AnimationUtility.SetEditorCurve(newClip, binding, zeroCurve);
+                            // XZ 位移清零到初始位置（保留起始帧的值，后续帧都设为该值）
+                            // 这样可以保持角色的初始高度和站位，但移除运动增量
+                            float initialValue = curve.Evaluate(0); // 获取第一帧的值
+                            AnimationCurve fixedCurve = new AnimationCurve();
+                            fixedCurve.AddKey(0, initialValue);
+                            fixedCurve.AddKey(sourceClip.length, initialValue);
+                            AnimationUtility.SetEditorCurve(newClip, binding, fixedCurve);
                         }
                     }
                     else
@@ -352,38 +440,65 @@ public class AnimationRootMotionFixer : EditorWindow
             }
 
             // 添加根节点的位移曲线（从 Bip001 转移过来）
-            // 对于 Generic 动画，使用 m_LocalPosition
+            // 注意：转移的是位移增量（相对于初始位置的变化），不是绝对位置
             if (bip001PosX != null)
             {
+                float initialX = bip001PosX.Evaluate(0);
+                AnimationCurve rootCurveX = new AnimationCurve();
+
+                // 将曲线转换为增量形式（减去初始值）
+                foreach (Keyframe key in bip001PosX.keys)
+                {
+                    rootCurveX.AddKey(key.time, key.value - initialX);
+                }
+
                 EditorCurveBinding rootBindingX = new EditorCurveBinding
                 {
                     path = "",
                     type = typeof(Transform),
                     propertyName = "m_LocalPosition.x"
                 };
-                AnimationUtility.SetEditorCurve(newClip, rootBindingX, bip001PosX);
+                AnimationUtility.SetEditorCurve(newClip, rootBindingX, rootCurveX);
             }
 
             if (includeYAxis && bip001PosY != null)
             {
+                float initialY = bip001PosY.Evaluate(0);
+                AnimationCurve rootCurveY = new AnimationCurve();
+
+                // 将曲线转换为增量形式（减去初始值）
+                foreach (Keyframe key in bip001PosY.keys)
+                {
+                    rootCurveY.AddKey(key.time, key.value - initialY);
+                }
+
                 EditorCurveBinding rootBindingY = new EditorCurveBinding
                 {
                     path = "",
                     type = typeof(Transform),
                     propertyName = "m_LocalPosition.y"
                 };
-                AnimationUtility.SetEditorCurve(newClip, rootBindingY, bip001PosY);
+                AnimationUtility.SetEditorCurve(newClip, rootBindingY, rootCurveY);
             }
 
             if (bip001PosZ != null)
             {
+                float initialZ = bip001PosZ.Evaluate(0);
+                AnimationCurve rootCurveZ = new AnimationCurve();
+
+                // 将曲线转换为增量形式（减去初始值）
+                foreach (Keyframe key in bip001PosZ.keys)
+                {
+                    rootCurveZ.AddKey(key.time, key.value - initialZ);
+                }
+
                 EditorCurveBinding rootBindingZ = new EditorCurveBinding
                 {
                     path = "",
                     type = typeof(Transform),
                     propertyName = "m_LocalPosition.z"
                 };
-                AnimationUtility.SetEditorCurve(newClip, rootBindingZ, bip001PosZ);
+                AnimationUtility.SetEditorCurve(newClip, rootBindingZ, rootCurveZ);
             }
 
             // 设置循环
@@ -410,10 +525,14 @@ public class AnimationRootMotionFixer : EditorWindow
             // 创建新文件
             AssetDatabase.CreateAsset(newClip, savePath);
 
-            string action = isOverwrite ? "覆盖" : "新建";
-            RayDebug.Log($"  ✓ 成功修复 ({action}): {savePath}\n" +
-                         $"     根节点位移: X={bip001PosX != null}, Y={includeYAxis && bip001PosY != null}, Z={bip001PosZ != null}\n" +
-                         $"     Bip001 保留 Y 轴: {preserveBip001Y}");
+            if (verboseLog)
+            {
+                string action = isOverwrite ? "覆盖" : "新建";
+                RayDebug.Log($"  ✓ 成功修复 ({action}): {savePath}\n" +
+                             $"     根节点位移: X={bip001PosX != null}, Y={includeYAxis && bip001PosY != null}, Z={bip001PosZ != null}\n" +
+                             $"     Bip001 保留 Y 轴: {preserveBip001Y}");
+            }
+
             return true;
         }
         catch (System.Exception e)

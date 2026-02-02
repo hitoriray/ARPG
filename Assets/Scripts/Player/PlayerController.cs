@@ -55,6 +55,8 @@ namespace Player
             stateMachine.Init(this);
             // 默认待机
             ChangeState(PlayerState.Idle);
+            // 刷新武器槽位索引
+            weaponSlotManager.RefreshSlots();
 
             var context = BattleEcsRunner.Instance.Context;
             if (context != null)

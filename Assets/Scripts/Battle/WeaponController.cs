@@ -26,7 +26,8 @@ namespace Skill
         private GameObject weaponPrefab;
         public GameObject WeaponPrefab => weaponPrefab;
 
-        [SerializeField] private Collider detectionCollider;
+        // 从武器身上去获取碰撞体
+        private Collider detectionCollider;
         private LayerMask detectionLayerMask;
         private Action<IHitTarget, AttackData> onDetection;
         private AttackData attackData;
@@ -41,8 +42,12 @@ namespace Skill
         {
             this.detectionLayerMask = detectionLayerMask;
             this.onDetection = onDetection;
+            // 先尝试从自身获取武器,有的话直接使用
+            detectionCollider = transform.GetComponentInChildren<BoxCollider>();
             if (detectionCollider != null)
+            {
                 detectionCollider.enabled = false;
+            }
         }
 
         public void StartDetection(AttackData attackData)
@@ -102,7 +107,7 @@ namespace Skill
             GameObject prefab = customPrefab != null ? customPrefab : weaponPrefab;
             if (prefab == null)
             {
-                RayDebug.Warn($"SlotIndex {slotIndex}: 没有武器预制体可以生成");
+                RayDebug.Warn($"SlotIndex {slotIndex}: [{weaponName}] 没有武器预制体可以生成");
                 return;
             }
             
@@ -110,11 +115,8 @@ namespace Skill
             currentWeaponInstance.transform.localPosition = Vector3.zero;
             currentWeaponInstance.transform.localRotation = Quaternion.identity;
             currentWeaponInstance.transform.localScale = Vector3.one;
-
-            if (detectionCollider == null)
-            {
-                detectionCollider = currentWeaponInstance.GetComponent<BoxCollider>();
-            }
+            detectionCollider = currentWeaponInstance.GetComponent<BoxCollider>();
+            RayDebug.Info($"武器创建成功: 槽位:{slotIndex}, 名称:{weaponName}, 预制体:{prefab.name}");
         }
 
         public void DestroyWeapon()

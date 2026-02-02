@@ -52,18 +52,21 @@ MonoBehaviour:
       Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
     - Name: standAttackCount
       Entry: 3
-      Data: 2
+      Data: 4
     - Name: perfectClipIndex
       Entry: 3
       Data: -1
     - Name: 
       Entry: 8
       Data: 
+  skillId: 0
   skillName: "\u666E\u653B"
   skillIcon: {fileID: 21300000, guid: d36c0b541b0e99e4abccba2c6e568375, type: 3}
   skillIcons:
   - {fileID: 21300000, guid: d36c0b541b0e99e4abccba2c6e568375, type: 3}
   - {fileID: 21300000, guid: 5cceaf70cdf327c47ae8f34b551d1a04, type: 3}
+  - {fileID: 21300000, guid: 3a56dfbbb66fe1c46b2155164cd8142d, type: 3}
+  - {fileID: 21300000, guid: 28b2749fe49b6b745a924df7f95b3150, type: 3}
   skillDescription: 
   skillPointRequired: 0
   maxLv: 0
@@ -73,5 +76,7 @@ MonoBehaviour:
   cdTimeMultiplierPerLv: 0
   attackValueMultiplierPerLv: 0
   Clips:
-  - {fileID: 11400000, guid: 0da3681c99cb87a43bc3d79d3f4f91f0, type: 2}
   - {fileID: 11400000, guid: f3ff73775f8385e4b82bde8c0c170216, type: 2}
+  - {fileID: 11400000, guid: 0da3681c99cb87a43bc3d79d3f4f91f0, type: 2}
+  - {fileID: 11400000, guid: e83fdde01e7a14e459ca19f4982a9bf9, type: 2}
+  - {fileID: 11400000, guid: 4433e31bf537dbb45b1ca0933fc28fd9, type: 2}

@@ -10,8 +10,8 @@ namespace Scene
     {
         #region Test
 
-        [LabelText("测试（使用已有存档）")] public bool isTest;
         [LabelText("是否创建新存档")] public bool isCreateArchive;
+        [LabelText("初始角色ID"), ShowIf("isCreateArchive", true)] public int initialCharacterId = 1004;
         [LabelText("是否启用ECS")] public bool isEcs;
         
         #endregion
@@ -20,16 +20,9 @@ namespace Scene
         {
             #region 测试逻辑
 
-            if (isTest)
+            if (isCreateArchive)
             {
-                if (isCreateArchive)
-                {
-                    DataManager.CreateArchive();
-                }
-                else
-                {
-                    DataManager.LoadCurrentArchive();
-                }
+                DataManager.CreateArchive(initialCharacterId);
             }
             else
             {
@@ -42,7 +35,7 @@ namespace Scene
                 {
                     // 没有存档，创建新存档（默认角色ID 1001）
                     JKLog.Warning("[GameSceneManager] 未找到存档，创建新存档...");
-                    DataManager.CreateArchive(1001);
+                    DataManager.CreateArchive(initialCharacterId);
                 }
             }
 

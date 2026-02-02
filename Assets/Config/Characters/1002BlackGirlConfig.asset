@@ -1,0 +1,219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbefa9577bdc45ffacaa5252340c96bd, type: 3}
+  m_Name: 1002BlackGirlConfig
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: -5416651000045457355, guid: bce44f2ab64e1c847b2ade1020ec6a3b, type: 3}
+    - {fileID: 1302449537258542769, guid: 14a26ff857b56a744a7166493c9043a4, type: 3}
+    - {fileID: 1652673175506064298, guid: c5ac01c5546a68e4b86d02db7c1f3d7d, type: 3}
+    - {fileID: 9100695029693891758, guid: ff45e2f7feac7a14ea70de6c61d761e2, type: 3}
+    - {fileID: 7400000, guid: 1cc3f503950140e4f8bdddf105b56fa1, type: 2}
+    - {fileID: -6391507843539069141, guid: 7ee5c96c589ffbf42bdce64b05900e8f, type: 3}
+    - {fileID: -2117726480509187388, guid: 0fec1621a108fae48a102df9c540de19, type: 3}
+    - {fileID: -7183126782386793838, guid: 98f68fc3bf0ac5342af704dca9cd3a2f, type: 3}
+    - {fileID: -5643612920955861, guid: 4fde6d9a7b45dd5449bcc216fe95f319, type: 3}
+    - {fileID: 929909973302792849, guid: 02c9f703062e6094ba4eacd4b34df0b5, type: 3}
+    - {fileID: 959511169626303400, guid: e0e95bef442702845b14ec423317f978, type: 3}
+    - {fileID: -4249728386255404415, guid: 3687658fe0d9a9a47a9deec4ae83aee9, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: StandAnimationDict
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.AnimationClip,
+        UnityEngine.AnimationModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 12
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: idle
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: walkStart
+    - Name: $v
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: walk
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: runStart
+    - Name: $v
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: run
+    - Name: $v
+      Entry: 10
+      Data: 4
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: runEnd
+    - Name: $v
+      Entry: 10
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: idlePose
+    - Name: $v
+      Entry: 10
+      Data: 6
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: walkEnd
+    - Name: $v
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: jumpStart
+    - Name: $v
+      Entry: 10
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: jumpLoop
+    - Name: $v
+      Entry: 10
+      Data: 9
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: jumpEnd
+    - Name: $v
+      Entry: 10
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: jumpEndHeavy
+    - Name: $v
+      Entry: 10
+      Data: 11
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  WalkSpeed: 1
+  RunSpeed: 2
+  Walk2RunTransitionSpeed: 1
+  RotateSpeed: 10
+  ApplyRootMotionForMove: 1
+  FootStepAudioClips:
+  - {fileID: 8300000, guid: f7730f403e3ed3848a39f5f4d41c30a8, type: 3}
+  - {fileID: 8300000, guid: c5212058eaf72594dbb061ac4573773b, type: 3}
+  - {fileID: 8300000, guid: 86702437b42009f4cb99665589097259, type: 3}
+  - {fileID: 8300000, guid: 4ee907eac4eaccb4b9328c2a2f883611, type: 3}
+  - {fileID: 8300000, guid: 5f6dd6c17f242864b83034274b22538b, type: 3}
+  - {fileID: 8300000, guid: 4eff82364e96cea4eb338f0eafb58acf, type: 3}
+  - {fileID: 8300000, guid: 184750abe7d233e4db4a922f4f3300b1, type: 3}
+  - {fileID: 8300000, guid: 9e6d1d31261ce234dab29108ebe2ff8e, type: 3}
+  - {fileID: 8300000, guid: 4148ff86046dcce4dbf204f482831839, type: 3}
+  - {fileID: 8300000, guid: eaadf3de69efd9b4884f98b04e496220, type: 3}
+  SkillConfigList: []
+  hpBaseValue: 1000
+  mpBaseValue: 500
+  attackBaseValue: 100
