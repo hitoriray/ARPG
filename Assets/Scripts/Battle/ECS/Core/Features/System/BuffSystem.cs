@@ -111,20 +111,6 @@ namespace Battle.ECS.System
                     return;
                 }
 
-                if (buff.Config.periodicEffect != null && buff.Config.tickInterval > 0)
-                {
-                    buff.TickTimer -= DeltaTime;
-                    if (buff.TickTimer <= FP.Zero)
-                    {
-                        buff.TickTimer += (FP)buff.Config.tickInterval;
-                        ref var logicProcess = ref entity.TryGetRef<LogicProcess>(out var hasLogicProcess);
-                        if (hasLogicProcess)
-                        {
-                            ((BuffProcess)logicProcess.Value)?.OnTick(entity);
-                        }
-                    }
-                }
-
                 // 根据叠加模式更新时间
                 int removedCount = 0;
                 switch (buffProperty.StackMode)

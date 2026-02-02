@@ -95,7 +95,7 @@ namespace Battle.ECS
                 MaxHp = (FP)playerAttr.maxHp.Total,
                 MaxMp = (FP)playerAttr.maxMp.Total,
             };
-            var health = new Health((FP)playerAttr.currentHp, (FP)playerAttr.currentMp);
+            var health = new Health((FP)playerAttr.currentHp, (FP)playerAttr.currentHp);
             if (_playerEntity.IsAlive() == false)
             {
                 _playerEntity = Context.World.Create(

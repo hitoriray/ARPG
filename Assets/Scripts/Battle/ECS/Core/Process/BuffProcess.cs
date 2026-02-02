@@ -29,7 +29,7 @@ namespace Battle.ECS.Core.Process
             var config = buff.Config;
             if (config.startEffect != null)
             {
-                ExecuteEffect(buffEntity, config.startEffect);
+                ExecuteEffect(nameof(OnCreate), buffEntity, config.startEffect);
             }
 
             Debug.Log($"[BuffProcess] Buff创建: {config.buffName} (ID:{config.buffId})");
@@ -74,7 +74,7 @@ namespace Battle.ECS.Core.Process
                 int stackCount = buffStack.Value.Count;
                 for (int i = 0; i < stackCount; i++)
                 {
-                    ExecuteEffect(buffEntity, config.periodicEffect);
+                    ExecuteEffect(nameof(OnTick), buffEntity, config.periodicEffect);
                 }
                 Debug.Log($"[{nameof(BuffProcess)}] {nameof(OnTick)}: {config.buffName} x{stackCount}层");
             }
@@ -93,7 +93,7 @@ namespace Battle.ECS.Core.Process
             // 执行结束效果
             if (config.endEffect != null)
             {
-                ExecuteEffect(buffEntity, config.endEffect);
+                ExecuteEffect(nameof(OnDeath), buffEntity, config.endEffect);
             }
 
             // 从目标的BuffList中移除
@@ -121,7 +121,7 @@ namespace Battle.ECS.Core.Process
         /// <summary>
         /// 执行效果（兼容旧系统）
         /// </summary>
-        private void ExecuteEffect(Entity buffEntity, BuffEffectDataBase effectData)
+        private void ExecuteEffect(string track, Entity buffEntity, BuffEffectDataBase effectData)
         {
             ref var buff = ref buffEntity.Get<Buff>();
             var target = buff.Target;
@@ -131,11 +131,11 @@ namespace Battle.ECS.Core.Process
             if (effectData is SimpleBuffEffectData simpleEffect)
             {
                 FP value = (FP)simpleEffect.value;
-                ref var buffStack = ref buff.Target.TryGetRef<BuffStack>(out var hasBuffStack);
+                ref var buffStack = ref buffEntity.TryGetRef<BuffStack>(out var hasBuffStack);
                 if (hasBuffStack == false)
                     return;
-                
                 int stackCount = buffStack.Value.Count;
+                Debug.Log($"{track ?? nameof(ExecuteEffect)}: buffType={simpleEffect.type}, value={simpleEffect.value}, stackCount={stackCount}");
                 switch (simpleEffect.type)
                 {
                     case BuffEffectType.Hp:

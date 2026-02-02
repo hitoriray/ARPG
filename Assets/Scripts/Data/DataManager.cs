@@ -9,17 +9,23 @@ namespace Data
     /// </summary>
     public static class DataManager
     {
-        static DataManager()
-        {
-            LoadArchive();
-        }
+        // static DataManager() { } // 移除静态构造函数，避免初始化顺序问题
 
-        public static bool HasArchive { get; private set; }
+        private static bool? _hasArchive;
+        public static bool HasArchive 
+        { 
+            get 
+            {
+                if (_hasArchive == null) LoadArchive();
+                return _hasArchive.Value;
+            }
+            private set => _hasArchive = value;
+        }
 
         private static void LoadArchive()
         {
             var saveItem = SaveSystem.GetSaveItem(0);
-            HasArchive = saveItem != null;
+            _hasArchive = saveItem != null;
         }
 
         /// <summary>
@@ -32,6 +38,7 @@ namespace Data
                 SaveSystem.DeleteAllSaveItem();
             }
             SaveSystem.CreateSaveItem();
+            _hasArchive = true; // 手动更新状态
             
             // 初始化角色外观数据
             // InitCustomCharacterData();

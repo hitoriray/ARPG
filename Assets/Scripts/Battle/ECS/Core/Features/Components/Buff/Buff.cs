@@ -15,8 +15,6 @@ namespace Battle.ECS.Component
         public Entity Target; // 目标实体
         public Entity Vfx; // 特效实体
         
-        public FP TickTimer;
-        
         public Buff(BuffConfig config, Entity caster)
         {
             ID = config.buffId;
@@ -24,7 +22,6 @@ namespace Battle.ECS.Component
             Caster = caster;
             Target = Entity.Null;
             Vfx = Entity.Null;
-            TickTimer = (FP)config.tickInterval;
         }
     }
 }

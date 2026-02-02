@@ -203,6 +203,9 @@ namespace JKFrame
         /// </summary>
         public static SaveItem GetSaveItem(int id)
         {
+            if (saveSystemData == null) Init();
+            if (saveSystemData == null) return null; // 再次检查防止Init失败后崩溃
+
             for (int i = 0; i < saveSystemData.saveItemList.Count; i++)
             {
                 if (saveSystemData.saveItemList[i].saveID == id)
