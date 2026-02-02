@@ -259,11 +259,11 @@ public class AnimationRootMotionFixer : EditorWindow
 
             if (sourceClip == null)
             {
-                Debug.LogWarning($"[跳过] 未在 {fbxPath} 中找到动画片段");
+                RayDebug.Warn($"[跳过] 未在 {fbxPath} 中找到动画片段");
                 return false;
             }
 
-            Debug.Log($"[处理] {sourceClip.name} (长度: {sourceClip.length:F2}s, 帧率: {sourceClip.frameRate})");
+            RayDebug.Log($"[处理] {sourceClip.name} (长度: {sourceClip.length:F2}s, 帧率: {sourceClip.frameRate})");
 
             // 创建新的动画片段
             AnimationClip newClip = new AnimationClip();
@@ -297,7 +297,7 @@ public class AnimationRootMotionFixer : EditorWindow
             // 检查是否找到了 Bip001 的位移数据
             if (bip001PosX == null && bip001PosZ == null)
             {
-                Debug.LogWarning($"[跳过] {sourceClip.name} 中未找到 Bip001 的位移数据");
+                RayDebug.Warn($"[跳过] {sourceClip.name} 中未找到 Bip001 的位移数据");
                 return false;
             }
 
@@ -312,7 +312,7 @@ public class AnimationRootMotionFixer : EditorWindow
                 totalDisplacement = Vector2.Distance(new Vector2(startX, startZ), new Vector2(endX, endZ));
             }
 
-            Debug.Log($"  → Bip001 总位移: {totalDisplacement:F3} 米");
+            RayDebug.Log($"  → Bip001 总位移: {totalDisplacement:F3} 米");
 
             // 第二遍：复制曲线并转换
             foreach (EditorCurveBinding binding in bindings)
@@ -411,14 +411,14 @@ public class AnimationRootMotionFixer : EditorWindow
             AssetDatabase.CreateAsset(newClip, savePath);
 
             string action = isOverwrite ? "覆盖" : "新建";
-            Debug.Log($"  ✓ 成功修复 ({action}): {savePath}\n" +
-                      $"     根节点位移: X={bip001PosX != null}, Y={includeYAxis && bip001PosY != null}, Z={bip001PosZ != null}\n" +
-                      $"     Bip001 保留 Y 轴: {preserveBip001Y}");
+            RayDebug.Log($"  ✓ 成功修复 ({action}): {savePath}\n" +
+                         $"     根节点位移: X={bip001PosX != null}, Y={includeYAxis && bip001PosY != null}, Z={bip001PosZ != null}\n" +
+                         $"     Bip001 保留 Y 轴: {preserveBip001Y}");
             return true;
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"处理 {fbxPath} 时出错: {e.Message}");
+            RayDebug.Error($"处理 {fbxPath} 时出错: {e.Message}");
             return false;
         }
     }
@@ -442,7 +442,7 @@ public class AnimationRootMotionFixer : EditorWindow
         }
 
         // 如果不在项目目录内，返回原路径
-        Debug.LogWarning($"选择的路径不在 Unity 项目内: {absolutePath}");
+        RayDebug.Warn($"选择的路径不在 Unity 项目内: {absolutePath}");
         return absolutePath;
     }
 }

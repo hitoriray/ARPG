@@ -127,7 +127,7 @@ namespace Editor.BattleDebug.Pages
                         new Battle.ECS.Component.Position((TSVector3)pos)
                     );
                 }
-                Debug.Log($"[BattleDebug] 创建了 {_spawnCount} 个测试实体");
+                RayDebug.Log($"[BattleDebug] 创建了 {_spawnCount} 个测试实体");
             }
             
             if (GUILayout.Button("在玩家位置创建", GUILayout.Height(30)))
@@ -171,7 +171,7 @@ namespace Editor.BattleDebug.Pages
                 if (EditorUtility.DisplayDialog("警告", "确定要清空所有实体吗？此操作不可撤销！", "确定", "取消"))
                 {
                     context.World?.Clear();
-                    Debug.Log("[BattleDebug] 已清空所有实体");
+                    RayDebug.Log("[BattleDebug] 已清空所有实体");
                 }
             }
             GUI.backgroundColor = Color.white;

@@ -10,11 +10,22 @@ namespace Skill
 {
     public class WeaponController : MonoBehaviour
     {
+        [LabelText("槽位索引")]
+        [SerializeField]
+        private int slotIndex;
+        public int SlotIndex => slotIndex;
+
         [ValueDropdown("GetWeaponNameList")]
-        [SerializeField] 
+        [SerializeField]
         [LabelText("当前选择武器")]
         private string weaponName;
         public string WeaponName => weaponName;
+
+        [LabelText("武器预制体")]
+        [SerializeField]
+        private GameObject weaponPrefab;
+        public GameObject WeaponPrefab => weaponPrefab;
+
         [SerializeField] private Collider detectionCollider;
         private LayerMask detectionLayerMask;
         private Action<IHitTarget, AttackData> onDetection;
@@ -22,16 +33,22 @@ namespace Skill
         private bool isDetecting;
         private readonly HashSet<Collider> hitCache = new(32);
 
+        // 当前生成的武器实例
+        private GameObject currentWeaponInstance;
+        public GameObject CurrentWeaponInstance => currentWeaponInstance;
+
         public void Init(LayerMask detectionLayerMask, Action<IHitTarget, AttackData> onDetection)
         {
             this.detectionLayerMask = detectionLayerMask;
             this.onDetection = onDetection;
-            detectionCollider.enabled = false;
+            if (detectionCollider != null)
+                detectionCollider.enabled = false;
         }
 
         public void StartDetection(AttackData attackData)
         {
-            detectionCollider.enabled = true;
+            if (detectionCollider != null)
+                detectionCollider.enabled = true;
             this.attackData = attackData;
             isDetecting = true;
             hitCache.Clear();
@@ -39,7 +56,8 @@ namespace Skill
 
         public void StopDetection()
         {
-            detectionCollider.enabled = false;
+            if (detectionCollider != null)
+                detectionCollider.enabled = false;
             isDetecting = false;
             hitCache.Clear();
         }
@@ -76,6 +94,40 @@ namespace Skill
                 onDetection?.Invoke(hitTarget, attackData);
             }
         }
+
+        public void CreateWeapon(GameObject customPrefab = null)
+        {
+            DestroyWeapon();
+
+            GameObject prefab = customPrefab != null ? customPrefab : weaponPrefab;
+            if (prefab == null)
+            {
+                RayDebug.Warn($"SlotIndex {slotIndex}: 没有武器预制体可以生成");
+                return;
+            }
+            
+            currentWeaponInstance = Instantiate(prefab, transform);
+            currentWeaponInstance.transform.localPosition = Vector3.zero;
+            currentWeaponInstance.transform.localRotation = Quaternion.identity;
+            currentWeaponInstance.transform.localScale = Vector3.one;
+
+            if (detectionCollider == null)
+            {
+                detectionCollider = currentWeaponInstance.GetComponent<BoxCollider>();
+            }
+        }
+
+        public void DestroyWeapon()
+        {
+            if (currentWeaponInstance != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(currentWeaponInstance);
+                else
+                    DestroyImmediate(currentWeaponInstance);
+                currentWeaponInstance = null;
+            }
+        }
         
         private IEnumerable GetWeaponNameList()
         {
@@ -90,7 +142,7 @@ namespace Skill
             else
             {
                 // 如果没找到，尝试在整个工程搜寻一次，防止路径移动导致失效
-                Debug.LogWarning($"未在指定路径 {configPath} 找到配置表，正在全工程搜索...");
+                RayDebug.Warn($"未在指定路径 {configPath} 找到配置表，正在全工程搜索...");
                 var guids = UnityEditor.AssetDatabase.FindAssets("t:WeaponConfig");
                 if (guids.Length > 0)
                 {

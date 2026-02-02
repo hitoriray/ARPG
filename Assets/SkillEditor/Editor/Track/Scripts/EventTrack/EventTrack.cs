@@ -22,7 +22,7 @@ namespace SkillEditor
 
         private void OnContentRootMouseDown(MouseDownEvent evt)
         {
-            int frameIndex = SkillEditorWindow.Instance.GetFrameIndexByMousePos(evt.localMousePosition.x);
+            int frameIndex = SkillEditorWindow.Instance.GetFrameIndexByPos(evt.localMousePosition.x);
             if (CustomEventData.FrameData.ContainsKey(frameIndex))
                 return;
             // 换位置

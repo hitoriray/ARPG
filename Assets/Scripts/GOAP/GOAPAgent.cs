@@ -40,7 +40,7 @@ namespace GOAP
                     // 优先级为正 且 可以基于这个目标生成计划
                     if (item.Value.Priority > 0 && GeneratePlan(item.Key, out GOAPPlanNode targetNode))
                     {
-                        Debug.Log($"任务构建成功:{item.Key}");
+                        RayDebug.Log($"任务构建成功:{item.Key}");
                         RunPlan(item.Key, targetNode);
                         break;
                     }
@@ -60,7 +60,7 @@ namespace GOAP
                             && item.Value.Priority > currentGoal.Priority
                             && GeneratePlan(item.Key, out GOAPPlanNode targetNode))
                         {
-                            Debug.Log("目标被替换为优先级更高的，并构建计划成功:" + item.Key);
+                            RayDebug.Log("目标被替换为优先级更高的，并构建计划成功:" + item.Key);
                             StopPlan();
                             RunPlan(item.Key, targetNode);
                         }

@@ -64,7 +64,7 @@ namespace Battle.ECS.System
                         attackValue = attackValue,
                         hitPoint = hitPoint
                     };
-                    Debug.Log($"由Ecs触发Shape命中检测:{col.name}");
+                    RayDebug.Log($"由Ecs触发Shape命中检测:{col.name}");
                     req.Behaviour.OnAttackDetection(hitTarget, attackData);
                 }
                 

@@ -20,7 +20,6 @@ namespace Battle.ECS.Component
         public void Update(FP deltaTime)
         {
             Delay -= deltaTime;
-            Debug.Log(Delay);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

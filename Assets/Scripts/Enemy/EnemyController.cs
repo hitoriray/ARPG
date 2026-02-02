@@ -1,4 +1,5 @@
 ﻿using Config;
+using Manager;
 using Player.Animation;
 using Skill;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Enemy
     {
         public void OnHit(AttackData attackData)
         {
-            Debug.Log($"敌人被命中: {attackData.attackValue}");
+            RayDebug.Log($"敌人被命中: {attackData.attackValue}");
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)
@@ -25,6 +26,14 @@ namespace Enemy
         public void AddBuff(BuffConfig buffConfig, int stack)
         {
             
+        }
+        
+        public void CreateWeapon(int slotIndex, GameObject weaponPrefab)
+        {
+        }
+
+        public void DestroyWeapon(int slotIndex)
+        {
         }
 
         public void Change2IdleState()

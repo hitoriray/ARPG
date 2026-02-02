@@ -91,7 +91,6 @@ namespace SkillEditor
             }
             trackItem.EffectEvent.Duration = (int)(maxDuration * SkillEditorWindow.Instance.SkillClip.FrameRate);
             effectDurationField.value = trackItem.EffectEvent.Duration;
-            // TODO：删掉下面这一行
             trackItem.ResetView();
         }
 

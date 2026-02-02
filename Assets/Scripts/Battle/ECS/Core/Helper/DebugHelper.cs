@@ -47,7 +47,7 @@ namespace Battle.ECS.Core.Helper
         [Conditional("BATTLE_DEBUG_LOG")]
         public static void Log(string message)
         {
-            Debug.Log($"[BattleDebug] {message}");
+            RayDebug.Log($"[BattleDebug] {message}");
         }
     }
 }

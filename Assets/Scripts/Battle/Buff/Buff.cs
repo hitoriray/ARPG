@@ -30,7 +30,7 @@ namespace BuffSystem
             destroyTimer = config.duration;
             periodicTimer = config.tickInterval;
             onStart?.Invoke(this);
-            Debug.Log("onStart生效一次");
+            RayDebug.Log("onStart生效一次");
         }
 
         public void OnUpdate()
@@ -60,7 +60,7 @@ namespace BuffSystem
                 else
                 {
                     onEnd?.Invoke(this);
-                    Debug.Log("onEnd生效一次");
+                    RayDebug.Log("onEnd生效一次");
                 }
             }
             else

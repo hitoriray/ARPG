@@ -185,7 +185,7 @@ namespace Editor.BattleDebug
             catch (System.Exception e)
             {
                 LogMessage($"✗ 错误: {e.Message}");
-                Debug.LogError($"[BuffDebug] 添加Buff失败: {e}");
+                RayDebug.Error($"[BuffDebug] 添加Buff失败: {e}");
             }
         }
 
@@ -220,7 +220,7 @@ namespace Editor.BattleDebug
             catch (System.Exception e)
             {
                 LogMessage($"✗ 错误: {e.Message}");
-                Debug.LogError($"[BuffDebug] 清除Buff失败: {e}");
+                RayDebug.Error($"[BuffDebug] 清除Buff失败: {e}");
             }
         }
 

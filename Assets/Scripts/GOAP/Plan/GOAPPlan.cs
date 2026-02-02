@@ -50,7 +50,7 @@ namespace GOAP.Plan
                 // 如果完成的是 root 根节点，代表计划完成
                 if (runningNode == root)
                 {
-                    Debug.Log("任务全部完成！");
+                    RayDebug.Log("任务全部完成！");
                     Stop();
                     return;
                 }

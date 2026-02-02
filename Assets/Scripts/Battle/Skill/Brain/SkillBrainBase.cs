@@ -92,7 +92,7 @@ namespace Skill
         /// </summary>
         public virtual void ApplyCost(SkillCostType costType, float costValue)
         {
-            Debug.Log($"释放技能的代价：类型:{costType}，需求量:{costValue}");
+            RayDebug.Log($"释放技能的代价：类型:{costType}，需求量:{costValue}");
             // TODO：和上一层对接，（如PlayerController）
         }
         

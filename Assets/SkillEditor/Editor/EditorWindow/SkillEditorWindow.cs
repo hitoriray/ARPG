@@ -122,7 +122,7 @@ namespace SkillEditor
             var topMenu = root.Q<VisualElement>("Top");
             if (topMenu == null)
             {
-                Debug.LogError("Top Menu not found in UXML.");
+                RayDebug.Error("Top Menu not found in UXML.");
                 return;
             }
 

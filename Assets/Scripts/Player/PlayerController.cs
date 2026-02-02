@@ -7,6 +7,7 @@ using Config;
 using Data;
 using GOAP;
 using JKFrame;
+using Manager;
 using Player.Animation;
 using Skill;
 using Player.State;
@@ -22,6 +23,7 @@ namespace Player
         [SerializeField] private CharacterController characterController;
         [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
+        [SerializeField] private WeaponSlotManager weaponSlotManager;
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
@@ -59,7 +61,7 @@ namespace Player
             if (context != null)
             {
                 PlayerEntity = BattleEcsRunner.Instance.RegisterPlayer(this);
-                Debug.Log($"[{nameof(PlayerController)}] ECS实体已创建: {PlayerEntity.Id}");
+                RayDebug.Log($"ECS实体已创建: Entity ID = {PlayerEntity.Id}");
             }
         }
 
@@ -132,10 +134,20 @@ namespace Player
         {
             buffController.AddBuff(buffConfig, stack);
         }
-        
+
+        public void CreateWeapon(int slotIndex, GameObject weaponPrefab)
+        {
+            weaponSlotManager.CreateWeapon(slotIndex, weaponPrefab);
+        }
+
+        public void DestroyWeapon(int slotIndex)
+        {
+            weaponSlotManager.DestroyWeapon(slotIndex);
+        }
+
         public void OnHit(AttackData attackData)
         {
-            Debug.Log("玩家被命中！");
+            RayDebug.Log("玩家被命中！");
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)

@@ -64,7 +64,7 @@ namespace Skill.Behaviour
                 {
                     cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
                     if (IsInteger(cdTimer))
-                        Debug.Log($"播放状态：技能处于最后一段，已经在计算CD中:{cdTimer}/{GetCdTime()}");
+                        RayDebug.Log($"播放状态：技能处于最后一段，已经在计算CD中:{cdTimer}/{GetCdTime()}");
                 }
                 // 播放状态:技能没有处于最后一段的技能，不计算任何CD
             }
@@ -81,19 +81,19 @@ namespace Skill.Behaviour
                     {
                         cdTimer = GetCdTime();
                         attackIndex = -1;
-                        Debug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
+                        RayDebug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
                     }
                     // 技能没有播放完某一段，正在计算内部CD
                     else
                     {
                         if (IsInteger(cdTimer))
-                            Debug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
+                            RayDebug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
                     }
                 }
                 else
                 {
                     if (cdTimer > 0 && IsInteger(cdTimer))
-                        Debug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
+                        RayDebug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
                 }
             }
 

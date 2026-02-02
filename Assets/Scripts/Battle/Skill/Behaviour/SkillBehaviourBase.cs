@@ -194,21 +194,26 @@ namespace Skill.Behaviour
         
         public virtual void AfterSkillCustomEvent(SkillCustomEvent evt)
         {
-            if (evt.EventType == SkillEventType.CanSkillRelease)
+            switch (evt.EventType)
             {
-                skillBrain.SetCanReleaseFlag(true);
-            }
-            else if (evt.EventType == SkillEventType.CanRotate)
-            {
-                canRotate = true;
-            }
-            else if (evt.EventType == SkillEventType.CannotRotate)
-            {
-                canRotate = false;
-            }
-            else if (evt.EventType == SkillEventType.AddBuff)
-            {
-                owner.AddBuff((BuffConfig)evt.ObjectArg, evt.IntArg);
+                case SkillEventType.CanSkillRelease:
+                    skillBrain.SetCanReleaseFlag(true);
+                    break;
+                case SkillEventType.CanRotate:
+                    canRotate = true;
+                    break;
+                case SkillEventType.CannotRotate:
+                    canRotate = false;
+                    break;
+                case SkillEventType.AddBuff:
+                    owner.AddBuff((BuffConfig)evt.ObjectArg, evt.IntArg);
+                    break;
+                case SkillEventType.CreateWeapon:
+                    owner.CreateWeapon(evt.IntArg, evt.ObjectArg as GameObject);
+                    break;
+                case SkillEventType.DestroyWeapon:
+                    owner.DestroyWeapon(evt.IntArg);
+                    break;
             }
         }
 
@@ -249,7 +254,7 @@ namespace Skill.Behaviour
                     }
                     if (!success)
                     {
-                        Debug.Log("由Mono生成命中特效");
+                        RayDebug.Log("由Mono生成命中特效");
                         var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
                         effect.transform.position = attackData.hitPoint;
                         if (Camera.main != null)

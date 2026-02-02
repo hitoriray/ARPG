@@ -55,6 +55,7 @@ MonoBehaviour:
   characterController: {fileID: 5647307152969126735}
   buffController: {fileID: 8587164493213867897}
   characterAttribute: {fileID: 6774350916955439809}
+  weaponSlotManager: {fileID: 0}
 --- !u!114 &5647307152969126734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,19 +90,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 1
-      Data: Weapon1
-    - Name: $v
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+      Data: 0
     - Name: 
       Entry: 13
       Data: 

@@ -5,7 +5,6 @@ using JKFrame;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using JKLog = JK.Log.JKLog;
 
 namespace Manager
 {
@@ -41,7 +40,7 @@ namespace Manager
             var entry = _characterTable.GetCharacterById(characterId);
             if (entry == null)
             {
-                JKLog.Error($"[{nameof(CharacterModelManager)}] 角色ID {characterId} 不存在于配置表中！");
+                RayDebug.Error($"[{nameof(CharacterModelManager)}] 角色ID {characterId} 不存在于配置表中！");
                 return null;
             }
             
@@ -51,12 +50,12 @@ namespace Manager
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 _loadedPrefabs[characterId] = handle;
-                JKLog.Log($"[{nameof(CharacterModelManager)}] 成功加载角色模型预制体: {entry.CharacterName} (ID: {characterId})");    
+                RayDebug.Log($"成功加载角色模型预制体: {entry.CharacterName} (ID: {characterId})");    
                 return handle.Result;
             }
             else
             {
-                JKLog.Error($"[{nameof(CharacterModelManager)}] 加载角色模型预制体失败: {entry.CharacterName} (ID: {characterId})");   
+                RayDebug.Error($"加载角色模型预制体失败: {entry.CharacterName} (ID: {characterId})");   
                 return null;
             }
         }
@@ -75,7 +74,7 @@ namespace Manager
             var entry = _characterTable.GetCharacterById(characterId);
             if (entry == null)
             {
-                JKLog.Error($"[{nameof(CharacterModelManager)}] 角色ID {characterId} 不存在于配置表中！");
+                RayDebug.Error($"角色ID {characterId} 不存在于配置表中！");
                 return null;
             }
 
@@ -86,12 +85,12 @@ namespace Manager
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 _loadedConfigs[characterId] = handle;
-                JKLog.Log($"[{nameof(CharacterModelManager)}] 成功加载角色配置: {entry.CharacterName} (ID: {characterId})");      
+                RayDebug.Info($"成功加载角色配置: {entry.CharacterName} (ID: {characterId})");
                 return handle.Result;
             }
             else
             {
-                JKLog.Error($"[{nameof(CharacterModelManager)}] 加载角色配置失败: {entry.CharacterName} (ID: {characterId})");     
+                RayDebug.Error($"加载角色配置失败: {entry.CharacterName} (ID: {characterId})");
                 return null;
             }
         }
@@ -121,7 +120,7 @@ namespace Manager
             newModel.name = modelParentName;
 
             var entry = _characterTable.GetCharacterById(characterId);
-            JKLog.Log($"[{nameof(CharacterModelManager)}] 已为Player替换外观: {entry.CharacterName}");
+            RayDebug.Log($"已为Player替换外观: {entry.CharacterName}");
 
             return newModel;
         }
@@ -147,7 +146,7 @@ namespace Manager
                 _loadedConfigs.Remove(characterId);
             }
 
-            JKLog.Log($"[{nameof(CharacterModelManager)}] 已卸载角色ID {characterId} 的资源");
+            RayDebug.Log($"已卸载角色ID {characterId} 的资源");
         }
         
         /// <summary>
@@ -173,7 +172,7 @@ namespace Manager
             }
             _loadedConfigs.Clear();
 
-            JKLog.Log($"[{nameof(CharacterModelManager)}] 已卸载所有角色资源");
+            RayDebug.Log($"已卸载所有角色资源");
         }
         
         #endregion

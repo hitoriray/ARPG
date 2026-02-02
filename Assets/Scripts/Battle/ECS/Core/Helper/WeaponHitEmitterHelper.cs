@@ -11,7 +11,7 @@ namespace Battle.ECS.Core.Helper
             if (behaviour == null || target == null)
                 return false;
 
-            Debug.Log($"[{nameof(WeaponHitEmitterHelper)}]: 由Ecs发射{nameof(WeaponDetectionRequest)}");
+            RayDebug.Log($"[{nameof(WeaponHitEmitterHelper)}]: 由Ecs发射{nameof(WeaponDetectionRequest)}");
             BattleEcsRunner.Instance.Context.World.Create(
                 new WeaponDetectionRequest()
                 {

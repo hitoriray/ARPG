@@ -63,7 +63,7 @@ namespace Battle.ECS.System
         {
             if (vfxData.Prefab == null) return;
 
-            Debug.Log($"[{nameof(VfxSpawnSystem)}]: 创建特效vfx: {vfxData.Prefab.name}");
+            RayDebug.Log($"创建特效vfx: {vfxData.Prefab.name}");
             // Prewarm(vfxData.Prefab);
             var go = ProjectUtility.GetOrInstantiateGameObject(vfxData.Prefab, null);
             if (go == null) return;

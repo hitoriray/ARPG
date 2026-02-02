@@ -62,7 +62,7 @@ namespace Skill
                 bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
                 if (ok) return;
             }
-            Debug.Log("由Mono触发WeaponDetection");
+            RayDebug.Log("由Mono触发WeaponDetection");
             skillBehaviour.OnAttackDetection(other, attackData);
         }
 
@@ -208,7 +208,7 @@ namespace Skill
                         }
                         if (!success)
                         {
-                            Debug.Log("由Mono生成技能特效");
+                            RayDebug.Log("由Mono生成技能特效");
                             var effectObj = PoolSystem.GetGameObject(effectEvent.Prefab.name);
                             if (effectObj == null)
                             {
@@ -270,7 +270,7 @@ namespace Skill
                             }
                             else
                             {
-                                Debug.LogError($"没有指定的武器: {weaponDetectionData.WeaponName}");
+                                RayDebug.Error($"没有指定的武器: {weaponDetectionData.WeaponName}");
                             }
                         }
 
@@ -284,7 +284,7 @@ namespace Skill
                             }
                             else
                             {
-                                Debug.LogError("没有指定的武器");
+                                RayDebug.Error("没有指定的武器");
                             }
                         }
                     }
@@ -302,7 +302,7 @@ namespace Skill
                             }
                             if (!success)
                             {
-                                Debug.Log("由Mono触发ShapeDetection");
+                                RayDebug.Log("由Mono触发ShapeDetection");
                                 var colliders = SkillAttackDetectionHelper.ShapeDetection(modelTransform,
                                     detectionEvent.AttackDetectionData, detectionType, attackDetectionLayer);
                                 if (colliders == null)

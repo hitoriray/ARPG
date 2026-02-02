@@ -29,7 +29,7 @@ namespace Battle.ECS.System
                 if (req.Behaviour == null || req.Target == null)
                     return;
                 // TODO：先走原逻辑
-                Debug.Log($"[{nameof(WeaponDetectionSystem)}] 触发武器命中检测: {req.Target.GetType().Name}");
+                RayDebug.Log($"触发武器命中检测: {req.Target.GetType().Name}");
                 req.Behaviour.OnAttackDetection(req.Target, req.AttackData);
                 entity.TryAdd(new Death());
             }

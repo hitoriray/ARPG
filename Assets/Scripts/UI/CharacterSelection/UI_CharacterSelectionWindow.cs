@@ -66,7 +66,7 @@ namespace UI
             _characterTable = ResSystem.LoadAsset<CharacterTable>("CharacterTable");
             if (_characterTable == null)
             {
-                Debug.LogError($"[{nameof(UI_CharacterSelectionWindow)}] 无法加载CharacterTable！");
+                RayDebug.Error($"无法加载CharacterTable！");
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace UI
             _selectableCharacters = _characterTable.Characters.FindAll(c => c.IsPlayable);
             if (_selectableCharacters.Count == 0)
             {
-                Debug.LogError($"[{nameof(UI_CharacterSelectionWindow)}] 没有可选角色！");
+                RayDebug.Error($"没有可选角色！");
                 return;
             }
 
@@ -203,7 +203,7 @@ namespace UI
         /// </summary>
         private async UniTaskVoid LoadCharacterPreview(int characterId)
         {
-            Debug.Log($"[{nameof(UI_CharacterSelectionWindow)}] {nameof(LoadCharacterPreview)} 被调用，CharacterID={characterId}");
+            RayDebug.Log($"{nameof(LoadCharacterPreview)} 被调用，CharacterID={characterId}");
 
             _selectedCharacterId = characterId;
 

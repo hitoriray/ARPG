@@ -20,13 +20,13 @@ namespace Battle.ECS.Examples
         {
             if (!targetEntity.IsAlive())
             {
-                Debug.LogError($"[BuffDebug] {tag} 实体无效");
+                RayDebug.Error($"{tag} 实体无效");
                 return;
             }
 
             if (!targetEntity.Has<BuffList>())
             {
-                Debug.Log($"[BuffDebug] {tag} 实体没有任何Buff");
+                RayDebug.Log($"{tag} 实体没有任何Buff");
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace Battle.ECS.Examples
             }
 
             sb.AppendLine($"======================================");
-            Debug.Log(sb.ToString());
+            RayDebug.Log(sb.ToString());
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Battle.ECS.Examples
         {
             if (!targetEntity.IsAlive())
             {
-                Debug.LogError($"[BuffDebug] {tag} 实体无效");
+                RayDebug.Error($"{tag} 实体无效");
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace Battle.ECS.Examples
             }
 
             sb.AppendLine($"======================================");
-            Debug.Log(sb.ToString());
+            RayDebug.Log(sb.ToString());
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Battle.ECS.Examples
         {
             if (config == null)
             {
-                Debug.LogError("[BuffDebug] BuffConfig为空");
+                RayDebug.Error("BuffConfig为空");
                 return;
             }
 
@@ -174,7 +174,7 @@ namespace Battle.ECS.Examples
             }
 
             sb.AppendLine($"======================================");
-            Debug.Log(sb.ToString());
+            RayDebug.Log(sb.ToString());
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace Battle.ECS.Examples
             // 检测变化
             if (currentCount != lastBuffCount || currentSnapshot != lastBuffSnapshot)
             {
-                Debug.Log($"[BuffMonitor] Buff变化: {lastBuffSnapshot} → {currentSnapshot}");
+                RayDebug.Log($"[BuffMonitor] Buff变化: {lastBuffSnapshot} → {currentSnapshot}");
                 lastBuffCount = currentCount;
                 lastBuffSnapshot = currentSnapshot;
             }
