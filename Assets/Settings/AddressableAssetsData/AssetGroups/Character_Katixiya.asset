@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Character_Katixiya
+  m_EditorClassIdentifier: 
+  m_GroupName: Character_Katixiya
+  m_Data:
+    m_SerializedData: []
+  m_GUID: fc4f2d866cfa6fc4c9d8fde3ec0afc01
+  m_SerializeEntries:
+  - m_GUID: fb202925e51fc024083361751a29fc59
+    m_Address: 1004_Katixiya_Model
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a2e258f713a80a4084819a892efed64
+    m_Address: 1004_Weapon_R
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52b50a48ea6fd7744b8d254a859f0947
+    m_Address: 1004KatixiyaConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 42f6d2c58d9d7634386ce84e8039c737, type: 2}
+    - {fileID: 11400000, guid: c78c81bb04b2d1844853ea8c215f8168, type: 2}

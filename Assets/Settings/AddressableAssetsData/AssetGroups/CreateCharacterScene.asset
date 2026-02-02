@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 2eff8ba1409f9bc44ab564a32b028a8a
   m_SerializeEntries:
-  - m_GUID: 228c433b23c5a274d9826bf93540cc57
-    m_Address: UI_CreateCharacterWindow
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 48b9dcf744efb704295ea826143e9682
     m_Address: UI_CharacterSelectionWindow
     m_ReadOnly: 0
