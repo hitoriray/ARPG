@@ -21,6 +21,13 @@ namespace Editor.BattleDebug
         public static readonly Color SeparatorColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
         public static readonly Color BoxBackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.3f);
         
+        // 阵营颜色
+        public static readonly Color PlayerColor = new Color(0.3f, 0.7f, 1f, 1f);     // 玩家阵营 - 蓝色
+        public static readonly Color EnemyColor = new Color(1f, 0.4f, 0.4f, 1f);      // 敌方阵营 - 红色
+        public static readonly Color NeutralColor = new Color(1f, 0.85f, 0.4f, 1f);   // 中立阵营 - 黄色
+        public static readonly Color BuffColor = new Color(0.5f, 0.9f, 0.5f, 1f);     // Buff - 绿色
+        public static readonly Color ModifierColor = new Color(0.8f, 0.6f, 1f, 1f);   // Modifier - 紫色
+        
         // 图表颜色
         public static readonly Color ChartLineColor = new Color(0.3f, 0.8f, 0.3f, 1f);
         public static readonly Color ChartGridColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);

@@ -19,9 +19,8 @@ namespace Editor.BattleDebug.Pages
         private readonly RealtimeChart _entityChart;
         private readonly RealtimeChart _deltaTimeChart;
         
-        private float _lastUpdateTime;
-        private int _frameCount;
         private float _fps;
+        private float _smoothFps;
         
         public OverviewPage()
         {
@@ -95,13 +94,13 @@ namespace Editor.BattleDebug.Pages
             
             // 更新图表
             _entityChart.AddSample(entityCount);
-            _fpsChart.AddSample(_fps);
+            _fpsChart.AddSample(_smoothFps);
             _deltaTimeChart.AddSample((float)context.LogicTime.DeltaTime * 1000f);
             
             EditorGUILayout.BeginHorizontal();
             BattleDebugStyles.DrawStatCard("实体总数", entityCount.ToString(), BattleDebugStyles.HeaderColor);
             BattleDebugStyles.DrawStatCard("Archetype数", archetypeCount.ToString());
-            BattleDebugStyles.DrawStatCard("FPS", $"{_fps:F0}", _fps < 30 ? BattleDebugStyles.ErrorColor : BattleDebugStyles.SuccessColor);
+            BattleDebugStyles.DrawStatCard("FPS", $"{_smoothFps:F0}", _smoothFps < 30 ? BattleDebugStyles.ErrorColor : BattleDebugStyles.SuccessColor);
             EditorGUILayout.EndHorizontal();
             
             GUILayout.Space(BattleDebugStyles.MediumSpace);
@@ -161,14 +160,12 @@ namespace Editor.BattleDebug.Pages
         
         private void UpdateFPS()
         {
-            _frameCount++;
-            float time = Time.realtimeSinceStartup;
-            
-            if (time - _lastUpdateTime >= 0.5f)
+            // 使用Unity的deltaTime计算实时FPS
+            if (Time.deltaTime > 0)
             {
-                _fps = _frameCount / (time - _lastUpdateTime);
-                _frameCount = 0;
-                _lastUpdateTime = time;
+                _fps = 1f / Time.deltaTime;
+                // 平滑处理，避免抖动太大
+                _smoothFps = Mathf.Lerp(_smoothFps, _fps, 0.1f);
             }
         }
     }
