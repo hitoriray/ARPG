@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536b769e38304b3483cfd523159e7da1, type: 3}
+  m_Name: AnbiSkill2
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ReleaseCostDict
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, Assembly-CSharp],[System.Single,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Config.SkillCostType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 4
+      Data: -100
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Behaviour
+      Entry: 7
+      Data: 2|Skill.Behaviour.AnbiSkill2Behaviour, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+  skillName: "\u6280\u80FD2"
+  skillIcon: {fileID: 21300000, guid: d36c0b541b0e99e4abccba2c6e568375, type: 3}
+  skillIcons:
+  - {fileID: 21300000, guid: 16d0d46fab89616449729ef216887c7f, type: 3}
+  skillDescription: "\u5B89\u6BD4\u7684\u6280\u80FD2\uFF08\u91CA\u653E\u540E\u666E\u653B\u53D8\u4E3A\u7279\u6B8A\u653B\u51FB\uFF09\uFF0CCD:3s"
+  skillPointRequired: 10
+  maxLv: 10
+  canRelease: 1
+  basicCdTime: 3
+  basicAttackValue: 300
+  cdTimeMultiplierPerLv: 0.05
+  attackValueMultiplierPerLv: 0.1
+  Clips:
+  - {fileID: 11400000, guid: fc7055bdf870f1c4e9aa7f1ff931405f, type: 2}

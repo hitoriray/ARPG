@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536b769e38304b3483cfd523159e7da1, type: 3}
+  m_Name: AnbiBasicAttack
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ReleaseCostDict
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, Assembly-CSharp],[System.Single,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Config.SkillCostType,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Behaviour
+      Entry: 7
+      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
+    - Name: standAttackCount
+      Entry: 3
+      Data: 3
+    - Name: perfectClipIndex
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+  skillName: "\u666E\u653B"
+  skillIcon: {fileID: 21300000, guid: 16d0d46fab89616449729ef216887c7f, type: 3}
+  skillDescription: "\u5B89\u6BD4\u7684\u666E\u653B\uFF083\u6BB5+1\u6BB5\u7279\u6B8A\u653B\u51FB\uFF09"
+  skillPointRequired: 10
+  maxLv: 10
+  canRelease: 1
+  basicCdTime: 0
+  basicAttackValue: 100
+  cdTimeMultiplierPerLv: 0
+  attackValueMultiplierPerLv: 0.1
+  Clips:
+  - {fileID: 11400000, guid: dd4bbcdbbb053d74a9a9aaa9a764a5e7, type: 2}
+  - {fileID: 11400000, guid: 38cdfd309f4301d499d65b732c41d17b, type: 2}
+  - {fileID: 11400000, guid: c04c3c0da2a235f4ab48cc3cf3f97677, type: 2}
+  - {fileID: 11400000, guid: 95d8e50186791fc4fb0badb5cdc892da, type: 2}

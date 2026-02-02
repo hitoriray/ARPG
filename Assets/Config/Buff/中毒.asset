@@ -21,42 +21,57 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: AttrModifiers
-      Entry: 6
-      Data: 
-    - Name: startEffect
+    - Name: StartAttrModifiers
       Entry: 7
-      Data: 0|Config.SimpleBuffEffectData, Assembly-CSharp
+      Data: 0|Config.BuffAttrModifier[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Config.BuffAttrModifier, Assembly-CSharp
     - Name: type
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: value
       Entry: 4
-      Data: -5
+      Data: -10
+    - Name: mode
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
-    - Name: periodicEffect
-      Entry: 7
-      Data: 1|Config.SimpleBuffEffectData, Assembly-CSharp
-    - Name: type
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 4
-      Data: -5
+    - Name: 
+      Entry: 13
+      Data: 
     - Name: 
       Entry: 8
       Data: 
-    - Name: endEffect
+    - Name: PeriodicAttrModifier
       Entry: 7
-      Data: 2|Config.SimpleBuffEffectData, Assembly-CSharp
+      Data: 2|Config.BuffAttrModifier[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 3|Config.BuffAttrModifier, Assembly-CSharp
     - Name: type
       Entry: 3
-      Data: 0
+      Data: 3
     - Name: value
       Entry: 4
-      Data: -5
+      Data: -10
+    - Name: mode
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
     - Name: 
       Entry: 8
       Data: 
@@ -71,6 +86,4 @@ MonoBehaviour:
   tickInterval: 1
   tickCount: -1
   speedPctModifier: 0
-  vfxPrefab: {fileID: 8460667080445658512, guid: a3e2c3406e02f2c4ba86cfb1604277bd, type: 3}
-  vfxMountType: 0
   tags: 2
