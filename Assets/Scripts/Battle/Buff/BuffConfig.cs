@@ -33,17 +33,9 @@ namespace Config
         [LabelText("Tick次数（-1无限）")] public int tickCount = -1;
 
         [TitleGroup("属性配置")] 
-        [LabelText("属性修正")] public BuffAttrModifier[] AttrModifiers;
+        [LabelText("Buff创建时属性修正")] public BuffAttrModifier[] StartAttrModifiers;
+        [LabelText("Buff周期属性修正")] public BuffAttrModifier[] PeriodicAttrModifier;
         [LabelText("速度修正百分比")] public int speedPctModifier = 0;
-        
-        [TitleGroup("效果配置")]
-        [LabelText("开始效果")] public BuffEffectDataBase startEffect; // 开始效果
-        [LabelText("周期效果")] public BuffEffectDataBase periodicEffect; // 周期效果
-        [LabelText("结束效果")] public BuffEffectDataBase endEffect; // 结束效果
-        
-        [TitleGroup("特效配置")]
-        [LabelText("特效预制体")] public GameObject vfxPrefab;
-        [LabelText("挂点类型")] public VfxMountType vfxMountType = VfxMountType.Root;
         
         [TitleGroup("标签配置")]
         [LabelText("Buff标签")] public BuffTag tags = BuffTag.None;
@@ -81,23 +73,13 @@ namespace Config
         Mergeable = 1 << 5,  // 可合并
     }
     
-    // 特效挂点类型
-    public enum VfxMountType
-    {
-        Root = 0,       // 根节点
-        Head = 1,       // 头顶
-        Chest = 2,      // 胸部
-        Foot = 3,       // 脚底
-        Overhead = 4,   // 头顶上方
-    }
-    
-    public abstract class BuffEffectDataBase
-    {
-    }
-
-    public class SimpleBuffEffectData : BuffEffectDataBase
-    {
-        [LabelText("类型")] public BuffEffectType type;
-        [LabelText("值")] public float value;
-    }
+    // public abstract class BuffEffectDataBase
+    // {
+    // }
+    //
+    // public class SimpleBuffEffectData : BuffEffectDataBase
+    // {
+    //     [LabelText("类型")] public BuffEffectType type;
+    //     [LabelText("值")] public float value;
+    // }
 }

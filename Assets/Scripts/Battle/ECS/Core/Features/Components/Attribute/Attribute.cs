@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Attribute;
+﻿using System.Collections.Generic;
+using Config;
 using FixMath;
 
 namespace Battle.ECS.Component

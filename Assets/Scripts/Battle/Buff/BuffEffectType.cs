@@ -1,9 +1,9 @@
-namespace Config
-{
-    public enum BuffEffectType
-    {
-        Hp,
-        AttackFixed,
-        AttackMultiplier
-    }
-}
+// namespace Config
+// {
+//     public enum BuffEffectType
+//     {
+//         Hp,
+//         AttackFixed,
+//         AttackMultiplier
+//     }
+// }

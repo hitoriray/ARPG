@@ -3,6 +3,7 @@ using Arch.Core;
 using Arch.Core.Extensions;
 using Battle.ECS.Component;
 using Battle.ECS.Core.Process;
+using Battle.ECS.View.Helper;
 using Config;
 using FixMath;
 using UnityEngine;
@@ -20,20 +21,17 @@ namespace Battle.ECS.Core.Helper
             // 检查目标是否有效
             if (!target.IsAlive() || target.Has<Death>() || target.Has<Destroy>())
             {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: target is invalid or dead.");
+                RayDebug.Error($"{track ?? nameof(AddBuff)}: target is invalid or dead.");
                 return Entity.Null;
             }
 
             // 检查BuffConfig是否有效
             if (buffConfig == null)
             {
-                Debug.LogError($"{track ?? nameof(AddBuff)}: BuffConfig is null.");
+                RayDebug.Error($"{track ?? nameof(AddBuff)}: BuffConfig is null.");
                 return Entity.Null;
             }
-
-            // 检查免疫（后续扩展）
-            // if (IsImmune(target, config)) return Entity.Null;
-
+            
             // 获取或创建BuffList
             ref var buffList = ref GetOrCreateBuffList(target);
 
@@ -53,8 +51,7 @@ namespace Battle.ECS.Core.Helper
         /// <summary>
         /// 创建新的Buff Entity
         /// </summary>
-        private static Entity CreateNewBuff(BattleContext context, Entity caster, Entity target, BuffConfig config,
-            int stackCount)
+        private static Entity CreateNewBuff(BattleContext context, Entity caster, Entity target, BuffConfig config, int stackCount)
         {
             var duration = (FP)config.duration;
 
@@ -93,17 +90,11 @@ namespace Battle.ECS.Core.Helper
             var buffProcess = new BuffProcess(context);
             buffEntity.Add(new LogicProcess(buffProcess));
 
-            // 应用属性修正
-            ApplyAttrModifiers(buffEntity, target, stackCount);
+            // 应用开始属性修正
+            ApplyStartAttrModifiers(buffEntity, target, stackCount);
             
             // 触发OnCreate回调
             buffProcess.OnCreate(buffEntity);
-
-            // 生成特效
-            if (config.vfxPrefab != null)
-            {
-                SpawnVfx(context, buffEntity, target, config);
-            }
 
             return buffEntity;
         }
@@ -144,7 +135,7 @@ namespace Battle.ECS.Core.Helper
             if (addedCount > 0)
             {
                 // 应用属性修正
-                ApplyAttrModifiers(buffEntity, buff.Target, addedCount);
+                ApplyStartAttrModifiers(buffEntity, buff.Target, addedCount);
 
                 // 触发OnStackAdded回调
                 if (buffEntity.Has<LogicProcess>())
@@ -185,18 +176,22 @@ namespace Battle.ECS.Core.Helper
         /// </summary>
         private static void HandleOverflow(Entity buffEntity, Entity caster, FP duration)
         {
+            ref var buff = ref buffEntity.Get<Buff>();
             ref var buffProperty = ref buffEntity.Get<BuffProperty>();
             ref var buffStack = ref buffEntity.Get<BuffStack>();
 
             switch (buffProperty.OverflowPolicy)
             {
                 case BattleBuffOverflowPolicy.ReplaceOldest:
+                    // 先撤销被替换层的属性
+                    RemoveStartAttrModifiers(buffEntity, buff.Target, 1);
                     buffStack.RemoveFirst();
                     InternalAddStack(buffEntity, caster, duration);
                     break;
 
                 case BattleBuffOverflowPolicy.ReplaceLowestPriority:
                     // TODO: 实现优先级查找
+                    RemoveStartAttrModifiers(buffEntity, buff.Target, 1);
                     buffStack.RemoveLast();
                     InternalAddStack(buffEntity, caster, duration);
                     break;
@@ -223,8 +218,8 @@ namespace Battle.ECS.Core.Helper
                 buffStack.RemoveLast();
             }
 
-            // 移除属性修正
-            RemoveAttrModifiers(buffEntity, buff.Target, removedCount);
+            // 移除属性修正（每层移除时都要撤销StartAttrModifiers）
+            RemoveStartAttrModifiers(buffEntity, buff.Target, removedCount);
 
             // 触发回调
             if (buffEntity.Has<LogicProcess>())
@@ -241,21 +236,23 @@ namespace Battle.ECS.Core.Helper
         }
 
         /// <summary>
-        /// 应用属性修正
+        /// 应用开始属性修正
         /// </summary>
-        private static void ApplyAttrModifiers(Entity buffEntity, Entity target, int stackCount)
+        /// <param name="buffEntity"></param>
+        /// <param name="target"></param>
+        /// <param name="stackCount"></param>
+        public static void ApplyStartAttrModifiers(Entity buffEntity, Entity target, int stackCount)
         {
             ref var buff = ref buffEntity.Get<Buff>();
             var config = buff.Config;
-
-            if (config.AttrModifiers == null || config.AttrModifiers.Length == 0) return;
-            if (!target.Has<Attribute>()) return;
-
-            ref var targetAttr = ref target.Get<Attribute>();
-
+            if (config.StartAttrModifiers == null || config.StartAttrModifiers.Length == 0)
+                return;
+            ref var targetAttr = ref target.TryGetRef<Attribute>(out var hasAttr);
+            if (hasAttr == false)
+                return;
             for (int i = 0; i < stackCount; i++)
             {
-                foreach (var modifier in config.AttrModifiers)
+                foreach (var modifier in config.StartAttrModifiers)
                 {
                     targetAttr.AddModifier(modifier.type, (FP)modifier.value, modifier.mode == AttrModifyMode.Percent);
                 }
@@ -263,26 +260,61 @@ namespace Battle.ECS.Core.Helper
         }
 
         /// <summary>
-        /// 移除属性修正
+        /// 应用属性修正
         /// </summary>
-        private static void RemoveAttrModifiers(Entity buffEntity, Entity target, int stackCount)
+        public static void ApplyPeriodicAttrModifiers(Entity buffEntity, Entity target, int stackCount)
         {
             ref var buff = ref buffEntity.Get<Buff>();
             var config = buff.Config;
 
-            if (config.AttrModifiers == null || config.AttrModifiers.Length == 0) return;
-            if (!target.Has<Attribute>()) return;
-
-            ref var targetAttr = ref target.Get<Attribute>();
-
+            if (config.PeriodicAttrModifier == null || config.PeriodicAttrModifier.Length == 0) return;
+            ref var targetAttr = ref target.TryGetRef<Attribute>(out var hasAttr);
+            if (hasAttr == false)
+                return;
+            ref var health = ref target.TryGetRef<Health>(out var hasHealth);
             for (int i = 0; i < stackCount; i++)
             {
-                foreach (var modifier in config.AttrModifiers)
+                foreach (var modifier in config.PeriodicAttrModifier)
+                {
+                    if (modifier.type == AttributeType.HP && hasHealth)
+                    {
+                        var value = modifier.mode == AttrModifyMode.Percent ? health.Max * (FP)modifier.value / 100 : (FP)modifier.value;
+                        health.Current = TSMath.Clamp(health.Current + value, FP.Zero, health.Max);
+                        if (health.Current <= FP.Zero && target.Has<Death>() == false)
+                        {
+                            target.Add(new Death());
+                        }
+                    }
+                    else
+                    {
+                        targetAttr.AddModifier(modifier.type, (FP)modifier.value, modifier.mode == AttrModifyMode.Percent);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 移除开始属性修正
+        /// </summary>
+        public static void RemoveStartAttrModifiers(Entity buffEntity, Entity target, int stackCount)
+        {
+            ref var buff = ref buffEntity.Get<Buff>();
+            var config = buff.Config;
+
+            if (config.StartAttrModifiers == null || config.StartAttrModifiers.Length == 0) return;
+            ref var targetAttr = ref target.TryGetRef<Attribute>(out var hasAttr);
+            if (hasAttr == false)
+                return;
+            for (int i = 0; i < stackCount; i++)
+            {
+                foreach (var modifier in config.StartAttrModifiers)
                 {
                     targetAttr.RemoveModifier(modifier.type, (FP)modifier.value, modifier.mode == AttrModifyMode.Percent);
                 }
             }
         }
+        
+        // RemovePeriodicAttrModifiers已删除 - 周期效果直接修改HP等值，无需撤销
 
         /// <summary>
         /// 获取或创建BuffList
@@ -296,16 +328,6 @@ namespace Battle.ECS.Core.Helper
             }
 
             return ref entity.Get<BuffList>();
-        }
-
-        /// <summary>
-        /// 生成Buff特效
-        /// </summary>
-        private static void SpawnVfx(BattleContext context, Entity buffEntity, Entity target, BuffConfig config)
-        {
-            // TODO: 调用VfxEmitterHelper生成特效
-            // var vfxEntity = VfxEmitterHelper.EmitBuffVfx(...);
-            // buffEntity.Get<Buff>().Vfx = vfxEntity;
         }
     }
 }

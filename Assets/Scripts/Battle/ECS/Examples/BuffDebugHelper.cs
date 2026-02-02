@@ -68,10 +68,10 @@ namespace Battle.ECS.Examples
                 }
 
                 // 打印属性修正
-                if (buff.Config.AttrModifiers != null && buff.Config.AttrModifiers.Length > 0)
+                if (buff.Config.StartAttrModifiers != null && buff.Config.StartAttrModifiers.Length > 0)
                 {
                     sb.AppendLine($"  属性修正:");
-                    foreach (var modifier in buff.Config.AttrModifiers)
+                    foreach (var modifier in buff.Config.StartAttrModifiers)
                     {
                         var modeStr = modifier.mode == AttrModifyMode.Percent ? "%" : "点";
                         sb.AppendLine($"    - {modifier.type}: {(modifier.value > 0 ? "+" : "")}{modifier.value}{modeStr}");

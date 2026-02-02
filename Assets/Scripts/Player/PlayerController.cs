@@ -2,14 +2,13 @@ using System;
 using Arch.Core;
 using Attribute;
 using Battle.ECS;
-using BuffSystem;
+using Battle.ECS.Core.Helper;
 using Config;
 using Data;
 using GOAP;
 using JKFrame;
 using Manager;
 using Player.Animation;
-using Skill;
 using Player.State;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ namespace Player
         [SerializeField] private PlayerSkillBrainBase skillBrain;
         [SerializeField] private PlayerView playerView;
         [SerializeField] private CharacterController characterController;
-        [SerializeField] private BuffController buffController;
+        // [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
         [SerializeField] private WeaponSlotManager weaponSlotManager;
         
@@ -132,7 +131,8 @@ namespace Player
 
         public void AddBuff(BuffConfig buffConfig, int stack)
         {
-            buffController.AddBuff(buffConfig, stack);
+            // buffController.AddBuff(buffConfig, stack);
+            BuffHelper.AddBuff(BattleEcsRunner.Instance.Context, nameof(PlayerController), PlayerEntity, PlayerEntity, buffConfig, stack);
         }
 
         public void CreateWeapon(int slotIndex, GameObject weaponPrefab)

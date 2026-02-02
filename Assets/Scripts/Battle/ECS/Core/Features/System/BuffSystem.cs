@@ -66,28 +66,11 @@ namespace Battle.ECS.System
         }
 
         /// <summary>
-        /// 移除属性修正
+        /// 移除属性修正（委托给BuffHelper处理）
         /// </summary>
         private void RemoveAttrModifiers(Entity buffEntity, Entity target, int stackCount)
         {
-            if (!target.IsAlive() || !target.Has<Battle.ECS.Component.Attribute>()) return;
-
-            ref var buff = ref buffEntity.Get<Buff>();
-            var config = buff.Config;
-
-            if (config.AttrModifiers == null || config.AttrModifiers.Length == 0) return;
-
-            ref var targetAttr = ref target.Get<Battle.ECS.Component.Attribute>();
-
-            for (int i = 0; i < stackCount; i++)
-            {
-                foreach (var modifier in config.AttrModifiers)
-                {
-                    FP value = (FP)modifier.value;
-                    bool isPercent = modifier.mode == Config.AttrModifyMode.Percent;
-                    targetAttr.RemoveModifier(modifier.type, value, isPercent);
-                }
-            }
+            BuffHelper.RemoveStartAttrModifiers(buffEntity, target, stackCount);
         }
 
         private struct UpdateProcessor : IForEachWithEntity<Buff, BuffStack, BuffProperty>

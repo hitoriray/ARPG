@@ -1,4 +1,4 @@
-﻿namespace Attribute
+﻿namespace Config
 {
     public enum AttributeType
     {
@@ -11,25 +11,33 @@
         /// </summary>
         Defense = 2,
         /// <summary>
+        /// 当前HP
+        /// </summary>
+        HP = 3,
+        /// <summary>
         /// 最大HP
         /// </summary>
-        MaxHP = 3,
+        MaxHP = 4,
+        /// <summary>
+        /// 当前MP
+        /// </summary>
+        MP = 5,
         /// <summary>
         /// 最大MP
         /// </summary>
-        MaxMP = 4,
+        MaxMP = 6,
         /// <summary>
         /// 速度
         /// </summary>
-        Speed = 5,
+        Speed = 7,
         /// <summary>
         /// 暴击率
         /// </summary>
-        CritRate = 6,
+        CritRate = 8,
         /// <summary>
         /// 暴击伤害
         /// </summary>
-        CritDamage = 7,
+        CritDamage = 9,
         // /// <summary>
         // /// 控制效果命中
         // /// </summary>
