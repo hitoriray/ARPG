@@ -14,6 +14,7 @@ public class AnimationRootMotionFixer : EditorWindow
     private bool includeYAxis = false; // 是否包含 Y 轴位移（用于跳跃等）
     private bool preserveBip001Y = true; // 保留 Bip001 的 Y 轴运动（身体起伏）
     private bool verboseLog = false; // 是否输出详细日志（影响性能）
+    private float scaleMultiplier = 1.0f; // 缩放倍数（用于处理不同 FBX 的 GlobalScale）
 
     // 统计变量
     private int newFileCount = 0;
@@ -132,6 +133,7 @@ public class AnimationRootMotionFixer : EditorWindow
         {
             sourceFolderPath = "Assets/Res/MC/Katixiya/fbx";
             targetFolderPath = "Assets/Res/Animations/1004_Katixiya/RootMotion";
+            scaleMultiplier = 0.01f;  // Katixiya 的 FBX GlobalScale 是 1，但需要缩小到 0.01 以匹配实际单位
         }
         EditorGUILayout.EndHorizontal();
 
@@ -140,6 +142,7 @@ public class AnimationRootMotionFixer : EditorWindow
         includeYAxis = EditorGUILayout.Toggle("包含 Y 轴位移（跳跃）", includeYAxis);
         preserveBip001Y = EditorGUILayout.Toggle("保留 Bip001 Y 轴（身体起伏）", preserveBip001Y);
         verboseLog = EditorGUILayout.Toggle("输出详细日志（影响速度）", verboseLog);
+        scaleMultiplier = EditorGUILayout.Slider("缩放倍数（实验性）", scaleMultiplier, 0.001f, 10f);
 
         EditorGUILayout.Space(5);
 
@@ -446,10 +449,20 @@ public class AnimationRootMotionFixer : EditorWindow
                 float initialX = bip001PosX.Evaluate(0);
                 AnimationCurve rootCurveX = new AnimationCurve();
 
-                // 将曲线转换为增量形式（减去初始值）
+                // 将曲线转换为增量形式（减去初始值），保留切线信息，并应用缩放倍数
                 foreach (Keyframe key in bip001PosX.keys)
                 {
-                    rootCurveX.AddKey(key.time, key.value - initialX);
+                    Keyframe newKey = new Keyframe(
+                        key.time,
+                        (key.value - initialX) * scaleMultiplier,  // 应用缩放
+                        key.inTangent * scaleMultiplier,   // 切线也需要缩放
+                        key.outTangent * scaleMultiplier,
+                        key.inWeight,
+                        key.outWeight
+                    );
+                    newKey.tangentMode = key.tangentMode;
+                    newKey.weightedMode = key.weightedMode;
+                    rootCurveX.AddKey(newKey);
                 }
 
                 EditorCurveBinding rootBindingX = new EditorCurveBinding
@@ -466,10 +479,20 @@ public class AnimationRootMotionFixer : EditorWindow
                 float initialY = bip001PosY.Evaluate(0);
                 AnimationCurve rootCurveY = new AnimationCurve();
 
-                // 将曲线转换为增量形式（减去初始值）
+                // 将曲线转换为增量形式（减去初始值），保留切线信息，并应用缩放倍数
                 foreach (Keyframe key in bip001PosY.keys)
                 {
-                    rootCurveY.AddKey(key.time, key.value - initialY);
+                    Keyframe newKey = new Keyframe(
+                        key.time,
+                        (key.value - initialY) * scaleMultiplier,
+                        key.inTangent * scaleMultiplier,
+                        key.outTangent * scaleMultiplier,
+                        key.inWeight,
+                        key.outWeight
+                    );
+                    newKey.tangentMode = key.tangentMode;
+                    newKey.weightedMode = key.weightedMode;
+                    rootCurveY.AddKey(newKey);
                 }
 
                 EditorCurveBinding rootBindingY = new EditorCurveBinding
@@ -486,10 +509,20 @@ public class AnimationRootMotionFixer : EditorWindow
                 float initialZ = bip001PosZ.Evaluate(0);
                 AnimationCurve rootCurveZ = new AnimationCurve();
 
-                // 将曲线转换为增量形式（减去初始值）
+                // 将曲线转换为增量形式（减去初始值），保留切线信息，并应用缩放倍数
                 foreach (Keyframe key in bip001PosZ.keys)
                 {
-                    rootCurveZ.AddKey(key.time, key.value - initialZ);
+                    Keyframe newKey = new Keyframe(
+                        key.time,
+                        (key.value - initialZ) * scaleMultiplier,
+                        key.inTangent * scaleMultiplier,
+                        key.outTangent * scaleMultiplier,
+                        key.inWeight,
+                        key.outWeight
+                    );
+                    newKey.tangentMode = key.tangentMode;
+                    newKey.weightedMode = key.weightedMode;
+                    rootCurveZ.AddKey(newKey);
                 }
 
                 EditorCurveBinding rootBindingZ = new EditorCurveBinding
