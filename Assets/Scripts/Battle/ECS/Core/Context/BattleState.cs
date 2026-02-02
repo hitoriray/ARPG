@@ -7,7 +7,7 @@ namespace Battle.ECS.Core
     {
         None,
         Running,
-        Pause,
+        Paused,
         Ending,
         Complete
     }

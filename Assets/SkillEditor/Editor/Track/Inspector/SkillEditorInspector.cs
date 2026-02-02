@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 namespace SkillEditor
 {
     [CustomEditor(typeof(SkillEditorWindow))]
-    public class SkillEditorInspector : Editor
+    public class SkillEditorInspector : UnityEditor.Editor
     {
         public static SkillEditorInspector Instance;
         private static TrackItemBase currentTrackItem;

@@ -11,6 +11,12 @@ namespace Battle.ECS.Features
         public LocalLogicFeature(BattleContext context) : base(context)
         {
             Add(new ViewToLogicSyncSystem(context));
+            
+            // ===== 新增 Buff 系统 =====
+            Add(new System.BuffSystem(context));        // Buff 生命周期管理
+            Add(new TickSystem(context));        // Tick 周期效果
+            // ==========================
+            
             Add(new ShapeDetectionSystem(context));
             Add(new WeaponDetectionSystem(context));
             Add(new MovementSystem(context));

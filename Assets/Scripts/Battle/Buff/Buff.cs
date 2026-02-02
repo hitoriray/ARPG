@@ -28,7 +28,7 @@ namespace BuffSystem
         public void Start()
         {
             destroyTimer = config.duration;
-            periodicTimer = config.periodicTime;
+            periodicTimer = config.tickInterval;
             onStart?.Invoke(this);
             Debug.Log("onStart生效一次");
         }
@@ -42,7 +42,7 @@ namespace BuffSystem
                 if (periodicTimer <= 0)
                 {
                     onPeriodic.Invoke(this);
-                    periodicTimer = config.periodicTime + periodicTimer;
+                    periodicTimer = config.tickInterval + periodicTimer;
                 }
             }
 

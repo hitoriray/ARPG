@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace Michsky.MUIP
 {
-    public class ContextMenu : Editor
+    public class ContextMenu : UnityEditor.Editor
     {
         static string objectPath;
 

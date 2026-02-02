@@ -1,0 +1,140 @@
+﻿using System.Runtime.CompilerServices;
+using Attribute;
+using Battle.ECS.Core.Helper;
+
+namespace Battle.ECS.Component
+{
+    /// <summary>
+    /// 属性组件，概率值都是万分比
+    /// </summary>
+    public struct Attribute
+    {
+        private const int _Max = (int)AttributeType.CommonMax;
+        private const int _BasicAttrCount = (int)AttributeType.Health;
+        // 职业属性区间: [DamageBonusToRanger, ClassMax)
+        private const int _ClassMin = (int)AttributeType.DamageBonusToRanger;
+        private const int _ClassMax = (int)AttributeType.ClassMax;
+        private const int _ClassAttrCount = _ClassMax - _ClassMin;
+
+        // 基础属性使用long存储
+        private fixed long _basicValues[_BasicAttrCount];
+        // 其他属性使用int存储
+        private fixed int _ratioValues[_Max - _BasicAttrCount];
+        // 职业相关属性使用int存储（DamageBonusToRanger~ClassMax）
+        private fixed int _classValues[_ClassAttrCount];
+
+        // 只读属性，任何对属性的修改都不会生效
+        public bool ReadOnly;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetValue(AttributeType type, long val)
+        {
+            if (ReadOnly)
+                return;
+            if (type <= 0)
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(SetValue)}: Invalid {nameof(AttributeType)} {type}");
+                return;
+            }
+            if (type < AttributeType.CommonMax)
+            {
+                var index = (int)type - 1;
+                if (index < _BasicAttrCount)
+                    _basicValues[index] = val;
+                else
+                    _ratioValues[index - _BasicAttrCount] = (int)val;
+            }
+            else if (type >= AttributeType.DamageBonusToRanger && type < AttributeType.ClassMax)
+            {
+                var index = (int)type - _ClassMin;
+                _classValues[index] = (int)val;
+            }
+            else
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(SetValue)}: Invalid {nameof(AttributeType)} {type}");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly long GetValue(AttributeType type)
+        {
+            if (type <= 0)
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(GetValue)}: Invalid {nameof(AttributeType)} {type}");
+                return 0;
+            }
+            if (type < AttributeType.CommonMax)
+            {
+                var index = (int)type - 1;
+                if (index < _BasicAttrCount)
+                    return _basicValues[index];
+                else
+                    return _ratioValues[index - _BasicAttrCount];
+            }
+            if (type >= AttributeType.DamageBonusToRanger && type < AttributeType.ClassMax)
+            {
+                var index = (int)type - _ClassMin;
+                return _classValues[index];
+            }
+            else
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(GetValue)}: Invalid {nameof(AttributeType)} {type}");
+                return 0;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddValue(AttributeType type, long val)
+        {
+            if (ReadOnly)
+                return;
+            if (type <= 0)
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(AddValue)}: Invalid {nameof(AttributeType)} {type}");
+                return;
+            }
+            if (type < AttributeType.CommonMax)
+            {
+                var index = (int)type - 1;
+                if (index < _BasicAttrCount)
+                    _basicValues[index] += val;
+                else
+                    _ratioValues[index - _BasicAttrCount] += (int)val;
+            }
+            else if (type >= AttributeType.DamageBonusToRanger && type < AttributeType.ClassMax)
+            {
+                var index = (int)type - _ClassMin;
+                _classValues[index] += (int)val;
+            }
+            else
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(AddValue)}: Invalid {nameof(AttributeType)} {type}");
+            }
+        }
+
+        /// <summary>
+        /// 获取基础属性的百分比
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly long GetBasicAttPct(AttributeType attrType)
+        {
+            if (attrType <= 0 || attrType > AttributeType.Health)
+            {
+                ThrowHelper.Throw($"{nameof(Attribute)}.{nameof(GetBasicAttPct)}: {attrType} is not a basic attribute.");
+                return 0;
+            }
+
+            var basicIndex = (int)attrType - 1;
+            // AttackPct = 38, 对应的百分比索引偏移
+            // Attack(1) -> AttackPct(38), offset = 38-1-3 = 34
+            // Defense(2) -> DefensePct(39), offset = 39-1-3 = 35
+            // Health(3) -> HealthPct(40), offset = 40-1-3 = 36
+            // 公式: pctIndex = (38-1-3) + basicIndex = 34 + basicIndex
+            var pctIndex = (int)AttributeType.AttackPct - 1 - _BasicAttrCount + basicIndex;
+            var pctValue = _ratioValues[pctIndex];
+
+            return pctValue;
+        }
+        
+    }
+}

@@ -36,7 +36,7 @@ namespace Battle.ECS.System
 
         private void ProcessDeath(Entity entity)
         {
-            Debug.Log($"实体死亡: {entity.GetDebugInfo()}");
+            // Debug.Log($"实体死亡: {entity.GetDebugInfo()}");
             ref var logicProcess = ref entity.TryGetRef<LogicProcess>(out var hasProcess);
             if (hasProcess && logicProcess.Value is IDeathProcess deathProcess)
             {
