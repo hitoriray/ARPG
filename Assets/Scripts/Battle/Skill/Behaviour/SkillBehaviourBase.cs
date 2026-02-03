@@ -93,6 +93,7 @@ namespace Skill.Behaviour
             canRotate = false;
             playing = true;
             skillBrain.SetCanReleaseFlag(false);
+            skillBrain.SetCanInterruptFlag(false);  // 释放技能时重置打断标志
             ApplyCosts();
         }
         
@@ -140,6 +141,16 @@ namespace Skill.Behaviour
         }
 
         public virtual void OnClipEndOrReleaseNewSkill()
+        {
+            playing = false;
+            hitTargets.Clear();
+        }
+        
+        /// <summary>
+        /// 技能被打断时调用（如移动打断）
+        /// 子类可重写以处理打断时的清理逻辑
+        /// </summary>
+        public virtual void OnInterrupt()
         {
             playing = false;
             hitTargets.Clear();
@@ -213,6 +224,12 @@ namespace Skill.Behaviour
                     break;
                 case SkillEventType.DestroyWeapon:
                     owner.DestroyWeapon(evt.IntArg);
+                    break;
+                case SkillEventType.CanInterrupt:
+                    skillBrain.SetCanInterruptFlag(true);   // 开启移动打断
+                    break;
+                case SkillEventType.BreakCombo:
+                    skillBrain.ResetCombo();                // 立即重置连段
                     break;
             }
         }

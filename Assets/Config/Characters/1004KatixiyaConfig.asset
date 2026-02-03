@@ -17,11 +17,11 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 8b4f0ac1af64f6f4ca0d61bccd12e0ce, type: 2}
-    - {fileID: 7400000, guid: b496f020e4e1fa94a943d29a10499e48, type: 2}
-    - {fileID: 7400000, guid: b36ff6360b3a6b34e8f405a9a74bc3bd, type: 2}
-    - {fileID: 7400000, guid: fce36481976277e44850af85916b639d, type: 2}
+    - {fileID: 7400000, guid: d08766a12a3561947be5e085547faaa7, type: 2}
+    - {fileID: 7400000, guid: 7ef6ac208e6f71441994b8c61f480fa0, type: 2}
+    - {fileID: 7400000, guid: ecb47a5f453a785419739be88554e193, type: 2}
     - {fileID: 7400000, guid: d0b5b4078ed9cc640ac7af39e94b1c23, type: 2}
-    - {fileID: 7400000, guid: c338df77aab98514e8133df36665503a, type: 2}
+    - {fileID: 7400000, guid: 411e0a0625c53be449cbbf7bef79046b, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -119,8 +119,8 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  WalkSpeed: 5
-  RunSpeed: 8
+  WalkSpeed: 8
+  RunSpeed: 10
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 1

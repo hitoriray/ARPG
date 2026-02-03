@@ -109,6 +109,16 @@ namespace SkillEditor
         }
 
         #region 重载方法
+        
+        public override void DeleteTrackItem(int frameIndex)
+        {
+            // AnimationData.FrameData.Remove(frameIndex);
+            // if (trackItemDict.Remove(frameIndex, out var trackItem))
+            // {
+            //     trackStyle.RemoveItem(trackItem.ItemStyle.Root);
+            // }
+        }
+        
         public override void Destroy()
         {
             trackStyle.Destroy();

@@ -1,5 +1,6 @@
 using System;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SkillEditor
@@ -77,6 +78,25 @@ namespace SkillEditor
             }
             
             eventDataInspector?.Draw(root, currentTrackItem, currentTrack);
+            
+            // 删除
+            Button deleteBtn = new Button(OnDeleteBtnClicked)
+            {
+                text = "删除",
+                style =
+                {
+                    backgroundColor = new Color(1, 0, 0, 0.5f)
+                }
+            };
+            root.Add(deleteBtn);
+        }
+        
+        private void OnDeleteBtnClicked()
+        {
+            currentTrack.DeleteTrackItem(currentTrackItem.FrameIndex);
+            Selection.activeObject = null;
+            if (currentTrackItem is AnimationTrackItem)
+                SkillEditorWindow.Instance.TickSkill();
         }
 
         private void Clean()

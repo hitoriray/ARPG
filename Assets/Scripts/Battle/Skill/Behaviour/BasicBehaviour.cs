@@ -36,6 +36,7 @@ namespace Skill.Behaviour
                     attackIndex = 0;
             }
             skillPlayer.StartPlaySkillBehaviour(this);
+            RayDebug.Log($"当前播放普攻{attackIndex}");
             skillPlayer.PlaySkillClip(skillConfig.Clips[attackIndex]);
         }
         
@@ -60,6 +61,15 @@ namespace Skill.Behaviour
             {
                 attackIndex = -1;
             }
+            skillBrain.AddOrUpdateShareData(AnbiSkillBrain.ContinueBasicAttackDataKey, false);
+        }
+        
+        public override void OnInterrupt()
+        {
+            base.OnInterrupt();
+            // 打断时重置普攻段数
+            RayDebug.Log($"打断普攻段数, attackIndex={attackIndex}");
+            attackIndex = -1;
             skillBrain.AddOrUpdateShareData(AnbiSkillBrain.ContinueBasicAttackDataKey, false);
         }
     }

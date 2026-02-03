@@ -17,11 +17,18 @@ namespace Skill
 
         public virtual int LastReleaseBehaviourIndex { get; protected set; } = -1;
         public virtual bool CanRelease { get; protected set; }
+        
+        /// <summary>
+        /// 是否可以被移动等动作打断
+        /// </summary>
+        public virtual bool CanInterrupt { get; protected set; }
+        
         public int SkillCount => skillBehaviours?.Count ?? 0;
 
         public virtual void Init(ICharacter owner)
         {
             CanRelease = true;
+            CanInterrupt = false;
             skillPlayer.Init(owner, owner.AnimationController, owner.ModelTransform);
         }
 
@@ -42,21 +49,52 @@ namespace Skill
         {
             CanRelease = newValue;
         }
+        
+        /// <summary>
+        /// 设置是否可以被打断
+        /// </summary>
+        public virtual void SetCanInterruptFlag(bool newValue)
+        {
+            CanInterrupt = newValue;
+        }
+        
+        /// <summary>
+        /// 重置连段（下次攻击从第一段开始）
+        /// </summary>
+        public virtual void ResetCombo()
+        {
+            if (LastReleaseBehaviourIndex >= 0 && LastReleaseBehaviourIndex < skillBehaviours.Count)
+                skillBehaviours[LastReleaseBehaviourIndex].OnInterrupt();
+            LastReleaseBehaviourIndex = -1;
+        }
+        
+        /// <summary>
+        /// 打断当前正在播放的技能
+        /// </summary>
+        public virtual void InterruptCurrentSkill()
+        {
+            RayDebug.Log($"打断当前正在播放的技能clip: LastReleaseBehaviourIndex={LastReleaseBehaviourIndex}");
+            if (LastReleaseBehaviourIndex >= 0 && LastReleaseBehaviourIndex < skillBehaviours.Count)
+            {
+                skillBehaviours[LastReleaseBehaviourIndex].OnInterrupt();
+            }
+            LastReleaseBehaviourIndex = -1;
+            CanInterrupt = false;
+            CanRelease = true;
+        }
 
         protected virtual void Update()
         {
-            // ⚠️ 安全检查：初始化完成前不执行
             if (skillBehaviours == null) return;
 
             foreach (var skillBehaviour in skillBehaviours)
             {
-                skillBehaviour?.OnUpdate();
+                skillBehaviour.OnUpdate();
             }
         }
 
         public virtual void ReleaseSkill(int behaviourIndex)
         {
-            // ⚠️ 安全检查
             if (skillBehaviours == null || behaviourIndex < 0 || behaviourIndex >= skillBehaviours.Count)
             {
                 return;
@@ -78,7 +116,6 @@ namespace Skill
         
         public virtual bool CheckReleaseSkill(int behaviourIndex)
         {
-            // ⚠️ 安全检查
             if (skillBehaviours == null || behaviourIndex < 0 || behaviourIndex >= skillBehaviours.Count)
             {
                 return false;

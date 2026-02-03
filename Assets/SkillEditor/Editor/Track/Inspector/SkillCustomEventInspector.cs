@@ -61,17 +61,6 @@ namespace SkillEditor
             };
             objectArgField.RegisterValueChangedCallback(OnObjectArgFieldValueChanged);
             root.Add(objectArgField);
-            
-            // 删除
-            Button deleteBtn = new Button(OnDeleteEventBtnClicked)
-            {
-                text = "删除",
-                style =
-                {
-                    backgroundColor = new Color(1, 0, 0, 0.5f)
-                }
-            };
-            root.Add(deleteBtn);
         }
         
         private void OnEventTypeDropdownFieldValueChanged(ChangeEvent<string> evt)
@@ -107,12 +96,6 @@ namespace SkillEditor
         private void OnObjectArgFieldValueChanged(ChangeEvent<UnityEngine.Object> evt)
         {
             trackItem.CustomEvent.ObjectArg = evt.newValue;
-        }
-
-        private void OnDeleteEventBtnClicked()
-        {
-            track.DeleteTrackItem(itemFrameIndex);
-            Selection.activeObject = null;
         }
     }
 }

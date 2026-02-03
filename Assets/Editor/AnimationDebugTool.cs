@@ -8,7 +8,7 @@ public class AnimationDebugTool : EditorWindow
 {
     private AnimationClip clipToAnalyze;
 
-    [MenuItem("Tools/Animation/Debug Animation Data")]
+    [MenuItem("Tools/动画/动画数据调试")]
     public static void ShowWindow()
     {
         GetWindow<AnimationDebugTool>("动画数据调试");

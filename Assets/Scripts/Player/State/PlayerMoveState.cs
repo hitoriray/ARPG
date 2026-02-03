@@ -89,6 +89,10 @@ namespace Player.State
 
                 UpdateRunTransition(shiftPressed);
                 animationController.SetBlendWeight(1 - runTransition);
+                
+                // 更新根运动速度缩放
+                if (applyRootMotionForMove)
+                    UpdateRootMotionSpeed();
             }
             else if (movePhase == MovePhase.RunEnd)
             {
@@ -117,11 +121,21 @@ namespace Player.State
         
         private void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
-            // 此时的速度是影响动画的播放速度来达到实际位移速度的变化
-            float speed = Mathf.Lerp(PlayerController.WalkSpeed, PlayerController.RunSpeed, runTransition);
-            animationController.Speed = speed;
+            // 根据配置的速度缩放根运动位移，不改变动画播放速度
+            // deltaPos 已经在 AnimationController 中被缩放过了
             deltaPos.y = -9.8f * Time.deltaTime;
             characterController.Move(deltaPos);
+        }
+        
+        /// <summary>
+        /// 更新根运动速度（根据 Walk/Run 混合）
+        /// </summary>
+        private void UpdateRootMotionSpeed()
+        {
+            float targetSpeed = Mathf.Lerp(PlayerController.WalkSpeed, PlayerController.RunSpeed, runTransition);
+            // 动画烘焙的基础速度：Walk=2m/s, Run=6m/s
+            float baseSpeed = Mathf.Lerp(2f, 6f, runTransition);
+            animationController.SetRootMotionSpeed(targetSpeed, baseSpeed);
         }
 
         private void PlayStartAnimation()
@@ -159,6 +173,10 @@ namespace Player.State
             phaseTimeout = 0f;
             PlayerController.PlayBlendAnimation(AnimationHelper.Walk, AnimationHelper.Run, rootMotionAction);
             animationController.SetBlendWeight(1 - runTransition);
+            
+            // 初始化根运动速度缩放
+            if (applyRootMotionForMove)
+                UpdateRootMotionSpeed();
         }
 
         private void EnterRunEnd()

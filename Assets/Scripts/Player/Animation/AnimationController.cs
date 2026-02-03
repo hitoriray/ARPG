@@ -224,19 +224,74 @@ namespace Player.Animation
         
         #region Root Motion
         private Action<Vector3, Quaternion> rootMotionAction;
+        
+        /// <summary>
+        /// 根运动速度缩放系数
+        /// 用于独立控制移动速度，不改变动画播放速度
+        /// 1.0 = 使用动画原始速度
+        /// </summary>
+        private float rootMotionSpeedScale = 1f;
+        
+        /// <summary>
+        /// 动画烘焙的基础速度（米/秒）
+        /// 用于计算速度缩放比例
+        /// </summary>
+        private float animationBaseSpeed = 6f;
+        
         private void OnAnimatorMove()
         {
-            rootMotionAction?.Invoke(animator.deltaPosition, animator.deltaRotation);
+            if (rootMotionAction == null) return;
+            
+            // 应用速度缩放
+            Vector3 scaledDeltaPosition = animator.deltaPosition * rootMotionSpeedScale;
+            rootMotionAction.Invoke(scaledDeltaPosition, animator.deltaRotation);
         }
 
+        /// <summary>
+        /// 设置根运动回调
+        /// </summary>
         public void SetRootMotionAction(Action<Vector3, Quaternion> rootMotionAction)
         {
             this.rootMotionAction = rootMotionAction;
         }
 
+        /// <summary>
+        /// 设置根运动速度（直接设置缩放系数）
+        /// </summary>
+        /// <param name="scale">缩放系数，1.0 = 原始速度</param>
+        public void SetRootMotionSpeedScale(float scale)
+        {
+            rootMotionSpeedScale = scale;
+        }
+        
+        /// <summary>
+        /// 根据目标速度设置根运动速度缩放
+        /// </summary>
+        /// <param name="targetSpeed">目标移动速度（米/秒）</param>
+        /// <param name="baseSpeed">动画烘焙的基础速度（米/秒），如果不指定则使用上次设置的值</param>
+        public void SetRootMotionSpeed(float targetSpeed, float baseSpeed = -1f)
+        {
+            if (baseSpeed > 0)
+                animationBaseSpeed = baseSpeed;
+            
+            if (animationBaseSpeed > 0.001f)
+                rootMotionSpeedScale = targetSpeed / animationBaseSpeed;
+            else
+                rootMotionSpeedScale = 1f;
+        }
+
+        /// <summary>
+        /// 设置动画的基础速度（用于后续速度计算）
+        /// </summary>
+        public void SetAnimationBaseSpeed(float baseSpeed)
+        {
+            animationBaseSpeed = baseSpeed;
+        }
+
         public void ClearRootMotionAction()
         {
             rootMotionAction = null;
+            rootMotionSpeedScale = 1f;
         }
         #endregion
         

@@ -52,16 +52,6 @@ namespace SkillEditor
             root.Add(clipFrameCountLabel);
             isLoopLabel = new Label($"循环动画: {trackItem.AnimationEvent.AnimationClip.isLooping}");
             root.Add(isLoopLabel);
-            // 删除
-            Button deleteBtn = new(OnDeleteAnimationBtnClicked)
-            {
-                text = "删除",
-                style =
-                {
-                    backgroundColor = new Color(1, 0, 0, 0.5f)
-                }
-            };
-            root.Add(deleteBtn);
             // 设置持续帧数至选中帧
             Button setFrameBtn = new(OnSetFrameBtnClicked)
             {
@@ -138,12 +128,5 @@ namespace SkillEditor
             }
         }
         #endregion
-        
-        private void OnDeleteAnimationBtnClicked()
-        {
-            track.DeleteTrackItem(itemFrameIndex);
-            Selection.activeObject = null;
-            SkillEditorWindow.Instance.TickSkill();
-        }
     }
 }
