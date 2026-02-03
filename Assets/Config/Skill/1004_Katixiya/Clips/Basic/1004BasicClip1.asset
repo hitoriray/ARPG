@@ -116,7 +116,7 @@ MonoBehaviour:
       Data: "\u7279\u6548\u8F68\u9053"
     - Name: FrameIndex
       Entry: 3
-      Data: 5
+      Data: 2
     - Name: Prefab
       Entry: 10
       Data: 1
@@ -125,13 +125,13 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 0.72
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 3.08
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 0.26
     - Name: 
       Entry: 8
       Data: 
@@ -140,13 +140,13 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0
+      Data: -9.5
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 109.5
     - Name: 
       Entry: 4
-      Data: 0
+      Data: -6.32
     - Name: 
       Entry: 8
       Data: 

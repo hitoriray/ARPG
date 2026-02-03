@@ -17,6 +17,9 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 42ae2f026c33c3343ac92763c32427db, type: 2}
+    - {fileID: 6891291519092082853, guid: d6e054b7aaa86bc4293f96cdce529be5, type: 3}
+    - {fileID: 6891291519092082853, guid: d6e054b7aaa86bc4293f96cdce529be5, type: 3}
+    - {fileID: 4040964385477513619, guid: d3544109cd937954e9a95baee5658cc0, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -103,7 +106,403 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
+      Data: 6
+    - Name: 
+      Entry: 7
+      Data: 8|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 4
+    - Name: Prefab
+      Entry: 10
+      Data: 1
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
       Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 11.74
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 9|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 7
+    - Name: Prefab
+      Entry: 10
+      Data: 2
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 6
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 12
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 10|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 10
+    - Name: Prefab
+      Entry: 10
+      Data: 2
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 6.02
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 11|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 13
+    - Name: Prefab
+      Entry: 10
+      Data: 2
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -6
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 12
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 12|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 16
+    - Name: Prefab
+      Entry: 10
+      Data: 2
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 17.54
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 13|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 28
+    - Name: Prefab
+      Entry: 10
+      Data: 3
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 60
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -115,10 +514,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillAttackDetectionData
       Entry: 7
-      Data: 8|Config.SkillAttackDetectionData, Assembly-CSharp
+      Data: 14|Config.SkillAttackDetectionData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 9|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
+      Data: 15|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -134,10 +533,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 10|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 16|Config.SkillCustomEventData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 11|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
+      Data: 17|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 9
@@ -153,7 +552,7 @@ MonoBehaviour:
       Data: 90
     - Name: $v
       Entry: 7
-      Data: 12|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 18|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 7
@@ -186,7 +585,7 @@ MonoBehaviour:
       Data: 135
     - Name: $v
       Entry: 7
-      Data: 13|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 19|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 1
@@ -219,7 +618,7 @@ MonoBehaviour:
       Data: 126
     - Name: $v
       Entry: 7
-      Data: 14|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 20|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 2

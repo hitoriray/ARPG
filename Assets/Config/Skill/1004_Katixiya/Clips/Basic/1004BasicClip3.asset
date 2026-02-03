@@ -17,6 +17,7 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: 4c2620f4d55f2144ab3d3d931f5e2c5a, type: 2}
+    - {fileID: 2459771594855473814, guid: 5d585d34c7844d5409619e474f8b12f4, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -103,7 +104,73 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 8|Config.SkillEffectEvent, Assembly-CSharp
+    - Name: TrackName
+      Entry: 1
+      Data: "\u7279\u6548\u8F68\u9053"
+    - Name: FrameIndex
+      Entry: 3
+      Data: 1
+    - Name: Prefab
+      Entry: 10
+      Data: 1
+    - Name: Position
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: -0.1
+    - Name: 
+      Entry: 4
       Data: 0
+    - Name: 
+      Entry: 4
+      Data: 10.99
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Rotation
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Scale
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Duration
+      Entry: 3
+      Data: 45
+    - Name: AutoDestroy
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -115,10 +182,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillAttackDetectionData
       Entry: 7
-      Data: 8|Config.SkillAttackDetectionData, Assembly-CSharp
+      Data: 9|Config.SkillAttackDetectionData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 9|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
+      Data: 10|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -134,10 +201,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 10|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 11|Config.SkillCustomEventData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 11|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
+      Data: 12|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 9
@@ -153,7 +220,7 @@ MonoBehaviour:
       Data: 190
     - Name: $v
       Entry: 7
-      Data: 12|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 13|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 7
@@ -186,7 +253,7 @@ MonoBehaviour:
       Data: 38
     - Name: $v
       Entry: 7
-      Data: 13|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 14|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 1
@@ -219,7 +286,7 @@ MonoBehaviour:
       Data: 50
     - Name: $v
       Entry: 7
-      Data: 14|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 15|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 8
@@ -252,7 +319,7 @@ MonoBehaviour:
       Data: 106
     - Name: $v
       Entry: 7
-      Data: 15|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 16|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
       Data: 2

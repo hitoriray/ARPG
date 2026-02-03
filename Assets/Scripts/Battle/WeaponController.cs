@@ -113,7 +113,7 @@ namespace Skill
             
             currentWeaponInstance = Instantiate(prefab, transform);
             currentWeaponInstance.transform.localPosition = Vector3.zero;
-            currentWeaponInstance.transform.localRotation = Quaternion.identity;
+            // currentWeaponInstance.transform.localRotation = Quaternion.identity;
             currentWeaponInstance.transform.localScale = Vector3.one;
             detectionCollider = currentWeaponInstance.GetComponent<BoxCollider>();
             RayDebug.Info($"武器创建成功: 槽位:{slotIndex}, 名称:{weaponName}, 预制体:{prefab.name}");
