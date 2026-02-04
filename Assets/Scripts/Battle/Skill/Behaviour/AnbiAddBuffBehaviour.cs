@@ -1,5 +1,5 @@
 ﻿using Config;
-using Player.State;
+using RayPlayerState;
 using UnityEngine;
 
 namespace Skill.Behaviour

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Player.State
+namespace RayPlayerState
 {
     public class PlayerSkillState : PlayerStateBase
     {

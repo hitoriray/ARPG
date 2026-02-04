@@ -2,7 +2,7 @@
 using Config;
 using Data;
 using JKFrame;
-using Player;
+using RayPlayer;
 using UnityEngine;
 
 namespace UI

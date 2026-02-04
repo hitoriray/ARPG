@@ -29,7 +29,7 @@ namespace Battle.ECS.Core
         // public ref TSBBox2D LiveArea => ref _liveArea;
         // public PrimaryEntityIndex<int, Vehicle> VehicleIndex { get; protected set; }
         // public MultiEntityIndex<string, HeroInfo> HeroInfoIndex { get; protected set; }
-        public PrimaryEntityIndex<int, Component.Player> PlayerIndex { get; protected set; }
+        public PrimaryEntityIndex<int, Component.PlayerComp> PlayerIndex { get; protected set; }
         
         protected BattleContext(int randomSeed, FP logicDeltaTime)
         {
@@ -37,7 +37,7 @@ namespace Battle.ECS.Core
             LogicTime = new LogicTime(logicDeltaTime);
             Random = TSRandom.New(randomSeed);
             State = new MutableLiveData<BattleState>();
-            PlayerIndex = new PrimaryEntityIndex<int, Component.Player>(World, (in Component.Player player) => player.PlayerId);
+            PlayerIndex = new PrimaryEntityIndex<int, Component.PlayerComp>(World, (in Component.PlayerComp playerComp) => playerComp.PlayerId);
         }
 
         protected BattleContext(int randomSeed) : this(randomSeed, FP.FromString("0.05"))

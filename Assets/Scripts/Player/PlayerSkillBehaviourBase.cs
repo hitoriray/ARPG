@@ -3,7 +3,7 @@ using Data;
 using Skill;
 using Skill.Behaviour;
 
-namespace Player
+namespace RayPlayer
 {
     public abstract class PlayerSkillBehaviourBase : SkillBehaviourBase
     {

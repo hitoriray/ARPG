@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace Player.Animation
+namespace RayAnimation
 {
     public class AnimationController : MonoBehaviour
     {
@@ -367,7 +367,7 @@ namespace Player.Animation
             float w0 = mixer.GetInputWeight(0);
             float w1 = mixer.GetInputWeight(1);
             float w2 = mixer.GetInputWeight(2);
-            // Debug.Log($"[Animation] {reason} node={nodeInfo} mixer(0={w0:0.###},1={w1:0.###},2={w2:0.###})");
+            RayDebug.Trace($"[Animation] {reason} node={nodeInfo} mixer(0={w0:0.###},1={w1:0.###},2={w2:0.###})");
         }
     }
 }

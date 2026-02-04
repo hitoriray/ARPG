@@ -5,7 +5,7 @@ using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Battle.ECS.View.Helper;
 using JKFrame;
-using Player.Animation;
+using RayAnimation;
 using Scene;
 using Sirenix.OdinInspector;
 using Skill.Behaviour;

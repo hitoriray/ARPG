@@ -1,7 +1,7 @@
 using Battle.ECS;
 using Data;
 using JKFrame;
-using Player;
+using RayPlayer;
 using Sirenix.OdinInspector;
 
 namespace Scene

@@ -1,6 +1,7 @@
 using Battle.ECS;
 using Battle.ECS.Core;
 using FixMath;
+using RayPlayer;
 using UnityEditor;
 using UnityEngine;
 
@@ -132,7 +133,7 @@ namespace Editor.BattleDebug.Pages
             
             if (GUILayout.Button("在玩家位置创建", GUILayout.Height(30)))
             {
-                var player = GameObject.FindObjectOfType<Player.PlayerController>();
+                var player = GameObject.FindObjectOfType<PlayerController>();
                 if (player != null)
                 {
                     _spawnPosition = player.transform.position;

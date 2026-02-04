@@ -1,6 +1,6 @@
 ﻿using JKFrame;
 
-namespace Player.Animation
+namespace RayAnimation
 {
     /// <summary>
     /// 动画节点基类

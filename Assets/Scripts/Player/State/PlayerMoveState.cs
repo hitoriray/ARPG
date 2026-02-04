@@ -1,9 +1,9 @@
 ﻿using System;
 using JKFrame;
-using Player.Animation;
+using RayAnimation;
 using UnityEngine;
 
-namespace Player.State
+namespace RayPlayerState
 {
     public class PlayerMoveState : PlayerStateBase
     {

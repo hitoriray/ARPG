@@ -1,4 +1,4 @@
-using Player;
+using RayPlayer;
 
 namespace Skill
 {

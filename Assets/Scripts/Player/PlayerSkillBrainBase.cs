@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Config;
 using Data;
 using Skill;
-using Skill.Behaviour;
-using UnityEngine;
 
-namespace Player
+namespace RayPlayer
 {
     public abstract class PlayerSkillBrainBase : SkillBrainBase
     {

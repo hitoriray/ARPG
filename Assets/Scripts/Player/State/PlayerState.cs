@@ -1,4 +1,4 @@
-﻿namespace Player.State
+﻿namespace RayPlayerState
 {
     public enum PlayerState
     {

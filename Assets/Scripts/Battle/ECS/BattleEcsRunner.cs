@@ -6,7 +6,7 @@ using Battle.ECS.Core;
 using Battle.ECS.Features;
 using Battle.ECS.View;
 using FixMath;
-using Player;
+using RayPlayer;
 using UnityEngine;
 
 namespace Battle.ECS
@@ -99,7 +99,7 @@ namespace Battle.ECS
             if (_playerEntity.IsAlive() == false)
             {
                 _playerEntity = Context.World.Create(
-                    new Battle.ECS.Component.Player(0),
+                    new Battle.ECS.Component.PlayerComp(0),
                     new Position(position),
                     new Rotation(rotation),
                     new ViewReference(viewObj, view),

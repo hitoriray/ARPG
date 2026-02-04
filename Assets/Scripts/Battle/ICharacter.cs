@@ -1,6 +1,6 @@
 ﻿using Config;
 using Manager;
-using Player.Animation;
+using RayAnimation;
 using UnityEngine;
 
 public interface ICharacter : IHitTarget

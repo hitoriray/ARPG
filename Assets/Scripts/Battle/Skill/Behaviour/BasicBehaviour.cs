@@ -1,6 +1,6 @@
-﻿using Player;
+﻿using RayPlayer;
 using UnityEngine;
-using Player.State;
+using RayPlayerState;
 
 namespace Skill.Behaviour
 {

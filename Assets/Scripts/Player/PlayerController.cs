@@ -8,11 +8,11 @@ using Data;
 using GOAP;
 using JKFrame;
 using Manager;
-using Player.Animation;
-using Player.State;
+using RayAnimation;
+using RayPlayerState;
 using UnityEngine;
 
-namespace Player
+namespace RayPlayer
 {
     public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter, IGOAPOwner
     {
@@ -78,12 +78,12 @@ namespace Player
         {
             var prevState = currentState;
             currentState = newState;
-            // Debug.Log($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
+            RayDebug.Trace($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
             
             switch (currentState)
             {
                 case PlayerState.Idle:
-                    stateMachine.ChangeState<PlayerIdleState>(reCurrstate);
+                    stateMachine.ChangeState<RayPlayerState.PlayerIdleState>(reCurrstate);
                     break;
                 case PlayerState.Move:
                     stateMachine.ChangeState<PlayerMoveState>(reCurrstate);

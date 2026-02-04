@@ -1,7 +1,7 @@
 ﻿using JKFrame;
 using UnityEngine;
 
-namespace Player.State
+namespace RayPlayerState
 {
     public class PlayerIdleState : PlayerStateBase
     {

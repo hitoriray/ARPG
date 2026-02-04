@@ -4,7 +4,7 @@ using Arch.Extend.System;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using FixMath;
-using Player;
+using RayPlayer;
 using UnityEngine;
 
 namespace Battle.ECS.System

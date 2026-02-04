@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
-using Player;
+using RayPlayer;
 using Sirenix.OdinInspector;
 using Skill.Behaviour;
 using UnityEngine;

@@ -7,7 +7,7 @@ using Config;
 using Data;
 using Manager;
 using Cysharp.Threading.Tasks;
-using Player.Animation;
+using RayAnimation;
 
 namespace UI
 {

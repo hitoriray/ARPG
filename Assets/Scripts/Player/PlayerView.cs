@@ -4,10 +4,10 @@ using Battle.ECS;
 using Config;
 using Data;
 using JKFrame;
-using Player.Animation;
+using RayAnimation;
 using UnityEngine;
 
-namespace Player
+namespace RayPlayer
 {
     /// <summary>
     /// 玩家视图

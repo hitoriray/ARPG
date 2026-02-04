@@ -7,7 +7,7 @@ using Manager;
 using UI;
 using UnityEngine;
 
-namespace Player
+namespace RayPlayer
 {
     public class PlayerManager : SingletonMono<PlayerManager>
     {

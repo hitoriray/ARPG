@@ -1,10 +1,10 @@
 ﻿using JKFrame;
-using Player.Animation;
-using UnityEngine;
+using RayAnimation;
+using RayPlayer;
 
-namespace Player.State
+namespace RayPlayerState
 {
-    public abstract class PlayerStateBase : StateBase
+    public abstract class PlayerStateBase : JKFrame.StateBase
     {
         protected PlayerController PlayerController;
         protected AnimationController animationController;

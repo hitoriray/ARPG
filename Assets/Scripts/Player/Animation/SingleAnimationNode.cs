@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace Player.Animation
+namespace RayAnimation
 {
     /// <summary>
     /// 单个动画节点
