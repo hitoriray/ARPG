@@ -45,36 +45,38 @@ namespace Editor
             // 获取所有曲线绑定
             EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
             bool modified = false;
+            System.Text.StringBuilder log = new System.Text.StringBuilder();
 
             foreach (var binding in bindings)
             {
-                // 查找空路径（根运动）的位置曲线
-                if (string.IsNullOrEmpty(binding.path))
+                // 修复 Root 骨骼的位移曲线（使结束位置回到起始位置）
+                if (binding.path == "Root" && 
+                    (binding.propertyName == "m_LocalPosition.x" || 
+                     binding.propertyName == "m_LocalPosition.z"))
                 {
-                    if (binding.propertyName == "m_LocalPosition.x" ||
-                        binding.propertyName == "m_LocalPosition.z")
+                    AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, binding);
+                    if (curve != null && curve.length > 1)
                     {
-                        AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, binding);
-                        if (curve != null && curve.length > 1)
+                        Keyframe firstKey = curve.keys[0];
+                        Keyframe lastKey = curve.keys[curve.length - 1];
+                        
+                        // 检查结束值是否与起始值不同
+                        if (Mathf.Abs(lastKey.value - firstKey.value) > 0.01f)
                         {
-                            // 修改最后一个关键帧的值为 0
-                            Keyframe lastKey = curve.keys[curve.length - 1];
-                            float originalValue = lastKey.value;
+                            log.AppendLine($"修复 {binding.path}.{binding.propertyName}:");
+                            log.AppendLine($"  起始值: {firstKey.value}");
+                            log.AppendLine($"  结束值: {lastKey.value} -> {firstKey.value}");
                             
-                            if (Mathf.Abs(originalValue) > 0.001f)
-                            {
-                                // 设置最后一帧的值为 0，斜率也设为 0
-                                curve.MoveKey(curve.length - 1, new Keyframe(
-                                    lastKey.time,
-                                    0f,  // 值设为 0
-                                    0f,  // inTangent 设为 0
-                                    0f   // outTangent 设为 0
-                                ));
-                                
-                                AnimationUtility.SetEditorCurve(clip, binding, curve);
-                                Debug.Log($"[FixAttack03] 修复 {binding.propertyName}: {originalValue} -> 0");
-                                modified = true;
-                            }
+                            // 设置最后一帧的值为第一帧的值
+                            curve.MoveKey(curve.length - 1, new Keyframe(
+                                lastKey.time,
+                                firstKey.value,  // 回到起始位置
+                                0f,              // inTangent 设为 0
+                                0f               // outTangent 设为 0
+                            ));
+                            
+                            AnimationUtility.SetEditorCurve(clip, binding, curve);
+                            modified = true;
                         }
                     }
                 }
@@ -84,11 +86,14 @@ namespace Editor
             {
                 EditorUtility.SetDirty(clip);
                 AssetDatabase.SaveAssets();
-                EditorUtility.DisplayDialog("成功", "动画已修复！Z 轴结束位移已设为 0。", "确定");
+                Debug.Log($"[FixAttack03] 修复完成:\n{log}");
+                EditorUtility.DisplayDialog("成功", $"动画已修复！\n\n{log}", "确定");
             }
             else
             {
-                EditorUtility.DisplayDialog("提示", "未找到需要修复的曲线，或动画已经是正确的。", "确定");
+                EditorUtility.DisplayDialog("提示", 
+                    "未找到需要修复的曲线。\n\n可能的原因：\n- 动画已经是正确的\n- Root 骨骼的位移曲线起始和结束值相同", 
+                    "确定");
             }
         }
     }
