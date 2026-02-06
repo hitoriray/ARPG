@@ -48,17 +48,32 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Behaviour
-      Entry: 6
+      Entry: 7
+      Data: 2|Skill.Behaviour.AnbiSkill1Behaviour, Assembly-CSharp
+    - Name: standingTime
+      Entry: 4
+      Data: 5
+    - Name: 
+      Entry: 8
       Data: 
-  skillName: 
-  skillIcon: {fileID: 0}
-  skillIcons: []
+  skillId: 100202
+  skillName: "\u6280\u80FD1"
+  skillIcon: {fileID: 21300000, guid: 8b3a30b86c0bda44ba6d101f45b2664c, type: 3}
+  skillIcons:
+  - {fileID: 21300000, guid: 8b3a30b86c0bda44ba6d101f45b2664c, type: 3}
+  - {fileID: 21300000, guid: 0757ceadc3cfcc846be192f564c38a5f, type: 3}
+  - {fileID: 21300000, guid: 2f26d21f6fe2bf645b95bcfaa10dfbf7, type: 3}
+  - {fileID: 21300000, guid: 16d0d46fab89616449729ef216887c7f, type: 3}
   skillDescription: 
-  skillPointRequired: 0
-  maxLv: 0
-  canRelease: 0
-  basicCdTime: 0
-  basicAttackValue: 0
+  skillPointRequired: 10
+  maxLv: 10
+  canRelease: 1
+  basicCdTime: 5
+  basicAttackValue: 100
   cdTimeMultiplierPerLv: 0
   attackValueMultiplierPerLv: 0
-  Clips: []
+  Clips:
+  - {fileID: 11400000, guid: a58fd5506e7f5964587cfb7315aee1ae, type: 2}
+  - {fileID: 11400000, guid: 7a8dbab3cd915214da56098644854d66, type: 2}
+  - {fileID: 11400000, guid: 95bf4dea6e5735847aacef62328790fa, type: 2}
+  - {fileID: 11400000, guid: 80627d497d9b39242ab2bdb20fcb0b51, type: 2}

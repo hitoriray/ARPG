@@ -48,17 +48,31 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Behaviour
-      Entry: 6
+      Entry: 7
+      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
+    - Name: standAttackCount
+      Entry: 3
+      Data: 2
+    - Name: perfectClipIndex
+      Entry: 3
+      Data: -1
+    - Name: 
+      Entry: 8
       Data: 
+  skillId: 100201
   skillName: "\u666E\u653B"
-  skillIcon: {fileID: 0}
-  skillIcons: []
+  skillIcon: {fileID: 21300000, guid: 11e106cd2cbc5fa4fa8863eedb8b05b8, type: 3}
+  skillIcons:
+  - {fileID: 21300000, guid: 11e106cd2cbc5fa4fa8863eedb8b05b8, type: 3}
+  - {fileID: 21300000, guid: d36c0b541b0e99e4abccba2c6e568375, type: 3}
   skillDescription: 
-  skillPointRequired: 0
-  maxLv: 0
-  canRelease: 0
+  skillPointRequired: 10
+  maxLv: 10
+  canRelease: 1
   basicCdTime: 0
-  basicAttackValue: 0
+  basicAttackValue: 10
   cdTimeMultiplierPerLv: 0
   attackValueMultiplierPerLv: 0
-  Clips: []
+  Clips:
+  - {fileID: 11400000, guid: 9f208b6e44b40ef47aa80a35d76dcb0f, type: 2}
+  - {fileID: 11400000, guid: 5790902d4f0d2814ea1cfb02dbcad241, type: 2}

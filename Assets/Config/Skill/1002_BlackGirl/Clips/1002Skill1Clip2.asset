@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 133766a61347478b99d712cfedacc7dc, type: 3}
-  m_Name: 1002Basic1
+  m_Name: 1002Skill1Clip2
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 7400000, guid: 3f09d14717ccaa449abd70ea7b429d78, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -37,7 +38,34 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
       Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 3|Config.SkillAnimationEvent, Assembly-CSharp
+    - Name: AnimationClip
+      Entry: 10
+      Data: 0
+    - Name: ApplyRootMotion
+      Entry: 5
+      Data: true
+    - Name: TransitionTime
+      Entry: 4
+      Data: 0.25
+    - Name: DurationFrame
+      Entry: 3
+      Data: 30
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -49,10 +77,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillAudioData
       Entry: 7
-      Data: 3|Config.SkillAudioData, Assembly-CSharp
+      Data: 4|Config.SkillAudioData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[Config.SkillAudioEvent, Assembly-CSharp]],
+      Data: 5|System.Collections.Generic.List`1[[Config.SkillAudioEvent, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -68,10 +96,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillEffectData
       Entry: 7
-      Data: 5|Config.SkillEffectData, Assembly-CSharp
+      Data: 6|Config.SkillEffectData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 6|System.Collections.Generic.List`1[[Config.SkillEffectEvent, Assembly-CSharp]],
+      Data: 7|System.Collections.Generic.List`1[[Config.SkillEffectEvent, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -87,10 +115,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillAttackDetectionData
       Entry: 7
-      Data: 7|Config.SkillAttackDetectionData, Assembly-CSharp
+      Data: 8|Config.SkillAttackDetectionData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 8|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
+      Data: 9|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
         Assembly-CSharp]], mscorlib
     - Name: 
       Entry: 12
@@ -106,17 +134,83 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 9|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 10|Config.SkillCustomEventData, Assembly-CSharp
     - Name: FrameData
       Entry: 7
-      Data: 10|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
+      Data: 11|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 9
       Data: 2
     - Name: 
       Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 10
+    - Name: $v
+      Entry: 7
+      Data: 12|Config.SkillCustomEvent, Assembly-CSharp
+    - Name: EventType
+      Entry: 3
+      Data: 1
+    - Name: CustomEventName
+      Entry: 1
+      Data: 
+    - Name: IntArg
+      Entry: 3
       Data: 0
+    - Name: FloatArg
+      Entry: 4
+      Data: 0
+    - Name: StringArg
+      Entry: 6
+      Data: 
+    - Name: ObjectArg
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 21
+    - Name: $v
+      Entry: 7
+      Data: 13|Config.SkillCustomEvent, Assembly-CSharp
+    - Name: EventType
+      Entry: 3
+      Data: 8
+    - Name: CustomEventName
+      Entry: 1
+      Data: 
+    - Name: IntArg
+      Entry: 3
+      Data: 0
+    - Name: FloatArg
+      Entry: 4
+      Data: 0
+    - Name: StringArg
+      Entry: 6
+      Data: 
+    - Name: ObjectArg
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: 
       Entry: 13
       Data: 
@@ -127,5 +221,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SkillName: 
-  FrameCount: 437
+  FrameCount: 30
   FrameRate: 30

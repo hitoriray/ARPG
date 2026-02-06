@@ -33,10 +33,10 @@ namespace Data
         /// </summary>
         public static void CreateArchive(int initCharacterId = 1001)
         {
-            if (HasArchive)
-            {
+            // if (HasArchive)
+            // {
                 SaveSystem.DeleteAllSaveItem();
-            }
+            // }
             SaveSystem.CreateSaveItem();
             _hasArchive = true; // 手动更新状态
             
@@ -75,6 +75,7 @@ namespace Data
                 SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
             };
             skillDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData { lv = 1 });
+            skillDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData { lv = 1 });
             GameData.CharacterSkillsDict.Dictionary.Add(initCharacterId, skillDatas);
             // 初始化技能快捷栏
             var shortcutData = new ShortcutSkillSlotData()
