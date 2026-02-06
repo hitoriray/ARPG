@@ -1,5 +1,3 @@
-using UnityEngine.Rendering;
-
 public class StateMachineBase
 {
     public IState currentState;
@@ -16,6 +14,7 @@ public class StateMachineBase
         currentState = targetState;
         currentState?.OnEnter();
     }
+
     /// <summary>
     /// 动画状态退出的接口
     /// </summary>
@@ -23,6 +22,7 @@ public class StateMachineBase
     {
         currentState.OnAnimationEnd();
     }
+
     /// <summary>
     /// Update状态API
     /// </summary>
@@ -30,6 +30,7 @@ public class StateMachineBase
     {
         currentState?.OnUpdate();
     }
+
     /// <summary>
     /// 按动画帧来更新
     /// </summary>
@@ -37,5 +38,4 @@ public class StateMachineBase
     {
         currentState?.OnAnimationUpdate();
     }
-
 }

@@ -3,17 +3,17 @@
 public class PlayerJumpState : PlayerMovementState
 {
     PlayerJumpFallAndLandData jumpFallAndLandData;
-
     
     public PlayerJumpState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         jumpFallAndLandData = playerSO.playerMovementData.PlayerJumpFallAndLandData;
     }
+    
     public override void OnEnter()
     {
         base.OnEnter();
         reusableData.currentInertialVelocity = GetInertialVelocity();
-        Debug.Log("惯性速度：" + reusableData.currentInertialVelocity / Time.deltaTime);
+        RayDebug.Log("惯性速度：" + reusableData.currentInertialVelocity / Time.deltaTime);
         reusableData.currentInertialVelocity.y = 0;
 
         player.ChangeVerticalSpeed(ToolFunction.GetJumpInitVelocity(0.8f, player.gravity));
@@ -53,12 +53,9 @@ public class PlayerJumpState : PlayerMovementState
         UpdateRotation(false,0,true,2);
     }
 
- 
-
     public override void OnExit()
     {
         base.OnExit();
         player.ignoreRootMotionY = false;
     }
-  
 }

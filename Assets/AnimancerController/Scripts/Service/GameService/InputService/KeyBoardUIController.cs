@@ -15,6 +15,7 @@ public class KeyboardUIController : MonoBehaviour
             firstSelected.Select();
         }
     }
+
     void Update()
     {
         // 检查是否有选中的 UI 元素
@@ -36,7 +37,8 @@ public class KeyboardUIController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             // 处理确认操作
-            ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
+            ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, new BaseEventData(eventSystem),
+                ExecuteEvents.submitHandler);
         }
     }
 }

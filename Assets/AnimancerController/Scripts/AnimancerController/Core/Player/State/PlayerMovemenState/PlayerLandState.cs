@@ -1,20 +1,14 @@
-﻿/*************************************************
-作者: HuHu
-邮箱: 3112891874@qq.com
-功能: 着陆状态
-*************************************************/
-using Animancer;
-
+﻿using Animancer;
 
 public class PlayerLandState : PlayerMovementState
 {
     public PlayerLandState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
+    
     public override void OnEnter()
     {
         base.OnEnter();
-        //
         if (player.isOnGround.Value)
         {
             AnimancerState state = null;

@@ -1,5 +1,5 @@
 using UnityEngine;
-[CreateAssetMenu(menuName = "Asset/PlayerSO")]
+[CreateAssetMenu(menuName = "Config/PlayerSO")]
 public class PlayerSO : ScriptableObject
 {
     [field:SerializeField]  public PlayerMovementData playerMovementData { get; private set; }

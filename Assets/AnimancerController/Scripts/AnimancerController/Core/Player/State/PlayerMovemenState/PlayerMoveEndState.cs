@@ -1,15 +1,16 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMoveEndState : PlayerMovementState
 {
     public PlayerMoveEndData moveEndData;
     float angle;
     float speed;
+
     public PlayerMoveEndState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         moveEndData = playerSO.playerMovementData.PlayerMoveEndData;
     }
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -20,14 +21,15 @@ public class PlayerMoveEndState : PlayerMovementState
         {
             return;
         }
-       //判断是站还是蹲
-       CheckLeftOrRightFoot();
 
+        //判断是站还是蹲
+        CheckLeftOrRightFoot();
     }
 
     private bool CheckWall()
     {
-        if (Physics.Raycast(player.transform.position + Vector3.up, player.transform.forward,out var hitInfo,reusableData.checkWallDistance,player.whatIsGround))
+        if (Physics.Raycast(player.transform.position + Vector3.up, player.transform.forward, out var hitInfo,
+                reusableData.checkWallDistance, player.whatIsGround))
         {
             //还有距离判断
             float distance = Vector3.Distance(player.transform.position + Vector3.up, hitInfo.point);
@@ -37,6 +39,7 @@ public class PlayerMoveEndState : PlayerMovementState
                 return true;
             }
         }
+
         return false;
     }
 
@@ -48,7 +51,7 @@ public class PlayerMoveEndState : PlayerMovementState
 
         Vector3 leftFootLocalPos = player.transform.InverseTransformPoint(leftFoot.position);
         Vector3 rightFootLocalPos = player.transform.InverseTransformPoint(rightFoot.position);
-        
+
         if (leftFootLocalPos.z > rightFootLocalPos.z)
         {
             Debug.Log("左腿在前");
@@ -59,7 +62,6 @@ public class PlayerMoveEndState : PlayerMovementState
             Debug.Log("右腿在前");
             animancer.Play(moveEndData.moveEnd_R).Events(player).OnEnd = OnStateDefaultEnd;
         }
-      
     }
 
     protected override void AddEventListening()
@@ -70,6 +72,7 @@ public class PlayerMoveEndState : PlayerMovementState
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
         player.isOnGround.ValueChanged += OnCheckFall;
     }
+
     protected override void RemoveEventListening()
     {
         base.RemoveEventListening();
@@ -78,11 +81,11 @@ public class PlayerMoveEndState : PlayerMovementState
         inputServer.inputMap.Player.Crouch.started -= OnCrouch;
         player.isOnGround.ValueChanged -= OnCheckFall;
     }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
         reusableData.rotationValueParameter.TargetValue = angle;
         reusableData.speedValueParameter.TargetValue = speed;
     }
-
 }

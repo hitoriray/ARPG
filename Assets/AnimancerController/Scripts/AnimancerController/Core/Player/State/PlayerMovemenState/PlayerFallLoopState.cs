@@ -7,10 +7,11 @@ public class PlayerFallLoopState : PlayerMovementState
     {
         jumpFallAndLandData = playerSO.playerMovementData.PlayerJumpFallAndLandData;
     }
+    
     public override void OnEnter()
     {
         base.OnEnter();
-        //this.Log("惯性速度：" + reusableData.currentInertialVelocity / Time.deltaTime);
+        RayDebug.Log("惯性速度：" + reusableData.currentInertialVelocity / Time.deltaTime);
 
         player.ignoreRootMotionY = false;
         animancer.Play(jumpFallAndLandData.fallStart).Events(player).OnEnd = OnFallLoop;

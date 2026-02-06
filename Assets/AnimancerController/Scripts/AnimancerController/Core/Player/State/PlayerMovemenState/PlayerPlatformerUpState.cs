@@ -1,20 +1,15 @@
-﻿/*************************************************
-作者: HuHu
-邮箱: 3112891874@qq.com
-功能: 平台跳跃状态，强化运动手感
-*************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/// <summary>
+/// 平台跳跃状态，强化运动手感
+/// </summary>
 public class PlayerPlatformerUpState : PlayerMovementState
 {
     PlayerJumpFallAndLandData jumpFallAndLandData;
+
     public PlayerPlatformerUpState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         jumpFallAndLandData = playerSO.playerMovementData.PlayerJumpFallAndLandData;
     }
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -28,8 +23,7 @@ public class PlayerPlatformerUpState : PlayerMovementState
 
         reusableData.currentMidInAirMultiplier = 2;
 
-        reusableData.isInPlaceJump =false;
-
+        reusableData.isInPlaceJump = false;
     }
 
     private void OnUpStartEnd()
@@ -43,6 +37,7 @@ public class PlayerPlatformerUpState : PlayerMovementState
         player.ignoreRootMotionY = false;
         reusableData.currentMidInAirMultiplier = 0.6f;
     }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -50,10 +45,10 @@ public class PlayerPlatformerUpState : PlayerMovementState
         {
             animancer.Play(jumpFallAndLandData.platFormerDownLoop);
         }
+
         reusableLogic.InAirMoveCheck(GetTargetDir());
         InAirMove();
         UpdateRotation(false, 0, true, 2.2f);
-
     }
 
     protected override void AddEventListening()
@@ -62,6 +57,7 @@ public class PlayerPlatformerUpState : PlayerMovementState
         //检测着陆
         player.isOnGround.ValueChanged += OnFallToLand;
     }
+
     protected override void RemoveEventListening()
     {
         base.RemoveEventListening();
@@ -69,5 +65,4 @@ public class PlayerPlatformerUpState : PlayerMovementState
         player.isOnGround.ValueChanged -= OnFallToLand;
         reusableData.inputInterruptionCB = null;
     }
-
 }

@@ -5,10 +5,12 @@ public class PlayerMoveLoopState : PlayerMovementState
 {
     PlayerMoveLoopData moveLoopData;
     int tid;
+
     public PlayerMoveLoopState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         moveLoopData = playerSO.playerMovementData.PlayerMoveLoopData;
     }
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -16,7 +18,6 @@ public class PlayerMoveLoopState : PlayerMovementState
         OnCheckInput();
         reusableData.rotationValueParameter.CurrentValue = 0;
     }
-
 
     public override void OnUpdate()
     {
@@ -30,6 +31,7 @@ public class PlayerMoveLoopState : PlayerMovementState
         {
             UpdateRotation(true, 0.4f, true, 1.4f);
         }
+
         UpdateSpeed();
         if (reusableData.speedValueParameter.CurrentValue <= 1)
         {
@@ -37,19 +39,21 @@ public class PlayerMoveLoopState : PlayerMovementState
         }
         else
         {
-            reusableData.checkWallDistance = 0.4f*reusableData.speedValueParameter.CurrentValue;
+            reusableData.checkWallDistance = 0.4f * reusableData.speedValueParameter.CurrentValue;
         }
-         
-        
+
+
         //检测前方有没有障碍物
-        Debug.DrawLine(player.transform.position + Vector3.up, player.transform.position + Vector3.up + player.transform.forward* reusableData.checkWallDistance, Color.yellow, 0.05f);
-        if (Physics.Raycast(player.transform.position + Vector3.up, player.transform.forward,out var hitInfo, reusableData.checkWallDistance, player.whatIsGround))
+        Debug.DrawLine(player.transform.position + Vector3.up,
+            player.transform.position + Vector3.up + player.transform.forward * reusableData.checkWallDistance,
+            Color.yellow, 0.05f);
+        if (Physics.Raycast(player.transform.position + Vector3.up, player.transform.forward, out var hitInfo,
+                reusableData.checkWallDistance, player.whatIsGround))
         {
             if (Mathf.Abs(ToolFunction.GetDeltaAngle(player.transform.forward, -hitInfo.normal)) < 40)
             {
                 playerStateMachine.ChangeState(playerStateMachine.moveEndState);
             }
-         
         }
     }
 
@@ -61,6 +65,7 @@ public class PlayerMoveLoopState : PlayerMovementState
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
         player.isOnGround.ValueChanged += OnCheckFall;
     }
+
     protected override void RemoveEventListening()
     {
         base.RemoveEventListening();
@@ -69,11 +74,13 @@ public class PlayerMoveLoopState : PlayerMovementState
         inputServer.inputMap.Player.Crouch.started -= OnCrouch;
         player.isOnGround.ValueChanged -= OnCheckFall;
     }
+
     public override void OnExit()
     {
         base.OnExit();
         timerServer.RemoveTimer(tid);
     }
+
     private void OnCheckMoveEnd(InputAction.CallbackContext context)
     {
         OnCheckInput();
@@ -85,6 +92,7 @@ public class PlayerMoveLoopState : PlayerMovementState
         {
             return;
         }
+
         playerStateMachine.ChangeState(playerStateMachine.moveEndState);
     }
 }

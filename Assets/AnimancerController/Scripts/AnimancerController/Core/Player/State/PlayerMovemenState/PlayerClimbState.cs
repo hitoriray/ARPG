@@ -91,7 +91,7 @@ public class PlayerClimbState : PlayerMovementState
         {
             return;
         }
-        Debug.Log("开启取消攀爬动作检测！");
+        RayDebug.Log("开启取消攀爬动作检测！");
         cancelClimbTask = () =>
         {
             if (animancerState.NormalizedTime >= animationSettings.targetMatchTime.y + animationSettings.enableCCTimeOffset)
@@ -101,7 +101,7 @@ public class PlayerClimbState : PlayerMovementState
             float angle = GetTargetAngle();
             if (inputServer.Move!=Vector2.zero && Mathf.Abs(angle) > 100)
             {
-                Debug.Log("开始取消攀爬");
+                RayDebug.Log("开始取消攀爬");
                 float currentTime = animancerState.NormalizedTime;
                 animancerState.Speed = -1;
                 animancerState.Events(player).Add(animancerEventList, new AnimancerEvent(currentTime - 0.12f, FinishCancelClimb));
@@ -112,7 +112,7 @@ public class PlayerClimbState : PlayerMovementState
 
     private void FinishCancelClimb()
     {
-        Debug.Log("完成取消攀爬");
+        RayDebug.Log("完成取消攀爬");
         ResetCC();
         playerStateMachine.ChangeState(playerStateMachine.idleState);
     }
@@ -121,11 +121,11 @@ public class PlayerClimbState : PlayerMovementState
     protected override void OnInputInterruption()
     {
         base.OnInputInterruption();
-        Debug.Log("开启移动检测！");
+        RayDebug.Log("开启移动检测！");
     }
     private void ResetCC()
     {
-        Debug.Log("恢复CC");
+        RayDebug.Log("恢复CC");
         player.disEnableGravity = false;
         player.controller.enabled = true; 
         player.applyFullRootMotion = false;

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Animator),typeof(CharacterController))]
 public class CharacterBase : MonoBehaviour
@@ -43,9 +42,7 @@ public class CharacterBase : MonoBehaviour
         CharacterVerticalVelocity();
         ResetHorizontalVelocity();
     }
-
-  
-
+    
     #region 重力的处理
     /// <summary>
     /// 地面检测

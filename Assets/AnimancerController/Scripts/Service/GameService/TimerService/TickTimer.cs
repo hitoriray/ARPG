@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+
 //毫秒级定时器
 public class TickTimer : GameTimerBase
 {
@@ -8,30 +9,35 @@ public class TickTimer : GameTimerBase
     {
         public int tid;
         public Action tack;
+
         public TaskCBPack(int tid, Action tack)
         {
             this.tid = tid;
             this.tack = tack;
         }
     }
+
     private readonly ConcurrentDictionary<int, TimerTask> taskDic;
     private readonly ConcurrentQueue<TaskCBPack> taskCBPackQue;
     private readonly bool SetHandle;
-    private readonly DateTime startDateTime = new DateTime(1970,1,1,1,0,0,0,0);
+    private readonly DateTime startDateTime = new DateTime(1970, 1, 1, 1, 0, 0, 0, 0);
     private readonly object TimerLock = new object();
     private Thread thread;
     private readonly CancellationTokenSource tokenSource;
-    public TickTimer(int interval=0,bool setHandle = false)
+
+    public TickTimer(int interval = 0, bool setHandle = false)
     {
         SetHandle = setHandle;
         if (setHandle)
         {
             taskCBPackQue = new ConcurrentQueue<TaskCBPack>();
         }
+
         taskDic = new ConcurrentDictionary<int, TimerTask>();
         if (interval != 0)
         {
-           tokenSource = new CancellationTokenSource();
+            tokenSource = new CancellationTokenSource();
+
             void StartTime()
             {
                 try
@@ -42,11 +48,12 @@ public class TickTimer : GameTimerBase
                         Thread.Sleep(interval);
                     }
                 }
-                catch(ThreadAbortException e )
+                catch (ThreadAbortException e)
                 {
-                    warnFunc?.Invoke("TickTime StartTime Thread Abort Failed"+e);
+                    warnFunc?.Invoke("TickTime StartTime Thread Abort Failed" + e);
                 }
             }
+
             thread = new Thread(new ThreadStart(StartTime));
             thread.Start(); // 启动线程
         }
@@ -62,6 +69,7 @@ public class TickTimer : GameTimerBase
             {
                 continue;
             }
+
             ++timerTask.countIndex;
             if (timerTask.count > 0)
             {
@@ -83,6 +91,7 @@ public class TickTimer : GameTimerBase
             }
         }
     }
+
     public void UpdateCBTask()
     {
         if (taskCBPackQue != null)
@@ -101,18 +110,19 @@ public class TickTimer : GameTimerBase
     {
         if (taskDic.TryRemove(tid, out TimerTask timerTask))
         {
-            CallTaskCB(tid,timerTask.taskCB);
+            CallTaskCB(tid, timerTask.taskCB);
         }
         else
         {
             errorFunc($"remove timerTask tid:{tid} failed");
         }
     }
-    private void CallTaskCB(int tid,Action taskCB)
+
+    private void CallTaskCB(int tid, Action taskCB)
     {
         if (SetHandle)
         {
-            taskCBPackQue.Enqueue(new TaskCBPack(tid,taskCB));
+            taskCBPackQue.Enqueue(new TaskCBPack(tid, taskCB));
         }
         else
         {
@@ -125,22 +135,22 @@ public class TickTimer : GameTimerBase
         int tid = GenerateTid();
         double startTime = GetNewUTCMilliSecond();
         double destTime = startTime + time;
-        TimerTask timerTask = new TimerTask(tid,time,taskCB,cancelCB,count,startTime,destTime);
+        TimerTask timerTask = new TimerTask(tid, time, taskCB, cancelCB, count, startTime, destTime);
         if (taskDic.TryAdd(tid, timerTask))
         {
             return tid;
         }
         else
         {
-
             return -1;
         }
     }
+
     public override bool DeleteTimer(int tid)
     {
-        if (taskDic.TryRemove(tid,out var timerTask))
+        if (taskDic.TryRemove(tid, out var timerTask))
         {
-            if (SetHandle&&timerTask != null)
+            if (SetHandle && timerTask != null)
             {
                 taskCBPackQue.Enqueue(new TaskCBPack(tid, timerTask.cancelCB));
             }
@@ -148,34 +158,36 @@ public class TickTimer : GameTimerBase
             {
                 timerTask.cancelCB?.Invoke();
             }
+
             return true;
         }
         else
         {
-          //  errorFunc?.Invoke($"Tid {tid} remove in  tackDic Failed");
+            //  errorFunc?.Invoke($"Tid {tid} remove in  tackDic Failed");
             return false;
         }
     }
 
     public override void ResetTimer()
     {
-       taskDic.Clear();
+        taskDic.Clear();
         if (tokenSource != null)
         {
             tokenSource.Cancel();
 
-            if (thread != null&&thread.IsAlive)
+            if (thread != null && thread.IsAlive)
             {
                 thread.Join();
             }
         }
-      
     }
+
     private double GetNewUTCMilliSecond()
     {
         TimeSpan ts = DateTime.UtcNow - startDateTime;
         return ts.TotalMilliseconds;
     }
+
     protected override int GenerateTid()
     {
         lock (taskDic)
@@ -187,6 +199,7 @@ public class TickTimer : GameTimerBase
                 {
                     tid = 0;
                 }
+
                 if (!taskDic.ContainsKey(tid))
                 {
                     return tid;
@@ -194,6 +207,7 @@ public class TickTimer : GameTimerBase
             }
         }
     }
+
     class TimerTask
     {
         public int tid;
@@ -205,7 +219,9 @@ public class TickTimer : GameTimerBase
         public double startTime;
 
         public long countIndex;
-        public TimerTask(int tid, int time, Action taskCB, Action cancelCB, int count,double startTime, double destTime)
+
+        public TimerTask(int tid, int time, Action taskCB, Action cancelCB, int count, double startTime,
+            double destTime)
         {
             this.tid = tid;
             this.time = time;
@@ -214,7 +230,7 @@ public class TickTimer : GameTimerBase
             this.count = count;
             this.destTime = destTime;
             this.startTime = startTime;
-            countIndex = 0; 
+            countIndex = 0;
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-public abstract class GameTimerBase 
+public abstract class GameTimerBase
 {
     public Action<string> logFunc;
     public Action<string> warnFunc;

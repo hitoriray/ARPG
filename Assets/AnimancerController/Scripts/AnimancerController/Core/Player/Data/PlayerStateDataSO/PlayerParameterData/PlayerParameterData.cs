@@ -12,5 +12,4 @@ public class PlayerParameterData
     [field: SerializeField] public StringAsset Lock_Y_ValueParameter { get; set; }
     [field: SerializeField] public StringAsset moveInterruptEvent { get; set; }
     [field: SerializeField] public StringAsset cancelClimbEvent { get; set; }
-
  }

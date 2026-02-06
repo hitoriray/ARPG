@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMoveToWallState : PlayerMovementState
@@ -31,9 +26,6 @@ public class PlayerMoveToWallState : PlayerMovementState
         {
             return;
         }
-        else
-        {
-            player.StateMachine.ChangeState(player.StateMachine.moveStartState);
-        }
+        player.StateMachine.ChangeState(player.StateMachine.moveStartState);
     }
 }

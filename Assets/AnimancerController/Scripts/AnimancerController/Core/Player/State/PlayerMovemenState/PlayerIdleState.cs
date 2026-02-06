@@ -1,19 +1,23 @@
 using UnityEngine.InputSystem;
+
 public class PlayerIdleState : PlayerMovementState
 {
     PlayerIdleData idleData;
+
     public PlayerIdleState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         idleData = playerSO.playerMovementData.PlayerIdleData;
     }
+
     public override void OnEnter()
     {
         base.OnEnter();
         reusableData.currentCrouchIdleIndex = -1;
         reusableData.currentStandIdleIndex = -1;
-        reusableLogic.InitIldeState();
+        reusableLogic.InitIdleState();
         reusableLogic.PlayNextState();
     }
+
     protected override void AddEventListening()
     {
         base.AddEventListening();
@@ -24,13 +28,15 @@ public class PlayerIdleState : PlayerMovementState
         //锁敌事件
         reusableData.lockValueParameter.Parameter.OnValueChanged += LockValueChange;
     }
+
     private void LockValueChange(float obj)
     {
-       if (obj == 1||obj==0)//索敌
-       {
+        if (obj == 1 || obj == 0) //索敌
+        {
             playerStateMachine.ChangeState(playerStateMachine.idleState);
-       }
+        }
     }
+
     protected override void RemoveEventListening()
     {
         base.RemoveEventListening();
@@ -40,6 +46,7 @@ public class PlayerIdleState : PlayerMovementState
         player.isOnGround.ValueChanged -= OnCheckFall;
         reusableData.lockValueParameter.Parameter.OnValueChanged -= LockValueChange;
     }
+
     private void MoveStart(InputAction.CallbackContext context)
     {
         playerStateMachine.ChangeState(playerStateMachine.moveStartState);
@@ -51,6 +58,4 @@ public class PlayerIdleState : PlayerMovementState
         UpdateCashVelocity(player.AnimationVelocity);
         UpdateSpeed();
     }
-
-
 }

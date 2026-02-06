@@ -26,6 +26,7 @@ public static class ToolFunction
         // 设置 Image 的颜色
         img.color = newColor;
     }
+
     public static void SetRawImageColorFromVector3(RawImage img, Vector3 colorVector, float alpha)
     {
         if (img == null)
@@ -43,6 +44,7 @@ public static class ToolFunction
         // 设置 Image 的颜色
         img.color = newColor;
     }
+
     public static void SetRawImageColorFromVector3(RawImage img, Color colorVector, float alpha)
     {
         if (img == null)
@@ -68,11 +70,12 @@ public static class ToolFunction
     /// <param name="player"></param>
     /// <param name="toDir"></param>
     /// <returns></returns>
-    public static float GetDeltaAngle(Transform player,float targetAngle)
+    public static float GetDeltaAngle(Transform player, float targetAngle)
     {
         Vector3 targetDir = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
         return GetDeltaAngle(player, targetDir);
     }
+
     /// <summary>
     /// 计算角色正前方和目标方向的夹角,范围（-180，180）
     /// </summary>
@@ -83,6 +86,7 @@ public static class ToolFunction
     {
         return GetDeltaAngle(player.forward, toDir);
     }
+
     /// <summary>
     /// 计算两个向量得夹角，忽略Y向量，范围（-180，180）
     /// </summary>
@@ -94,20 +98,19 @@ public static class ToolFunction
         float playerAngle = Mathf.Atan2(startDir.x, startDir.z) * Mathf.Rad2Deg;
         float targetAngle = Mathf.Atan2(toDir.x, toDir.z) * Mathf.Rad2Deg;
         float angleDelta = Mathf.DeltaAngle(playerAngle, targetAngle);
-        return angleDelta;//正负代表右左
+        return angleDelta; //正负代表右左
     }
+
     /// <summary>
     /// 计算跳跃的初速度
     /// </summary>
     /// <returns></returns>
-    public static float GetJumpInitVelocity(float jumpMaxHeight,float Gravity)
+    public static float GetJumpInitVelocity(float jumpMaxHeight, float Gravity)
     {
         return Mathf.Sqrt(-2 * Gravity * jumpMaxHeight);
     }
 
-    public static void MatchTarget(float startTIme,float endTime)
+    public static void MatchTarget(float startTIme, float endTime)
     {
-
     }
-   
 }

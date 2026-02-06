@@ -1,14 +1,12 @@
-
-
 using UnityEngine;
-/**************************************************************************
-作者: HuHu
-邮箱: 3112891874@qq.com
-功能: 玩家输入控制类，基于InputSystem
-**************************************************************************/
+
+/// <summary>
+/// 玩家输入控制类，基于InputSystem
+/// </summary>
 public class InputService : MonoSingleton<InputService>
 {
     public InputMap inputMap;
+
     protected override void Awake()
     {
         base.Awake();
@@ -16,8 +14,10 @@ public class InputService : MonoSingleton<InputService>
         {
             inputMap = new InputMap();
         }
+
         inputMap.Enable();
     }
+
     private void OnDestroy()
     {
         inputMap.Disable();
@@ -36,7 +36,7 @@ public class InputService : MonoSingleton<InputService>
             //非安卓
 #elif !UNITY_ANDROID
             Vector2 dir = inputMap.Player.Move.ReadValue<Vector2>();
-            bool isShift = inputMap.Player.Shift.ReadValue<float>()!=0;
+            bool isShift = inputMap.Player.Shift.ReadValue<float>() != 0;
 
             if (dir != Vector2.zero && isShift)
             {
@@ -57,6 +57,7 @@ public class InputService : MonoSingleton<InputService>
 #endif
         }
     }
+
     public Vector2 GetMoveVerticalValue
     {
         get
@@ -75,14 +76,11 @@ public class InputService : MonoSingleton<InputService>
         }
     }
 
-    public bool Interactive => inputMap.Player.Interactive.ReadValue<float>()!= 0;
+    public bool Interactive => inputMap.Player.Interactive.ReadValue<float>() != 0;
 
     public bool Shift
     {
-       get
-        {
-           return inputMap.Player.Shift.ReadValue<float>() != 0;
-        }
+        get { return inputMap.Player.Shift.ReadValue<float>() != 0; }
     }
 
     public Vector2 Move
@@ -102,6 +100,7 @@ public class InputService : MonoSingleton<InputService>
             {
                 vector2.x = 0;
             }
+
             if (vector2.y > 0)
             {
                 vector2.y = 1;
@@ -114,9 +113,10 @@ public class InputService : MonoSingleton<InputService>
             {
                 vector2.y = 0;
             }
+
             return vector2;
         }
     }
-    public Vector2 Scroll =>inputMap.Player.Scroll.ReadValue<Vector2>();
 
+    public Vector2 Scroll => inputMap.Player.Scroll.ReadValue<Vector2>();
 }
