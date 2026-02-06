@@ -1,9 +1,9 @@
 using System.Collections;
 using UnityEngine;
 /*************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: Æ½Ì¨ÌøÔ¾½»»¥
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: å¹³å°è·³è·ƒäº¤äº’
 *************************************************/
 
 public class PlatformerUp :MonoBehaviour

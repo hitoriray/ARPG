@@ -9,7 +9,7 @@ public class KeyboardUIController : MonoBehaviour
 
     void Start()
     {
-        // ÉèÖÃ³õÊ¼Ñ¡ÖĞµÄ UI ÔªËØ
+        // è®¾ç½®åˆå§‹é€‰ä¸­çš„ UI å…ƒç´ 
         if (firstSelected != null)
         {
             firstSelected.Select();
@@ -17,13 +17,13 @@ public class KeyboardUIController : MonoBehaviour
     }
     void Update()
     {
-        // ¼ì²éÊÇ·ñÓĞÑ¡ÖĞµÄ UI ÔªËØ
+        // æ£€æŸ¥æ˜¯å¦æœ‰é€‰ä¸­çš„ UI å…ƒç´ 
         if (eventSystem.currentSelectedGameObject == null)
         {
             eventSystem.SetSelectedGameObject(firstSelected.gameObject);
         }
 
-        // ´¦Àí¼üÅÌÊäÈë
+        // å¤„ç†é”®ç›˜è¾“å…¥
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             Selectable next = eventSystem.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
@@ -35,7 +35,7 @@ public class KeyboardUIController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            // ´¦ÀíÈ·ÈÏ²Ù×÷
+            // å¤„ç†ç¡®è®¤æ“ä½œ
             ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
         }
     }

@@ -21,12 +21,12 @@ public class PlayerIdleState : PlayerMovementState
         inputServer.inputMap.Player.Jump.started += OnJumpStart;
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
         player.isOnGround.ValueChanged += OnCheckFall;
-        //ËøµĞÊÂ¼ş
+        //é”æ•Œäº‹ä»¶
         reusableData.lockValueParameter.Parameter.OnValueChanged += LockValueChange;
     }
     private void LockValueChange(float obj)
     {
-       if (obj == 1||obj==0)//Ë÷µĞ
+       if (obj == 1||obj==0)//ç´¢æ•Œ
        {
             playerStateMachine.ChangeState(playerStateMachine.idleState);
        }

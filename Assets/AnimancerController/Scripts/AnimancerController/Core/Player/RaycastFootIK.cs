@@ -2,17 +2,17 @@ using Animancer;
 using Animancer.Units;
 using UnityEngine;
 /**************************************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: ½Å²¿IK
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: è„šéƒ¨IK
 **************************************************************************/
 public class RaycastFootIK : MonoBehaviour
 {
   
-    [SerializeField,Header("ÊÇ·ñ¿ªÆô")] private bool enable = true;
+    [SerializeField,Header("æ˜¯å¦å¼€å¯")] private bool enable = true;
     [SerializeField] private AnimancerComponent _Animancer;
-    [SerializeField,Header("¼ì²âÆğµã"), Meters] private float _RaycastOriginY = 0.1f;
-    [SerializeField,Header("¼ì²âÖÕµã"), Meters] private float _RaycastEndY = -0.2f;
+    [SerializeField,Header("æ£€æµ‹èµ·ç‚¹"), Meters] private float _RaycastOriginY = 0.1f;
+    [SerializeField,Header("æ£€æµ‹ç»ˆç‚¹"), Meters] private float _RaycastEndY = -0.2f;
     [SerializeField] private float _ForwardOffset = 0;
     [SerializeField] LayerMask whatIsGround;
   
@@ -46,7 +46,7 @@ public class RaycastFootIK : MonoBehaviour
 
     private void OnEnableChange(bool obj)
     {
-        Debug.Log("¿ªÆô½Å²¿IK" + obj);
+        Debug.Log("å¼€å¯è„šéƒ¨IK" + obj);
         ApplyAnimatorIK = obj;
     }
 
@@ -97,7 +97,7 @@ public class RaycastFootIK : MonoBehaviour
 
         float distance = _RaycastOriginY - _RaycastEndY;
 
-        // »æÖÆÉäÏß£¨ÔÚSceneÊÓÍ¼ÖĞ¿É¼û£©
+        // ç»˜åˆ¶å°„çº¿ï¼ˆåœ¨Sceneè§†å›¾ä¸­å¯è§ï¼‰
         Debug.DrawRay(position, -localUp * distance, Color.red);
 
         if (Physics.Raycast(position, -localUp, out RaycastHit hit, distance, whatIsGround))

@@ -2,9 +2,9 @@
 
 using UnityEngine;
 /**************************************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: Íæ¼ÒÊäÈë¿ØÖÆÀà£¬»ùÓÚInputSystem
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: ç©å®¶è¾“å…¥æ§åˆ¶ç±»ï¼ŒåŸºäºInputSystem
 **************************************************************************/
 public class InputService : MonoSingleton<InputService>
 {
@@ -24,16 +24,16 @@ public class InputService : MonoSingleton<InputService>
     }
 
     /// <summary>
-    /// ·â×°×ßºÍÅÜÒÔ¼°PCºÍ°²×¿µÄÇø±ğµÄÒÆ¶¯Á¿
+    /// å°è£…èµ°å’Œè·‘ä»¥åŠPCå’Œå®‰å“çš„åŒºåˆ«çš„ç§»åŠ¨é‡
     /// </summary>
     public Vector2 GetMoveHorizontalValue
     {
         get
         {
-            //°²×¿
+            //å®‰å“
 #if UNITY_ANDROID
                 return inputMap.Player.Move.ReadValue<Vector2>();
-            //·Ç°²×¿
+            //éå®‰å“
 #elif !UNITY_ANDROID
             Vector2 dir = inputMap.Player.Move.ReadValue<Vector2>();
             bool isShift = inputMap.Player.Shift.ReadValue<float>()!=0;
@@ -53,7 +53,7 @@ public class InputService : MonoSingleton<InputService>
                 return Vector2.zero;
             }
 #else
-                return 0f; // Ä¬ÈÏÖµ
+                return 0f; // é»˜è®¤å€¼
 #endif
         }
     }

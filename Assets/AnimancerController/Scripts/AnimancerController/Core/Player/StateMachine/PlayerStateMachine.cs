@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 /**************************************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: ÓĞÏŞ×´Ì¬»ú£¬»º´æ×´Ì¬£¬Çı¶¯¸üĞÂ×´Ì¬Àà
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: æœ‰é™çŠ¶æ€æœºï¼Œç¼“å­˜çŠ¶æ€ï¼Œé©±åŠ¨æ›´æ–°çŠ¶æ€ç±»
 **************************************************************************/
 public class PlayerStateMachine : StateMachineBase
 {
-   //»º´æ×´Ì¬
+   //ç¼“å­˜çŠ¶æ€
     public Player player;
     public PlayerIdleState idleState;
     public PlayerMoveStartState moveStartState;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class EventHandlerBase<T>
 {
-    //Ö§³ÖÒ»¸öÊÂ¼şÃûµ«ÓĞ¶à¸öÊÂ¼şµÄ×¢²á¡¢ÇÒÊÂ¼şµÄ´«²ÎÒÀ¾İ¸÷ÀàÊÂ¼şº¯ÊıÀ´Ñ¡Ôñ»òÕß²»Ê¹ÓÃ
+    //æ”¯æŒä¸€ä¸ªäº‹ä»¶åä½†æœ‰å¤šä¸ªäº‹ä»¶çš„æ³¨å†Œã€ä¸”äº‹ä»¶çš„ä¼ å‚ä¾æ®å„ç±»äº‹ä»¶å‡½æ•°æ¥é€‰æ‹©æˆ–è€…ä¸ä½¿ç”¨
     private readonly Dictionary<T, List<Action<object, object>>> eventDic = new Dictionary<T, List<Action<object, object>>>();
    
     private readonly Dictionary<object,List<T>> targetEventDic = new Dictionary<object, List<T>>(); 
@@ -12,27 +12,27 @@ public class EventHandlerBase<T>
     {
         if (!eventDic.ContainsKey(t))
         {
-            //eventDic.Add(t, new List<Action<object, object>>());Ê¹ÓÃË÷ÒıÆ÷£º
+            //eventDic.Add(t, new List<Action<object, object>>());ä½¿ç”¨ç´¢å¼•å™¨ï¼š
             eventDic[t]=new List<Action<object, object>>();
         }
-        //±ÜÃâ´ÓÖØ¸´×¢²áÏàÍ¬µÄÊÂ¼ş
+        //é¿å…ä»é‡å¤æ³¨å†Œç›¸åŒçš„äº‹ä»¶
         List<Action<object,object>> eventList = eventDic[t];
         Action<object, object> checkAction = eventList.Find(i => i == action);
         if (checkAction != null)
         {
-            //ËµÃ÷List´æÔÚ
+            //è¯´æ˜Listå­˜åœ¨
             return;
         }
-        //²»´æÔÚ¾ÍÌí¼ÓÉÏÕâ¸öÊÂ¼ş
+        //ä¸å­˜åœ¨å°±æ·»åŠ ä¸Šè¿™ä¸ªäº‹ä»¶
         eventList.Add(action);
-        //¸üĞÂ´ÓÊôÕßĞÅÏ¢
+        //æ›´æ–°ä»å±è€…ä¿¡æ¯
         object target = action.Target; 
         if (!targetEventDic.ContainsKey(target))
         {
             //targetEventDic.Add(target, new List<T>());
             targetEventDic[target] = new List<T>();
         }
-        //°ÑÊÂ¼şÃûÌí¼Óµ½Õâ¸ö´ÓÊôÕßÁĞ±íÖĞ
+        //æŠŠäº‹ä»¶åæ·»åŠ åˆ°è¿™ä¸ªä»å±è€…åˆ—è¡¨ä¸­
         targetEventDic[target].Add(t);
     }
 
@@ -40,17 +40,17 @@ public class EventHandlerBase<T>
     {
         if (eventDic.ContainsKey(t))
         {
-            //ÏÈ²»×Å¼±ÒÆ³ı
-            //¸üĞÂtarget
+            //å…ˆä¸ç€æ€¥ç§»é™¤
+            //æ›´æ–°target
             List<Action<object,object>> actions = eventDic[t];
             foreach (var action in actions)
             {
                 object target = action.Target;
                 if (target != null && targetEventDic.ContainsKey(target))
                 {
-                    //ÕâÀï¿ÉÄÜ´æÔÚÒ»¸öÎ»ÖÃ×¢²á¶à¸öÍ¬ÃûµÄÊÂ¼ş£¨list»á´æÔÚÖØ¸´ÔªËØ£©
+                    //è¿™é‡Œå¯èƒ½å­˜åœ¨ä¸€ä¸ªä½ç½®æ³¨å†Œå¤šä¸ªåŒåçš„äº‹ä»¶ï¼ˆlistä¼šå­˜åœ¨é‡å¤å…ƒç´ ï¼‰
                     List<T> idList = targetEventDic[target];
-                    idList.RemoveAll(id => id.Equals(t));//¿ÉÒÔÓÃÀ­Ä·´ï±í´ïÊ½
+                    idList.RemoveAll(id => id.Equals(t));//å¯ä»¥ç”¨æ‹‰å§†è¾¾è¡¨è¾¾å¼
                     if (idList.Count == 0)
                     {
                         targetEventDic.Remove(target);

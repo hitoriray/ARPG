@@ -1,6 +1,6 @@
 
 using UnityEngine;
-//ÔÚÎïÌåÏú»ÙÊ±·ÃÎÊ´Î¶ÔÏó×îºÃ¼ÓÒ»¸öNullµÄÅĞ¶Ï£¬·ÀÖ¹³ÌĞòÍË³ö´ÎÎïÌå±»Ïú»Ù
+//åœ¨ç‰©ä½“é”€æ¯æ—¶è®¿é—®æ¬¡å¯¹è±¡æœ€å¥½åŠ ä¸€ä¸ªNullçš„åˆ¤æ–­ï¼Œé˜²æ­¢ç¨‹åºé€€å‡ºæ¬¡ç‰©ä½“è¢«é”€æ¯
 public class MonoSingleton<T>:MonoBehaviour where T : MonoSingleton<T> 
 {
     private static T instance;
@@ -22,7 +22,7 @@ public class MonoSingleton<T>:MonoBehaviour where T : MonoSingleton<T>
     }
     protected virtual void Awake()
     {
-        //Ä¬ÈÏ·Åµ½DontDestroySceneÖĞ
+        //é»˜è®¤æ”¾åˆ°DontDestroySceneä¸­
         if (instance == null)
         {
             instance = (T)this;

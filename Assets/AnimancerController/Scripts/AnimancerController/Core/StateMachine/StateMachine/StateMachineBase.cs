@@ -6,7 +6,7 @@ public class StateMachineBase
     public IState lastState;
 
     /// <summary>
-    /// ×´Ì¬ÇĞ»»µÄAPI
+    /// çŠ¶æ€åˆ‡æ¢çš„API
     /// </summary>
     /// <param name="targetState"></param>
     public virtual void ChangeState(IState targetState)
@@ -17,21 +17,21 @@ public class StateMachineBase
         currentState?.OnEnter();
     }
     /// <summary>
-    /// ¶¯»­×´Ì¬ÍË³öµÄ½Ó¿Ú
+    /// åŠ¨ç”»çŠ¶æ€é€€å‡ºçš„æ¥å£
     /// </summary>
     public void OnAnimationEnd()
     {
         currentState.OnAnimationEnd();
     }
     /// <summary>
-    /// Update×´Ì¬API
+    /// UpdateçŠ¶æ€API
     /// </summary>
     public void OnUpdate()
     {
         currentState?.OnUpdate();
     }
     /// <summary>
-    /// °´¶¯»­Ö¡À´¸üĞÂ
+    /// æŒ‰åŠ¨ç”»å¸§æ¥æ›´æ–°
     /// </summary>
     public void OnAnimationUpdate()
     {

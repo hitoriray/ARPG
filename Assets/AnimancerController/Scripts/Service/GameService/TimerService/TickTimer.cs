@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-//毫秒级定时器
+//姣绾у畾鏃跺櫒
 public class TickTimer : GameTimerBase
 {
     class TaskCBPack
@@ -48,7 +48,7 @@ public class TickTimer : GameTimerBase
                 }
             }
             thread = new Thread(new ThreadStart(StartTime));
-            thread.Start(); // 启动线程
+            thread.Start(); // 鍚姩绾跨▼
         }
     }
 

@@ -2,22 +2,22 @@
 using Animancer;
 using UnityEngine;
 /*************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: Íæ¼Ò¿ØÖÆºËĞÄ×é¼ş
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: ç©å®¶æ§åˆ¶æ ¸å¿ƒç»„ä»¶
 *************************************************/
 [RequireComponent(typeof(AnimancerComponent))]
 public class Player : CharacterBase
 {
     public PlayerSO playerSO;
-    //ÒÆ¶¯ÒµÎñ
+    //ç§»åŠ¨ä¸šåŠ¡
     public  AnimancerComponent animancer { get; private set; }
     public PlayerStateMachine StateMachine { get; private set; }
     public PlayerReusableData ReusableData { get; private set; }
     public PlayerReusableLogic ReusableLogic { get; private set; }
     public Transform camTransform { get; private set; }
 
-    //·şÎñÄ£¿é
+    //æœåŠ¡æ¨¡å—
     public InputService InputService { get; private set; }
     public TimerService TimerService { get; private set; }
 
@@ -31,16 +31,16 @@ public class Player : CharacterBase
         animancer = GetComponent<AnimancerComponent>();
         if (animancer == null)
         {
-            Debug.LogError("Î´Ö¸¶¨Animancer×é¼ş£¬ÎŞ·¨²¥·Å¶¯»­£¡£¡");
+            Debug.LogError("æœªæŒ‡å®šAnimancerç»„ä»¶ï¼Œæ— æ³•æ’­æ”¾åŠ¨ç”»ï¼ï¼");
             return;
         }
-        //´´½¨²ÎÊı
+        //åˆ›å»ºå‚æ•°
         ReusableData = new PlayerReusableData(animancer, playerSO);
-        //´´½¨Âß¼­
+        //åˆ›å»ºé€»è¾‘
         ReusableLogic = new PlayerReusableLogic(this);
-        //´´½¨×´Ì¬»ú
+        //åˆ›å»ºçŠ¶æ€æœº
         StateMachine = new PlayerStateMachine(this);
-        //ÉèÖÃÄ¬ÈÏ¿ªÊ¼×´Ì¬
+        //è®¾ç½®é»˜è®¤å¼€å§‹çŠ¶æ€
         StateMachine.ChangeState(StateMachine.idleState);
     }
     protected override void Update()

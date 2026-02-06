@@ -1,12 +1,12 @@
 using System;
-public enum EventID//ÕâÀïÌí¼ÓÊÂ¼şID
+public enum EventID//è¿™é‡Œæ·»åŠ äº‹ä»¶ID
 {
     OnDoneStateUIInit
 }
 /**************************************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: ÊÂ¼şÏµÍ³
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: äº‹ä»¶ç³»ç»Ÿ
 **************************************************************************/
 
 public class EventService : MonoSingleton<EventService>
@@ -28,7 +28,7 @@ public class EventService : MonoSingleton<EventService>
         EventHandler = null;
     }
     /// <summary>
-    /// Ìí¼ÓÊÂ¼ş£¬²ÎÊı³¬¹ı2¸öµÄ£¬·â×°¸öÀà´«µİ²ÎÊı
+    /// æ·»åŠ äº‹ä»¶ï¼Œå‚æ•°è¶…è¿‡2ä¸ªçš„ï¼Œå°è£…ä¸ªç±»ä¼ é€’å‚æ•°
     /// </summary>
     /// <param name="eventID"></param>
     /// <param name="action"></param>
@@ -37,7 +37,7 @@ public class EventService : MonoSingleton<EventService>
         EventHandler.AddEventListening(eventID, action);
     }
     /// <summary>
-    /// Í¨¹ıID×¢ÏúÄ³Ò»ÀàÊÂ¼ş£ºÕâ»á½«ËùÓĞµØ·½×¢²áµÄ¸ÃÀàÊÂ¼ş¶¼¸ø×¢Ïú
+    /// é€šè¿‡IDæ³¨é”€æŸä¸€ç±»äº‹ä»¶ï¼šè¿™ä¼šå°†æ‰€æœ‰åœ°æ–¹æ³¨å†Œçš„è¯¥ç±»äº‹ä»¶éƒ½ç»™æ³¨é”€
     /// </summary>
     /// <param name="eventID"></param>
     public void RemoveEventListeningByID(EventID eventID)
@@ -45,7 +45,7 @@ public class EventService : MonoSingleton<EventService>
         EventHandler.RemoveEventListeningByID(eventID);
     }
     /// <summary>
-    /// Çå³ı¸Ã¶ÔÏóËùÓĞ×¢²áµÄÊÂ¼ş
+    /// æ¸…é™¤è¯¥å¯¹è±¡æ‰€æœ‰æ³¨å†Œçš„äº‹ä»¶
     /// </summary>
     /// <param name="target"></param>
     public void RemoveEventListeningByTarget(object target)
@@ -53,7 +53,7 @@ public class EventService : MonoSingleton<EventService>
         EventHandler.RemoveEventListeningByTarget(target);
     }
     /// <summary>
-    /// Á¢¼´´¦ÀíÊÂ¼ş
+    /// ç«‹å³å¤„ç†äº‹ä»¶
     /// </summary>
     /// <param name="eventID"></param>
     /// <param name="param1"></param>
@@ -63,7 +63,7 @@ public class EventService : MonoSingleton<EventService>
         EventHandler.SentMessage(eventID, param1, param2);
     }
     /// <summary>
-    /// ·ÖÖ¡´¦ÀíÊÂ¼ş
+    /// åˆ†å¸§å¤„ç†äº‹ä»¶
     /// </summary>
     /// <param name="eventID"></param>
     /// <param name="param1"></param>

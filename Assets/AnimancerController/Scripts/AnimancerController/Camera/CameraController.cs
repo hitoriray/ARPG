@@ -3,9 +3,9 @@ using System;
 using UnityEngine;
 using UnityEngine.Playables;
 /**************************************************************************
-×÷Õß: HuHu
-ÓÊÏä: 3112891874@qq.com
-¹¦ÄÜ: ÒÀÀµĞéÄâÏà»ú£¬ÓÃÓÚÆ½»¬¿ØÖÆÏà»ú¾àÀë
+ä½œè€…: HuHu
+é‚®ç®±: 3112891874@qq.com
+åŠŸèƒ½: ä¾èµ–è™šæ‹Ÿç›¸æœºï¼Œç”¨äºå¹³æ»‘æ§åˆ¶ç›¸æœºè·ç¦»
 **************************************************************************/
 
 public class CameraController : MonoBehaviour
@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
         {
             if (playableDirector?.state == PlayState.Playing)
             {
-                // Èç¹ûÕıÔÚ²¥·Å£¬Ìø¹ı¸üĞÂ m_CameraDistance
+                // å¦‚æœæ­£åœ¨æ’­æ”¾ï¼Œè·³è¿‡æ›´æ–° m_CameraDistance
                 return;
             }
         }
