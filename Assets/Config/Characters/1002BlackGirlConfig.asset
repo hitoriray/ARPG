@@ -20,7 +20,7 @@ MonoBehaviour:
     - {fileID: 1302449537258542769, guid: 14a26ff857b56a744a7166493c9043a4, type: 3}
     - {fileID: 1652673175506064298, guid: c5ac01c5546a68e4b86d02db7c1f3d7d, type: 3}
     - {fileID: 9100695029693891758, guid: ff45e2f7feac7a14ea70de6c61d761e2, type: 3}
-    - {fileID: 7400000, guid: 1cc3f503950140e4f8bdddf105b56fa1, type: 2}
+    - {fileID: -6940667639068230761, guid: 624de805652622e44958d3b8d48a248f, type: 3}
     - {fileID: -6391507843539069141, guid: 7ee5c96c589ffbf42bdce64b05900e8f, type: 3}
     - {fileID: -2117726480509187388, guid: 0fec1621a108fae48a102df9c540de19, type: 3}
     - {fileID: -7183126782386793838, guid: 98f68fc3bf0ac5342af704dca9cd3a2f, type: 3}
@@ -197,9 +197,9 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  WalkSpeed: 1
-  RunSpeed: 2
-  Walk2RunTransitionSpeed: 1
+  WalkSpeed: 2
+  RunSpeed: 5
+  Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 1
   FootStepAudioClips:
@@ -213,7 +213,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9e6d1d31261ce234dab29108ebe2ff8e, type: 3}
   - {fileID: 8300000, guid: 4148ff86046dcce4dbf204f482831839, type: 3}
   - {fileID: 8300000, guid: eaadf3de69efd9b4884f98b04e496220, type: 3}
-  SkillConfigList: []
+  SkillConfigList:
+  - {fileID: 11400000, guid: 0cc23ac6f841899448a9ed3f12bb4b67, type: 2}
+  - {fileID: 11400000, guid: 61d83660451772c45910d314b6b9ca98, type: 2}
   hpBaseValue: 1000
   mpBaseValue: 500
   attackBaseValue: 100

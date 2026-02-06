@@ -22,6 +22,11 @@ MonoBehaviour:
     - {fileID: 7400000, guid: ecb47a5f453a785419739be88554e193, type: 2}
     - {fileID: 7400000, guid: d0b5b4078ed9cc640ac7af39e94b1c23, type: 2}
     - {fileID: 7400000, guid: 411e0a0625c53be449cbbf7bef79046b, type: 2}
+    - {fileID: 7400000, guid: 34eeb2499e84f444ab12db136179a1d9, type: 2}
+    - {fileID: 7400000, guid: 9746957321bf7344089f7ab4855c0166, type: 2}
+    - {fileID: 7400000, guid: f5e460a997042e1448c5a7081ccab402, type: 2}
+    - {fileID: 7400000, guid: da7099ea7c7a544468483625ae761941, type: 2}
+    - {fileID: 7400000, guid: 0c4a492d18ba83b41a8152111170b163, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -40,7 +45,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 6
+      Data: 11
     - Name: 
       Entry: 7
       Data: 
@@ -114,13 +119,73 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Jump_Idle_Start
+    - Name: $v
+      Entry: 10
+      Data: 6
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Jump_Run_Start
+    - Name: $v
+      Entry: 10
+      Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Jump_Fall_Loop
+    - Name: $v
+      Entry: 10
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Land_Heavy
+    - Name: $v
+      Entry: 10
+      Data: 9
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: Land_Normal
+    - Name: $v
+      Entry: 10
+      Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
       Entry: 13
       Data: 
     - Name: 
       Entry: 8
       Data: 
-  WalkSpeed: 8
-  RunSpeed: 10
+  WalkSpeed: 5
+  RunSpeed: 9
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 1
@@ -141,3 +206,7 @@ MonoBehaviour:
   hpBaseValue: 1000
   mpBaseValue: 500
   attackBaseValue: 100
+  JumpHeight: 0.2
+  Gravity: -9.8
+  AirControl: 5
+  HeavyLandThreshold: -15

@@ -102,3 +102,19 @@ MonoBehaviour:
     MemoryCost: 50
     IsPlayable: 1
     CharacterType: 0
+  - CharacterId: 1006
+    CharacterName: Tomorin
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: 3b1b738ec7973b7418c276918cba0b82
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: 76797fd0cfdaf824993deb2074962d3b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
+    CharacterType: 0

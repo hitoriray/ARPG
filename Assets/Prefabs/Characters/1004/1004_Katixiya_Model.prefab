@@ -15782,7 +15782,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6547348804299425653}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 417b718d8d3a8734fb3fc2d5d9c127eb, type: 3}
   m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -19245,6 +19245,10 @@ PrefabInstance:
     - target: {fileID: 399456431832183516, guid: 9b8d86ba3b8754345b98f284531a1d34, type: 3}
       propertyPath: m_Name
       value: 01_Weapon_Prop
+      objectReference: {fileID: 0}
+    - target: {fileID: 399456431832183516, guid: 9b8d86ba3b8754345b98f284531a1d34, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1063121292089780326, guid: 9b8d86ba3b8754345b98f284531a1d34, type: 3}
       propertyPath: m_RootOrder
