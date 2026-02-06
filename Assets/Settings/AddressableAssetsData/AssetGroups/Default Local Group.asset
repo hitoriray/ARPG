@@ -17,43 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: e5073113e311ba14082b79d9cf0986e8
   m_SerializeEntries:
-  - m_GUID: f80203ccd72e09743b9f5f6c15c69a93
-    m_Address: ProjectConfig
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 82f11f29b4b268247af0eaa7c756f46e
-    m_Address: Player
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ee624fa4d9dff364dadfc364d9dd9140
-    m_Address: 1002_BlackGirl_Model
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 130df5fda18d56f44af072b53475e2e1
     m_Address: 1003_QianxiaoModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5e136fc7b31dd7a428edd5fcded66a17
-    m_Address: 1002BlackGirlConfig
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f19fbdbeaf1f75843bce905ad0fb835a
-    m_Address: 1003QianxiaoConfig
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7e152a354e36154b87bbda67eb2f6a7
-    m_Address: 1005_Fuludelisi_Model
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 799d386e1cde462408802f18e4ea6109
-    m_Address: 1005FuludelisiConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -62,8 +27,43 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e136fc7b31dd7a428edd5fcded66a17
+    m_Address: 1002BlackGirlConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76797fd0cfdaf824993deb2074962d3b
     m_Address: 1006TomorinConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 799d386e1cde462408802f18e4ea6109
+    m_Address: 1005FuludelisiConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82f11f29b4b268247af0eaa7c756f46e
+    m_Address: Player
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7e152a354e36154b87bbda67eb2f6a7
+    m_Address: 1005_Fuludelisi_Model
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee624fa4d9dff364dadfc364d9dd9140
+    m_Address: 1002_BlackGirl_Model
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f19fbdbeaf1f75843bce905ad0fb835a
+    m_Address: 1003QianxiaoConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f80203ccd72e09743b9f5f6c15c69a93
+    m_Address: ProjectConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -71,5 +71,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 087c71cb0e5142b469c303cea5b19bf0, type: 2}
     - {fileID: 11400000, guid: 505816a180862c944a41aa60946593aa, type: 2}
+    - {fileID: 11400000, guid: 087c71cb0e5142b469c303cea5b19bf0, type: 2}

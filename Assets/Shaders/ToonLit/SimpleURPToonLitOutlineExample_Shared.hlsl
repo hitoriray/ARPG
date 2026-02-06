@@ -214,7 +214,7 @@ Varyings VertexShaderWork(Attributes input)
     outlineZOffsetMask = invLerpClamp(_OutlineZOffsetMaskRemapStart,_OutlineZOffsetMaskRemapEnd,outlineZOffsetMask);// allow user to flip value or remap
 
     // [Apply ZOffset, Use remapped value as ZOffset mask]
-    // output.positionCS = NiloGetNewClipPosWithZOffset(output.positionCS, _OutlineZOffset * outlineZOffsetMask + 0.03 * _IsFace);
+    output.positionCS = NiloGetNewClipPosWithZOffset(output.positionCS, _OutlineZOffset * outlineZOffsetMask + 0.03 * _IsFace);
 #endif
 
     // ShadowCaster pass needs special process to positionCS, else shadow artifact will appear

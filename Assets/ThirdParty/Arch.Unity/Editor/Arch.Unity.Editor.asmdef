@@ -2,8 +2,8 @@
     "name": "Arch.Unity.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:b9786bef0a65448028008ae58d333763",
-        "GUID:9010df348fe1c7640a41362b660cc1ab"
+        "Arch.Unity",
+        "FixMath"
     ],
     "includePlatforms": [
         "Editor"
