@@ -39,7 +39,7 @@ public class PlayerLedgeClimbState : PlayerMovementState
         //禁用重力和CC
         player.controller.enabled = false;
         player.applyFullRootMotion = true;
-        player.disEnableGravity = true;
+        player.disableGravity = true;
         //添加更小的碰撞体
         if (!player.transform.TryGetComponent(out capsuleCollider))
         {
@@ -97,7 +97,7 @@ public class PlayerLedgeClimbState : PlayerMovementState
         base.OnExit();
         isHangOut = false;
 
-        player.disEnableGravity = false;
+        player.disableGravity = false;
         player.controller.enabled = true;
         player.applyFullRootMotion = false;
 
@@ -213,7 +213,7 @@ public class PlayerLedgeClimbState : PlayerMovementState
         isHangOut = true;
         player.controller.enabled = true;
         player.applyFullRootMotion = false;
-        player.disEnableGravity = true;
+        player.disableGravity = true;
         rigidbody.isKinematic = true;
 
         RemoveEventListening();

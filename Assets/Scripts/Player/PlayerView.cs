@@ -14,8 +14,6 @@ namespace RayPlayer
     /// </summary>
     public class PlayerView : MonoBehaviour, ICharacterView
     {
-        [SerializeField] private AnimationController animationController;
-        public AnimationController AnimationController => animationController;
         [SerializeField] private Transform lookAt;
         public Transform LookAt => lookAt;
         
@@ -23,12 +21,10 @@ namespace RayPlayer
 
         public void Init()
         {
-            animationController?.Init();
         }
         
         public void Init(GameData data)
         {
-            animationController?.Init();
             gameData = data;
         }
 
@@ -49,7 +45,6 @@ namespace RayPlayer
 
         public void PlayAnimation(string animName)
         {
-            // TODO: 由外部传入动画资源或在PlayerController中转发
         }
     }
 }

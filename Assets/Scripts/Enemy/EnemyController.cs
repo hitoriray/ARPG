@@ -1,4 +1,6 @@
-﻿using Config;
+﻿using System;
+using Animancer;
+using Config;
 using Manager;
 using RayAnimation;
 using Skill;
@@ -51,7 +53,23 @@ namespace Enemy
             
         }
 
-        public AnimationController AnimationController { get; }
+        public AnimancerComponent Animancer { get; }
+        public AnimancerLayer SkillLayer { get; }
         public Transform ModelTransform { get; }
+        public void EnterSkillMode(bool upperBody)
+        {
+        }
+
+        public void ExitSkillMode()
+        {
+        }
+
+        public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
+        {
+        }
+
+        public void ClearSkillRootMotion()
+        {
+        }
     }
 }

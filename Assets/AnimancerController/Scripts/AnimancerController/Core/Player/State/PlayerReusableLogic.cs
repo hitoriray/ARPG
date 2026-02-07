@@ -1,5 +1,6 @@
 ﻿using Animancer;
 using System;
+using RayPlayer;
 using UnityEngine;
 
 /// <summary>
@@ -7,13 +8,13 @@ using UnityEngine;
 /// </summary>
 public class PlayerReusableLogic
 {
-    Player player { get; set; }
+    PlayerController player { get; set; }
     PlayerReusableData reusableData;
     AnimancerComponent animator;
     PlayerSO playerSO;
     PlayerMovementData playerMovementData;
 
-    public PlayerReusableLogic(Player player)
+    public PlayerReusableLogic(PlayerController player)
     {
         this.player = player;
         playerSO = player.playerSO;
@@ -163,7 +164,7 @@ public class PlayerReusableLogic
         RayDebug.Log("障碍物相对高度" + obstructHeight);
         if (hit.point.y == 0 || angle > detectionAngle) //判断这个墙如果太高也不做攀爬//判断人物与墙面角度是否符合要求：TODO玩家的输入是否影响
         {
-            player.StateMachine.ChangeState(player.StateMachine.jumpState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.jumpState);
             //不做攀爬,做跳跃逻辑
             return;
         }
@@ -173,7 +174,7 @@ public class PlayerReusableLogic
         reusableData.hit = hit;
         if (obstructHeight < 2.5f && obstructHeight >= 2f) //中高攀
         {
-            player.StateMachine.ChangeState(player.StateMachine.jumpState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.jumpState);
             return;
         }
         else if (obstructHeight < 1.7f && obstructHeight >= 1f) //中攀
@@ -192,16 +193,16 @@ public class PlayerReusableLogic
             reusableData.ClimbType = ClimbType.Climb;
             //TODO爬
             RayDebug.Log("爬：" + reusableData.ObstructHeight.ToString());
-            player.StateMachine.ChangeState(player.StateMachine.climbState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.climbState);
         }
         else
         {
-            player.StateMachine.ChangeState(player.StateMachine.jumpState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.jumpState);
             return;
         }
 
         //一般攀爬
-        player.StateMachine.ChangeState(player.StateMachine.climbState);
+        player.MovementStateMachine.ChangeState(player.MovementStateMachine.climbState);
     }
 
     /// <summary>
@@ -307,7 +308,7 @@ public class PlayerReusableLogic
         if (obstructHeight > 1.6f && obstructHeight < 1.9f)
         {
             //抓住墙面
-            player.StateMachine.ChangeState(player.StateMachine.ledgeClimbState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.ledgeClimbState);
             animator.Play(playerSO.playerMovementData.PlayerHangWallData.hang_wall_idle_frond);
         }
     }

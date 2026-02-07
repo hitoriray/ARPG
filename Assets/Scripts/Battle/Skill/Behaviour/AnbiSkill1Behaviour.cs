@@ -90,11 +90,11 @@ namespace Skill.Behaviour
                             RayDebug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
                     }
                 }
-                else
-                {
-                    if (cdTimer > 0 && IsInteger(cdTimer))
-                        RayDebug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
-                }
+                // else
+                // {
+                //     if (cdTimer > 0 && IsInteger(cdTimer))
+                //         RayDebug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
+                // }
             }
 
             if (TryGetSkillSlot(out var slot))

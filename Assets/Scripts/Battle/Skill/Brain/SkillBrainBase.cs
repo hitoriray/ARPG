@@ -29,7 +29,7 @@ namespace Skill
         {
             CanRelease = true;
             CanInterrupt = false;
-            skillPlayer.Init(owner, owner.AnimationController, owner.ModelTransform);
+            skillPlayer.Init(owner, owner.ModelTransform);
         }
 
         public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)

@@ -7,14 +7,12 @@ namespace RayPlayerState
     public abstract class PlayerStateBase : JKFrame.StateBase
     {
         protected PlayerController PlayerController;
-        protected AnimationController animationController;
         protected static int currentReleaseSkillIndex;
         
         public override void Init(IStateMachineOwner owner)
         {
             base.Init(owner);
             PlayerController = owner as PlayerController;
-            animationController = PlayerController.AnimationController;
         }
 
         // TODO: 临时测试逻辑

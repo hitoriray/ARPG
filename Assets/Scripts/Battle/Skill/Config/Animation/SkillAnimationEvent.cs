@@ -11,7 +11,7 @@ namespace Config
         [LabelText("动画资源")] public AnimationClip AnimationClip;
         [LabelText("应用根运动")] public bool ApplyRootMotion;
         [LabelText("过渡时间")] public float TransitionTime = 0.25f;
-        
+        [LabelText("使用上半身动画")] public bool UseUpperBodyLayer = false;
 #if UNITY_EDITOR
         [LabelText("持续帧数")] public int DurationFrame;
 #endif

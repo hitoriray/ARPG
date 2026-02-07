@@ -1,3 +1,4 @@
+using RayPlayer;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,10 +21,10 @@ public class PlatformerUp : MonoBehaviour
     {
         if ((1 << other.gameObject.layer & playerMask) != 0)
         {
-            if (other.TryGetComponent<Player>(out var player))
+            if (other.TryGetComponent<PlayerController>(out var player))
             {
                 player.ReusableData.jumpExternalForce = forceHeight;
-                player.StateMachine.ChangeState(player.StateMachine.platformerUpState);
+                player.MovementStateMachine.ChangeState(player.MovementStateMachine.platformerUpState);
             }
         }
     }

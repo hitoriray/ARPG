@@ -26,6 +26,6 @@ public class PlayerMoveToWallState : PlayerMovementState
         {
             return;
         }
-        player.StateMachine.ChangeState(player.StateMachine.moveStartState);
+        player.MovementStateMachine.ChangeState(player.MovementStateMachine.moveStartState);
     }
 }

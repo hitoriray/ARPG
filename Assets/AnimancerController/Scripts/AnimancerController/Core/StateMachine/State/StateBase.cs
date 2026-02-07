@@ -1,11 +1,12 @@
 ﻿using Animancer;
+using RayPlayer;
 using UnityEngine;
 
 public abstract class StateBase : IState
 {
     protected InputService inputServer;
     protected TimerService timerServer;
-    protected Player player;
+    protected PlayerController player;
     protected AnimancerComponent animancer;
     public PlayerReusableData reusableData;
     public Transform cam;
@@ -25,13 +26,13 @@ public abstract class StateBase : IState
         }
     }
 
-    public StateBase(Player player)
+    public StateBase(PlayerController player)
     {
         this.player = player;
         inputServer = player.InputService;
         timerServer = player.TimerService;
         reusableData = player.ReusableData;
-        cam = player.camTransform;
+        cam = player.CameraTransform;
         animancer = player.animancer;
     }
     public abstract void OnEnter();

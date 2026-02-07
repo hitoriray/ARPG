@@ -1,19 +1,28 @@
-﻿using Config;
+﻿using System;
+using Animancer;
+using Config;
 using Manager;
 using RayAnimation;
 using UnityEngine;
 
 public interface ICharacter : IHitTarget
 {
-    public float GetAttackValue(SkillAttackDetectionEvent detectionEvent);
+    float GetAttackValue(SkillAttackDetectionEvent detectionEvent);
 
-    public void OnSkillRotate();
-    public void AddBuff(BuffConfig buffConfig, int stack);
-    public void CreateWeapon(int slotIndex, GameObject weaponPrefab);
-    public void DestroyWeapon(int slotIndex);
-    public void Change2IdleState();
-    public void OnSkillMove(Vector3 deltaPos);
-    public void OnSkillRotate(Quaternion deltaRot);
-    public AnimationController AnimationController { get; }
-    public Transform ModelTransform { get; }
+    void OnSkillRotate();
+    void AddBuff(BuffConfig buffConfig, int stack);
+    void CreateWeapon(int slotIndex, GameObject weaponPrefab);
+    void DestroyWeapon(int slotIndex);
+    void Change2IdleState();
+    void OnSkillMove(Vector3 deltaPos);
+    void OnSkillRotate(Quaternion deltaRot);
+    
+    AnimancerComponent Animancer { get; }
+    AnimancerLayer SkillLayer { get; }
+    Transform ModelTransform { get; }
+
+    void EnterSkillMode(bool upperBody);
+    void ExitSkillMode();
+    void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion);
+    void ClearSkillRootMotion();
 }

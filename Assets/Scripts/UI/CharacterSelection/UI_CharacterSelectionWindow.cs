@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Animancer;
 using UnityEngine;
 using TMPro;
 using Michsky.MUIP;
@@ -235,9 +236,15 @@ namespace UI
             var config = await CharacterModelManager.Instance.LoadCharacterConfigAsync(characterId);
             if (config != null)
             {
-                var animationController = _currentPreviewModel.GetComponent<AnimationController>();
-                animationController.Init();
-                animationController.PlaySingleAnimation(config.GetAnimationClipByName(AnimationHelper.Idle));
+                var animancer = _currentPreviewModel.GetComponent<AnimancerComponent>();
+                if (animancer == null)
+                    animancer = _currentPreviewModel.AddComponent<AnimancerComponent>();
+                if (animancer.Animator == null)
+                    animancer.Animator = _currentPreviewModel.GetComponent<Animator>();
+                if (config.PlayerSO != null)
+                {
+                    animancer.Play(config.PlayerSO.playerMovementData.PlayerIdleData.idle);
+                }
                 // 更新属性显示
                 UpdateAttributeDisplay(config);
             }

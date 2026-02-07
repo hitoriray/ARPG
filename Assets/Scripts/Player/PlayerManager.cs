@@ -24,7 +24,7 @@ namespace RayPlayer
             characterConfig = await CharacterModelManager.Instance.LoadCharacterConfigAsync(characterId);
             if (characterConfig == null)
             {
-                JKLog.Error($"[{nameof(PlayerManager)}] 无法加载角色配置，ID: {characterId}");
+                RayDebug.Error($"无法加载角色配置，ID: {characterId}");
                 return;
             }
             
@@ -37,13 +37,13 @@ namespace RayPlayer
             
             if (newModel == null)
             {
-                JKLog.Error($"[{nameof(PlayerManager)}] 无法加载角色外观，ID: {characterId}");
+                RayDebug.Error($"无法加载角色外观，ID: {characterId}");
                 return;
             }
 
-            var skillDatas = DataManager.GetCurrentCharacterSkills();
             var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
-            
+
+            player.BindModel(newModel);
             player.Init(characterConfig, DataManager.GameData);
             InputManager.Instance.Init(true);
             UISystem.Show<UI_GameSceneMainWindow>().Show(shortcutSkillDatas);

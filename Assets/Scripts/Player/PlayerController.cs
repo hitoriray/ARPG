@@ -1,8 +1,10 @@
 using System;
+using System.Threading;
 using Animancer;
 using Arch.Core;
 using Attribute;
 using Battle.ECS;
+using Battle.ECS.Component;
 using Battle.ECS.Core.Helper;
 using Cinemachine;
 using Config;
@@ -16,55 +18,96 @@ using UnityEngine;
 
 namespace RayPlayer
 {
-    public class PlayerController : SingletonMono<PlayerController>, IStateMachineOwner, ICharacter, IGOAPOwner
+    public class PlayerController : CharacterControllerBase, IStateMachineOwner, ICharacter, IGOAPOwner
     {
         public Entity PlayerEntity { get; private set; }
-        [SerializeField] private PlayerSkillBrainBase skillBrain;
+        [Header("Config")]
+        [SerializeField] private CharacterConfig characterConfig;
+        [SerializeField] public PlayerSO playerSO;
+
+        [Header("View")]
         [SerializeField] private PlayerView playerView;
-        [SerializeField] private CharacterController characterController;
-        // [SerializeField] private BuffController buffController;
+        
+        [Header("Combat")]
+        [SerializeField] private PlayerSkillBrainBase skillBrain;
+        [SerializeField] private PlayerSkillInput skillInput;
         [SerializeField] private CharacterAttribute characterAttribute;
         [SerializeField] private WeaponSlotManager weaponSlotManager;
+        
+        [Header("Camera")]
         [SerializeField] private CameraController cameraController;
         
+        [Header("Animancer Skill Layer")]
+        [SerializeField] private int skillLayerIndex = 1;
+        [SerializeField] private AvatarMask upperBodyMask;
+        
         public PlayerSkillBrainBase SkillBrain => skillBrain;
-        public CharacterController CharacterController => characterController;
-        public AnimationController AnimationController => playerView.AnimationController;
-        public Transform ModelTransform => playerView.transform;
         public CharacterAttribute CharacterAttribute => characterAttribute;
+        public CharacterConfig CharacterConfig => characterConfig;
 
+        public AnimancerComponent Animancer => animancer;
+        public AnimancerLayer SkillLayer => animancer.Layers[skillLayerIndex];
+        
+        public Transform ModelTransform => playerView != null ? playerView.transform : transform;
+
+        public InputService InputService { get; private set; }
+        public TimerService TimerService { get; private set; }
+        public Transform CameraTransform { get; private set; }
+        
+        public PlayerReusableData ReusableData { get; private set; }
+        public PlayerReusableLogic ReusableLogic { get; private set; }
+        public PlayerStateMachine MovementStateMachine { get; private set; }
+        
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
 
-        private StateMachine stateMachine;
-        private PlayerState currentState;
-        private AnimancerState currentSkillState;
-        private CharacterConfig characterConfig;
-        public CharacterConfig CharacterConfig => characterConfig;
+        private bool inSkill;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            InputService = InputService.Instance;
+            TimerService = TimerService.Instance;
+            CameraTransform = Camera.main != null ? Camera.main.transform : null;
+        }
         
         public void Init(CharacterConfig characterConfig, GameData gameData)
         {
             this.characterConfig = characterConfig;
+            if (playerSO == null && characterConfig != null)
+                playerSO = characterConfig.PlayerSO;
+            if (characterConfig != null)
+            {
+                ApplyControllerProfile(characterConfig.ControllerProfile);
+                if (characterConfig.Avatar != null)
+                    animator.avatar = characterConfig.Avatar;
+            }
             
-            playerView = GetComponentInChildren<PlayerView>();
             playerView?.Init();
-            // playerView?.InitOnGame(gameData);
-            
-            // agent.Init(this);
             
             characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
+
+            ReusableData = new PlayerReusableData(animancer, playerSO);
+            ReusableLogic = new PlayerReusableLogic(this);
+            MovementStateMachine = new PlayerStateMachine(this);
+            MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+            
             skillBrain.Init(this, DataManager.GetCurrentCharacterSkills());
-            // 初始化状态机
-            stateMachine = ResSystem.GetOrNew<StateMachine>();
-            stateMachine.Init(this);
-            // 默认待机
-            ChangeState(PlayerState.Idle);
+            skillInput?.Init();
+            
+            SetupAnimancerLayers();
+            
             // 刷新武器槽位索引
             weaponSlotManager.RefreshSlots();
             // 让Cinemachine看向这个player
-            cameraController.GetComponent<CinemachineVirtualCamera>().Follow = playerView.LookAt;
-            cameraController.GetComponent<CinemachineVirtualCamera>().LookAt = playerView.LookAt;
+            var vcam = cameraController != null ? cameraController.GetComponent<CinemachineVirtualCamera>() : null;
+            if (vcam != null && playerView != null)
+            {
+                vcam.Follow = playerView.LookAt;
+                vcam.LookAt = playerView.LookAt;
+            }
 
             var context = BattleEcsRunner.Instance.Context;
             if (context != null)
@@ -74,91 +117,160 @@ namespace RayPlayer
             }
         }
 
-        private void Update()
+        private void SetupAnimancerLayers()
         {
-            // agent.OnUpdate();
+            var layer = animancer.Layers[skillLayerIndex];
+            layer.SetWeight(0f);
+            layer.IsAdditive = false;
         }
 
-        /// <summary>
-        /// 修改玩家状态
-        /// </summary>
+        protected override void Update()
+        {
+            base.Update();
+            MovementStateMachine?.OnUpdate();
+            HandleSkillInput();
+            HandleSkillInterruptByMove();
+        }
+
+        protected override void OnAnimatorMove()
+        {
+            base.OnAnimatorMove();
+            MovementStateMachine?.OnAnimationUpdate();
+        }
+
+        public void AnimationEnd()
+        {
+            MovementStateMachine?.OnAnimationEnd();
+        }
+
+        private void HandleSkillInput()
+        {
+            if (skillBrain == null || skillInput == null)
+                return;
+
+            if (UISystem.CheckMouseOnUI())
+                return;
+
+            for (int i = 0; i < skillBrain.SkillCount; i++)
+            {
+                bool valid = false;
+                int skillIndex = skillBrain.GetSkillIndex(i);
+
+                if (i == 0)
+                {
+                    valid = skillInput.GetBasicAttackState() && skillBrain.CheckReleaseSkill(i);
+                    if (valid)
+                        skillInput.ResetBasicBuffer();
+                }
+
+                if (!valid)
+                {
+                    valid = skillInput.GetSkillState(skillIndex) && skillBrain.CheckReleaseSkill(i);
+                    if (valid)
+                        skillInput.ResetSkillBuffer(skillIndex);
+                }
+
+                if (valid)
+                {
+                    skillBrain.ReleaseSkill(i);
+                    return;
+                }
+            }
+        }
+
+        private void HandleSkillInterruptByMove()
+        {
+            if (skillBrain == null || !skillBrain.CanInterrupt)
+                return;
+            if (InputService == null || InputService.Move == Vector2.zero)
+                return;
+            
+            skillBrain.InterruptCurrentSkill();
+            DestroyWeapon(-1);
+            ExitSkillMode();
+            MovementStateMachine.ChangeState(MovementStateMachine.moveStartState);
+        }
+
+        public void EnterSkillMode(bool upperBody)
+        {
+            inSkill = true;
+            var baseLayer = animancer.Layers[0];
+            var skillLayer = animancer.Layers[skillLayerIndex];
+
+            skillLayer.IsAdditive = false;
+            skillLayer.Mask = upperBody ? upperBodyMask : null;
+            skillLayer.SetWeight(1f);
+            
+            baseLayer.SetWeight(upperBody ? 1f : 0f);
+        }
+
+        public void ExitSkillMode()
+        {
+            if (!inSkill)
+                return;
+
+            inSkill = false;
+            ClearSkillRootMotion();
+            
+            var baseLayer = animancer.Layers[0];
+            var skillLayer = animancer.Layers[skillLayerIndex];
+
+            skillLayer.Stop();
+            skillLayer.SetWeight(0f);
+            skillLayer.Mask = null;
+            baseLayer.SetWeight(1f);
+        }
+
+        public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
+        {
+            if (applyRootMotion && handler != null)
+                SetRootMotionMode(RootMotionMode.Custom, handler);
+            else
+                SetRootMotionMode(RootMotionMode.Suppressed, null);
+        }
+
+        public void ClearSkillRootMotion()
+        {
+            SetRootMotionMode(RootMotionMode.Default, null);
+        }
+
         public void ChangeState(PlayerState newState, bool reCurrstate = false)
         {
-            var prevState = currentState;
-            currentState = newState;
-            RayDebug.Trace($"State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
-            
-            switch (currentState)
+            if (MovementStateMachine == null)
+                return;
+
+            switch (newState)
             {
                 case PlayerState.Idle:
-                    stateMachine.ChangeState<RayPlayerState.PlayerIdleState>(reCurrstate);
-                    RestoreMovementControl();
+                    ExitSkillMode();
+                    MovementStateMachine.ChangeState(MovementStateMachine.idleState);
                     break;
                 case PlayerState.Move:
-                    stateMachine.ChangeState<PlayerMoveState>(reCurrstate);
-                    RestoreMovementControl();
+                    ExitSkillMode();
+                    MovementStateMachine.ChangeState(MovementStateMachine.moveStartState);
                     break;
                 case PlayerState.Skill:
-                    stateMachine.ChangeState<PlayerSkillState>(reCurrstate);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
-        /// <summary>
-        /// 恢复移动层的 Animancer 控制权
-        /// </summary>
-        private void RestoreMovementControl()
+        public void Rotate(Vector3 inputDir, float rotateSpeed = 0f)
         {
-            if (currentSkillState != null)
-            {
-                currentSkillState.Stop();
-                currentSkillState = null;
-            }
-
-            // Player.cs 的状态机会自动接管
-            RayDebug.Log("已归还 Animancer 控制权给移动层");
-        }
-
-        /// <summary>
-        /// 播放动画
-        /// </summary>
-        public void PlayAnimation(string clipName, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, bool refreshAnimation = false, float transitionFixedTime = 0.25f)
-        {
-            if (rootMotionAction != null)
-            {
-                playerView.AnimationController?.SetRootMotionAction(rootMotionAction);
-            }
-            playerView.AnimationController?.PlaySingleAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
-        }
-        
-        public void PlayBlendAnimation(string clip1Name, string clip2Name, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, float transitionFixedTime = 0.25f)
-        {
-            if (rootMotionAction != null)
-            {
-                playerView.AnimationController.SetRootMotionAction(rootMotionAction);
-            }
-            var clip1 = characterConfig.GetAnimationClipByName(clip1Name);
-            var clip2 = characterConfig.GetAnimationClipByName(clip2Name);
-            playerView.AnimationController.PlayBlendAnimation(clip1, clip2, speed, transitionFixedTime);
-        }
-
-        public void Rotate(Vector3 inputDir, float rotateSpeed = 0)
-        {
-            if (rotateSpeed == 0) rotateSpeed = RotateSpeed;
+            if (rotateSpeed == 0f) rotateSpeed = RotateSpeed;
+            if (CameraTransform == null) return;
             // 获取相机的旋转值
-            float y = Camera.main.transform.rotation.eulerAngles.y;
+            float y = CameraTransform.rotation.eulerAngles.y;
             // 让input也旋转y角度
-            Vector3 moveDir = Quaternion.Euler(0, y, 0) * inputDir;
+            Vector3 moveDir = Quaternion.Euler(0f, y, 0f) * inputDir;
             // 处理旋转
-            ModelTransform.rotation = Quaternion.Slerp(ModelTransform.rotation,
+            // ModelTransform.rotation = Quaternion.Slerp(ModelTransform.rotation,
+            //     Quaternion.LookRotation(moveDir), Time.deltaTime * rotateSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation,
                 Quaternion.LookRotation(moveDir), Time.deltaTime * rotateSpeed);
         }
 
         public void AddBuff(BuffConfig buffConfig, int stack)
         {
-            // buffController.AddBuff(buffConfig, stack);
             BuffHelper.AddBuff(BattleEcsRunner.Instance.Context, nameof(PlayerController), PlayerEntity, PlayerEntity, buffConfig, stack);
         }
 
@@ -184,26 +296,43 @@ namespace RayPlayer
 
         public void OnSkillRotate()
         {
-            Vector2 moveInput = InputManager.Instance.GetMoveInput();
+            Vector2 moveInput = InputService.Move;
             if (moveInput.x != 0 || moveInput.y != 0)
             {
-                Rotate(new Vector3(moveInput.x, 0, moveInput.y));
+                Rotate(new Vector3(moveInput.x, 0f, moveInput.y));
             }
         }
         
         public void Change2IdleState()
         {
-            ChangeState(PlayerState.Idle);
+            ExitSkillMode();
+            MovementStateMachine.ChangeState(MovementStateMachine.idleState);
         }
 
         public void OnSkillMove(Vector3 deltaPos)
         {
-            CharacterController.Move(deltaPos);
+            controller.Move(deltaPos);
         }
 
         public void OnSkillRotate(Quaternion deltaRot)
         {
-            ModelTransform.rotation *= deltaRot;
+            // ModelTransform.rotation *= deltaRot;
+            transform.rotation = deltaRot * transform.rotation;
+        }
+
+        /// <summary>
+        /// 绑定角色模型层
+        /// </summary>
+        /// <param name="model"></param>
+        public void BindModel(GameObject model)
+        {
+            playerView = model.GetComponent<PlayerView>();
+            var vcam = cameraController.GetComponent<CinemachineVirtualCamera>();
+            if (vcam != null)
+            {
+                vcam.Follow = playerView.LookAt;
+                vcam.LookAt = playerView.LookAt;
+            }
         }
     }
 }

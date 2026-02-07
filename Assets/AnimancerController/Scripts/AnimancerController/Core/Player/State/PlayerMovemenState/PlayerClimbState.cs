@@ -26,10 +26,10 @@ public class PlayerClimbState : PlayerMovementState
         var clip = GetClimbAnimation();
         if (clip == null)
         {
-            player.StateMachine.ChangeState(player.StateMachine.jumpState);
+            player.MovementStateMachine.ChangeState(player.MovementStateMachine.jumpState);
             return;
         }
-        player.disEnableGravity = true;
+        player.disableGravity = true;
         player.controller.enabled = false;
         player.applyFullRootMotion = true;
         animancerState = animancer.Play(clip);
@@ -126,7 +126,7 @@ public class PlayerClimbState : PlayerMovementState
     private void ResetCC()
     {
         RayDebug.Log("恢复CC");
-        player.disEnableGravity = false;
+        player.disableGravity = false;
         player.controller.enabled = true; 
         player.applyFullRootMotion = false;
     }

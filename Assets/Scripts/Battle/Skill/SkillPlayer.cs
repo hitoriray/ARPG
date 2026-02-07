@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Animancer;
 using Config;
 using Battle.ECS;
 using Battle.ECS.Core.Helper;
@@ -18,7 +19,12 @@ namespace Skill
     /// </summary>
     public class SkillPlayer : SerializedMonoBehaviour
     {
-        private AnimationController animationController;
+        private ICharacter owner;
+        private Transform modelTransform;
+        public Transform ModelTransform => modelTransform;
+        
+        private AnimancerComponent animancer;
+        private AnimancerLayer skillLayer;
         
         private SkillClip skillClip;
         private int currentFrameIndex;
@@ -26,28 +32,23 @@ namespace Skill
         private float frameRate;
         private bool isPlaying = false;
         public bool IsPlaying => isPlaying;
-
-        private ICharacter owner;
-        private Transform modelTransform;
-        public Transform ModelTransform => modelTransform;
         
         public LayerMask attackDetectionLayer; // 攻击检测的Layer
 
-        public void Init(ICharacter owner, AnimationController animationController, Transform modelTransform)
+        public void Init(ICharacter owner, Transform modelTransform)
         {
             this.owner = owner;
-            this.animationController = animationController;
             this.modelTransform = modelTransform;
+            animancer = owner.Animancer;
+            skillLayer = owner.SkillLayer;
+            
+            weaponDict.Clear();
             WeaponController[] weaponControllers = transform.GetComponentsInChildren<WeaponController>();
             foreach (var weaponController in weaponControllers)
-            {
                 weaponDict.Add(weaponController.WeaponName, weaponController);
-            }
 
             foreach (var skillWeapon in weaponDict.Values)
-            {
                 skillWeapon.Init(attackDetectionLayer, OnWeaponDetection);
-            }
         }
         
         #region 武器
@@ -91,6 +92,7 @@ namespace Skill
         private void Clean()
         {
             skillClip = null;
+            owner.ClearSkillRootMotion();
         }
 
         private void Update()
@@ -147,20 +149,28 @@ namespace Skill
         /// </summary>
         private void TickSkillAnimationEvent()
         {
-            if (animationController != null && skillClip.SkillAnimationData.FrameData.TryGetValue(currentFrameIndex, out var animationEvent))
+            if (animancer != null && skillClip.SkillAnimationData.FrameData.TryGetValue(currentFrameIndex, out var animationEvent))
             {
                 animationEvent = skillBehaviour.BeforeSkillAnimationEvent(animationEvent);
                 if (animationEvent != null)
                 {
-                    animationController.PlaySingleAnimation(animationEvent.AnimationClip, 1, true, animationEvent.TransitionTime);
-                    if (animationEvent.ApplyRootMotion)
+                    bool upperBody = animationEvent.UseUpperBodyLayer;
+                    owner.EnterSkillMode(upperBody);
+                    skillLayer.Play(animationEvent.AnimationClip, animationEvent.TransitionTime);
+
+                    if (!upperBody && animationEvent.ApplyRootMotion)
                     {
-                        animationController.SetRootMotionAction(skillBehaviour.OnRootMotion);
+                        owner.SetSkillRootMotion(skillBehaviour.OnRootMotion, true);
+                    }
+                    else if (!upperBody)
+                    {
+                        owner.SetSkillRootMotion(null, true);
                     }
                     else
                     {
-                        animationController.ClearRootMotionAction();
+                        owner.ClearSkillRootMotion();
                     }
+                    
                     skillBehaviour.AfterSkillAnimationEvent(animationEvent);
                 }
             }
@@ -320,7 +330,6 @@ namespace Skill
                                                 detectionEvent = detectionEvent,
                                                 source = owner,
                                                 attackValue = owner.GetAttackValue(detectionEvent),
-                                                // TODO: hitPoint = col.ClosestPoint(pos),
                                                 hitPoint = pos,
                                             };
                                             skillBehaviour.OnAttackDetection(hitTarget, attackData);

@@ -1,10 +1,12 @@
+using RayPlayer;
+
 /// <summary>
 /// 有限状态机，缓存状态，驱动更新状态类
 /// </summary>
 public class PlayerStateMachine : StateMachineBase
 {
     //缓存状态
-    public Player player;
+    public PlayerController player;
     public PlayerIdleState idleState;
     public PlayerMoveStartState moveStartState;
     public PlayerMoveLoopState moveLoopState;
@@ -17,7 +19,7 @@ public class PlayerStateMachine : StateMachineBase
     public PlayerPlatformerUpState platformerUpState;
     public PlayerLandState landState;
 
-    public PlayerStateMachine(Player player)
+    public PlayerStateMachine(PlayerController player)
     {
         this.player = player;
         idleState = new PlayerIdleState(this);
