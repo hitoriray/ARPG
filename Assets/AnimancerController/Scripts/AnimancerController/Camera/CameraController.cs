@@ -1,4 +1,5 @@
 using Cinemachine;
+using RayPlayer;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -27,8 +28,7 @@ public class CameraController : MonoBehaviour
         currentDistance = defaultDistance;
         virtualCamera.m_CameraDistance = currentDistance;
     }
-
-
+    
     private void Update()
     {
         GetMouseScroll();
@@ -57,6 +57,7 @@ public class CameraController : MonoBehaviour
                 return;
             }
         }
-        virtualCamera.m_CameraDistance = Mathf.Lerp(virtualCamera.m_CameraDistance, currentDistance,Time.deltaTime* smoothness) ;
+
+        virtualCamera.m_CameraDistance = Mathf.Lerp(virtualCamera.m_CameraDistance, currentDistance, Time.deltaTime * smoothness);
     }
 }

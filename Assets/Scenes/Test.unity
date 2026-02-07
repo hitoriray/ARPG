@@ -398,18 +398,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: 1006_anon
       objectReference: {fileID: 0}
-    - target: {fileID: 3611527118671141162, guid: e3491655555da3a4597720f41f64b199, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6319238264021558962, guid: e3491655555da3a4597720f41f64b199, type: 3}
-      propertyPath: groundRadius
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6319238264021558962, guid: e3491655555da3a4597720f41f64b199, type: 3}
-      propertyPath: groundDetectedOffset
-      value: -0.02
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

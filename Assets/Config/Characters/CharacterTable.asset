@@ -118,3 +118,19 @@ MonoBehaviour:
     MemoryCost: 50
     IsPlayable: 1
     CharacterType: 0
+  - CharacterId: 1007
+    CharacterName: Annon
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: e3491655555da3a4597720f41f64b199
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: 2c90f9eddfd779c45b3ebcc0a948751e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
+    CharacterType: 0

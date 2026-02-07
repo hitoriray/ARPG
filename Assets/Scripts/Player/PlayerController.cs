@@ -1,8 +1,10 @@
 using System;
+using Animancer;
 using Arch.Core;
 using Attribute;
 using Battle.ECS;
 using Battle.ECS.Core.Helper;
+using Cinemachine;
 using Config;
 using Data;
 using GOAP;
@@ -23,6 +25,7 @@ namespace RayPlayer
         // [SerializeField] private BuffController buffController;
         [SerializeField] private CharacterAttribute characterAttribute;
         [SerializeField] private WeaponSlotManager weaponSlotManager;
+        [SerializeField] private CameraController cameraController;
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterController CharacterController => characterController;
@@ -36,6 +39,7 @@ namespace RayPlayer
 
         private StateMachine stateMachine;
         private PlayerState currentState;
+        private AnimancerState currentSkillState;
         private CharacterConfig characterConfig;
         public CharacterConfig CharacterConfig => characterConfig;
         
@@ -48,6 +52,7 @@ namespace RayPlayer
             // playerView?.InitOnGame(gameData);
             
             // agent.Init(this);
+            
             characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
             skillBrain.Init(this, DataManager.GetCurrentCharacterSkills());
             // 初始化状态机
@@ -57,6 +62,9 @@ namespace RayPlayer
             ChangeState(PlayerState.Idle);
             // 刷新武器槽位索引
             weaponSlotManager.RefreshSlots();
+            // 让Cinemachine看向这个player
+            cameraController.GetComponent<CinemachineVirtualCamera>().Follow = playerView.LookAt;
+            cameraController.GetComponent<CinemachineVirtualCamera>().LookAt = playerView.LookAt;
 
             var context = BattleEcsRunner.Instance.Context;
             if (context != null)
@@ -78,15 +86,17 @@ namespace RayPlayer
         {
             var prevState = currentState;
             currentState = newState;
-            RayDebug.Trace($"[Player] State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
+            RayDebug.Trace($"State change: {(prevState == default ? "<none>" : prevState)} -> {currentState}");
             
             switch (currentState)
             {
                 case PlayerState.Idle:
                     stateMachine.ChangeState<RayPlayerState.PlayerIdleState>(reCurrstate);
+                    RestoreMovementControl();
                     break;
                 case PlayerState.Move:
                     stateMachine.ChangeState<PlayerMoveState>(reCurrstate);
+                    RestoreMovementControl();
                     break;
                 case PlayerState.Skill:
                     stateMachine.ChangeState<PlayerSkillState>(reCurrstate);
@@ -97,15 +107,30 @@ namespace RayPlayer
         }
 
         /// <summary>
+        /// 恢复移动层的 Animancer 控制权
+        /// </summary>
+        private void RestoreMovementControl()
+        {
+            if (currentSkillState != null)
+            {
+                currentSkillState.Stop();
+                currentSkillState = null;
+            }
+
+            // Player.cs 的状态机会自动接管
+            RayDebug.Log("已归还 Animancer 控制权给移动层");
+        }
+
+        /// <summary>
         /// 播放动画
         /// </summary>
         public void PlayAnimation(string clipName, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, bool refreshAnimation = false, float transitionFixedTime = 0.25f)
         {
             if (rootMotionAction != null)
             {
-                playerView.AnimationController.SetRootMotionAction(rootMotionAction);
+                playerView.AnimationController?.SetRootMotionAction(rootMotionAction);
             }
-            playerView.AnimationController.PlaySingleAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
+            playerView.AnimationController?.PlaySingleAnimation(characterConfig.GetAnimationClipByName(clipName), speed, refreshAnimation, transitionFixedTime);
         }
         
         public void PlayBlendAnimation(string clip1Name, string clip2Name, Action<Vector3, Quaternion> rootMotionAction = null, float speed = 1, float transitionFixedTime = 0.25f)

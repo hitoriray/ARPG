@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c90f9eddfd779c45b3ebcc0a948751e
+    m_Address: Assets/Config/Characters/1007AnonConfig.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b1b738ec7973b7418c276918cba0b82
     m_Address: 1006_Tomorin
     m_ReadOnly: 0
@@ -49,6 +54,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7e152a354e36154b87bbda67eb2f6a7
     m_Address: 1005_Fuludelisi_Model
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3491655555da3a4597720f41f64b199
+    m_Address: Assets/Prefabs/Characters/1007/1007_anon.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

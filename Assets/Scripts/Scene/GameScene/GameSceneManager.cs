@@ -54,7 +54,6 @@ namespace Scene
             // 初始化ECS并注册玩家
             var ecsRunner = BattleEcsRunner.Ensure();
             ecsRunner.RegisterPlayer(PlayerManager.Instance.player);
-
         }
 
         private void OnDestroy()

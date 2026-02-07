@@ -74,8 +74,8 @@ namespace Data
                 SkillTotalPoint = 100,
                 SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
             };
-            skillDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData { lv = 1 });
-            skillDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData { lv = 1 });
+            // skillDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData { lv = 1 });
+            // skillDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData { lv = 1 });
             GameData.CharacterSkillsDict.Dictionary.Add(initCharacterId, skillDatas);
             // 初始化技能快捷栏
             var shortcutData = new ShortcutSkillSlotData()

@@ -16,17 +16,19 @@ namespace RayPlayer
     {
         [SerializeField] private AnimationController animationController;
         public AnimationController AnimationController => animationController;
+        [SerializeField] private Transform lookAt;
+        public Transform LookAt => lookAt;
         
         private GameData gameData;                            // 玩家定义的角色数据，用于存档
 
         public void Init()
         {
-            animationController.Init();
+            animationController?.Init();
         }
         
         public void Init(GameData data)
         {
-            animationController.Init();
+            animationController?.Init();
             gameData = data;
         }
 
