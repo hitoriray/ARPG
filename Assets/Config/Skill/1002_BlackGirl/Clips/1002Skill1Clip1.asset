@@ -57,6 +57,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 30
@@ -255,9 +258,9 @@ MonoBehaviour:
       Data: 15|Config.SkillCustomEvent, Assembly-CSharp
     - Name: EventType
       Entry: 3
-      Data: 0
+      Data: 2
     - Name: CustomEventName
-      Entry: 6
+      Entry: 1
       Data: 
     - Name: IntArg
       Entry: 3

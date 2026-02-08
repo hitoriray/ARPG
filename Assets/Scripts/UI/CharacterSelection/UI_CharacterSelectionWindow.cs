@@ -243,7 +243,7 @@ namespace UI
                     animancer.Animator = _currentPreviewModel.GetComponent<Animator>();
                 if (config.PlayerSO != null)
                 {
-                    animancer.Play(config.PlayerSO.playerMovementData.PlayerIdleData.idle);
+                    await animancer.Play(config.PlayerSO.playerMovementData.PlayerIdleData.idle);
                 }
                 // 更新属性显示
                 UpdateAttributeDisplay(config);

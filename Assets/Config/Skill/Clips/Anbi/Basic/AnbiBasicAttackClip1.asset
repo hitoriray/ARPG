@@ -63,6 +63,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 20
@@ -90,6 +93,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 67

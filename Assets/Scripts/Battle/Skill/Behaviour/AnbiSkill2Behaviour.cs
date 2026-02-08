@@ -27,7 +27,6 @@ namespace Skill.Behaviour
         
         public override void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)
         {
-            deltaPos.y += Time.deltaTime * -9.8f;
             owner.OnSkillMove(deltaPos);
             owner.OnSkillRotate(deltaRot);
         }

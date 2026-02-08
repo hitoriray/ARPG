@@ -19,6 +19,7 @@ namespace Skill
     /// </summary>
     public class SkillPlayer : SerializedMonoBehaviour
     {
+        [SerializeField, Range(0f, 0.3f)] private float minClipFadeTime = 0.08f;
         private ICharacter owner;
         private Transform modelTransform;
         public Transform ModelTransform => modelTransform;
@@ -156,7 +157,8 @@ namespace Skill
                 {
                     bool upperBody = animationEvent.UseUpperBodyLayer;
                     owner.EnterSkillMode(upperBody);
-                    skillLayer.Play(animationEvent.AnimationClip, animationEvent.TransitionTime);
+                    float fadeTime = Mathf.Max(animationEvent.TransitionTime, minClipFadeTime);
+                    skillLayer.Play(animationEvent.AnimationClip, fadeTime);
 
                     if (!upperBody && animationEvent.ApplyRootMotion)
                     {

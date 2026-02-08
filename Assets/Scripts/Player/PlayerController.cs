@@ -40,6 +40,8 @@ namespace RayPlayer
         [Header("Animancer Skill Layer")]
         [SerializeField] private int skillLayerIndex = 1;
         [SerializeField] private AvatarMask upperBodyMask;
+        [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeIn = 0.08f;
+        [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeOut = 0.1f;
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterAttribute CharacterAttribute => characterAttribute;
@@ -63,6 +65,7 @@ namespace RayPlayer
         public float RotateSpeed => characterConfig.RotateSpeed;
 
         private bool inSkill;
+        private bool currentSkillUpperBody;
 
         protected override void Awake()
         {
@@ -193,15 +196,23 @@ namespace RayPlayer
 
         public void EnterSkillMode(bool upperBody)
         {
+            if (inSkill && currentSkillUpperBody == upperBody)
+                return;
+
             inSkill = true;
+            currentSkillUpperBody = upperBody;
+
             var baseLayer = animancer.Layers[0];
             var skillLayer = animancer.Layers[skillLayerIndex];
 
             skillLayer.IsAdditive = false;
             skillLayer.Mask = upperBody ? upperBodyMask : null;
-            skillLayer.SetWeight(1f);
-            
-            baseLayer.SetWeight(upperBody ? 1f : 0f);
+            skillLayer.StartFade(1f, skillLayerFadeIn);
+
+            if (upperBody)
+                baseLayer.StartFade(1f, skillLayerFadeIn);
+            else
+                baseLayer.StartFade(0f, skillLayerFadeIn);
         }
 
         public void ExitSkillMode()
@@ -210,15 +221,18 @@ namespace RayPlayer
                 return;
 
             inSkill = false;
+            currentSkillUpperBody = false;
             ClearSkillRootMotion();
             
             var baseLayer = animancer.Layers[0];
             var skillLayer = animancer.Layers[skillLayerIndex];
 
-            skillLayer.Stop();
-            skillLayer.SetWeight(0f);
-            skillLayer.Mask = null;
-            baseLayer.SetWeight(1f);
+            var skillState = skillLayer.CurrentState;
+            if (skillState != null)
+                skillState.StartFade(0f, skillLayerFadeOut);
+
+            skillLayer.StartFade(0f, skillLayerFadeOut);
+            baseLayer.StartFade(1f, skillLayerFadeOut);
         }
 
         public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
@@ -306,6 +320,19 @@ namespace RayPlayer
         public void Change2IdleState()
         {
             ExitSkillMode();
+            if (MovementStateMachine == null)
+                return;
+            if (MovementStateMachine.currentState == MovementStateMachine.idleState)
+            {
+                if (ReusableData != null && ReusableLogic != null)
+                {
+                    ReusableData.currentCrouchIdleIndex = -1;
+                    ReusableData.currentStandIdleIndex = -1;
+                    ReusableLogic.InitIdleState();
+                    ReusableLogic.PlayNextState();
+                }
+                return;
+            }
             MovementStateMachine.ChangeState(MovementStateMachine.idleState);
         }
 
