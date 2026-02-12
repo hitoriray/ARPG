@@ -52,5 +52,9 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "ARPG.slnx",
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "cSpell.words": [
+        "Rigidbody",
+        "Scriptable"
+    ]
 }
