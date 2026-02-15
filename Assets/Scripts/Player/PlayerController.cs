@@ -133,6 +133,7 @@ namespace RayPlayer
             MovementStateMachine?.OnUpdate();
             HandleSkillInput();
             HandleSkillInterruptByMove();
+            CleanupFinishedSkillLayer();
         }
 
         protected override void OnAnimatorMove()
@@ -187,11 +188,12 @@ namespace RayPlayer
                 return;
             if (InputService == null || InputService.Move == Vector2.zero)
                 return;
-            
+
             skillBrain.InterruptCurrentSkill();
             DestroyWeapon(-1);
-            ExitSkillMode();
+            // 先切换状态机（在 baseLayer 上播放移动动画），再淡入 baseLayer
             MovementStateMachine.ChangeState(MovementStateMachine.moveStartState);
+            ExitSkillMode();
         }
 
         public void EnterSkillMode(bool upperBody)
@@ -223,16 +225,37 @@ namespace RayPlayer
             inSkill = false;
             currentSkillUpperBody = false;
             ClearSkillRootMotion();
-            
+
             var baseLayer = animancer.Layers[0];
             var skillLayer = animancer.Layers[skillLayerIndex];
 
+            // 冻结当前技能动画，防止它在淡出期间继续播放或循环
+            // 这避免了动画Loop回到第0帧，产生错误的过渡姿势
             var skillState = skillLayer.CurrentState;
             if (skillState != null)
-                skillState.StartFade(0f, skillLayerFadeOut);
+            {
+                skillState.IsPlaying = false;  // 暂停动画，保持在当前帧
+            }
 
+            // 只淡出层权重即可，层权重到 0 后 CleanupFinishedSkillLayer 会停止动画
             skillLayer.StartFade(0f, skillLayerFadeOut);
             baseLayer.StartFade(1f, skillLayerFadeOut);
+        }
+
+        /// <summary>
+        /// 当 skillLayer 权重淡出完成后，停止层上所有动画状态
+        /// 防止技能动画在不可见时持续运行（浪费性能 + 导致下次播放从错误位置开始）
+        /// </summary>
+        private void CleanupFinishedSkillLayer()
+        {
+            if (inSkill)
+                return;
+
+            var skillLayer = animancer.Layers[skillLayerIndex];
+            if (skillLayer.Weight > 0f || skillLayer.CurrentState == null)
+                return;
+
+            skillLayer.Stop();
         }
 
         public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
@@ -256,12 +279,12 @@ namespace RayPlayer
             switch (newState)
             {
                 case PlayerState.Idle:
-                    ExitSkillMode();
                     MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+                    ExitSkillMode();
                     break;
                 case PlayerState.Move:
-                    ExitSkillMode();
                     MovementStateMachine.ChangeState(MovementStateMachine.moveStartState);
+                    ExitSkillMode();
                     break;
                 case PlayerState.Skill:
                     break;
@@ -319,9 +342,11 @@ namespace RayPlayer
         
         public void Change2IdleState()
         {
-            ExitSkillMode();
             if (MovementStateMachine == null)
                 return;
+
+            // 先在 baseLayer 上播放 Idle 动画（此时 baseLayer 权重可能仍为 0，用户看不到）
+            // 再执行 ExitSkillMode 淡入 baseLayer，确保淡入时上面已是正确的 Idle 姿态
             if (MovementStateMachine.currentState == MovementStateMachine.idleState)
             {
                 if (ReusableData != null && ReusableLogic != null)
@@ -331,9 +356,13 @@ namespace RayPlayer
                     ReusableLogic.InitIdleState();
                     ReusableLogic.PlayNextState();
                 }
-                return;
             }
-            MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+            else
+            {
+                MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+            }
+
+            ExitSkillMode();
         }
 
         public void OnSkillMove(Vector3 deltaPos)

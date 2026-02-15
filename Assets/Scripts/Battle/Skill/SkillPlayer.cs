@@ -158,7 +158,8 @@ namespace Skill
                     bool upperBody = animationEvent.UseUpperBodyLayer;
                     owner.EnterSkillMode(upperBody);
                     float fadeTime = Mathf.Max(animationEvent.TransitionTime, minClipFadeTime);
-                    skillLayer.Play(animationEvent.AnimationClip, fadeTime);
+                    var state = skillLayer.Play(animationEvent.AnimationClip, fadeTime);
+                    state.Time = 0; // 强制从头播放，防止复用旧 State 从上次位置继续
 
                     if (!upperBody && animationEvent.ApplyRootMotion)
                     {
