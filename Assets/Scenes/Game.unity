@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 484396573}
   - component: {fileID: 484396572}
   - component: {fileID: 484396571}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1624,7 +1624,7 @@ GameObject:
   - component: {fileID: 2095309266}
   - component: {fileID: 2095309265}
   - component: {fileID: 2095309264}
-  m_Layer: 10
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1818,6 +1818,10 @@ PrefabInstance:
       propertyPath: cameraController
       value: 
       objectReference: {fileID: 561894228}
+    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: whatIsGround.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1924,7 +1928,7 @@ SceneRoots:
   - {fileID: 526542321}
   - {fileID: 812675501}
   - {fileID: 2095309263}
+  - {fileID: 484396574}
   - {fileID: 4292601480557324839}
   - {fileID: 1057226959}
   - {fileID: 1206472819}
-  - {fileID: 484396574}
