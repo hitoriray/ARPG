@@ -10,4 +10,9 @@ public class PlayerMovementData
     [field :SerializeField] public PlayerClimbData  PlayerClimbData { get; private set; }
     [field:SerializeField] public PlayerHangWallData PlayerHangWallData { get; set; }
     [field: SerializeField] public PlayerJumpFallAndLandData PlayerJumpFallAndLandData { get;private set; }
+
+    // 闪避配置（Walk+Shift / Run+Shift / Q键）
+    [field: SerializeField] public PlayerAvoidData PlayerAvoidData { get; private set; }
+    [field: SerializeField] public PlayerSlideData PlayerSlideData { get; private set; }
+    [field: SerializeField] public PlayerRollData  PlayerRollData  { get; private set; }
 }

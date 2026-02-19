@@ -8,11 +8,11 @@ using UnityEngine;
 /// </summary>
 public class PlayerReusableLogic
 {
-    PlayerController player { get; set; }
-    PlayerReusableData reusableData;
-    AnimancerComponent animator;
-    PlayerSO playerSO;
-    PlayerMovementData playerMovementData;
+    private PlayerController player { get; set; }
+    private PlayerReusableData reusableData;
+    private AnimancerComponent animator;
+    private PlayerSO playerSO;
+    private PlayerMovementData playerMovementData;
 
     public PlayerReusableLogic(PlayerController player)
     {
@@ -61,10 +61,9 @@ public class PlayerReusableLogic
              isUpdateIdleState)) //拿到idleStandStates
         {
             reusableData.standIdleList.Clear();
-            AnimancerState animancerState;
             for (int i = 0; i < reusableData.standIdleMixerState.ChildCount; i++)
             {
-                animancerState = reusableData.standIdleMixerState.GetChild(i);
+                var animancerState = reusableData.standIdleMixerState.GetChild(i);
                 animancerState.Events(player).OnEnd = PlayNextState;
                 reusableData.standIdleList.Add(animancerState);
             }
@@ -77,10 +76,9 @@ public class PlayerReusableLogic
              isUpdateIdleState)) //拿到idleCrouchStates
         {
             reusableData.crouchIdleList.Clear();
-            AnimancerState animancerState;
             for (int i = 0; i < reusableData.crouchIdleMixerState.ChildCount; i++)
             {
-                animancerState = reusableData.crouchIdleMixerState.GetChild(i);
+                var animancerState = reusableData.crouchIdleMixerState.GetChild(i);
                 if (reusableData.crouchIdleMixerState.ChildCount != 1)
                 {
                     animancerState.Events(player).OnEnd = PlayNextState;
@@ -179,20 +177,20 @@ public class PlayerReusableLogic
         }
         else if (obstructHeight < 1.7f && obstructHeight >= 1f) //中攀
         {
-            reusableData.ObstructHeight = ObstructHeight.medium;
+            reusableData.ObstructHeightLevel = ObstructHeightLevel.Medium;
             VaultOrClimb(vaultStartPos, hit);
         }
         else if (obstructHeight < 1 && obstructHeight >= 0.35f) //低中攀
         {
-            reusableData.ObstructHeight = ObstructHeight.lowMedium;
+            reusableData.ObstructHeightLevel = ObstructHeightLevel.LowMedium;
             VaultOrClimb(vaultStartPos, hit);
         }
         else if (obstructHeight < 0.35f) //低攀:只能爬不能翻越
         {
-            reusableData.ObstructHeight = ObstructHeight.low;
+            reusableData.ObstructHeightLevel = ObstructHeightLevel.Low;
             reusableData.ClimbType = ClimbType.Climb;
             //TODO爬
-            RayDebug.Log("爬：" + reusableData.ObstructHeight.ToString());
+            RayDebug.Log("爬：" + reusableData.ObstructHeightLevel.ToString());
             player.MovementStateMachine.ChangeState(player.MovementStateMachine.climbState);
         }
         else
@@ -265,7 +263,7 @@ public class PlayerReusableLogic
         if (Physics.Raycast(VaultStart, -wallHit.normal, vaultMaxDistance, player.whatIsGround)) //先判断翻越空间有没有其他物体遮挡
         {
             //切换爬状态
-            RayDebug.Log("爬：" + reusableData.ObstructHeight.ToString());
+            RayDebug.Log("爬：" + reusableData.ObstructHeightLevel.ToString());
             reusableData.ClimbType = ClimbType.Climb;
         }
         else
@@ -276,13 +274,13 @@ public class PlayerReusableLogic
             if (Physics.Raycast(vaultDetectionPos, Vector3.down, 0.25f))
             {
                 //切换爬状态
-                RayDebug.Log("爬：" + reusableData.ObstructHeight.ToString());
+                RayDebug.Log("爬：" + reusableData.ObstructHeightLevel.ToString());
                 reusableData.ClimbType = ClimbType.Climb;
             }
             else
             {
                 //切换翻越
-                RayDebug.Log("翻越：" + reusableData.ObstructHeight.ToString());
+                RayDebug.Log("翻越：" + reusableData.ObstructHeightLevel.ToString());
                 reusableData.ClimbType = ClimbType.Vault;
             }
         }

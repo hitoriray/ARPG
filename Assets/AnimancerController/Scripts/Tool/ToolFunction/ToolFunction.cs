@@ -105,9 +105,9 @@ public static class ToolFunction
     /// 计算跳跃的初速度
     /// </summary>
     /// <returns></returns>
-    public static float GetJumpInitVelocity(float jumpMaxHeight, float Gravity)
+    public static float GetJumpInitVelocity(float jumpMaxHeight, float gravity)
     {
-        return Mathf.Sqrt(-2 * Gravity * jumpMaxHeight);
+        return Mathf.Sqrt(-2 * gravity * jumpMaxHeight);
     }
 
     public static void MatchTarget(float startTIme, float endTime)

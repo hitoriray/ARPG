@@ -8,12 +8,13 @@ public abstract class StateBase : IState
     protected TimerService timerServer;
     protected PlayerController player;
     protected AnimancerComponent animancer;
-    public PlayerReusableData reusableData;
     public Transform cam;
+    public PlayerReusableData reusableData;
     private PlayerReusableLogic _reusableLogic;
     public PlayerReusableLogic reusableLogic
     {
-        get {
+        get
+        {
             if (_reusableLogic == null)
             {
                 _reusableLogic = player.ReusableLogic;
@@ -22,7 +23,7 @@ public abstract class StateBase : IState
                     return null;
                 }
             }
-            return _reusableLogic; 
+            return _reusableLogic;
         }
     }
 
@@ -35,11 +36,12 @@ public abstract class StateBase : IState
         cam = player.CameraTransform;
         animancer = player.animancer;
     }
+
     public abstract void OnEnter();
     public abstract void OnExit();
-    protected abstract void AddEventListening();
-    protected abstract void RemoveEventListening();
     public abstract void OnUpdate();
     public abstract void OnAnimationUpdate();
     public abstract void OnAnimationEnd();
+    protected abstract void AddEventListening();
+    protected abstract void RemoveEventListening();
 }

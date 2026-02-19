@@ -19,6 +19,11 @@ public class PlayerStateMachine : StateMachineBase
     public PlayerPlatformerUpState platformerUpState;
     public PlayerLandState landState;
 
+    // 闪避三层状态
+    public PlayerAvoidState avoidState;   // Walk + Shift
+    public PlayerSlideState slideState;   // Run  + Shift
+    public PlayerRollState  rollState;    // Q 键（无论 Walk/Run）
+
     public PlayerStateMachine(PlayerController player)
     {
         this.player = player;
@@ -33,6 +38,10 @@ public class PlayerStateMachine : StateMachineBase
         fallLoopState = new PlayerFallLoopState(this);
         platformerUpState = new PlayerPlatformerUpState(this);
         landState = new PlayerLandState(this);
+
+        avoidState = new PlayerAvoidState(this);
+        slideState = new PlayerSlideState(this);
+        rollState  = new PlayerRollState(this);
     }
 
     public override void ChangeState(IState targetState)

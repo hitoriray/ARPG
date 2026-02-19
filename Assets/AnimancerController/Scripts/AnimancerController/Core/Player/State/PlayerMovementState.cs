@@ -75,14 +75,48 @@ public class PlayerMovementState : StateBase
         }
     }
 
+    /// <summary>
+    /// C 键：切换站立/蹲伏
+    /// </summary>
     protected void OnCrouch(InputAction.CallbackContext context)
     {
         reusableData.standValueParameter.TargetValue = reusableData.standValueParameter.TargetValue == 0 ? 1 : 0;
     }
 
+    /// <summary>
+    /// Ctrl 键：切换行走/跑步模式
+    /// </summary>
+    protected void OnToggleRun(InputAction.CallbackContext context)
+    {
+        reusableData.isRunMode = !reusableData.isRunMode;
+    }
+
+    /// <summary>
+    /// Shift 键：Walk 模式=Avoid 闪身，Run 模式=Slide 滑步
+    /// </summary>
+    protected void OnDodge(InputAction.CallbackContext context)
+    {
+        if (reusableData.isRunMode)
+            playerStateMachine.ChangeState(playerStateMachine.slideState);
+        else
+            playerStateMachine.ChangeState(playerStateMachine.avoidState);
+    }
+
+    /// <summary>
+    /// Q 键：翻滚（Walk/Run 均可，最长无敌帧）
+    /// </summary>
+    protected void OnRoll(InputAction.CallbackContext context)
+    {
+        playerStateMachine.ChangeState(playerStateMachine.rollState);
+    }
+
+    /// <summary>
+    /// 更新速度参数（基于 isRunMode）
+    /// Walk=1, Run=2
+    /// </summary>
     protected float UpdateSpeed()
     {
-        return reusableData.speedValueParameter.TargetValue = inputServer.Shift ? 2 : 1;
+        return reusableData.speedValueParameter.TargetValue = reusableData.isRunMode ? 2 : 1;
     }
 
     protected float UpdateRotation(bool isUpdateRotationParameter = true, float rotationSmoothTime = 0.7f,

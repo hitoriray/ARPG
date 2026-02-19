@@ -42,7 +42,6 @@ public class PlayerMoveLoopState : PlayerMovementState
             reusableData.checkWallDistance = 0.4f * reusableData.speedValueParameter.CurrentValue;
         }
 
-
         //检测前方有没有障碍物
         Debug.DrawLine(player.transform.position + Vector3.up,
             player.transform.position + Vector3.up + player.transform.forward * reusableData.checkWallDistance,
@@ -63,6 +62,9 @@ public class PlayerMoveLoopState : PlayerMovementState
         inputServer.inputMap.Player.Jump.started += OnJumpStart;
         inputServer.inputMap.Player.Move.canceled += OnCheckMoveEnd;
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
+        inputServer.inputMap.Player.Shift.started += OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started += OnToggleRun;
+        inputServer.inputMap.Player.Roll.started += OnRoll;
         player.isOnGround.ValueChanged += OnCheckFall;
     }
 
@@ -72,6 +74,9 @@ public class PlayerMoveLoopState : PlayerMovementState
         inputServer.inputMap.Player.Jump.started -= OnJumpStart;
         inputServer.inputMap.Player.Move.canceled -= OnCheckMoveEnd;
         inputServer.inputMap.Player.Crouch.started -= OnCrouch;
+        inputServer.inputMap.Player.Shift.started -= OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started -= OnToggleRun;
+        inputServer.inputMap.Player.Roll.started -= OnRoll;
         player.isOnGround.ValueChanged -= OnCheckFall;
     }
 

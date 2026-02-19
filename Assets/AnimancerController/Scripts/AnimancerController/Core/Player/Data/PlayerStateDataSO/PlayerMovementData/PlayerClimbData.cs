@@ -12,6 +12,7 @@ public class PlayerClimbData
     //攀爬动画
     [field: SerializeField] public ClipTransition[] climbs;
     //与上面的动画一一对应
+    [Tooltip("需要与上面的动画一一对应")]
     public PlayerClimbAnimationSettings[] vaultSettings;
     public PlayerClimbAnimationSettings[] climbSettings;
     //攀墙拐角

@@ -3,19 +3,19 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ObstructHeight
+public enum ObstructHeightLevel
 {
-    low = 0,
-    lowMedium = 1,
-    medium = 2,
-    mediumHight = 3,
-    Hight = 4,
+    Low = 0,
+    LowMedium = 1,
+    Medium = 2,
+    MediumHigh = 3,
+    High = 4,
 }
 
 public enum ClimbType
 {
-    Vault,
-    Climb
+    Vault,  // 翻越/跨栏
+    Climb   // 攀爬
 }
 
 public enum MatchType
@@ -30,9 +30,9 @@ public struct ClimbTargetMatchInfo
     public Vector3 InitPos; //开始进行目标位置匹配的初始位置
     public bool setTargetMatchInitPos; //是否完成最后的匹配操作
 
-    public ClimbTargetMatchInfo(Vector3 TargetPos)
+    public ClimbTargetMatchInfo(Vector3 targetPos)
     {
-        this.TargetPos = TargetPos;
+        this.TargetPos = targetPos;
 
         InitPos = Vector3.zero;
         setTargetMatchInitPos = false;
@@ -46,7 +46,7 @@ public class PlayerReusableData
 {
     public float currentRotationTime;
 
-    //animancer控制混合树Mixer用到的参数
+    // Animancer控制混合树Mixer用到的参数
     public SmoothedFloatParameter standValueParameter { get; set; }
     public SmoothedFloatParameter rotationValueParameter { get; set; }
     public SmoothedFloatParameter speedValueParameter { get; set; }
@@ -56,26 +56,26 @@ public class PlayerReusableData
     public SmoothedFloatParameter lock_Y_ValueParameter { get; set; }
 
     //锁敌
-    public BindableProperty<Transform> lockTarget { get; set; } = new BindableProperty<Transform>();
+    public BindableProperty<Transform> lockTarget { get; set; } = new();
 
     public int drawTargetId = -1;
     public int drawCurrentId = -1;
     public Vector3 targetDir;
-    public BindableProperty<float> targetAngle = new BindableProperty<float>();
-    public BindableProperty<string> currentState = new BindableProperty<string>();
+    public BindableProperty<float> targetAngle = new();
+    public BindableProperty<string> currentState = new();
 
     //IdleState
     public ManualMixerState standIdleMixerState;
     public ManualMixerState crouchIdleMixerState;
-    public List<AnimancerState> standIdleList = new List<AnimancerState>();
-    public List<AnimancerState> crouchIdleList = new List<AnimancerState>();
+    public List<AnimancerState> standIdleList = new();
+    public List<AnimancerState> crouchIdleList = new();
     public int currentStandIdleIndex;
     public int currentCrouchIdleIndex;
 
     public bool isLockIdle = false;
 
     //攀爬
-    public ObstructHeight ObstructHeight;
+    public ObstructHeightLevel ObstructHeightLevel;
     public ClimbType ClimbType;
 
     public ClipTransition targetClimbClip;
@@ -86,7 +86,7 @@ public class PlayerReusableData
     //跳跃惯性
     public Vector3 currentInertialVelocity;
     public int cashIndex = 0;
-    public readonly static int cashSize = 3;
+    public static readonly int cashSize = 3;
     public Vector3[] cashVelocity = new Vector3[cashSize];
 
     //HangWall
@@ -109,6 +109,15 @@ public class PlayerReusableData
 
     //
     public float currentMidInAirMultiplier = 0.6f;
+
+    // 移动模式控制（CapsLock 切换）
+    public bool isRunMode = false; // false=行走(1)，true=跑步(2)
+
+    // 无敌帧标记（预留接口，战斗系统可检测此字段）
+    public bool isInvincible = false;
+
+    // 所有闪避动作（Avoid/Slide/Roll）共享冷却时间戳
+    public float lastEvasiveActionTime = -999f;
 
     public PlayerReusableData(AnimancerComponent animancerComponent, PlayerSO playerSO)
     {

@@ -4,9 +4,8 @@ public class StateMachineBase
     public IState lastState;
 
     /// <summary>
-    /// 状态切换的API
+    /// 切换状态
     /// </summary>
-    /// <param name="targetState"></param>
     public virtual void ChangeState(IState targetState)
     {
         currentState?.OnExit();
@@ -15,17 +14,11 @@ public class StateMachineBase
         currentState?.OnEnter();
     }
 
-    /// <summary>
-    /// 动画状态退出的接口
-    /// </summary>
     public void OnAnimationEnd()
     {
         currentState.OnAnimationEnd();
     }
 
-    /// <summary>
-    /// Update状态API
-    /// </summary>
     public void OnUpdate()
     {
         currentState?.OnUpdate();

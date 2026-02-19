@@ -14,41 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <playerMovementData>k__BackingField:
     <PlayerIdleData>k__BackingField:
-      <idle>k__BackingField: {fileID: 11400000, guid: 332d7aac94dee8344a532cd1faca4aa8,
-        type: 2}
+      <idle>k__BackingField: {fileID: 11400000, guid: 332d7aac94dee8344a532cd1faca4aa8, type: 2}
       <strandIdle_Lock>k__BackingField: []
       <crouchIdle_Lock>k__BackingField: []
       <strandIdle>k__BackingField: []
       <crouchIdle>k__BackingField: []
     <PlayerMoveStartData>k__BackingField:
-      <moveStart>k__BackingField: {fileID: 11400000, guid: 60f8c68084a2fac469a2ce692d12c90a,
-        type: 2}
-      <moveStart_F>k__BackingField: {fileID: 11400000, guid: 60f8c68084a2fac469a2ce692d12c90a,
-        type: 2}
-      <moveStart_L45>k__BackingField: {fileID: 11400000, guid: be52c68bdc1eace46a628e2c1a646268,
-        type: 2}
-      <moveStart_L90>k__BackingField: {fileID: 11400000, guid: 849c0c81f46ed754f983984f3e53530a,
-        type: 2}
-      <moveStart_L135>k__BackingField: {fileID: 11400000, guid: 300de475731cb84429674e4a4896258f,
-        type: 2}
-      <moveStart_L180>k__BackingField: {fileID: 11400000, guid: 02b24c2a2b8bf6745bca4a44693e5154,
-        type: 2}
-      <moveStart_R45>k__BackingField: {fileID: 11400000, guid: 2d7b70df949118d4d8785fec63f3b966,
-        type: 2}
-      <moveStart_R90>k__BackingField: {fileID: 11400000, guid: 2d37e1f5b28bead4ebbbd88069f9e971,
-        type: 2}
-      <moveStart_R135>k__BackingField: {fileID: 11400000, guid: 39607935205f0014ebc1e2a97587558f,
-        type: 2}
-      <moveStart_R180>k__BackingField: {fileID: 11400000, guid: e617ef6da8f9a4d4280e6b759341554a,
-        type: 2}
+      <moveStart>k__BackingField: {fileID: 11400000, guid: 60f8c68084a2fac469a2ce692d12c90a, type: 2}
+      <moveStart_F>k__BackingField: {fileID: 11400000, guid: 60f8c68084a2fac469a2ce692d12c90a, type: 2}
+      <moveStart_L45>k__BackingField: {fileID: 11400000, guid: be52c68bdc1eace46a628e2c1a646268, type: 2}
+      <moveStart_L90>k__BackingField: {fileID: 11400000, guid: 849c0c81f46ed754f983984f3e53530a, type: 2}
+      <moveStart_L135>k__BackingField: {fileID: 11400000, guid: 300de475731cb84429674e4a4896258f, type: 2}
+      <moveStart_L180>k__BackingField: {fileID: 11400000, guid: 02b24c2a2b8bf6745bca4a44693e5154, type: 2}
+      <moveStart_R45>k__BackingField: {fileID: 11400000, guid: 2d7b70df949118d4d8785fec63f3b966, type: 2}
+      <moveStart_R90>k__BackingField: {fileID: 11400000, guid: 2d37e1f5b28bead4ebbbd88069f9e971, type: 2}
+      <moveStart_R135>k__BackingField: {fileID: 11400000, guid: 39607935205f0014ebc1e2a97587558f, type: 2}
+      <moveStart_R180>k__BackingField: {fileID: 11400000, guid: e617ef6da8f9a4d4280e6b759341554a, type: 2}
     <PlayerMoveLoopData>k__BackingField:
-      <moveLoop>k__BackingField: {fileID: 11400000, guid: c4d72ffdfc3326c4082db72d2c1738cb,
-        type: 2}
+      <moveLoop>k__BackingField: {fileID: 11400000, guid: c4d72ffdfc3326c4082db72d2c1738cb, type: 2}
     <PlayerMoveEndData>k__BackingField:
-      <moveEnd_L>k__BackingField: {fileID: 11400000, guid: 1cf926f503199d3449b0ba8997b9703e,
-        type: 2}
-      <moveEnd_R>k__BackingField: {fileID: 11400000, guid: d395dfc6341c6dc458176bf775fda299,
-        type: 2}
+      <moveEnd_L>k__BackingField: {fileID: 11400000, guid: 1cf926f503199d3449b0ba8997b9703e, type: 2}
+      <moveEnd_R>k__BackingField: {fileID: 11400000, guid: d395dfc6341c6dc458176bf775fda299, type: 2}
       <moveToWall>k__BackingField:
         _FadeDuration: 0.25
         _Speed: 1
@@ -233,8 +219,7 @@ MonoBehaviour:
           _Names: []
         _Clip: {fileID: 7400000, guid: c4139b3a28a95264baf1adc5424daa2b, type: 2}
         _NormalizedStartTime: NaN
-      hand_wallMove_Mixer: {fileID: 11400000, guid: f428a895456abc0459ec48a7061ba6a5,
-        type: 2}
+      hand_wallMove_Mixer: {fileID: 11400000, guid: f428a895456abc0459ec48a7061ba6a5, type: 2}
       hang_wall_climb_up:
         _FadeDuration: 0.19166668
         _Speed: 1
@@ -398,23 +383,150 @@ MonoBehaviour:
           _Names: []
         _Clip: {fileID: 7400150, guid: dd4bc59541169e34ead96f0310ddc7bd, type: 3}
         _NormalizedStartTime: NaN
+    <PlayerAvoidData>k__BackingField:
+      avoidForward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.4375
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 7288140745406751129, guid: a45963fbb73fc5a48a1e1ec8a32752f7, type: 3}
+        _NormalizedStartTime: NaN
+      avoidBackward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.71666664
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 3477267894247710890, guid: 7db64cf5375423a499341f48374c8b7e, type: 3}
+        _NormalizedStartTime: NaN
+      avoidLeft:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.61428565
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -8128485076105299455, guid: 83e729d862c33654784d824c149a23f4, type: 3}
+        _NormalizedStartTime: NaN
+      avoidRight:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.61428565
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 897430662513365177, guid: 3256a8bc5c10785469f5f3e0568c3f15, type: 3}
+        _NormalizedStartTime: NaN
+      <invincibleDuration>k__BackingField: 0.2
+      <forwardThreshold>k__BackingField: 0.3
+      <sideThreshold>k__BackingField: 0.5
+      <cooldown>k__BackingField: 0.3
+    <PlayerSlideData>k__BackingField:
+      slideForward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.67307687
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -4685774653820375207, guid: b12b4b239efc0ed469580c327154797f, type: 3}
+        _NormalizedStartTime: NaN
+      slideBackward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.8285713
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 3741664967802435952, guid: 4033a3de09fadfb4e9c750038e8559c0, type: 3}
+        _NormalizedStartTime: NaN
+      slideLeft:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.826923
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 1288923269004819538, guid: 7dfc743ed8bc40b4f9afa8a3f1902dec, type: 3}
+        _NormalizedStartTime: NaN
+      slideRight:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.826923
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -7095861656510792452, guid: eb203c7f7bd35ac4dbc8735bdc06af2b, type: 3}
+        _NormalizedStartTime: NaN
+      <invincibleDuration>k__BackingField: 0
+      <forwardThreshold>k__BackingField: 0.3
+      <sideThreshold>k__BackingField: 0.5
+      <cooldown>k__BackingField: 0.4
+    <PlayerRollData>k__BackingField:
+      rollForward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.8625
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -5309024022912083841, guid: 207c5743645cebf44beafe700f694316, type: 3}
+        _NormalizedStartTime: NaN
+      rollBackward:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.8727273
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 3507708910005082219, guid: a40f91462cce575448ed2eacab1685ac, type: 3}
+        _NormalizedStartTime: NaN
+      rollLeft:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.8666667
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 7733072019345241881, guid: fdbc857bbd9f46b488c69b1e185e0b47, type: 3}
+        _NormalizedStartTime: NaN
+      rollRight:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.8666667
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -8853007664391499008, guid: 4b5ee6d6531a07c429c46e3734eb3b0c, type: 3}
+        _NormalizedStartTime: NaN
+      <invincibleDuration>k__BackingField: 0.4
+      <forwardThreshold>k__BackingField: 0.3
+      <sideThreshold>k__BackingField: 0.5
+      <cooldown>k__BackingField: 0.5
   <playerParameterData>k__BackingField:
-    <standValueParameter>k__BackingField: {fileID: 11400000, guid: 37d1b1f02016c7944bc41b1db63b957f,
-      type: 2}
-    <rotationValueParameter>k__BackingField: {fileID: 11400000, guid: 7c49f815b53fd554caacddcfab8f999b,
-      type: 2}
-    <speedValueParameter>k__BackingField: {fileID: 11400000, guid: db36eba2f1fd0cf4f910a3c26494c5c1,
-      type: 2}
-    <LockValueParameter>k__BackingField: {fileID: 11400000, guid: 123734cdf95bfbe40b9b4adf3aa0cd93,
-      type: 2}
-    <Lock_X_ValueParameter>k__BackingField: {fileID: 11400000, guid: 12c53b7cc39f2324ea10b2d689999a0e,
-      type: 2}
-    <Lock_Y_ValueParameter>k__BackingField: {fileID: 11400000, guid: 155c8c7c1da9fca4b9aa0ba689448d5d,
-      type: 2}
-    <moveInterruptEvent>k__BackingField: {fileID: 11400000, guid: 546bdb412bbcf824496de50d0635d3fb,
-      type: 2}
-    <cancelClimbEvent>k__BackingField: {fileID: 11400000, guid: 380fccd68d7a4e14491c22fdb8c2fc60,
-      type: 2}
+    <standValueParameter>k__BackingField: {fileID: 11400000, guid: 37d1b1f02016c7944bc41b1db63b957f, type: 2}
+    <rotationValueParameter>k__BackingField: {fileID: 11400000, guid: 7c49f815b53fd554caacddcfab8f999b, type: 2}
+    <speedValueParameter>k__BackingField: {fileID: 11400000, guid: db36eba2f1fd0cf4f910a3c26494c5c1, type: 2}
+    <LockValueParameter>k__BackingField: {fileID: 11400000, guid: 123734cdf95bfbe40b9b4adf3aa0cd93, type: 2}
+    <Lock_X_ValueParameter>k__BackingField: {fileID: 11400000, guid: 12c53b7cc39f2324ea10b2d689999a0e, type: 2}
+    <Lock_Y_ValueParameter>k__BackingField: {fileID: 11400000, guid: 155c8c7c1da9fca4b9aa0ba689448d5d, type: 2}
+    <moveInterruptEvent>k__BackingField: {fileID: 11400000, guid: 546bdb412bbcf824496de50d0635d3fb, type: 2}
+    <cancelClimbEvent>k__BackingField: {fileID: 11400000, guid: 380fccd68d7a4e14491c22fdb8c2fc60, type: 2}
   references:
     version: 2
     RefIds: []

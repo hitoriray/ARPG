@@ -24,6 +24,9 @@ public class PlayerIdleState : PlayerMovementState
         inputServer.inputMap.Player.Move.started += MoveStart;
         inputServer.inputMap.Player.Jump.started += OnJumpStart;
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
+        inputServer.inputMap.Player.Shift.started += OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started += OnToggleRun;
+        inputServer.inputMap.Player.Roll.started += OnRoll;
         player.isOnGround.ValueChanged += OnCheckFall;
         //锁敌事件
         reusableData.lockValueParameter.Parameter.OnValueChanged += LockValueChange;
@@ -43,6 +46,9 @@ public class PlayerIdleState : PlayerMovementState
         inputServer.inputMap.Player.Move.started -= MoveStart;
         inputServer.inputMap.Player.Jump.started -= OnJumpStart;
         inputServer.inputMap.Player.Crouch.started -= OnCrouch;
+        inputServer.inputMap.Player.Shift.started -= OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started -= OnToggleRun;
+        inputServer.inputMap.Player.Roll.started -= OnRoll;
         player.isOnGround.ValueChanged -= OnCheckFall;
         reusableData.lockValueParameter.Parameter.OnValueChanged -= LockValueChange;
     }

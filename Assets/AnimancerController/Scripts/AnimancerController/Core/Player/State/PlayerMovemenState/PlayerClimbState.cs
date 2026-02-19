@@ -1,21 +1,21 @@
-﻿
-using Animancer;
+﻿using Animancer;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerClimbState : PlayerMovementState
 {
-    PlayerClimbData climbData;
-    AnimancerState animancerState;
+    private readonly PlayerClimbData climbData;
+    private AnimancerState animancerState;
 
-    ClimbTargetMatchInfo targetMatchInfo_Start;
-    ClimbTargetMatchInfo targetMatchInfo_Y;
+    private ClimbTargetMatchInfo targetMatchInfo_Start;
+    private ClimbTargetMatchInfo targetMatchInfo_Y;
 
-    List<AnimancerEvent> animancerEventList = new List<AnimancerEvent>();
-    PlayerClimbAnimationSettings animationSettings;
-    int drawID;
-    Action cancelClimbTask;
+    private readonly List<AnimancerEvent> animancerEventList = new();
+    private PlayerClimbAnimationSettings animationSettings;
+    private int drawID;
+    private Action cancelClimbTask;
+    
     public PlayerClimbState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         climbData = playerSO.playerMovementData.PlayerClimbData;
@@ -80,7 +80,7 @@ public class PlayerClimbState : PlayerMovementState
         {
             return;
         }
-        if (reusableData.ObstructHeight == ObstructHeight.mediumHight)
+        if (reusableData.ObstructHeightLevel == ObstructHeightLevel.MediumHigh)
         {
             animancerState.Events(player).Add(animancerEventList, new AnimancerEvent(0.15f,OnCancelClimb));
         }
@@ -133,7 +133,7 @@ public class PlayerClimbState : PlayerMovementState
    
     public ClipTransition GetClimbAnimation()
     {
-        int index = (int)reusableData.ObstructHeight;
+        int index = (int)reusableData.ObstructHeightLevel;
         if (reusableData.ClimbType == ClimbType.Climb)
         {
             if (index >= climbData.climbs.Length)
@@ -165,7 +165,7 @@ public class PlayerClimbState : PlayerMovementState
     }
     public PlayerClimbAnimationSettings GetClimbTimeSetting()
     {
-        int index = (int)reusableData.ObstructHeight;
+        int index = (int)reusableData.ObstructHeightLevel;
         if (reusableData.ClimbType == ClimbType.Climb)
         {
             if (index >= climbData.climbSettings.Length)

@@ -110,6 +110,9 @@ public class CharacterControllerBase : MonoBehaviour
             horizontalVelocityInAir = Vector3.zero;
     }
 
+    /// <summary>
+    /// 在播放动画时会调用此方法,没有动画则不调用
+    /// </summary>
     protected virtual void OnAnimatorMove()
     {
         if (rootMotionMode == RootMotionMode.Suppressed)
@@ -144,6 +147,9 @@ public class CharacterControllerBase : MonoBehaviour
         UpdateCharacterMove(moveDir, animator.deltaRotation);
     }
 
+    /// <summary>
+    /// 斜坡的处理
+    /// </summary>
     private Vector3 SetDirOnSlop(Vector3 dir)
     {
         if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 1f))
@@ -159,6 +165,7 @@ public class CharacterControllerBase : MonoBehaviour
         if (!ignoreRotationRootMotion && deltaRot != Quaternion.identity)
             transform.rotation = deltaRot * transform.rotation;
 
+        // 每帧移动 deltaDir 个单位
         if (controller.enabled)
         {
             animationVelocity = deltaDir;

@@ -70,6 +70,9 @@ public class PlayerMoveEndState : PlayerMovementState
         inputServer.inputMap.Player.Jump.started += OnJumpStart;
         inputServer.inputMap.Player.Move.started += OnMoveStart;
         inputServer.inputMap.Player.Crouch.started += OnCrouch;
+        inputServer.inputMap.Player.Shift.started += OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started += OnToggleRun;
+        inputServer.inputMap.Player.Roll.started += OnRoll;
         player.isOnGround.ValueChanged += OnCheckFall;
     }
 
@@ -79,6 +82,9 @@ public class PlayerMoveEndState : PlayerMovementState
         inputServer.inputMap.Player.Jump.started -= OnJumpStart;
         inputServer.inputMap.Player.Move.started -= OnMoveStart;
         inputServer.inputMap.Player.Crouch.started -= OnCrouch;
+        inputServer.inputMap.Player.Shift.started -= OnDodge;
+        inputServer.inputMap.Player.ToggleRun.started -= OnToggleRun;
+        inputServer.inputMap.Player.Roll.started -= OnRoll;
         player.isOnGround.ValueChanged -= OnCheckFall;
     }
 
