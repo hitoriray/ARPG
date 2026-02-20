@@ -1,5 +1,5 @@
-using Data;
 using JKFrame;
+using Manager;
 using UnityEngine;
 using UnityEngine.UI;
 

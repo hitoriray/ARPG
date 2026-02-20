@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Config;
+using Data;
 using JKFrame;
 
-namespace Data
+namespace Manager
 {
     /// <summary>
     /// 数据管理器

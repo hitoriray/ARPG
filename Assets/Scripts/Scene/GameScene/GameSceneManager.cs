@@ -1,6 +1,7 @@
 using Battle.ECS;
 using Data;
 using JKFrame;
+using Manager;
 using RayPlayer;
 using Sirenix.OdinInspector;
 

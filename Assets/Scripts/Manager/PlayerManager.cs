@@ -3,11 +3,11 @@ using Config;
 using Cysharp.Threading.Tasks;
 using Data;
 using JKFrame;
-using Manager;
+using RayPlayer;
 using UI;
 using UnityEngine;
 
-namespace RayPlayer
+namespace Manager
 {
     public class PlayerManager : SingletonMono<PlayerManager>
     {

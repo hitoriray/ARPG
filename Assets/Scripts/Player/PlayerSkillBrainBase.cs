@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Config;
 using Data;
+using Manager;
 using Skill;
 
 namespace RayPlayer

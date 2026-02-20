@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data;
 using JKFrame;
+using Manager;
 using RayPlayer;
 using UnityEngine;
 using UnityEngine.UI;

@@ -2,6 +2,7 @@
 using Config;
 using Data;
 using JKFrame;
+using Manager;
 using RayPlayer;
 using UnityEngine;
 

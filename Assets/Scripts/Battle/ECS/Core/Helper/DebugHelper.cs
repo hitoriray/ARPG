@@ -33,11 +33,11 @@ namespace Battle.ECS.Core.Helper
             ref var debugInfo = ref entity.TryGetRef<DebugInfo>(out var hasDebugInfo);
             if (hasDebugInfo == false) return $"[{entity.WorldId}:{entity.Id}:{entity.Version}]";
             return debugInfo.Info;
-#endif
-#if UNITY_EDITOR
+#elif UNITY_EDITOR
             return $"[{entity.Id}:{entity.Version}]";
-#endif
+#else
             return null;
+#endif
         }
 
         /// <summary>
