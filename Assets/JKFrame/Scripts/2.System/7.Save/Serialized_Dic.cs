@@ -16,10 +16,7 @@ public class Serialized_Dic<K, V> : ISerializationCallbackReceiver
     [NonSerialized] // 不序列化 避免报错
     private Dictionary<K, V> dictionary;
 
-    public Dictionary<K, V> Dictionary
-    {
-        get => dictionary;
-    }
+    public Dictionary<K, V> Dictionary => dictionary ??= new Dictionary<K, V>();
 
     public Serialized_Dic()
     {
@@ -28,7 +25,7 @@ public class Serialized_Dic<K, V> : ISerializationCallbackReceiver
 
     public Serialized_Dic(Dictionary<K, V> dictionary)
     {
-        this.dictionary = dictionary;
+        this.dictionary = dictionary ?? new Dictionary<K, V>();
     }
 
     // 序列化的时候把字典里面的内容放进list
@@ -50,8 +47,9 @@ public class Serialized_Dic<K, V> : ISerializationCallbackReceiver
     /// </summary>
     public void OnBeforeSerialize()
     {
-        keyList = new List<K>(dictionary.Keys);
-        valueList = new List<V>(dictionary.Values);
+        var source = Dictionary;
+        keyList = new List<K>(source.Keys);
+        valueList = new List<V>(source.Values);
     }
 
     /// <summary>
@@ -60,10 +58,15 @@ public class Serialized_Dic<K, V> : ISerializationCallbackReceiver
     public void OnAfterDeserialize()
     {
         dictionary = new Dictionary<K, V>();
-        for (int i = 0; i < keyList.Count; i++)
-            dictionary.Add(keyList[i], valueList[i]);
+        if (keyList == null || valueList == null) return;
 
-        keyList.Clear();
-        valueList.Clear();
+        int count = Mathf.Min(keyList.Count, valueList.Count);
+        for (int i = 0; i < count; i++)
+        {
+            K key = keyList[i];
+            if (dictionary.ContainsKey(key))
+                continue;
+            dictionary.Add(key, valueList[i]);
+        }
     }
 }

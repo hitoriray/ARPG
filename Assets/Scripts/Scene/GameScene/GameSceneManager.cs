@@ -29,7 +29,11 @@ namespace Scene
                 // 正常游戏流程：检查是否有存档
                 if (DataManager.HasArchive)
                 {
-                    DataManager.LoadCurrentArchive();
+                    if (!DataManager.LoadCurrentArchive())
+                    {
+                        JKLog.Warning("[GameSceneManager] 存档读取失败，创建新存档...");
+                        DataManager.CreateArchive(initialCharacterId);
+                    }
                 }
                 else
                 {

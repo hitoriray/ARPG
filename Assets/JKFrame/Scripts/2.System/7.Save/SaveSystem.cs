@@ -221,8 +221,8 @@ namespace JKFrame
         /// </summary>
         public static SaveItem GetSaveItem(SaveItem saveItem)
         {
-            GetSaveItem(saveItem.saveID);
-            return null;
+            if (saveItem == null) return null;
+            return GetSaveItem(saveItem.saveID);
         }
 
         /// <summary>

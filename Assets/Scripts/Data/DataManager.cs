@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using Config;
 using JKFrame;
 
@@ -9,12 +11,15 @@ namespace Data
     /// </summary>
     public static class DataManager
     {
-        // static DataManager() { } // 移除静态构造函数，避免初始化顺序问题
+        private const int DefaultSkillPoint = 100;
+        private const int DefaultSkillLv = 1;
+        private const int ShortcutSlotCount = 6;
 
         private static bool? _hasArchive;
-        public static bool HasArchive 
-        { 
-            get 
+
+        public static bool HasArchive
+        {
+            get
             {
                 if (_hasArchive == null) LoadArchive();
                 return _hasArchive.Value;
@@ -22,39 +27,51 @@ namespace Data
             private set => _hasArchive = value;
         }
 
+        public static GameData GameData { get; private set; }
+
         private static void LoadArchive()
         {
             var saveItem = SaveSystem.GetSaveItem(0);
-            _hasArchive = saveItem != null;
+            if (saveItem != null)
+            {
+                _hasArchive = true;
+                return;
+            }
+
+            var allSaves = SaveSystem.GetAllSaveItem();
+            _hasArchive = allSaves != null && allSaves.Count > 0;
         }
 
         /// <summary>
-        /// 创建新存档
+        /// 创建新存档（当前项目单槽位，创建新档会清空旧档）
         /// </summary>
         public static void CreateArchive(int initCharacterId = 1001)
         {
-            // if (HasArchive)
-            // {
-                SaveSystem.DeleteAllSaveItem();
-            // }
+            SaveSystem.DeleteAllSaveItem();
             SaveSystem.CreateSaveItem();
-            _hasArchive = true; // 手动更新状态
-            
-            // 初始化角色外观数据
-            // InitCustomCharacterData();
-            // 使用新版初始化方式
+            _hasArchive = true;
             InitGameData(initCharacterId);
             SaveGameData();
         }
 
-        public static void LoadCurrentArchive()
+        /// <summary>
+        /// 加载当前存档
+        /// </summary>
+        public static bool LoadCurrentArchive()
         {
             GameData = SaveSystem.LoadObject<GameData>();
+            if (GameData == null)
+            {
+                JKLog.Error($"[{nameof(DataManager)}] 读取存档失败，GameData 为空。");
+                _hasArchive = false;
+                return false;
+            }
+
+            bool dirty = EnsureGameDataContainers();
+            if (dirty) SaveGameData();
+            _hasArchive = true;
+            return true;
         }
-
-        #region 玩家数据
-
-        public static GameData GameData { get; private set; }
 
         public static void InitGameData(int initCharacterId)
         {
@@ -62,92 +79,88 @@ namespace Data
             {
                 SelectedCharacterId = initCharacterId,
                 UnlockedCharacterIds = new Serialized_List<int>(),
-                CharacterTeam = new int[4] { initCharacterId, -1, -1, -1 },
+                CharacterTeam = new[] { initCharacterId, -1, -1, -1 },
                 CharacterSkillsDict = new Serialized_Dic<int, SkillLearnedDatas>(),
                 CharacterShortcutSkillsDict = new Serialized_Dic<int, ShortcutSkillSlotData>(),
             };
-            // 初始化解锁角色列表
+
             GameData.UnlockedCharacterIds.List.Add(initCharacterId);
-            // 初始化技能学习数据
-            var skillDatas = new SkillLearnedDatas()
-            {
-                SkillTotalPoint = 100,
-                SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
-            };
-            skillDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData { lv = 1 });
-            skillDatas.SkillLearnedDataDict.Dictionary.Add(1, new SkillLearnedData { lv = 1 });
-            GameData.CharacterSkillsDict.Dictionary.Add(initCharacterId, skillDatas);
-            // 初始化技能快捷栏
-            var shortcutData = new ShortcutSkillSlotData()
-            {
-                skillIds = new int[6] { -1, -1, -1, -1, -1, -1 }
-            };
-            GameData.CharacterShortcutSkillsDict.Dictionary.Add(initCharacterId, shortcutData);
-        }
-        
-        // 旧版初始化（旧版捏脸系统）
-        /*
-        public static void InitCustomCharacterData()
-        {
-            GameData = new GameData();
-            GameData.CustomPartDataDict = new Serialized_Dic<int, CustomCharacterPartData>();
-            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Face, 
-                new CustomCharacterPartData { Index = 1, Size = 1, Height = 0, } );
-            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Hair,
-                new CustomCharacterPartData { Index = 1, Color1 = Color.white.ConverToSerializationColor(), });
-            GameData.CustomPartDataDict.Dictionary.Add((int)CharacterPartType.Cloth,
-                new CustomCharacterPartData
-                {
-                    Index = 1, Color1 = Color.white.ConverToSerializationColor(),
-                    Color2 = Color.black.ConverToSerializationColor(),
-                });
-            GameData.SkillLearnedDatas = new()
-            {
-                SkillTotalPoint = 1000,
-            };
-            GameData.SkillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData(){lv=1});
-            GameData.ShortcutSkillSlotData = new();
-            GameData.ShortcutSkillSlotData.skillIds = new int[6] { -1, -1, -1, -1, -1, -1 };
-        }
-        */
-        
-        public static void SaveGameData()
-        {
-            SaveSystem.SaveObject(GameData);
+            GameData.CharacterSkillsDict.Dictionary[initCharacterId] = CreateDefaultSkillData();
+            GameData.CharacterShortcutSkillsDict.Dictionary[initCharacterId] = CreateDefaultShortcutData();
         }
 
-        #endregion
-        
+        public static void SaveGameData()
+        {
+            if (GameData == null)
+            {
+                JKLog.Error($"[{nameof(DataManager)}] SaveGameData 失败：GameData 为空。");
+                return;
+            }
+
+            SaveSystem.SaveObject(GameData);
+            _hasArchive = true;
+        }
+
         #region 角色管理
+
+        /// <summary>
+        /// 在读取角色配置后修复当前角色的技能与快捷栏数据
+        /// 1. 移除越界技能索引
+        /// 2. 修复非法等级
+        /// 3. 修复快捷栏长度/无效技能/重复技能
+        /// 4. 新角色默认补齐普攻，必要时补一个主动技能
+        /// </summary>
+        public static bool EnsureCurrentCharacterDataByConfig(CharacterConfig characterConfig, bool autoSave = true)
+        {
+            if (GameData == null)
+            {
+                JKLog.Error($"[{nameof(DataManager)}] GameData 为空！请先初始化或加载存档！");
+                return false;
+            }
+
+            bool dirty = EnsureGameDataContainers();
+            int characterId = GameData.SelectedCharacterId;
+
+            if (!GameData.UnlockedCharacterIds.List.Contains(characterId))
+            {
+                GameData.UnlockedCharacterIds.List.Add(characterId);
+                dirty = true;
+            }
+
+            var skillDatas = GetOrCreateCharacterSkillData(characterId, ref dirty);
+            var shortcutDatas = GetOrCreateCharacterShortcutData(characterId, ref dirty);
+
+            if (characterConfig != null)
+            {
+                dirty |= RepairSkillDataByConfig(skillDatas, characterConfig);
+                dirty |= RepairShortcutDataByConfig(shortcutDatas, skillDatas, characterConfig);
+            }
+            else
+            {
+                dirty |= RepairShortcutSlotData(shortcutDatas);
+            }
+
+            if (dirty && autoSave) SaveGameData();
+            return true;
+        }
+
         /// <summary>
         /// 获取当前角色的技能数据
         /// </summary>
         public static SkillLearnedDatas GetCurrentCharacterSkills()
         {
-            if (GameData?.CharacterSkillsDict?.Dictionary != null &&
-                GameData.CharacterSkillsDict.Dictionary.TryGetValue(GameData.SelectedCharacterId, out var skillDatas))
-            {
-                return skillDatas;
-            }
-
             if (GameData == null)
             {
                 JKLog.Error($"[{nameof(DataManager)}] GameData 为空！请先初始化存档！");
                 return null;
             }
 
-            // 创建新的默认数据
-            JKLog.Warning($"[{nameof(DataManager)}] 角色ID {GameData.SelectedCharacterId} 没有技能数据，创建默认数据...");
-            var newSkillDatas = new SkillLearnedDatas
-            {
-                SkillTotalPoint = 100,
-                SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
-            };
-            newSkillDatas.SkillLearnedDataDict.Dictionary.Add(0, new SkillLearnedData { lv = 1 });
-            GameData.CharacterSkillsDict.Dictionary.Add(GameData.SelectedCharacterId, newSkillDatas);
-            return newSkillDatas;
+            bool dirty = EnsureGameDataContainers();
+            var skillDatas = GetOrCreateCharacterSkillData(GameData.SelectedCharacterId, ref dirty);
+            if (dirty) SaveGameData();
+            return skillDatas;
         }
-        
+
         /// <summary>
         /// 获取当前角色的快捷栏数据
         /// </summary>
@@ -158,28 +171,26 @@ namespace Data
                 JKLog.Error($"[{nameof(DataManager)}] GameData 为空！请先初始化存档！");
                 return null;
             }
-            
-            if (GameData.CharacterShortcutSkillsDict.Dictionary.TryGetValue(GameData.SelectedCharacterId, out var shortcuts))
-            {
-                return shortcuts;
-            }
 
-
-            // 创建新的默认数据
-            JKLog.Warning($"[{nameof(DataManager)}] 角色ID {GameData.SelectedCharacterId} 没有快捷栏数据，创建默认数据...");
-            var newShortcuts = new ShortcutSkillSlotData
-            {
-                skillIds = new int[6] { -1, -1, -1, -1, -1, -1 }
-            };
-            GameData.CharacterShortcutSkillsDict.Dictionary.Add(GameData.SelectedCharacterId, newShortcuts);
-            return newShortcuts;
+            bool dirty = EnsureGameDataContainers();
+            var shortcuts = GetOrCreateCharacterShortcutData(GameData.SelectedCharacterId, ref dirty);
+            dirty |= RepairShortcutSlotData(shortcuts);
+            if (dirty) SaveGameData();
+            return shortcuts;
         }
-        
+
         /// <summary>
         /// 切换当前角色
         /// </summary>
         public static bool SwitchCharacter(int characterId)
         {
+            if (GameData == null)
+            {
+                JKLog.Error($"[{nameof(DataManager)}] SwitchCharacter 失败：GameData 为空。");
+                return false;
+            }
+
+            bool dirty = EnsureGameDataContainers();
             if (!GameData.UnlockedCharacterIds.List.Contains(characterId))
             {
                 JKLog.Warning($"[{nameof(DataManager)}] 角色ID {characterId} 未解锁！");
@@ -187,52 +198,369 @@ namespace Data
             }
 
             GameData.SelectedCharacterId = characterId;
+            GetOrCreateCharacterSkillData(characterId, ref dirty);
+            GetOrCreateCharacterShortcutData(characterId, ref dirty);
             SaveGameData();
             return true;
         }
-        
+
         /// <summary>
         /// 解锁新角色
         /// </summary>
         public static void UnlockCharacter(int characterId)
         {
+            if (GameData == null)
+            {
+                JKLog.Error($"[{nameof(DataManager)}] UnlockCharacter 失败：GameData 为空。");
+                return;
+            }
+
+            bool dirty = EnsureGameDataContainers();
+
             if (!GameData.UnlockedCharacterIds.List.Contains(characterId))
             {
                 GameData.UnlockedCharacterIds.List.Add(characterId);
+                dirty = true;
+            }
 
-                // 初始化该角色的技能和快捷栏数据
-                if (!GameData.CharacterSkillsDict.Dictionary.ContainsKey(characterId))
-                {
-                    var skillData = new SkillLearnedDatas
-                    {
-                        SkillTotalPoint = 1000,
-                        SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
-                    };
-                    GameData.CharacterSkillsDict.Dictionary.Add(characterId, skillData);
-                }
+            GetOrCreateCharacterSkillData(characterId, ref dirty);
+            GetOrCreateCharacterShortcutData(characterId, ref dirty);
 
-                if (!GameData.CharacterShortcutSkillsDict.Dictionary.ContainsKey(characterId))
-                {
-                    var shortcutData = new ShortcutSkillSlotData
-                    {
-                        skillIds = new int[6] { -1, -1, -1, -1, -1, -1 }
-                    };
-                    GameData.CharacterShortcutSkillsDict.Dictionary.Add(characterId, shortcutData);
-                }
-
+            if (dirty)
+            {
                 SaveGameData();
                 JKLog.Log($"[{nameof(DataManager)}] 解锁角色ID {characterId}");
             }
         }
-        
+
         /// <summary>
         /// 检查角色是否已解锁
         /// </summary>
         public static bool IsCharacterUnlocked(int characterId)
         {
-            return GameData.UnlockedCharacterIds.List.Contains(characterId);
+            return GameData != null
+                   && GameData.UnlockedCharacterIds != null
+                   && GameData.UnlockedCharacterIds.List != null
+                   && GameData.UnlockedCharacterIds.List.Contains(characterId);
         }
-        
+
+        #endregion
+
+        #region Internal Repair
+
+        private static bool EnsureGameDataContainers()
+        {
+            if (GameData == null) return false;
+
+            bool dirty = false;
+
+            if (GameData.UnlockedCharacterIds == null)
+            {
+                GameData.UnlockedCharacterIds = new Serialized_List<int>();
+                dirty = true;
+            }
+            if (GameData.UnlockedCharacterIds.List == null)
+            {
+                GameData.UnlockedCharacterIds.List = new List<int>();
+                dirty = true;
+            }
+
+            if (GameData.CharacterSkillsDict == null)
+            {
+                GameData.CharacterSkillsDict = new Serialized_Dic<int, SkillLearnedDatas>();
+                dirty = true;
+            }
+
+            if (GameData.CharacterShortcutSkillsDict == null)
+            {
+                GameData.CharacterShortcutSkillsDict = new Serialized_Dic<int, ShortcutSkillSlotData>();
+                dirty = true;
+            }
+
+            if (GameData.CharacterTeam == null || GameData.CharacterTeam.Length != 4)
+            {
+                int[] oldTeam = GameData.CharacterTeam;
+                GameData.CharacterTeam = new[] { GameData.SelectedCharacterId, -1, -1, -1 };
+                if (oldTeam != null)
+                {
+                    Array.Copy(oldTeam, GameData.CharacterTeam, Mathf.Min(oldTeam.Length, GameData.CharacterTeam.Length));
+                }
+                if (GameData.CharacterTeam[0] == -1)
+                {
+                    GameData.CharacterTeam[0] = GameData.SelectedCharacterId;
+                }
+                dirty = true;
+            }
+
+            return dirty;
+        }
+
+        private static SkillLearnedDatas GetOrCreateCharacterSkillData(int characterId, ref bool dirty)
+        {
+            if (!GameData.CharacterSkillsDict.Dictionary.TryGetValue(characterId, out var skillDatas) || skillDatas == null)
+            {
+                skillDatas = CreateDefaultSkillData();
+                GameData.CharacterSkillsDict.Dictionary[characterId] = skillDatas;
+                dirty = true;
+            }
+
+            if (skillDatas.SkillLearnedDataDict == null)
+            {
+                skillDatas.SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>();
+                dirty = true;
+            }
+
+            if (skillDatas.SkillTotalPoint < 0)
+            {
+                skillDatas.SkillTotalPoint = 0;
+                dirty = true;
+            }
+
+            var dict = skillDatas.SkillLearnedDataDict.Dictionary;
+            if (dict.Count == 0)
+            {
+                dict[0] = new SkillLearnedData { lv = DefaultSkillLv };
+                dirty = true;
+            }
+
+            var keys = new List<int>(dict.Keys);
+            foreach (var key in keys)
+            {
+                if (dict[key] == null)
+                {
+                    dict[key] = new SkillLearnedData { lv = DefaultSkillLv };
+                    dirty = true;
+                }
+                else if (dict[key].lv <= 0)
+                {
+                    dict[key].lv = DefaultSkillLv;
+                    dirty = true;
+                }
+            }
+
+            return skillDatas;
+        }
+
+        private static ShortcutSkillSlotData GetOrCreateCharacterShortcutData(int characterId, ref bool dirty)
+        {
+            if (!GameData.CharacterShortcutSkillsDict.Dictionary.TryGetValue(characterId, out var shortcutData) || shortcutData == null)
+            {
+                shortcutData = CreateDefaultShortcutData();
+                GameData.CharacterShortcutSkillsDict.Dictionary[characterId] = shortcutData;
+                dirty = true;
+            }
+
+            if (RepairShortcutSlotData(shortcutData))
+            {
+                dirty = true;
+            }
+
+            return shortcutData;
+        }
+
+        private static bool RepairSkillDataByConfig(SkillLearnedDatas skillDatas, CharacterConfig config)
+        {
+            bool dirty = false;
+            var dict = skillDatas.SkillLearnedDataDict.Dictionary;
+            int skillCount = config.SkillConfigList != null ? config.SkillConfigList.Count : 0;
+
+            if (skillCount <= 0) return false;
+
+            List<int> invalidKeys = new List<int>();
+            foreach (var pair in dict)
+            {
+                if (pair.Key < 0 || pair.Key >= skillCount)
+                {
+                    invalidKeys.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < invalidKeys.Count; i++)
+            {
+                dict.Remove(invalidKeys[i]);
+                dirty = true;
+            }
+
+            if (!dict.ContainsKey(0))
+            {
+                dict[0] = new SkillLearnedData { lv = DefaultSkillLv };
+                dirty = true;
+            }
+
+            var keys = new List<int>(dict.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                int skillIndex = keys[i];
+                var configItem = config.SkillConfigList[skillIndex];
+                if (configItem == null)
+                {
+                    dict.Remove(skillIndex);
+                    dirty = true;
+                    continue;
+                }
+
+                var learnedData = dict[skillIndex];
+                if (learnedData == null)
+                {
+                    dict[skillIndex] = new SkillLearnedData { lv = DefaultSkillLv };
+                    dirty = true;
+                    continue;
+                }
+
+                int maxLv = Mathf.Max(1, configItem.maxLv);
+                int fixedLv = Mathf.Clamp(Mathf.Max(learnedData.lv, DefaultSkillLv), 1, maxLv);
+                if (fixedLv != learnedData.lv)
+                {
+                    learnedData.lv = fixedLv;
+                    dirty = true;
+                }
+            }
+
+            // 新角色默认体验：若只有普攻，则自动补一个主动技能
+            if (dict.Count <= 1)
+            {
+                int firstActiveIndex = FindFirstActiveSkillIndex(config);
+                if (firstActiveIndex > 0 && !dict.ContainsKey(firstActiveIndex))
+                {
+                    dict[firstActiveIndex] = new SkillLearnedData { lv = DefaultSkillLv };
+                    dirty = true;
+                }
+            }
+
+            return dirty;
+        }
+
+        private static bool RepairShortcutDataByConfig(ShortcutSkillSlotData shortcutData, SkillLearnedDatas skillDatas, CharacterConfig config)
+        {
+            bool dirty = RepairShortcutSlotData(shortcutData);
+            int skillCount = config.SkillConfigList != null ? config.SkillConfigList.Count : 0;
+            if (skillCount <= 0) return dirty;
+
+            var learned = skillDatas.SkillLearnedDataDict.Dictionary;
+            HashSet<int> used = new HashSet<int>();
+
+            for (int i = 0; i < shortcutData.skillIds.Length; i++)
+            {
+                int skillIndex = shortcutData.skillIds[i];
+                if (skillIndex == -1) continue;
+
+                bool valid = skillIndex >= 0
+                             && skillIndex < skillCount
+                             && learned.ContainsKey(skillIndex)
+                             && config.SkillConfigList[skillIndex] != null
+                             && config.SkillConfigList[skillIndex].canRelease;
+
+                if (!valid || !used.Add(skillIndex))
+                {
+                    shortcutData.skillIds[i] = -1;
+                    dirty = true;
+                }
+            }
+
+            bool allEmpty = true;
+            for (int i = 0; i < shortcutData.skillIds.Length; i++)
+            {
+                if (shortcutData.skillIds[i] != -1)
+                {
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            if (allEmpty)
+            {
+                List<int> learnedSkills = new List<int>(learned.Keys);
+                learnedSkills.Sort();
+                for (int i = 0; i < learnedSkills.Count; i++)
+                {
+                    int skillIndex = learnedSkills[i];
+                    if (skillIndex <= 0 || skillIndex >= skillCount) continue;
+                    var cfg = config.SkillConfigList[skillIndex];
+                    if (cfg == null || !cfg.canRelease) continue;
+
+                    int emptySlot = Array.IndexOf(shortcutData.skillIds, -1);
+                    if (emptySlot < 0) break;
+                    shortcutData.skillIds[emptySlot] = skillIndex;
+                    dirty = true;
+                }
+            }
+
+            return dirty;
+        }
+
+        private static bool RepairShortcutSlotData(ShortcutSkillSlotData shortcutData)
+        {
+            if (shortcutData == null) return false;
+
+            if (shortcutData.skillIds == null || shortcutData.skillIds.Length != ShortcutSlotCount)
+            {
+                int[] old = shortcutData.skillIds;
+                int[] fixedSlots = CreateEmptyShortcutSlots();
+                if (old != null)
+                {
+                    Array.Copy(old, fixedSlots, Mathf.Min(old.Length, fixedSlots.Length));
+                }
+                shortcutData.skillIds = fixedSlots;
+                return true;
+            }
+
+            bool dirty = false;
+            for (int i = 0; i < shortcutData.skillIds.Length; i++)
+            {
+                if (shortcutData.skillIds[i] < -1)
+                {
+                    shortcutData.skillIds[i] = -1;
+                    dirty = true;
+                }
+            }
+            return dirty;
+        }
+
+        private static int FindFirstActiveSkillIndex(CharacterConfig config)
+        {
+            if (config?.SkillConfigList == null) return -1;
+
+            for (int i = 1; i < config.SkillConfigList.Count; i++)
+            {
+                var cfg = config.SkillConfigList[i];
+                if (cfg != null && cfg.canRelease)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static SkillLearnedDatas CreateDefaultSkillData()
+        {
+            var data = new SkillLearnedDatas
+            {
+                SkillTotalPoint = DefaultSkillPoint,
+                SkillLearnedDataDict = new Serialized_Dic<int, SkillLearnedData>()
+            };
+            data.SkillLearnedDataDict.Dictionary[0] = new SkillLearnedData { lv = DefaultSkillLv };
+            return data;
+        }
+
+        private static ShortcutSkillSlotData CreateDefaultShortcutData()
+        {
+            return new ShortcutSkillSlotData
+            {
+                skillIds = CreateEmptyShortcutSlots()
+            };
+        }
+
+        private static int[] CreateEmptyShortcutSlots()
+        {
+            int[] slots = new int[ShortcutSlotCount];
+            for (int i = 0; i < slots.Length; i++)
+            {
+                slots[i] = -1;
+            }
+            return slots;
+        }
+
         #endregion
     }
 }

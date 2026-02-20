@@ -678,7 +678,6 @@ GameObject:
   m_Component:
   - component: {fileID: 812675501}
   - component: {fileID: 812675502}
-  - component: {fileID: 812675503}
   - component: {fileID: 812675504}
   - component: {fileID: 812675505}
   m_Layer: 0
@@ -715,52 +714,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df47db9dea2606f439dd47ca2c5380aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCreateArchive: 1
+  isCreateArchive: 0
   initialCharacterId: 1007
   isEcs: 1
---- !u!114 &812675503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 812675500}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4ad0c58c58f4b24b1284519c12befd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillKeys:
-  - keyCode: 49
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  - keyCode: 50
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  - keyCode: 51
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  - keyCode: 52
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  - keyCode: 53
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  - keyCode: 54
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  basicAttackKey:
-    mouseButtonId: 0
-    isCache: 1
-    cacheTime: 0.25
-    valid: 0
-  cineMachine: {fileID: 1884134366}
 --- !u!114 &812675504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -923,6 +879,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 5647307153343587763}
+  cineMachine: {fileID: 0}
+  characterModelManager: {fileID: 0}
 --- !u!1 &1107599588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1738,10 +1696,6 @@ PrefabInstance:
       value: JKFrame
       objectReference: {fileID: 0}
     - target: {fileID: 4055172120462711847, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4055172120462711847, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1818,6 +1772,10 @@ PrefabInstance:
       propertyPath: cameraController
       value: 
       objectReference: {fileID: 561894228}
+    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: skillLayerFadeOut
+      value: 0.231
+      objectReference: {fileID: 0}
     - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 128

@@ -23,7 +23,11 @@ public class GameManager : SingletonMono<GameManager>
     public void UseCurrentArchiveAndEnterGame()
     {
         // 加载当前存档
-        DataManager.LoadCurrentArchive();
+        if (!DataManager.LoadCurrentArchive())
+        {
+            JKLog.Warning("[GameManager] 继续游戏读取存档失败，创建新存档。");
+            DataManager.CreateArchive();
+        }
         // 进入游戏场景
         SceneSystem.LoadScene("Game");
     }

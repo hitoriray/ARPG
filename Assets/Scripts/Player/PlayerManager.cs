@@ -68,6 +68,8 @@ namespace RayPlayer
                 return;
             }
 
+            // 角色配置到位后，修复/迁移当前角色的技能与快捷栏数据
+            DataManager.EnsureCurrentCharacterDataByConfig(characterConfig);
             var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
 
             player.BindModel(newModel);
