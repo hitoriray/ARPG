@@ -23,7 +23,6 @@ namespace UI
             this.skillIndex = skillIndex;
             this.skillConfig = skillConfig;
             Show(skillConfig);
-            InputManager.Instance.BindSkillKeyCode(slotIndex, skillIndex);
         }
 
         public void ChangeSkill(int newSkillIndex)

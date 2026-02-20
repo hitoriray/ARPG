@@ -49,7 +49,9 @@ namespace RayPlayer
 
         public AnimancerComponent Animancer => animancer;
         public AnimancerLayer SkillLayer => animancer.Layers[skillLayerIndex];
-        
+        public float SkillLayerFadeOut => skillLayerFadeOut;
+        public PlayerSkillInput SkillInput => skillInput;
+
         public Transform ModelTransform => playerView != null ? playerView.transform : transform;
 
         public InputService InputService { get; private set; }
@@ -132,7 +134,6 @@ namespace RayPlayer
             base.Update();
             MovementStateMachine?.OnUpdate();
             HandleSkillInput();
-            HandleSkillInterruptByMove();
             CleanupFinishedSkillLayer();
         }
 
@@ -153,6 +154,10 @@ namespace RayPlayer
                 return;
 
             if (UISystem.CheckMouseOnUI())
+                return;
+
+            // 已在技能状态，连击由 PlayerSkillState.HandleCombatInput() 负责
+            if (MovementStateMachine?.currentState == MovementStateMachine?.skillState)
                 return;
 
             for (int i = 0; i < skillBrain.SkillCount; i++)
@@ -176,24 +181,13 @@ namespace RayPlayer
 
                 if (valid)
                 {
+                    // 先切状态机：OnEnter → EnterSkillMode → Layer1 SetWeight(1)
+                    // 后触发技能：ReleaseSkill 向 Layer1 播动画时，Layer1 已在 weight 1，避免警告
+                    MovementStateMachine.ChangeState(MovementStateMachine.skillState);
                     skillBrain.ReleaseSkill(i);
                     return;
                 }
             }
-        }
-
-        private void HandleSkillInterruptByMove()
-        {
-            if (skillBrain == null || !skillBrain.CanInterrupt)
-                return;
-            if (InputService == null || InputService.Move == Vector2.zero)
-                return;
-
-            skillBrain.InterruptCurrentSkill();
-            DestroyWeapon(-1);
-            // 先切换状态机（在 baseLayer 上播放移动动画），再淡入 baseLayer
-            MovementStateMachine.ChangeState(MovementStateMachine.moveStartState);
-            ExitSkillMode();
         }
 
         public void EnterSkillMode(bool upperBody)
@@ -209,12 +203,15 @@ namespace RayPlayer
 
             skillLayer.IsAdditive = false;
             skillLayer.Mask = upperBody ? upperBodyMask : null;
-            skillLayer.StartFade(1f, skillLayerFadeIn);
 
-            if (upperBody)
-                baseLayer.StartFade(1f, skillLayerFadeIn);
-            else
-                baseLayer.StartFade(0f, skillLayerFadeIn);
+            // 清除 Layer0 残留状态，防止返回技能后 Mixer 内部权重不等于 1 的警告
+            // Layer0 此刻即将降权至 0（全身技能），Stop 后不可见，安全
+            baseLayer.Stop();
+
+            // 立即切权重，避免渐变期间"no override layers at weight 1"警告
+            // 攻击动画的打击感依赖第一帧即可见，立即生效比 0.08s 淡入更直接
+            skillLayer.SetWeight(1f);
+            baseLayer.SetWeight(upperBody ? 1f : 0f);
         }
 
         public void ExitSkillMode()
@@ -345,23 +342,14 @@ namespace RayPlayer
             if (MovementStateMachine == null)
                 return;
 
-            // 先在 baseLayer 上播放 Idle 动画（此时 baseLayer 权重可能仍为 0，用户看不到）
-            // 再执行 ExitSkillMode 淡入 baseLayer，确保淡入时上面已是正确的 Idle 姿态
-            if (MovementStateMachine.currentState == MovementStateMachine.idleState)
+            // 技能自然结束：ExitSkillMode 先执行（Layer0淡入），等淡出完成后再切换状态机
+            if (MovementStateMachine.currentState == MovementStateMachine.skillState)
             {
-                if (ReusableData != null && ReusableLogic != null)
-                {
-                    ReusableData.currentCrouchIdleIndex = -1;
-                    ReusableData.currentStandIdleIndex = -1;
-                    ReusableLogic.InitIdleState();
-                    ReusableLogic.PlayNextState();
-                }
-            }
-            else
-            {
-                MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+                MovementStateMachine.skillState.NotifySkillEnd();
+                return;
             }
 
+            // 保底：不在技能状态时直接退出（外部非预期调用的兜底）
             ExitSkillMode();
         }
 

@@ -54,12 +54,12 @@ public class PlayerMoveEndState : PlayerMovementState
 
         if (leftFootLocalPos.z > rightFootLocalPos.z)
         {
-            Debug.Log("左腿在前");
+            RayDebug.Log("左腿在前");
             animancer.Play(moveEndData.moveEnd_L).Events(player).OnEnd = OnStateDefaultEnd;
         }
         else
         {
-            Debug.Log("右腿在前");
+            RayDebug.Log("右腿在前");
             animancer.Play(moveEndData.moveEnd_R).Events(player).OnEnd = OnStateDefaultEnd;
         }
     }

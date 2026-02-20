@@ -34,7 +34,7 @@ namespace UI
         
         public override void OnShow()
         {
-            InputManager.Instance.CharacterControl = false;
+            PlayerManager.Instance.SetCharacterControl(false);
         }
 
         public override void OnClose()
@@ -43,7 +43,7 @@ namespace UI
             {
                 UI_SkillSlotBase.currentEnterSlot.OnPointerExit(null);
             }
-            InputManager.Instance.CharacterControl = true;
+            PlayerManager.Instance.SetCharacterControl(true);
         }
         
         private void OnCloseBtnClicked()

@@ -123,12 +123,12 @@ namespace UI
 
         public override void OnShow()
         {
-            InputManager.Instance.CharacterControl = false;
+            PlayerManager.Instance.SetCharacterControl(false);
         }
 
         public override void OnClose()
         {
-            InputManager.Instance.CharacterControl = true;
+            PlayerManager.Instance.SetCharacterControl(true);
         }
 
         private void OnBackBtnClicked()

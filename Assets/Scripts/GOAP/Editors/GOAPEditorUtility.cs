@@ -30,7 +30,7 @@ namespace GOAP.Editor
 
         private static void GetGlobalManager()
         {
-            GlobalManager = GameObject.FindObjectOfType<GOAPGlobalManager>();
+            GlobalManager = GameObject.FindFirstObjectByType<GOAPGlobalManager>();
         }
     }
 }

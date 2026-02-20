@@ -20,6 +20,9 @@ namespace RayPlayerState
         {
             if (UISystem.CheckMouseOnUI())
                 return false;
+
+            if (PlayerController.SkillInput == null)
+                return false;
             
             for (int i = 0; i < PlayerController.SkillBrain.SkillCount; i++)
             {
@@ -29,22 +32,22 @@ namespace RayPlayerState
                 // 默认0是普攻
                 if (i == 0) // 鼠标普攻的专门检测
                 {
-                    valid = InputManager.Instance.GetBasicAttackKeyState() && PlayerController.SkillBrain.CheckReleaseSkill(i);
+                    valid = PlayerController.SkillInput.GetBasicAttackState() && PlayerController.SkillBrain.CheckReleaseSkill(i);
                     if (valid)
                     {
-                        InputManager.Instance.ResetBasicAttackKeyCodeCacheTimer();
+                        PlayerController.SkillInput.ResetBasicBuffer();
                     }
                 }
 
                 if (valid == false) // 有可能普攻也放在技能快捷栏中
                 {
-                    valid = InputManager.Instance.GetSkillKeyState(skillIndex) && PlayerController.SkillBrain.CheckReleaseSkill(i);
+                    valid = PlayerController.SkillInput.GetSkillState(skillIndex) && PlayerController.SkillBrain.CheckReleaseSkill(i);
                 }
                 
                 if (valid)
                 {
                     currentReleaseSkillIndex = i;
-                    InputManager.Instance.ResetSkillKeyCodeCacheTimer(skillIndex);
+                    PlayerController.SkillInput.ResetSkillBuffer(skillIndex);
                     PlayerController.ChangeState(PlayerState.Skill);
                     return true;
                 }

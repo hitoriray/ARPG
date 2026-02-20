@@ -85,7 +85,7 @@ namespace JKFrame
 
             if (Instance == null)
             {
-                Instance = GameObject.FindObjectOfType<JKFrameRoot>();
+                Instance = GameObject.FindFirstObjectByType<JKFrameRoot>();
                 if (Instance == null) return;
                 Instance.FrameSetting.InitOnEditor();
                 //// 场景的所有窗口都进行一次Show

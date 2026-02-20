@@ -12,16 +12,43 @@ namespace RayPlayer
     public class PlayerManager : SingletonMono<PlayerManager>
     {
         [SerializeField] public PlayerController player;
+        [SerializeField] private GameObject cineMachine;
+        [SerializeField] private CharacterModelManager characterModelManager;
+
         public CharacterConfig characterConfig { get;private set; }
+        private InputService inputService;
+        private bool characterControl = true;
+
+        /// <summary>
+        /// 统一管理角色输入开关（InputSystem）
+        /// </summary>
+        public bool CharacterControl
+        {
+            get => characterControl;
+            set => SetCharacterControl(value);
+        }
 
         /// <summary>
         /// 初始化玩家（使用角色ID）
         /// </summary>
         public async UniTask InitAsync()
         {
+            var modelManager = GetCharacterModelManager();
+            if (modelManager == null)
+            {
+                await UniTask.Yield();
+                modelManager = GetCharacterModelManager();
+            }
+
+            if (modelManager == null)
+            {
+                RayDebug.Error("CharacterModelManager 未初始化，无法加载角色配置与模型。请检查场景中是否存在 CharacterModelManager。");
+                return;
+            }
+
             int characterId = DataManager.GameData.SelectedCharacterId;
             // 1.从资源管理器加载角色配置
-            characterConfig = await CharacterModelManager.Instance.LoadCharacterConfigAsync(characterId);
+            characterConfig = await modelManager.LoadCharacterConfigAsync(characterId);
             if (characterConfig == null)
             {
                 RayDebug.Error($"无法加载角色配置，ID: {characterId}");
@@ -29,7 +56,7 @@ namespace RayPlayer
             }
             
             // 2. 动态替换外观模型
-            var newModel = await CharacterModelManager.Instance.ReplaceCharacterModelAsync(
+            var newModel = await modelManager.ReplaceCharacterModelAsync(
                 player.gameObject,
                 characterId,
                 "PlayerModel"  // 这里的名字要和你场景中的挂载点名称一致
@@ -45,39 +72,9 @@ namespace RayPlayer
 
             player.BindModel(newModel);
             player.Init(characterConfig, DataManager.GameData);
-            InputManager.Instance.Init(true);
+            inputService = InputService.Instance;
+            SetCharacterControl(true);
             UISystem.Show<UI_GameSceneMainWindow>().Show(shortcutSkillDatas);
-        }
-
-        // public void Init(GameData gameData)
-        // {
-        //     // 根据不同的职业获取不同的角色配置
-        //     // CharacterConfig characterConfig = ResSystem.LoadAsset<CharacterConfig>(gameData.ProfessionType.ToString() + "Config");
-        //     characterConfig = ResSystem.LoadAsset<CharacterConfig>("AnbiConfig");
-        //     player.Init(characterConfig, gameData);
-        //     InputManager.Instance.Init(true);
-        //     UISystem.Show<UI_GameSceneMainWindow>().Show(gameData.ShortcutSkillSlotData);
-        // }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.I) && UISystem.GetWindow<UI_SkillLearnWindow>() == null)
-            {
-                UISystem.Show<UI_SkillLearnWindow>().Init(DataManager.GetCurrentCharacterSkills());
-            }
-
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                UI_SkillWindow window = UISystem.GetWindow<UI_SkillWindow>();
-                if (window == null || window.gameObject.activeInHierarchy == false)
-                {
-                    UISystem.Show<UI_SkillWindow>().Show(DataManager.GetCurrentCharacterSkills());
-                }
-                else
-                {
-                    UISystem.Close<UI_SkillWindow>();
-                }
-            }
         }
 
         public List<SkillConfig> GetAllSkillConfig()
@@ -88,6 +85,38 @@ namespace RayPlayer
         public void AddSkill(int skillIndex, SkillLearnedData skillLearnedData)
         {
             player.SkillBrain.AddSkill(player, GetAllSkillConfig(), skillIndex, skillLearnedData);
+        }
+
+        public void SetCharacterControl(bool canControl)
+        {
+            characterControl = canControl;
+            inputService ??= InputService.Instance;
+
+            if (inputService != null && inputService.inputMap != null)
+            {
+                if (canControl)
+                    inputService.inputMap.Player.Enable();
+                else
+                    inputService.inputMap.Player.Disable();
+            }
+
+            Cursor.lockState = canControl ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !canControl;
+
+            if (cineMachine != null)
+                cineMachine.SetActive(canControl);
+        }
+
+        private CharacterModelManager GetCharacterModelManager()
+        {
+            if (characterModelManager != null)
+                return characterModelManager;
+
+            characterModelManager = CharacterModelManager.Instance;
+            if (characterModelManager == null)
+                characterModelManager = FindAnyObjectByType<CharacterModelManager>();
+
+            return characterModelManager;
         }
     }
 }

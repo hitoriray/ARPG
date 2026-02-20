@@ -3,10 +3,10 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
-using System.Collections;
-using Sirenix.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Build;
+using System.Linq;
 #endif
 namespace JKFrame
 {
@@ -149,11 +149,15 @@ namespace JKFrame
         /// </summary>
         public static void AddScriptCompilationSymbol(string name)
         {
-            BuildTargetGroup buildTargetGroup = UnityEditor.EditorUserBuildSettings.selectedBuildTargetGroup;
-            string group = UnityEditor.PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
-            if (!group.Contains(name))
+            BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
+            NamedBuildTarget namedTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            string defines = PlayerSettings.GetScriptingDefineSymbols(namedTarget);
+            List<string> allDefines = defines.Split(';').Select(d => d.Trim()).ToList();
+            if (!allDefines.Contains(name))
             {
-                UnityEditor.PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, group + ";" + name);
+                allDefines.Add(name);
+                string newDefines = string.Join(";", allDefines.ToArray());
+                PlayerSettings.SetScriptingDefineSymbols(namedTarget, newDefines);
             }
         }
 
@@ -162,11 +166,15 @@ namespace JKFrame
         /// </summary>
         public static void RemoveScriptCompilationSymbol(string name)
         {
-            BuildTargetGroup buildTargetGroup = UnityEditor.EditorUserBuildSettings.selectedBuildTargetGroup;
-            string group = UnityEditor.PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
-            if (group.Contains(name))
+            BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
+            NamedBuildTarget namedTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            string defines = PlayerSettings.GetScriptingDefineSymbols(namedTarget);
+            List<string> allDefines = defines.Split(';').Select(d => d.Trim()).ToList();
+            if (allDefines.Contains(name))
             {
-                UnityEditor.PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, group.Replace(";" + name, string.Empty));
+                allDefines.Remove(name);
+                string newDefines = string.Join(";", allDefines.ToArray());
+                PlayerSettings.SetScriptingDefineSymbols(namedTarget, newDefines);
             }
         }
 

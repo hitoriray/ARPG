@@ -24,6 +24,9 @@ public class PlayerStateMachine : StateMachineBase
     public PlayerSlideState slideState;   // Run  + Shift
     public PlayerRollState  rollState;    // Q 键（无论 Walk/Run）
 
+    // 战斗状态
+    public PlayerSkillState skillState;   // 全身技能（Layer1）
+
     public PlayerStateMachine(PlayerController player)
     {
         this.player = player;
@@ -42,6 +45,7 @@ public class PlayerStateMachine : StateMachineBase
         avoidState = new PlayerAvoidState(this);
         slideState = new PlayerSlideState(this);
         rollState  = new PlayerRollState(this);
+        skillState = new PlayerSkillState(this);
     }
 
     public override void ChangeState(IState targetState)
