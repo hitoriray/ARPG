@@ -1,5 +1,4 @@
 ﻿using Config;
-using Data;
 using JKFrame;
 using UnityEngine;
 using UnityEngine.EventSystems;

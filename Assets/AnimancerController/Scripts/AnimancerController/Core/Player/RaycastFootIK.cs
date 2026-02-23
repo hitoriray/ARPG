@@ -38,8 +38,15 @@ public class RaycastFootIK : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _LeftFoot = _Animancer.Animator.GetBoneTransform(HumanBodyBones.LeftFoot);
+        _LeftFoot  = _Animancer.Animator.GetBoneTransform(HumanBodyBones.LeftFoot);
         _RightFoot = _Animancer.Animator.GetBoneTransform(HumanBodyBones.RightFoot);
+
+        // Generic rig 无 Humanoid Avatar，骨骼获取为 null，自动禁用脚部 IK
+        if (_LeftFoot == null || _RightFoot == null)
+        {
+            enable = false;
+            return;
+        }
 
         _FootWeights = new(_Animancer, "LeftFootIK", "RightFootIK");
 

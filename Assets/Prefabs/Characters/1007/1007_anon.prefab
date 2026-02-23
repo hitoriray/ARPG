@@ -14995,6 +14995,53 @@ Transform:
   - {fileID: 8398872154636618885}
   m_Father: {fileID: 668694512259633839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &867914803776938893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5416619578962998246}
+  - component: {fileID: 2936447971014485057}
+  m_Layer: 7
+  m_Name: Weapon_RightHand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5416619578962998246
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867914803776938893}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.00000011175866, y: 0.7071069, z: 0.000000014901154, w: 0.70710665}
+  m_LocalPosition: {x: 0.019999968, y: -0.040000174, z: 0}
+  m_LocalScale: {x: 0.23000014, y: 0.2300001, z: 0.23000024}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 4541831585864925256}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &2936447971014485057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867914803776938893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2845f6bdb8d34ea6a1916639707ffca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Skill.WeaponController
+  slotIndex: 0
+  weaponName: "\u53F3\u624B\u6B66\u5668"
+  weaponPrefab: {fileID: 6300137088598422329, guid: ebb9f517599c4cf4d8561dcfd760ff2b, type: 3}
 --- !u!1 &896446588298012101
 GameObject:
   m_ObjectHideFlags: 0
@@ -15290,6 +15337,11 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -15315,9 +15367,11 @@ SkinnedMeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   serializedVersion: 2
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
@@ -27997,7 +28051,8 @@ Transform:
   m_LocalPosition: {x: 0.01982227, y: 0.025613684, z: 0.023336947}
   m_LocalScale: {x: 0.9999994, y: 0.9999999, z: 0.9999999}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5416619578962998246}
   m_Father: {fileID: 5862915568580128204}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7679928639791537638

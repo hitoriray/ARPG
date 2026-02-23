@@ -45,11 +45,19 @@ public class PlayerMoveEndState : PlayerMovementState
 
     private void CheckLeftOrRightFoot()
     {
-        //判断是左脚还是右脚
         Transform leftFoot = player.animator.GetBoneTransform(HumanBodyBones.LeftFoot);
         Transform rightFoot = player.animator.GetBoneTransform(HumanBodyBones.RightFoot);
 
-        Vector3 leftFootLocalPos = player.transform.InverseTransformPoint(leftFoot.position);
+        // Generic rig 没有 Humanoid Avatar，GetBoneTransform 返回 null，用奇偶帧做轻量fallback
+        if (leftFoot == null || rightFoot == null)
+        {
+            bool useLeft = (Time.frameCount % 2 == 0);
+            animancer.Play(useLeft ? moveEndData.moveEnd_L : moveEndData.moveEnd_R)
+                     .Events(player).OnEnd = OnStateDefaultEnd;
+            return;
+        }
+
+        Vector3 leftFootLocalPos  = player.transform.InverseTransformPoint(leftFoot.position);
         Vector3 rightFootLocalPos = player.transform.InverseTransformPoint(rightFoot.position);
 
         if (leftFootLocalPos.z > rightFootLocalPos.z)

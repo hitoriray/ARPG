@@ -17,7 +17,6 @@ MonoBehaviour:
     SerializedBytes: 
     ReferencedUnityObjects:
     - {fileID: 7400000, guid: c9723cccf10a2b34799888524fe2d029, type: 2}
-    - {fileID: 1044528419629608, guid: 3be98662c9e7ef5468cb9c4e11010dc7, type: 3}
     - {fileID: 9197921778859346998, guid: 997b515cf158b5b429888d331178f939, type: 3}
     - {fileID: 8300000, guid: 8d26b21614ef1d343bac928da5f1123d, type: 3}
     - {fileID: 3570883106967997330, guid: 1a2e258f713a80a4084819a892efed64, type: 3}
@@ -61,6 +60,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 126
@@ -118,8 +120,8 @@ MonoBehaviour:
       Entry: 3
       Data: 5
     - Name: Prefab
-      Entry: 10
-      Data: 1
+      Entry: 6
+      Data: 
     - Name: Position
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
@@ -240,10 +242,10 @@ MonoBehaviour:
       Data: 0
     - Name: HitEffectPrefab
       Entry: 10
-      Data: 2
+      Data: 1
     - Name: HitAudioClip
       Entry: 10
-      Data: 3
+      Data: 2
     - Name: 
       Entry: 8
       Data: 
@@ -331,7 +333,7 @@ MonoBehaviour:
       Data: WeaponProp02
     - Name: ObjectArg
       Entry: 10
-      Data: 4
+      Data: 3
     - Name: 
       Entry: 8
       Data: 

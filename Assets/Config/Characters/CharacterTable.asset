@@ -119,7 +119,7 @@ MonoBehaviour:
     IsPlayable: 1
     CharacterType: 0
   - CharacterId: 1007
-    CharacterName: Annon
+    CharacterName: Anon
     CharacterIcon: {fileID: 0}
     CharacterModelPrefab:
       m_AssetGUID: e3491655555da3a4597720f41f64b199
@@ -128,6 +128,22 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     CharacterConfig:
       m_AssetGUID: 2c90f9eddfd779c45b3ebcc0a948751e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    MemoryCost: 50
+    IsPlayable: 1
+    CharacterType: 0
+  - CharacterId: 1008
+    CharacterName: Fuludelisi
+    CharacterIcon: {fileID: 0}
+    CharacterModelPrefab:
+      m_AssetGUID: df5088d92febe274da58bf457fa5d374
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterConfig:
+      m_AssetGUID: e515202dcb2f66b4b9165ca7ff45e26c
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
