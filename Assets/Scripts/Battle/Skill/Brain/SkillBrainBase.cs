@@ -34,9 +34,14 @@ namespace Skill
 
         public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
         {
+            AddSkill((ICharacter)player, skillConfigs, skillIndex, skillLearnedData);
+        }
+
+        public void AddSkill(ICharacter owner, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
+        {
             var skillConfig = skillConfigs[skillIndex];
             var skillBehaviour = skillConfig.Behaviour.DeepClone();
-            skillBehaviour.Init(player, skillConfig, this, skillPlayer, skillLearnedData, skillIndex);
+            skillBehaviour.Init(owner, skillConfig, this, skillPlayer, skillLearnedData, skillIndex);
             skillBehaviours.Add(skillBehaviour);
         }
 

@@ -3,6 +3,7 @@ using Battle.ECS.View.Helper;
 using Config;
 using Data;
 using JKFrame;
+using RayPlayer;
 using Scene;
 using UI;
 using UnityEngine;
@@ -64,7 +65,15 @@ namespace Skill.Behaviour
 
         protected bool TryGetSkillSlot(out UI_ShortcutSkill_Slot slot)
         {
-            return UISystem.GetWindow<UI_GameSceneMainWindow>().TryGetShortcutSkillSlot(skillIndex, out slot);
+            slot = null;
+            if (owner is not PlayerController)
+                return false;
+
+            var window = UISystem.GetWindow<UI_GameSceneMainWindow>();
+            if (window == null)
+                return false;
+
+            return window.TryGetShortcutSkillSlot(skillIndex, out slot);
         }
 
         protected virtual void OnUpdateSkillSlot(UI_ShortcutSkill_Slot slot)

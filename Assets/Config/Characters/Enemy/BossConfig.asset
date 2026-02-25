@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbefa9577bdc45ffacaa5252340c96bd, type: 3}
+  m_Name: BossConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Config.CharacterConfig
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  WalkSpeed: 2
+  RunSpeed: 5
+  Walk2RunTransitionSpeed: 2
+  RotateSpeed: 10
+  ApplyRootMotionForMove: 1
+  ControllerProfile:
+    height: 1.56
+    radius: 0.21
+    center: {x: 0, y: 0.77, z: 0}
+    stepOffset: 0.2
+    skinWidth: 0.02
+    groundRadius: 0.2
+    groundDetectedOffset: -0.06
+  Avatar: {fileID: 9000000, guid: 1ef3f4686fa3b154a92fa4a5d3034f49, type: 3}
+  PlayerSO: {fileID: 11400000, guid: 99e2ea24fd0ddcb46a2bf3f325a404fc, type: 2}
+  FootStepAudioClips:
+  - {fileID: 8300000, guid: a7d39bb78dd35ed438aa29d107294902, type: 3}
+  - {fileID: 8300000, guid: 2e3cdcff2932f5845bbf2354c0b92df9, type: 3}
+  - {fileID: 8300000, guid: 14ea1e45d5c4df6418452bab767a79d8, type: 3}
+  - {fileID: 8300000, guid: 0db33cd015aaf614da7a67d8ca772eac, type: 3}
+  - {fileID: 8300000, guid: 6d157c9495dba3a44a2e8ebc74f3e5fe, type: 3}
+  - {fileID: 8300000, guid: 65a01bf2bf0133249bf8d76bfc1785d3, type: 3}
+  - {fileID: 8300000, guid: a11786c3647ce5448acffeebd20cecf2, type: 3}
+  - {fileID: 8300000, guid: 06154e23c13a3df4bb3752b39abfc7ac, type: 3}
+  - {fileID: 8300000, guid: 4233c39f8b03fe64e9f5fe2a84450abb, type: 3}
+  SkillConfigList:
+  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: 0cc23ac6f841899448a9ed3f12bb4b67, type: 2}
+  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  hpBaseValue: 1000
+  mpBaseValue: 100
+  attackBaseValue: 10

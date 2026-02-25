@@ -12,7 +12,7 @@ namespace RayPlayer
             SkillLearnedData skillLearnedData, int skillIndex)
         {
             base.Init(owner, skillConfig, skillBrain, skillPlayer, skillLearnedData, skillIndex);
-            player = (PlayerController)owner;
+            player = owner as PlayerController;
         }
     }
 }
