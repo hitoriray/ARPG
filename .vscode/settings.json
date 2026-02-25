@@ -54,6 +54,10 @@
     "dotnet.defaultSolution": "ARPG.slnx",
     "dotnet.preferCSharpExtension": true,
     "cSpell.words": [
+        "GOAP",
+        "IGOAP",
+        "Mathf",
+        "proirity",
         "Rigidbody",
         "Scriptable"
     ]
