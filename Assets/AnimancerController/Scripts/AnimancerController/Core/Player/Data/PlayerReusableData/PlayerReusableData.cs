@@ -119,6 +119,9 @@ public class PlayerReusableData
     // 所有闪避动作（Avoid/Slide/Roll）共享冷却时间戳
     public float lastEvasiveActionTime = -999f;
 
+    // 受伤方向（世界空间，从攻击方向指向角色）
+    public Vector3 lastHitDirection;
+
     public PlayerReusableData(AnimancerComponent animancerComponent, PlayerSO playerSO)
     {
         standValueParameter  = new SmoothedFloatParameter(animancerComponent, playerSO.playerParameterData.standValueParameter,0.15f);

@@ -518,6 +518,48 @@ MonoBehaviour:
       <forwardThreshold>k__BackingField: 0.3
       <sideThreshold>k__BackingField: 0.5
       <cooldown>k__BackingField: 0.5
+    <PlayerHurtData>k__BackingField:
+      hurtFront:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.6428571
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 8994627151053476961, guid: b150645d8bf486444841fd09d0988efe, type: 3}
+        _NormalizedStartTime: NaN
+      hurtBack:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.7857142
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -440063034918307727, guid: 2e60eb348ed4615439724727eed6b17c, type: 3}
+        _NormalizedStartTime: NaN
+      hurtLeft:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.7857142
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: -1928260664723510629, guid: e6dc08792e42e6c46a9b28ab4b36c119, type: 3}
+        _NormalizedStartTime: NaN
+      hurtRight:
+        _FadeDuration: 0.25
+        _Speed: 1
+        _Events:
+          _NormalizedTimes:
+          - 0.7857142
+          _Callbacks: []
+          _Names: []
+        _Clip: {fileID: 503797982961734160, guid: cd2822a7d70ea424cb32f2ff86d18599, type: 3}
+        _NormalizedStartTime: NaN
+      recoveryDuration: 0.5
   <playerParameterData>k__BackingField:
     <standValueParameter>k__BackingField: {fileID: 11400000, guid: 37d1b1f02016c7944bc41b1db63b957f, type: 2}
     <rotationValueParameter>k__BackingField: {fileID: 11400000, guid: 7c49f815b53fd554caacddcfab8f999b, type: 2}

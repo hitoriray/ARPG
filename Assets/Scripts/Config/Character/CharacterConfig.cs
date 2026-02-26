@@ -23,6 +23,7 @@ namespace Config
         [LabelText("基础生命值")] public float hpBaseValue;
         [LabelText("基础魔力值")] public float mpBaseValue;
         [LabelText("基础攻击力")] public float attackBaseValue;
+        [LabelText("基础防御力")] public float defenseBaseValue;
     }
     
     [Serializable]

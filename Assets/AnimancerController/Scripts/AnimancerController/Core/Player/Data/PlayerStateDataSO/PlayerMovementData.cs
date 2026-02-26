@@ -34,4 +34,7 @@ public class PlayerMovementData
 
     [field: SerializeField, LabelText("翻滚配置"), InspectorName("翻滚配置")]
     public PlayerRollData PlayerRollData { get; private set; }
+
+    [field: SerializeField, LabelText("受伤配置"), InspectorName("受伤配置")]
+    public HurtData PlayerHurtData { get; private set; }
 }

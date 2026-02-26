@@ -2,8 +2,10 @@ using System.Runtime.CompilerServices;
 using Arch.Core;
 using Arch.Core.Extensions;
 using Arch.Extend.System;
+using Attribute;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
+using UnityEngine;
 
 namespace Battle.ECS.System
 {
@@ -20,6 +22,9 @@ namespace Battle.ECS.System
         // 查询条件：有Rotation和ViewReference
         private readonly QueryDescription _rotationSyncQuery = new QueryDescription().WithAll<Rotation, ViewReference>().WithNone<Death, SyncFromView>();
         
+        // 查询条件：有Health和ViewReference（血量同步）
+        private readonly QueryDescription _healthSyncQuery = new QueryDescription().WithAll<Health, ViewReference>();
+        
         public ViewSyncSystem(BattleContext context)
         {
             _context = context;
@@ -29,6 +34,7 @@ namespace Battle.ECS.System
         {
             SyncPositions();
             SyncRotations();
+            SyncHealth();
         }
 
         /// <summary>
@@ -86,6 +92,36 @@ namespace Battle.ECS.System
                     else if (viewRef.ViewObject != null)
                     {
                         viewRef.ViewObject.transform.rotation = rotation.Value;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 同步血量到GO层 CharacterAttribute
+        /// </summary>
+        private void SyncHealth()
+        {
+            var world = _context.World;
+            var query = world.Query(in _healthSyncQuery);
+
+            foreach (var chunk in query)
+            {
+                ref var firstHealth = ref chunk.GetFirst<Health>();
+                ref var firstViewRef = ref chunk.GetFirst<ViewReference>();
+
+                foreach (int i in chunk)
+                {
+                    ref var health = ref Unsafe.Add(ref firstHealth, i);
+                    ref var viewRef = ref Unsafe.Add(ref firstViewRef, i);
+
+                    if (viewRef.ViewObject == null)
+                        continue;
+
+                    var charAttr = viewRef.ViewObject.GetComponentInParent<CharacterAttribute>();
+                    if (charAttr != null)
+                    {
+                        charAttr.SetHp((float)health.Current);
                     }
                 }
             }

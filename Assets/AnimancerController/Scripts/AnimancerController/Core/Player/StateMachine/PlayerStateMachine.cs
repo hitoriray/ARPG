@@ -27,6 +27,9 @@ public class PlayerStateMachine : StateMachineBase
     // 战斗状态
     public PlayerSkillState skillState;   // 全身技能（Layer1）
 
+    // 受伤状态
+    public PlayerHurtState hurtState;
+
     public PlayerStateMachine(PlayerController player)
     {
         this.player = player;
@@ -46,6 +49,7 @@ public class PlayerStateMachine : StateMachineBase
         slideState = new PlayerSlideState(this);
         rollState  = new PlayerRollState(this);
         skillState = new PlayerSkillState(this);
+        hurtState  = new PlayerHurtState(this);
     }
 
     public override void ChangeState(IState targetState)

@@ -1,10 +1,12 @@
 using Arch.Core;
 using Arch.Core.Extensions;
 using Arch.Extend.System;
+using Attribute;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using Battle.ECS.Features;
 using Battle.ECS.View;
+using Boss;
 using FixMath;
 using RayPlayer;
 using UnityEngine;
@@ -94,6 +96,7 @@ namespace Battle.ECS
                 Attack = (FP)playerAttr.attack.Total,
                 MaxHp = (FP)playerAttr.maxHp.Total,
                 MaxMp = (FP)playerAttr.maxMp.Total,
+                Defense = (FP)(player.CharacterConfig != null ? player.CharacterConfig.defenseBaseValue : 0f),
             };
             var health = new Health((FP)playerAttr.currentHp, (FP)playerAttr.currentHp);
             if (_playerEntity.IsAlive() == false)
@@ -121,6 +124,42 @@ namespace Battle.ECS
             }
 
             return _playerEntity;
+        }
+
+        /// <summary>
+        /// 注册 Boss 实体到 ECS 世界
+        /// </summary>
+        public Entity RegisterBoss(BossController boss)
+        {
+            if (Context == null || boss == null)
+                return Entity.Null;
+
+            var viewObj = boss.gameObject;
+            var bossAttr = boss.CharacterAttribute;
+            var position = (TSVector3)viewObj.transform.position;
+            var rotation = (TSQuaternion)viewObj.transform.rotation;
+            
+            var attribute = new Component.Attribute
+            {
+                Attack = (FP)bossAttr.attack.Total,
+                MaxHp = (FP)bossAttr.maxHp.Total,
+                MaxMp = (FP)bossAttr.maxMp.Total,
+                Defense = (FP)(boss.CharacterConfig != null ? boss.CharacterConfig.defenseBaseValue : 0f),
+            };
+            var health = new Health((FP)bossAttr.currentHp, (FP)bossAttr.maxHp.Total);
+
+            var entity = Context.World.Create(
+                new BossTag(0),
+                new Position(position),
+                new Rotation(rotation),
+                new ViewReference(viewObj, null),
+                new SyncFromView(),
+                attribute,
+                health,
+                new BuffList(16)
+            );
+
+            return entity;
         }
 
         private void Initialize()

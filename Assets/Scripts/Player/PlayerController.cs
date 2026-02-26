@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Animancer;
 using Arch.Core;
+using Arch.Core.Extensions;
 using Attribute;
 using Battle.ECS;
 using Battle.ECS.Component;
@@ -285,6 +286,10 @@ namespace RayPlayer
                     break;
                 case PlayerState.Skill:
                     break;
+                case PlayerState.Hurt:
+                    ExitSkillMode();
+                    MovementStateMachine.ChangeState(MovementStateMachine.hurtState);
+                    break;
             }
         }
 
@@ -320,7 +325,28 @@ namespace RayPlayer
 
         public void OnHit(AttackData attackData)
         {
-            RayDebug.Log("玩家被命中！");
+            // 1. 发射 ECS 伤害请求
+            if (PlayerEntity.IsAlive())
+            {
+                Battle.ECS.Core.Helper.DamageHelper.EmitDamage(PlayerEntity, attackData, transform.position);
+            }
+
+            // 2. 无敌帧期间不进入受伤状态
+            if (ReusableData != null && ReusableData.isInvincible)
+                return;
+
+            // 3. 记录受击方向并切换到受伤状态
+            if (ReusableData != null)
+            {
+                Vector3 hitDir = attackData.hitPoint - transform.position;
+                hitDir.y = 0f;
+                if (hitDir.sqrMagnitude < 0.0001f)
+                    hitDir = -transform.forward; // 默认从正前方受击
+                ReusableData.lastHitDirection = hitDir.normalized;
+            }
+
+            ChangeState(PlayerState.Hurt);
+            RayDebug.Log($"玩家被命中！伤害值: {attackData.attackValue}");
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)

@@ -1,6 +1,10 @@
 using System;
 using Animancer;
+using Arch.Core;
+using Arch.Core.Extensions;
 using Attribute;
+using Battle.ECS;
+using Battle.ECS.Core.Helper;
 using Config;
 using GOAP;
 using Manager;
@@ -28,6 +32,10 @@ namespace Boss
         [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeOut = 0.1f;
 
         public BossAIContext AI { get; } = new BossAIContext();
+        public Entity BossEntity { get; private set; }
+
+        // 受击方向（世界空间）
+        public Vector3 LastHitDirection { get; set; }
 
         public BossStateMachine MovementStateMachine { get; private set; }
         public PlayerReusableData ReusableData { get; private set; }
@@ -90,6 +98,13 @@ namespace Boss
                 skillBrain.Init(this, characterConfig.SkillConfigList);
 
             weaponSlotManager?.RefreshSlots();
+
+            // 注册 ECS 实体
+            if (BattleEcsRunner.Instance != null && BattleEcsRunner.Instance.Context != null)
+            {
+                BossEntity = BattleEcsRunner.Instance.RegisterBoss(this);
+                RayDebug.Log($"Boss ECS实体已创建: Entity ID = {BossEntity.Id}");
+            }
         }
 
         private void SetupAnimancerLayers()
@@ -310,7 +325,26 @@ namespace Boss
 
         public void OnHit(AttackData attackData)
         {
-            // TODO: 命中反馈/硬直
+            // 1. 发射 ECS 伤害请求
+            if (BossEntity.IsAlive())
+            {
+                DamageHelper.EmitDamage(BossEntity, attackData, transform.position);
+            }
+
+            // 2. 记录受击方向
+            Vector3 hitDir = attackData.hitPoint - transform.position;
+            hitDir.y = 0f;
+            if (hitDir.sqrMagnitude < 0.0001f)
+                hitDir = -transform.forward;
+            LastHitDirection = hitDir.normalized;
+
+            // 3. 切换到受伤状态
+            if (MovementStateMachine != null)
+            {
+                MovementStateMachine.ChangeState(MovementStateMachine.hitState);
+            }
+
+            RayDebug.Log($"Boss被命中！伤害值: {attackData.attackValue}");
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)

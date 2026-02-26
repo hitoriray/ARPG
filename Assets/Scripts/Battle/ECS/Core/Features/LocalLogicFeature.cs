@@ -19,6 +19,7 @@ namespace Battle.ECS.Features
             
             Add(new ShapeDetectionSystem(context));
             Add(new WeaponDetectionSystem(context));
+            Add(new DamageSystem(context));        // 伤害计算（防御/扣血/死亡判定）
             Add(new MovementSystem(context));
             Add(new VelocityIntegrationSystem(context));
             Add(new LookAtSystem(context));
