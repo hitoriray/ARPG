@@ -27,7 +27,7 @@ MonoBehaviour:
     - Name: conversionTye
       Entry: 6
       Data: 
-  generateExcelTemplatePath: E:/Unity/JKFrame2.0/Assets/TestExcelConfig/Normal
+  generateExcelTemplatePath: E:/
   fileName: TestConfig
   useLableText: 1
   useListFied: 0
@@ -41,6 +41,6 @@ MonoBehaviour:
   useSoFileNamePrefix: 0
   soFileNameUseFileIndex: 0
   soFileNamePrefixName: "\u7528\u6237_"
-  soFile: {fileID: 11400000, guid: 6acc6438bc5bd6744bb944cd74a9be98, type: 2}
+  soFile: {fileID: 0}
   listFieldName: nums
   deleteFolder: 1

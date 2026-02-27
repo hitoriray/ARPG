@@ -6,5 +6,6 @@
         Move,
         Skill,
         Hurt,
+        Dead,
     }
 }

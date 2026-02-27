@@ -4,9 +4,6 @@ using Arch.Core.Extensions;
 using Arch.Extend.System;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
-using Battle.ECS.Core.Helper;
-using Battle.ECS.Core.Process;
-using UnityEngine;
 
 namespace Battle.ECS.System
 {
@@ -36,16 +33,24 @@ namespace Battle.ECS.System
 
         private void ProcessDeath(Entity entity)
         {
-            RayDebug.Log($"实体死亡: {entity.GetDebugInfo()}");
-            ref var logicProcess = ref entity.TryGetRef<LogicProcess>(out var hasProcess);
-            if (hasProcess && logicProcess.Value is IDeathProcess deathProcess)
+            RayDebug.Log($"实体死亡: Entity={entity.Id}");
+
+            // 优先通过 ViewReference → IDeathCallback 通知 GO 层
+            ref var viewRef = ref entity.TryGetRef<ViewReference>(out var hasView);
+            if (hasView && viewRef.ViewObject != null)
             {
-                // 有自己处理死亡逻辑的实体
-                deathProcess.OnDeath(entity);
-                return;
+                var callback = viewRef.ViewObject.GetComponentInParent<IDeathCallback>();
+                if (callback != null)
+                {
+                    callback.OnDeath();
+                    // 实体加 Destroy 标记（让销毁系统处理）
+                    entity.TryAdd(new Destroy());
+                    return;
+                }
             }
-            // 无处理死亡逻辑的直接挂载销毁组件
-            _context.World.Add(entity, new Destroy());
+
+            // 无 IDeathCallback → 直接销毁实体
+            entity.TryAdd(new Destroy());
         }
     }
 }

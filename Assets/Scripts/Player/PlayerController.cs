@@ -15,6 +15,7 @@ using JKFrame;
 using Manager;
 using RayAnimation;
 using RayPlayerState;
+using Skill;
 using UnityEngine;
 
 namespace RayPlayer
@@ -290,6 +291,10 @@ namespace RayPlayer
                     ExitSkillMode();
                     MovementStateMachine.ChangeState(MovementStateMachine.hurtState);
                     break;
+                case PlayerState.Dead:
+                    ExitSkillMode();
+                    MovementStateMachine.ChangeState(MovementStateMachine.deadState);
+                    break;
             }
         }
 
@@ -347,6 +352,15 @@ namespace RayPlayer
 
             ChangeState(PlayerState.Hurt);
             RayDebug.Log($"玩家被命中！伤害值: {attackData.attackValue}");
+        }
+
+        /// <summary>
+        /// 由 DeathSystem 通过 IDeathCallback 接口调用
+        /// </summary>
+        public void OnDeath()
+        {
+            RayDebug.Info("[PlayerController] 玩家死亡！");
+            ChangeState(PlayerState.Dead);
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)

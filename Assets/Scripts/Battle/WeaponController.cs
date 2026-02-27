@@ -53,7 +53,10 @@ namespace Skill
         public void StartDetection(AttackData attackData)
         {
             if (detectionCollider != null)
+            {
+                detectionCollider.isTrigger = true;
                 detectionCollider.enabled = true;
+            }
             this.attackData = attackData;
             isDetecting = true;
             hitCache.Clear();
@@ -67,31 +70,33 @@ namespace Skill
             hitCache.Clear();
         }
 
-        private void OnTriggerEnter(Collider other)
+        // 由 WeaponHitDetector 代理调用，武器实例本身接收物理事件后转发过来
+        public void OnWeaponTriggerEnter(Collider other)
         {
             if (!isDetecting) return;
             TryHit(other);
         }
 
-        private void OnTriggerStay(Collider other)
+        public void OnWeaponTriggerStay(Collider other)
         {
             if (!isDetecting || hitCache.Contains(other)) return;
-            // 避免启用武器碰撞体时，它已经与目标发生重叠，这时 Unity 不一定会触发 OnTriggerEnter，但会持续触发 OnTriggerStay
             TryHit(other);
         }
 
-        private void OnTriggerExit(Collider other)
+        public void OnWeaponTriggerExit(Collider other)
         {
             hitCache.Remove(other);
         }
 
         private void TryHit(Collider other)
         {
+            RayDebug.Info($"[WeaponController.TryHit] 碰撞物体:{other.gameObject.name}, Layer:{LayerMask.LayerToName(other.gameObject.layer)}({other.gameObject.layer}), detectionLayerMask:{detectionLayerMask.value}, 匹配:{((detectionLayerMask & (1 << other.gameObject.layer)) != 0)}");
             if ((detectionLayerMask & (1 << other.gameObject.layer)) == 0)
                 return;
             if (hitCache.Contains(other))
                 return;
             IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
+            RayDebug.Info($"[WeaponController.TryHit] 目标:{other.gameObject.name}, IHitTarget:{(hitTarget != null ? hitTarget.GetType().Name : "NULL")}");
             if (hitTarget != null)
             {
                 hitCache.Add(other);
@@ -116,7 +121,20 @@ namespace Skill
             // currentWeaponInstance.transform.localRotation = Quaternion.identity;
             currentWeaponInstance.transform.localScale = Vector3.one;
             detectionCollider = currentWeaponInstance.GetComponent<BoxCollider>();
-            RayDebug.Info($"武器创建成功: 槽位:{slotIndex}, 名称:{weaponName}, 预制体:{prefab.name}");
+            
+            // 确保武器碰撞体是Trigger模式
+            if (detectionCollider != null)
+            {
+                detectionCollider.isTrigger = true;
+                detectionCollider.enabled = false;
+            }
+            
+            // 挂上代理脚本，让武器实例本身接收物理事件并转发给 WeaponController
+            // 这样无论角色身上有没有 Rigidbody 都能正确触发
+            var detector = currentWeaponInstance.GetComponent<WeaponHitDetector>();
+            if (detector == null)
+                detector = currentWeaponInstance.AddComponent<WeaponHitDetector>();
+            detector.Init(this);
         }
 
         public void DestroyWeapon()
@@ -128,6 +146,18 @@ namespace Skill
                 else
                     DestroyImmediate(currentWeaponInstance);
                 currentWeaponInstance = null;
+            }
+        }
+
+        private void EnsureRigidbody()
+        {
+            // Unity中子物体的Trigger事件只有在父物体有Rigidbody时，才能通过父物体身上的脚本（WeaponController）接收到
+            var rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+                rb.isKinematic = true;
+                rb.useGravity = false;
             }
         }
         

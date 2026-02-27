@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Arch.Core;
 using Arch.Core.Extensions;
 using Arch.Extend.System;
+using Battle.ECS;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using System.Runtime.CompilerServices;
@@ -49,7 +50,13 @@ namespace Battle.ECS.System
                     ref var viewRef = ref entity.Get<ViewReference>();
                     if (viewRef.ViewObject != null)
                     {
-                        viewRef.ViewObject.GameObjectPushPool();
+                        // 有死亡回调的角色（Player/Boss）：GO 由死亡动画结束后自行销毁或回池
+                        // 不在此处回收，避免 GO 被销毁时死亡动画还未播完
+                        bool hasDeathCallback = viewRef.ViewObject.GetComponentInParent<IDeathCallback>() != null;
+                        if (!hasDeathCallback)
+                        {
+                            viewRef.ViewObject.GameObjectPushPool();
+                        }
                     }
                 }
                 entity.Destroy();

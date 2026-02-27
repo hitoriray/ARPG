@@ -1,11 +1,12 @@
 ﻿using System;
 using Animancer;
+using Battle.ECS;
 using Config;
 using Manager;
 using RayAnimation;
 using UnityEngine;
 
-public interface ICharacter : IHitTarget
+public interface ICharacter : IHitTarget, IDeathCallback
 {
     float GetAttackValue(SkillAttackDetectionEvent detectionEvent);
 

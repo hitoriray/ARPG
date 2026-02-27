@@ -245,15 +245,21 @@ namespace Skill.Behaviour
 
         public virtual void OnAttackDetection(IHitTarget hitTarget, AttackData attackData)
         {
+            RayDebug.Info($"[OnAttackDetection] 检测到目标: {hitTarget.GetType().Name}, 来源: {attackData.source?.GetType().Name}, 攻击值: {attackData.attackValue}");
             // 避免重复命中
             if (hitTargets.Add(hitTarget))
             {
                 OnHitTarget(hitTarget, attackData);
             }
+            else
+            {
+                RayDebug.Info($"[OnAttackDetection] 目标已在命中列表中，跳过重复命中: {hitTarget.GetType().Name}");
+            }
         }
 
         public virtual void OnHitTarget(IHitTarget hitTarget, AttackData attackData)
         {
+            RayDebug.Info($"[OnHitTarget] 命中目标: {hitTarget.GetType().Name}, hitPoint: {attackData.hitPoint}, 攻击值: {attackData.attackValue}");
             if (attackData.detectionEvent.AttackHitConfig != null)
             {
                 DoHitEffect(attackData);

@@ -40,9 +40,10 @@ namespace Battle.ECS.Core.Helper
 
             var request = new DamageRequest
             {
-                RawDamage = (FP)attackData.attackValue,
+                RawDamage     = (FP)attackData.attackValue,
                 DefenseIgnore = FP.Zero,
-                HitDirection = (TSVector3)hitDir.normalized
+                HitDirection  = (TSVector3)hitDir.normalized,
+                HitPoint      = attackData.hitPoint    // 受击点，用于飘字位置
             };
 
             if (targetEntity.Has<DamageRequest>())

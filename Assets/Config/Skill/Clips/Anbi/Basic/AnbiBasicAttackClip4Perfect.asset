@@ -20,7 +20,6 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 1f79d271626018a4a98742c3fe2f1ef5, type: 2}
     - {fileID: 8443315704496310910, guid: be820580633d15e4f9b4b7ac05d8ad94, type: 3}
     - {fileID: 8300000, guid: 7748e5c612da6f04f9895e4cc9780e14, type: 3}
-    - {fileID: -4154861007912953267, guid: 4441c0af830797540b5320f34b41f7ec, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -61,6 +60,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 76
@@ -88,6 +90,9 @@ MonoBehaviour:
     - Name: TransitionTime
       Entry: 4
       Data: 0.25
+    - Name: UseUpperBodyLayer
+      Entry: 5
+      Data: false
     - Name: DurationFrame
       Entry: 3
       Data: 30
@@ -262,8 +267,8 @@ MonoBehaviour:
       Entry: 1
       Data: 3
     - Name: ObjectArg
-      Entry: 10
-      Data: 4
+      Entry: 6
+      Data: 
     - Name: 
       Entry: 8
       Data: 

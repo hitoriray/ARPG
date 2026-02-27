@@ -19,7 +19,7 @@ namespace BT.Conditions
             float dist = Vector3.Distance(transform.position, Target.Value.position);
             float min = Mathf.Max(0f, MinDistance.Value);
             float max = MaxDistance.Value;
-            RayDebug.Log(dist.ToString());
+            // RayDebug.Log(dist.ToString());
 
             if (dist < min)
                 return TaskStatus.Failure;

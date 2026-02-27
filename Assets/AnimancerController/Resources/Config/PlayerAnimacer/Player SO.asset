@@ -560,6 +560,17 @@ MonoBehaviour:
         _Clip: {fileID: 503797982961734160, guid: cd2822a7d70ea424cb32f2ff86d18599, type: 3}
         _NormalizedStartTime: NaN
       recoveryDuration: 0.5
+    <DeathClip>k__BackingField:
+      _FadeDuration: 0.25
+      _Speed: 1
+      _Events:
+        _NormalizedTimes: []
+        _Callbacks: []
+        _Names: []
+      _Clip: {fileID: 96806717611098678, guid: 1164ae4311090f445a2942f0373ea730, type: 3}
+      _NormalizedStartTime: NaN
+    <SoftLockRadius>k__BackingField: 6
+    <SoftLockRotateSpeed>k__BackingField: 720
   <playerParameterData>k__BackingField:
     <standValueParameter>k__BackingField: {fileID: 11400000, guid: 37d1b1f02016c7944bc41b1db63b957f, type: 2}
     <rotationValueParameter>k__BackingField: {fileID: 11400000, guid: 7c49f815b53fd554caacddcfab8f999b, type: 2}

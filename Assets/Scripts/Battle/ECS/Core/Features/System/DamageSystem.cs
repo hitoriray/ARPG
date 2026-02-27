@@ -60,13 +60,23 @@ namespace Battle.ECS.System
 
             RayDebug.Log($"[DamageSystem] 实体{entity.Id} 受到伤害: raw={request.RawDamage} def={defense} final={finalDamage} → HP={health.Current}/{health.Max}");
 
-            // 4. 死亡判定
+            // 4. 发射飘字请求
+            Vector3 displayPos = request.HitPoint;
+            entity.TryAdd(new DamageNumberRequest
+            {
+                Damage     = (float)finalDamage,
+                IsCritical = false,   // TODO: 暴击逻辑完善后替换
+                IsHeal     = false,
+                WorldPos   = displayPos
+            });
+
+            // 5. 死亡判定
             if (health.IsDead && !entity.Has<Death>())
             {
                 entity.Add(new Death());
             }
 
-            // 5. 移除伤害请求（一次性消费）
+            // 6. 移除伤害请求（一次性消费）
             entity.Remove<DamageRequest>();
         }
     }

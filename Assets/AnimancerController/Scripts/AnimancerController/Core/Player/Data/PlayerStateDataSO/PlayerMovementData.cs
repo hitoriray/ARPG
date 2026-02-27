@@ -37,4 +37,13 @@ public class PlayerMovementData
 
     [field: SerializeField, LabelText("受伤配置"), InspectorName("受伤配置")]
     public HurtData PlayerHurtData { get; private set; }
+
+    [field: SerializeField, LabelText("死亡动画"), InspectorName("死亡动画")]
+    public Animancer.ClipTransition DeathClip { get; private set; }
+
+    [field: SerializeField, LabelText("软转向搜索范围"), InspectorName("软转向搜索范围")]
+    public float SoftLockRadius { get; private set; } = 6f;
+
+    [field: SerializeField, LabelText("软转向速度(度/秒)"), InspectorName("软转向速度")]
+    public float SoftLockRotateSpeed { get; private set; } = 720f;
 }

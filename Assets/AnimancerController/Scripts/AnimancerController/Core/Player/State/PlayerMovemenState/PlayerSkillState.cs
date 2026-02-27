@@ -34,6 +34,7 @@ public class PlayerSkillState : PlayerMovementState
         base.OnUpdate();
         if (isPendingExit) return; // 退出流程中不再响应输入
 
+        ApplySoftLock();       // 自动转向最近敌人
         HandleCombatInput();   // 连击检测
         HandleMoveInterrupt(); // 移动打断
     }
@@ -52,6 +53,73 @@ public class PlayerSkillState : PlayerMovementState
     // 技能硬直期间不响应闪避/跳跃等输入（如需要可在此注册特定中断键）
     protected override void AddEventListening() { base.AddEventListening(); }
     protected override void RemoveEventListening() { base.RemoveEventListening(); }
+
+    // ── 软转向（Soft Lock）─────────────────────────────────────────────
+
+    private const float DefaultSoftLockRadius = 6f;
+    private const float DefaultSoftLockRotateSpeed = 720f; // 度/秒
+
+    // 延迟初始化，避免构造时 player 尚未 Awake
+    private Skill.SkillPlayer _cachedSkillPlayer;
+    private bool _skillPlayerSearched;
+
+    private Skill.SkillPlayer GetSkillPlayer()
+    {
+        if (_skillPlayerSearched) return _cachedSkillPlayer;
+        _skillPlayerSearched = true;
+        _cachedSkillPlayer = player.GetComponentInChildren<Skill.SkillPlayer>();
+        return _cachedSkillPlayer;
+    }
+
+    /// <summary>
+    /// 攻击期间自动平滑转向最近敌人，不吸附位置
+    /// </summary>
+    private void ApplySoftLock()
+    {
+        float radius = playerSO?.playerMovementData?.SoftLockRadius ?? DefaultSoftLockRadius;
+        float rotSpeed = playerSO?.playerMovementData?.SoftLockRotateSpeed ?? DefaultSoftLockRotateSpeed;
+
+        // 搜索范围内的目标（只找 Enemy Layer 上的碰撞体）
+        var skillPlayer = GetSkillPlayer();
+        int layerMask = skillPlayer != null ? (int)skillPlayer.attackDetectionLayer : ~0;
+        var colliders = UnityEngine.Physics.OverlapSphere(
+            player.transform.position,
+            radius,
+            layerMask
+        );
+
+        UnityEngine.Transform nearest = null;
+        float nearestSqDist = float.MaxValue;
+
+        foreach (var col in colliders)
+        {
+            if (col.gameObject == player.gameObject) continue;
+            // 只转向有 IHitTarget 的目标（=敌人）
+            if (col.GetComponentInParent<IHitTarget>() == null) continue;
+
+            float sqDist = (col.transform.position - player.transform.position).sqrMagnitude;
+            if (sqDist < nearestSqDist)
+            {
+                nearestSqDist = sqDist;
+                nearest = col.transform;
+            }
+        }
+
+        if (nearest == null) return;
+
+        // 计算目标水平方向
+        UnityEngine.Vector3 dir = nearest.position - player.transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.01f) return;
+
+        // 平滑旋转（不跳变）
+        UnityEngine.Quaternion targetRot = UnityEngine.Quaternion.LookRotation(dir.normalized);
+        player.transform.rotation = UnityEngine.Quaternion.RotateTowards(
+            player.transform.rotation,
+            targetRot,
+            rotSpeed * UnityEngine.Time.deltaTime
+        );
+    }
 
     // ── 外部接口 ───────────────────────────────────────────────────────
 

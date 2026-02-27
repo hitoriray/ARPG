@@ -59,6 +59,7 @@ namespace Skill
 
         private void OnWeaponDetection(IHitTarget other, AttackData attackData)
         {
+            RayDebug.Info($"[SkillPlayer.OnWeaponDetection] 武器碰撞检测到目标: {other.GetType().Name}, attackValue: {attackData.attackValue}, hitPoint: {attackData.hitPoint}");
             if (GameSceneManager.Instance.isEcs)
             {
                 bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
@@ -291,6 +292,7 @@ namespace Skill
                         {
                             // 驱动武器关闭
                             var weaponDetectionData = (WeaponDetectionData)detectionEvent.AttackDetectionData;
+                            RayDebug.Info($"[TickSkillAttackDetection] 武器关闭帧! frame:{currentFrameIndex}, weaponName:{weaponDetectionData.WeaponName}");
                             if (weaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weapon))
                             {
                                 weapon.StopDetection();

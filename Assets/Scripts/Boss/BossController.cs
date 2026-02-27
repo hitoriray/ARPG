@@ -347,6 +347,18 @@ namespace Boss
             RayDebug.Log($"Boss被命中！伤害值: {attackData.attackValue}");
         }
 
+        /// <summary>
+        /// 由 DeathSystem 通过 IDeathCallback 接口调用
+        /// </summary>
+        public void OnDeath()
+        {
+            RayDebug.Info("[BossController] Boss 死亡！");
+            if (MovementStateMachine != null)
+            {
+                MovementStateMachine.ChangeState(MovementStateMachine.deadState);
+            }
+        }
+
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)
         {
             if (characterAttribute == null || detectionEvent?.AttackHitConfig == null)

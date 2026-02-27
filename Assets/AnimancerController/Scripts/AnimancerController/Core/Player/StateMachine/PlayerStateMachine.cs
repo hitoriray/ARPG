@@ -30,6 +30,9 @@ public class PlayerStateMachine : StateMachineBase
     // 受伤状态
     public PlayerHurtState hurtState;
 
+    // 死亡状态
+    public PlayerDeadState deadState;
+
     public PlayerStateMachine(PlayerController player)
     {
         this.player = player;
@@ -50,11 +53,13 @@ public class PlayerStateMachine : StateMachineBase
         rollState  = new PlayerRollState(this);
         skillState = new PlayerSkillState(this);
         hurtState  = new PlayerHurtState(this);
+        deadState  = new PlayerDeadState(this);
     }
 
     public override void ChangeState(IState targetState)
     {
         base.ChangeState(targetState);
+        RayDebug.Info($"Change State from {player.ReusableData.currentState.Value} to {targetState.GetType().Name}");
         player.ReusableData.currentState.Value = targetState.GetType().Name;
     }
 }
