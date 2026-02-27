@@ -7,8 +7,8 @@ namespace Attribute
 {
     public class CharacterAttribute : SerializedMonoBehaviour
     {
-        [ShowInInspector] public float currentHp { get; private set; }
-        [ShowInInspector] public float currentMp { get; private set; }
+        [ShowInInspector, ReadOnly] public float currentHp { get; private set; }
+        [ShowInInspector, ReadOnly] public float currentMp { get; private set; }
         
         public FloatAttr maxHp = new();
         public FloatAttr maxMp = new();

@@ -292,7 +292,6 @@ namespace Skill
                         {
                             // 驱动武器关闭
                             var weaponDetectionData = (WeaponDetectionData)detectionEvent.AttackDetectionData;
-                            RayDebug.Info($"[TickSkillAttackDetection] 武器关闭帧! frame:{currentFrameIndex}, weaponName:{weaponDetectionData.WeaponName}");
                             if (weaponDict.TryGetValue(weaponDetectionData.WeaponName, out var weapon))
                             {
                                 weapon.StopDetection();

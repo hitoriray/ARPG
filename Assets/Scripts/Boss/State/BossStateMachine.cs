@@ -12,6 +12,7 @@ namespace Boss
         public BossRollState rollState;
         public BossHitState hitState;
         public BossDeadState deadState;
+        public BossClimbState climbState; // 攀爬状态
 
         public BossStateMachine(BossController boss)
         {
@@ -24,6 +25,7 @@ namespace Boss
             rollState = new BossRollState(boss);
             hitState = new BossHitState(boss);
             deadState = new BossDeadState(boss);
+            climbState = new BossClimbState(boss); // 攀爬状态
         }
 
         public override void ChangeState(IState targetState)
@@ -35,8 +37,10 @@ namespace Boss
 
         public void TickAI()
         {
+            // 以下状态由状态本身决定退出时机，不被行为树 TickAI 打断
             if (currentState == skillState || currentState == avoidState || currentState == slideState ||
-                currentState == rollState || currentState == hitState || currentState == deadState)
+                currentState == rollState || currentState == hitState || currentState == deadState ||
+                currentState == climbState) // 攀爬时不打断
                 return;
 
             if (boss.AI.HasMove)
@@ -52,3 +56,4 @@ namespace Boss
         }
     }
 }
+
