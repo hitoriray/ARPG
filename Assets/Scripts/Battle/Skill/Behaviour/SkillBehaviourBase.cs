@@ -291,9 +291,13 @@ namespace Skill.Behaviour
                         effect.transform.position = attackData.hitPoint;
                         if (Camera.main != null)
                             effect.transform.LookAt(Camera.main.transform.position);
-                        var ctrl = effect.GetComponent<EffectController>();
-                        if (ctrl != null)
-                            ctrl.Init();
+                        var effectController = effect.GetComponent<EffectController>();
+                        if (effectController == null)
+                        {
+                            effectController = effect.AddComponent<EffectController>();
+                            effectController.destroyTime = 3f;
+                        }
+                        effectController.Init();
                     }
                 }
             }

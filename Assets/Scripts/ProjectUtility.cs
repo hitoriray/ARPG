@@ -12,5 +12,16 @@ public static class ProjectUtility
         }
 
         return go;
-    } 
+    }
+
+    public static GameObject GetOrInstantiateGameObjectClone(GameObject prefab, Transform parent)
+    {
+        GameObject go = PoolSystem.GetGameObject($"{prefab.name}(Clone)", parent);
+        if (go == null)
+        {
+            go = GameObject.Instantiate(prefab, parent);
+        }
+
+        return go;
+    }
 }

@@ -65,7 +65,7 @@ namespace Battle.ECS.System
 
             RayDebug.Log($"创建特效vfx: {vfxData.Prefab.name}");
             // Prewarm(vfxData.Prefab);
-            var go = ProjectUtility.GetOrInstantiateGameObject(vfxData.Prefab, null);
+            var go = ProjectUtility.GetOrInstantiateGameObjectClone(vfxData.Prefab, null);
             if (go == null) return;
 
             go.transform.position = vfxData.Position;
@@ -80,10 +80,13 @@ namespace Battle.ECS.System
                 var effect = go.GetComponent<EffectController>();
                 if (effect == null)
                 {
-                    return;
+                    // 预制体没有挂 EffectController，自动添加并使用默认销毁时间
+                    effect = go.AddComponent<EffectController>();
+                    effect.destroyTime = 3f; // 默认 3 秒销毁
                 }
-                if (vfxData.Duration > 0f)
-                    effect.destroyTime = vfxData.Duration;
+                // Duration > 0 时用 ECS 侧的时长覆盖，否则保留预制体上配置的 destroyTime
+                if (vfxData.Duration > FP.Zero)
+                    effect.destroyTime = (float)vfxData.Duration;
                 effect.Init();
             }
         }
