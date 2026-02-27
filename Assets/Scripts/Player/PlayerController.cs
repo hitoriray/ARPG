@@ -42,7 +42,7 @@ namespace RayPlayer
         [Header("Animancer Skill Layer")]
         [SerializeField] private int skillLayerIndex = 1;
         [SerializeField] private AvatarMask upperBodyMask;
-        [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeIn = 0.08f;
+        // [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeIn = 0.08f;
         [SerializeField, Range(0f, 0.3f)] private float skillLayerFadeOut = 0.1f;
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;

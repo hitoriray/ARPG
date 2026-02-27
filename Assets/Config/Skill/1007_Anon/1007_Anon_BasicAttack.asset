@@ -73,6 +73,6 @@ MonoBehaviour:
   attackValueMultiplierPerLv: 0
   Clips:
   - {fileID: 11400000, guid: 713397333e0e6064f8e43cb11806ec4b, type: 2}
-  - {fileID: 11400000, guid: 366b8870165535743bd3c7af55ef0806, type: 2}
+  - {fileID: 11400000, guid: fd497f7b0ccc67e43b28433c9709c0d4, type: 2}
   - {fileID: 11400000, guid: b1f6c238ae49c8d44a19f6a8a91ba0a6, type: 2}
   - {fileID: 11400000, guid: 9a8d563250e3f244587d8c95b905a0a8, type: 2}

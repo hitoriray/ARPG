@@ -24,7 +24,11 @@ MonoBehaviour:
   Characters:
   - CharacterId: 1001
     CharacterName: "\u5B89\u6BD4"
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: 0cb3d94ba95e70f4cbe56b414cbd20fe
       m_SubObjectName: 
@@ -40,7 +44,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1002
     CharacterName: "\u9ED1\u53D1\u5973\u5B69"
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: ee624fa4d9dff364dadfc364d9dd9140
       m_SubObjectName: 
@@ -56,7 +64,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1003
     CharacterName: "\u5343Xiao"
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
     CharacterModelPrefab:
       m_AssetGUID: 130df5fda18d56f44af072b53475e2e1
       m_SubObjectName: 
@@ -72,7 +84,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1004
     CharacterName: "\u5361\u63D0\u5E0C\u5A05"
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: fb202925e51fc024083361751a29fc59
       m_SubObjectName: 
@@ -88,7 +104,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1005
     CharacterName: "\u8299\u9732\u5FB7\u5229\u65AF"
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: c7e152a354e36154b87bbda67eb2f6a7
       m_SubObjectName: 
@@ -104,7 +124,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1006
     CharacterName: Tomorin
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: 3b1b738ec7973b7418c276918cba0b82
       m_SubObjectName: 
@@ -120,7 +144,11 @@ MonoBehaviour:
     CharacterType: 0
   - CharacterId: 1007
     CharacterName: Anon
-    CharacterIcon: {fileID: 0}
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
     CharacterModelPrefab:
       m_AssetGUID: e3491655555da3a4597720f41f64b199
       m_SubObjectName: 
@@ -128,22 +156,6 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     CharacterConfig:
       m_AssetGUID: 2c90f9eddfd779c45b3ebcc0a948751e
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    MemoryCost: 50
-    IsPlayable: 1
-    CharacterType: 0
-  - CharacterId: 1008
-    CharacterName: Fuludelisi
-    CharacterIcon: {fileID: 0}
-    CharacterModelPrefab:
-      m_AssetGUID: df5088d92febe274da58bf457fa5d374
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    CharacterConfig:
-      m_AssetGUID: e515202dcb2f66b4b9165ca7ff45e26c
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

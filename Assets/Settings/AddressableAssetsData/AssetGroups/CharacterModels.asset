@@ -10,35 +10,45 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Character_Anbi
-  m_EditorClassIdentifier: 
-  m_GroupName: Character_Anbi
+  m_Name: CharacterModels
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: CharacterModels
   m_Data:
     m_SerializedData: []
-  m_GUID: c609b40e3bdae8d41ac886947b1cea54
+  m_GUID: 01803eae9508c8f44b9cf95bf9efad0e
   m_SerializeEntries:
   - m_GUID: 0cb3d94ba95e70f4cbe56b414cbd20fe
     m_Address: AnbiModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eb692bcb00d2beb47a836c8700499404
-    m_Address: AnbiConfig
+  - m_GUID: 130df5fda18d56f44af072b53475e2e1
+    m_Address: 1003_QianxiaoModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dd4bbcdbbb053d74a9a9aaa9a764a5e7
-    m_Address: AnbiBasicAttackClip1
+  - m_GUID: 3b1b738ec7973b7418c276918cba0b82
+    m_Address: 1006_Tomorin
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 38cdfd309f4301d499d65b732c41d17b
-    m_Address: AnbiBasicAttackClip2
+  - m_GUID: c7e152a354e36154b87bbda67eb2f6a7
+    m_Address: 1005_Fuludelisi_Model
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c04c3c0da2a235f4ab48cc3cf3f97677
-    m_Address: AnbiBasicAttackClip3
+  - m_GUID: e3491655555da3a4597720f41f64b199
+    m_Address: 1007_anon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee624fa4d9dff364dadfc364d9dd9140
+    m_Address: 1002_BlackGirl_Model
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb202925e51fc024083361751a29fc59
+    m_Address: 1004_Katixiya_Model
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -46,5 +56,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 6153795c0679385428152e26af39256a, type: 2}
-    - {fileID: 11400000, guid: bea6d290b9f9da94fa98bf69cddaf642, type: 2}
+    - {fileID: 11400000, guid: c213aeda0a6c77b4a996a594c8c2ad3b, type: 2}
+    - {fileID: 11400000, guid: e175570e5a15df044a5708db9be7cace, type: 2}

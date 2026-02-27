@@ -35,7 +35,7 @@ MonoBehaviour:
   conversion: 2
   guidMode: 1
   conversionExcelFilePath: E:/Unity/JKFrame2.0/Assets/TestExcelConfig/ListMode/NewExcel.xlsx
-  saveExcelFileFolderPath: E:/Unity/JKFrame2.0/Assets/TestExcelConfig/Normal
+  saveExcelFileFolderPath: E:/
   saveExcelName: TestConfig
   conversionSoFolderPath: Assets/TestExcelConfig/Normal/Config
   useSoFileNamePrefix: 0

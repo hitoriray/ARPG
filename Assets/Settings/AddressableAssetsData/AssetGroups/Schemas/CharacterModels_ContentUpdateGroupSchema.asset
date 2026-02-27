@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
-  m_Name: Character_Katixiya_ContentUpdateGroupSchema
+  m_Name: CharacterModels_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: 2c3a8cb99d97d0345a78d2e0d9671838, type: 2}
+  m_Group: {fileID: 11400000, guid: fa6bbe6a77210f14388c6aab327ef825, type: 2}
   m_StaticContent: 0

@@ -59,7 +59,7 @@ public class PlayerStateMachine : StateMachineBase
     public override void ChangeState(IState targetState)
     {
         base.ChangeState(targetState);
-        RayDebug.Info($"Change State from {player.ReusableData.currentState.Value} to {targetState.GetType().Name}");
+        RayDebug.Trace($"Change State from {player.ReusableData.currentState.Value} to {targetState.GetType().Name}");
         player.ReusableData.currentState.Value = targetState.GetType().Name;
     }
 }

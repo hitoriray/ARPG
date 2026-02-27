@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CharacterConfigs
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: CharacterConfigs
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 6f52abe51a09bfc44a2a04359431de5d
+  m_SerializeEntries:
+  - m_GUID: 2c90f9eddfd779c45b3ebcc0a948751e
+    m_Address: 1007AnonConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52b50a48ea6fd7744b8d254a859f0947
+    m_Address: 1004KatixiyaConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e136fc7b31dd7a428edd5fcded66a17
+    m_Address: 1002BlackGirlConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76797fd0cfdaf824993deb2074962d3b
+    m_Address: 1006TomorinConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 799d386e1cde462408802f18e4ea6109
+    m_Address: 1005FuludelisiConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb692bcb00d2beb47a836c8700499404
+    m_Address: AnbiConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f19fbdbeaf1f75843bce905ad0fb835a
+    m_Address: 1003QianxiaoConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 8b1cd493004cd4a47be70216a28d16e1, type: 2}
+    - {fileID: 11400000, guid: d19fec9580e1cec4db355ddcfed57f74, type: 2}

@@ -45,7 +45,6 @@ public class PlayerDeadState : PlayerMovementState
 
     public override void OnUpdate()
     {
-        // 死亡状态不响应任何输入
     }
 
     public override void OnExit()

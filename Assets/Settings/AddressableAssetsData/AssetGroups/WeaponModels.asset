@@ -10,25 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Character_Katixiya
+  m_Name: WeaponModels
   m_EditorClassIdentifier: 
-  m_GroupName: Character_Katixiya
+  m_GroupName: WeaponModels
   m_Data:
     m_SerializedData: []
   m_GUID: fc4f2d866cfa6fc4c9d8fde3ec0afc01
   m_SerializeEntries:
-  - m_GUID: fb202925e51fc024083361751a29fc59
-    m_Address: 1004_Katixiya_Model
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1a2e258f713a80a4084819a892efed64
     m_Address: 1004_Weapon_R
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 52b50a48ea6fd7744b8d254a859f0947
-    m_Address: 1004KatixiyaConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

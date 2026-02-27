@@ -48,8 +48,18 @@ MonoBehaviour:
       Entry: 8
       Data: 
     - Name: Behaviour
-      Entry: 6
+      Entry: 7
+      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
+    - Name: standAttackCount
+      Entry: 3
+      Data: 3
+    - Name: perfectClipIndex
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 8
       Data: 
+  skillId: 0
   skillName: "\u666E\u653B"
   skillIcon: {fileID: 0}
   skillIcons: []

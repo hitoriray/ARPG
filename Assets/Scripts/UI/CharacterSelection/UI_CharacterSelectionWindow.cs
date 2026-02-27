@@ -143,10 +143,13 @@ namespace UI
                 var item = new HorizontalSelector.Item
                 {
                     itemTitle = character.CharacterName,
-                    itemIcon = character.CharacterIcon
+                    itemIcon = null // 先设为空，稍后异步加载
                 };
-
+                
                 characterSelector.items.Add(item);
+                
+                // 异步加载 Sprite
+                LoadAndSetIconAsync(character, item).Forget();
             }
 
             // 重新初始化选择器
@@ -159,6 +162,17 @@ namespace UI
             if (_selectableCharacters.Count > 0)
             {
                 LoadCharacterPreview(_selectableCharacters[0].CharacterId).Forget();
+            }
+        }
+
+        private async UniTaskVoid LoadAndSetIconAsync(CharacterEntry character, HorizontalSelector.Item item)
+        {
+            if (character.CharacterIcon != null && character.CharacterIcon.RuntimeKeyIsValid())
+            {
+                var sprite = await character.CharacterIcon.LoadAssetAsync<Sprite>().ToUniTask();
+                item.itemIcon = sprite;
+                // 注意：由于 HorizontalSelector 在刷新图片时有额外逻辑，所以可能需要在此处调用 UpdateUI();
+                characterSelector.UpdateUI();
             }
         }
 

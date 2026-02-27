@@ -111,12 +111,31 @@ public class PlayerMovementState : StateBase
     }
 
     /// <summary>
-    /// 更新速度参数（基于 isRunMode）
+    /// 更新速度参数（基于 isRunMode），同时根据 CharacterConfig 的目标速度
+    /// 计算 moveSpeedMultiplier，让 RootMotion 缩放后的实际移速精确等于配置值。
+    /// Walk 动画基准 RootMotion 速度 = 1.287 m/s
+    /// Run  动画基准 RootMotion 速度 = 3.364 m/s
     /// Walk=1, Run=2
     /// </summary>
     protected float UpdateSpeed()
     {
-        return reusableData.speedValueParameter.TargetValue = reusableData.isRunMode ? 2 : 1;
+        const float baseWalkSpeed = 1.287f;
+        const float baseRunSpeed  = 3.364f;
+
+        if (reusableData.isRunMode)
+        {
+            reusableData.speedValueParameter.TargetValue = 2f;
+            if (player.RunSpeed > 0f)
+                player.moveSpeedMultiplier = player.RunSpeed / baseRunSpeed;
+        }
+        else
+        {
+            reusableData.speedValueParameter.TargetValue = 1f;
+            if (player.WalkSpeed > 0f)
+                player.moveSpeedMultiplier = player.WalkSpeed / baseWalkSpeed;
+        }
+
+        return reusableData.speedValueParameter.TargetValue;
     }
 
     protected float UpdateRotation(bool isUpdateRotationParameter = true, float rotationSmoothTime = 0.7f,

@@ -47,12 +47,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 06154e23c13a3df4bb3752b39abfc7ac, type: 3}
   - {fileID: 8300000, guid: 4233c39f8b03fe64e9f5fe2a84450abb, type: 3}
   SkillConfigList:
-  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: 0cc23ac6f841899448a9ed3f12bb4b67, type: 2}
-  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
-  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
-  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
-  - {fileID: 11400000, guid: efdd3a8c16a8e0540ad944b918b35bc6, type: 2}
+  - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
+  - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
+  - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   hpBaseValue: 1000
   mpBaseValue: 100
   attackBaseValue: 10
+  defenseBaseValue: 0
