@@ -7,6 +7,8 @@ namespace SkillEditor
 {
     public class EffectTrackItem : TrackItemBase<EffectTrack>
     {
+        private const float HandleSizeMultiplier = 2.5f;
+        private const float GizmoSizeMultiplier = 0.25f;
         private SkillMultiLineTrackStyle.ChildTrack childTrack;
         private SkillEffectTrackItemStyle effectItemStyle;
         private SkillEffectEvent effectEvent;
@@ -233,6 +235,67 @@ namespace SkillEditor
                 characterRoot.position = oldPos;
             }
         }
+        #endregion
+
+        #region Gizmos & SceneGUI
+
+        public void DrawGizmos()
+        {
+            if (effectEvent.Prefab == null || SkillEditorWindow.Instance.CurrentPreviewCharacterObj == null)
+                return;
+
+            Transform previewObjTransform = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.transform;
+            Vector3 pos = previewObjTransform.TransformPoint(effectEvent.Position);
+            Quaternion rot = previewObjTransform.rotation * Quaternion.Euler(effectEvent.Rotation);
+
+            float size = HandleUtility.GetHandleSize(pos) * GizmoSizeMultiplier;
+            Gizmos.color = new Color(0.2f, 0.9f, 1f, 0.6f);
+            Gizmos.DrawWireSphere(pos, size);
+            Gizmos.DrawLine(pos, pos + rot * Vector3.forward * size * 2f);
+        }
+
+        public void OnSceneGUI()
+        {
+            if (effectEvent.Prefab == null || SkillEditorWindow.Instance.CurrentPreviewCharacterObj == null)
+                return;
+
+            Transform previewObjTransform = SkillEditorWindow.Instance.CurrentPreviewCharacterObj.transform;
+            Vector3 pos;
+            Quaternion rot;
+            Vector3 scale;
+
+            if (effectPrefabObj != null)
+            {
+                pos = effectPrefabObj.transform.position;
+                rot = effectPrefabObj.transform.rotation;
+                scale = effectPrefabObj.transform.localScale;
+            }
+            else
+            {
+                pos = previewObjTransform.TransformPoint(effectEvent.Position);
+                rot = previewObjTransform.rotation * Quaternion.Euler(effectEvent.Rotation);
+                scale = effectEvent.Scale;
+            }
+
+            EditorGUI.BeginChangeCheck();
+            Handles.TransformHandle(ref pos, ref rot, ref scale);
+            if (EditorGUI.EndChangeCheck())
+            {
+                effectEvent.Position = previewObjTransform.InverseTransformPoint(pos);
+                effectEvent.Rotation = (Quaternion.Inverse(previewObjTransform.rotation) * rot).eulerAngles;
+                effectEvent.Scale = scale;
+
+                if (effectPrefabObj != null)
+                {
+                    effectPrefabObj.transform.position = pos;
+                    effectPrefabObj.transform.rotation = rot;
+                    effectPrefabObj.transform.localScale = scale;
+                }
+
+                SkillEditorInspector.SetTrackItem(this, track);
+            }
+        }
+        
         #endregion
     }
 }

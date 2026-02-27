@@ -135,7 +135,42 @@ namespace SkillEditor
                 item.TickView(frameIndex);
             }
         }
-        
+
+        public override void DrawGizmos()
+        {
+            int currentFrameIndex = SkillEditorWindow.Instance.CurrentSelectFrameIndex;
+            foreach (var item in trackItemList)
+            {
+                SkillEffectEvent effectEvent = item.EffectEvent;
+                if (effectEvent == null)
+                    continue;
+                if (currentFrameIndex < effectEvent.FrameIndex ||
+                    currentFrameIndex > effectEvent.FrameIndex + effectEvent.Duration)
+                    continue;
+                if (SkillEditorInspector.CurrentTrackItem != item)
+                    continue;
+                item.DrawGizmos();
+            }
+        }
+
+        public override void OnSceneGUI()
+        {
+            int currentFrameIndex = SkillEditorWindow.Instance.CurrentSelectFrameIndex;
+            foreach (var item in trackItemList)
+            {
+                SkillEffectEvent effectEvent = item.EffectEvent;
+                if (effectEvent == null)
+                    continue;
+                if (currentFrameIndex < effectEvent.FrameIndex ||
+                    currentFrameIndex > effectEvent.FrameIndex + effectEvent.Duration)
+                    continue;
+                // 必须选中才绘制
+                if (SkillEditorInspector.CurrentTrackItem != item)
+                    continue;
+                item.OnSceneGUI();
+            }
+        }
+
         #endregion
     }
 }
