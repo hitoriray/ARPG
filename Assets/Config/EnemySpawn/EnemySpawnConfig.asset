@@ -18,6 +18,8 @@ MonoBehaviour:
     MaxAliveCount: 3
     RespawnDelay: 30
     Weight: 15
+    LootConfig: {fileID: 11400000, guid: 773df06a03edd9b42bba61686f3252cd, type: 2}
+    ExpReward: 100
   RegionMaxAliveCount: 10
   ActivateRadius: 20
   DeactivateRadius: 25

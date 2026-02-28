@@ -10,6 +10,8 @@ namespace Manager
     /// </summary>
     public interface IPlayerManager
     {
+        ICharacter GetCharacterController();
+        CharacterConfig GetCharacterConfig();
         /// <summary>获取当前角色的所有技能配置</summary>
         List<SkillConfig> GetAllSkillConfig();
 

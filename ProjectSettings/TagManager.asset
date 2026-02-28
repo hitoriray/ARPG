@@ -41,15 +41,15 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - CompanionAI
-  - Triggers
-  - StopMove
+  - DropItem
   - 
-  - HeadTrack
-  - BodyPart
-  - BlockAIRayCast
-  - Pushable
-  - CoverPoint
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

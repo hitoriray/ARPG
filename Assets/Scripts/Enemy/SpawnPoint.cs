@@ -121,18 +121,17 @@ namespace Enemy
             // 初始化敌人属性（等级缩放）
             ApplyLevelToEnemy(SpawnedEnemy, _config.Level);
 
-            // 订阅死亡事件
-            var character = SpawnedEnemy.GetComponent<ICharacter>();
-            if (character != null)
-            {
-                // ICharacter 通过 OnHit/OnDeath 通知，这里用 MonoBehaviour 监听器桥接
-                var deathListener = SpawnedEnemy.AddComponent<EnemyDeathListener>();
-                deathListener.Init(character, HandleEnemyDied);
-            }
-            else
-            {
-                RayDebug.Warn($"[SpawnPoint] 敌人 {SpawnedEnemy.name} 未实现 ICharacter，死亡事件无法监听");
-            }
+            // 挂载死亡监听桥接器
+            var deathListener = SpawnedEnemy.GetComponentInChildren<EnemyDeathListener>();
+            if (deathListener == null)
+                deathListener = SpawnedEnemy.AddComponent<EnemyDeathListener>();
+
+            deathListener.Init();
+            deathListener.OnDied += HandleEnemyDied;
+
+            // 挂载掉落组件（根据 SpawnGroupConfig 中的 LootConfig / ExpReward 自动掉落）
+            var dropComp = SpawnedEnemy.AddComponent<DropOnDeath>();
+            dropComp.Init(_config);
 
             State = SpawnPointState.Alive;
             RayDebug.Log($"[SpawnPoint] 生成敌人：{SpawnedEnemy.name} at {spawnPos}");

@@ -31,6 +31,15 @@ namespace Enemy
         [LabelText("权重")]
         [Range(1, 100)]
         public int Weight = 10;
+
+        [LabelText("掉落表")]
+        [Tooltip("该敌人死亡时的掉落配置（为空则不掉道具和金币）")]
+        public Config.LootConfig LootConfig;
+
+        [LabelText("死亡经验奖励")]
+        [MinValue(0)]
+        [Tooltip("杀死该敌人后玩家获得的经验值")]
+        public long ExpReward = 100;
     }
 
     /// <summary>

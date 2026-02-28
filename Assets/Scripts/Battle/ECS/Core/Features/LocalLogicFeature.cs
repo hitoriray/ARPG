@@ -13,9 +13,12 @@ namespace Battle.ECS.Features
             Add(new ViewToLogicSyncSystem(context));
             
             // ===== 新增 Buff 系统 =====
-            Add(new System.BuffSystem(context));        // Buff 生命周期管理
+            Add(new BuffSystem(context));        // Buff 生命周期管理
             Add(new TickSystem(context));        // Tick 周期效果
             // ==========================
+            
+            // 掉落物生命周期
+            Add(new DropLifetimeSystem(context));
             
             Add(new ShapeDetectionSystem(context));
             Add(new WeaponDetectionSystem(context));

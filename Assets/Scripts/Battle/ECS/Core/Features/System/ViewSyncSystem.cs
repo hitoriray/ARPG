@@ -16,12 +16,8 @@ namespace Battle.ECS.System
     {
         private readonly BattleContext _context;
         
-        // 查询条件：有Position和ViewReference
         private readonly QueryDescription _positionSyncQuery = new QueryDescription().WithAll<Position, ViewReference>().WithNone<Death, SyncFromView>();
-            
-        // 查询条件：有Rotation和ViewReference
         private readonly QueryDescription _rotationSyncQuery = new QueryDescription().WithAll<Rotation, ViewReference>().WithNone<Death, SyncFromView>();
-        
         // 查询条件：有Health和ViewReference（血量同步）
         private readonly QueryDescription _healthSyncQuery = new QueryDescription().WithAll<Health, ViewReference>();
         
@@ -55,14 +51,7 @@ namespace Battle.ECS.System
                     ref var position = ref Unsafe.Add(ref firstPosition, i);
                     ref var viewRef = ref Unsafe.Add(ref firstViewRef, i);
                     
-                    if (viewRef.View != null)
-                    {
-                        viewRef.View.SyncPosition(position.Value);
-                    }
-                    else if (viewRef.ViewObject != null)
-                    {
-                        viewRef.ViewObject.transform.position = position.Value;
-                    }
+                    viewRef.ViewObject.transform.position = position.Value;
                 }
             }
         }
@@ -85,14 +74,7 @@ namespace Battle.ECS.System
                     ref var rotation = ref Unsafe.Add(ref firstRotation, i);
                     ref var viewRef = ref Unsafe.Add(ref firstViewRef, i);
                     
-                    if (viewRef.View != null)
-                    {
-                        viewRef.View.SyncRotation(rotation.Value);
-                    }
-                    else if (viewRef.ViewObject != null)
-                    {
-                        viewRef.ViewObject.transform.rotation = rotation.Value;
-                    }
+                    viewRef.ViewObject.transform.rotation = rotation.Value;
                 }
             }
         }

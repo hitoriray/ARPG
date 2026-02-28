@@ -23,6 +23,8 @@ namespace Data
         public long Gold = 0;
         // 已被玩家清空（永久消灭）的 SpawnRegion 标识列表
         public Serialized_List<string> ClearedRegionKeys;
+        // 背包：物品ID → 持有数量
+        public Serialized_Dic<int, int> InventoryItems;
     }
 
     /// <summary>

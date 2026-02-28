@@ -21,7 +21,7 @@ namespace Manager
         [SerializeField] private GameObject cineMachine;
         [SerializeField] private CharacterModelManager characterModelManager;
 
-        public CharacterConfig characterConfig { get;private set; }
+        public CharacterConfig CharacterConfig { get; private set; }
         private InputService inputService;
         private bool characterControl = true;
 
@@ -54,8 +54,8 @@ namespace Manager
 
             int characterId = DataManager.GameData.SelectedCharacterId;
             // 1.从资源管理器加载角色配置
-            characterConfig = await modelManager.LoadCharacterConfigAsync(characterId);
-            if (characterConfig == null)
+            CharacterConfig = await modelManager.LoadCharacterConfigAsync(characterId);
+            if (CharacterConfig == null)
             {
                 RayDebug.Error($"无法加载角色配置，ID: {characterId}");
                 return;
@@ -75,11 +75,11 @@ namespace Manager
             }
 
             // 角色配置到位后，修复/迁移当前角色的技能与快捷栏数据
-            DataManager.EnsureCurrentCharacterDataByConfig(characterConfig);
+            DataManager.EnsureCurrentCharacterDataByConfig(CharacterConfig);
             var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
 
             player.BindModel(newModel);
-            player.Init(characterConfig, DataManager.GameData);
+            player.Init(CharacterConfig, DataManager.GameData);
             inputService = InputService.Instance;
             SetCharacterControl(true);
             UISystem.Show<UI_GameSceneMainWindow>().Show(shortcutSkillDatas);
@@ -87,7 +87,7 @@ namespace Manager
 
         public List<SkillConfig> GetAllSkillConfig()
         {
-            return characterConfig.SkillConfigList;
+            return CharacterConfig.SkillConfigList;
         }
 
         public void AddSkill(int skillIndex, SkillLearnedData skillLearnedData)
@@ -126,5 +126,8 @@ namespace Manager
 
             return characterModelManager;
         }
+
+        public ICharacter GetCharacterController() => player;
+        public CharacterConfig GetCharacterConfig() => CharacterConfig;
     }
 }

@@ -74,7 +74,6 @@ namespace Battle.ECS.System
         private static Transform GetViewTransform(ref ViewReference viewRef)
         {
             if (viewRef.ViewObject != null) return viewRef.ViewObject.transform;
-            if (viewRef.View != null) return viewRef.View.transform;
             return null;
         }
     }

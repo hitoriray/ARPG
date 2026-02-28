@@ -402,6 +402,13 @@ namespace Manager
                 dirty = true;
             }
 
+            // 向后兼容：旧存档没有背包字典时自动创建
+            if (GameData.InventoryItems == null)
+            {
+                GameData.InventoryItems = new Serialized_Dic<int, int>();
+                dirty = true;
+            }
+
             return dirty;
         }
 
