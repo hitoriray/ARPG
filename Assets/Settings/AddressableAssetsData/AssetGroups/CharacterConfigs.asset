@@ -42,6 +42,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2b23cc2fbe696942ba3c419a374e3c6
+    m_Address: BossConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb692bcb00d2beb47a836c8700499404
     m_Address: AnbiConfig
     m_ReadOnly: 0

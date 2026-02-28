@@ -1,4 +1,5 @@
-﻿using FixMath;
+﻿using Config;
+using FixMath;
 
 namespace Battle.ECS.Component
 {
@@ -16,39 +17,4 @@ namespace Battle.ECS.Component
         public int SpeedPctModifier; // 速度修正值
     }
     
-    public enum BattleBuffStackMode
-    {
-        /// <summary>
-        /// 叠加时刷新持续时间，时间结束后全部移除，溢出时替换
-        /// </summary>
-        RefreshDuration = 0,
-        /// <summary>
-        /// 每层同时计时，单独过期，溢出时替换
-        /// </summary>
-        IndependentDuration = 1,
-        /// <summary>
-        /// 逐层过期，溢出时替换
-        /// </summary>
-        SequentialDuration = 2,
-        /// <summary>
-        /// 永久有效，保留所有堆叠信息
-        /// </summary>
-        Permanent = 3,
-    }
-    
-    public enum BattleBuffOverflowPolicy
-    {
-        /// <summary>
-        /// 替换最早添加的那一层
-        /// </summary>
-        ReplaceOldest = 0,
-        /// <summary>
-        /// 替换优先级最低的那一层
-        /// </summary>
-        ReplaceLowestPriority = 1,
-        /// <summary>
-        /// 达到上限时丢弃新添加的那一层
-        /// </summary>
-        DiscardNewest = 2,
-    }
 }

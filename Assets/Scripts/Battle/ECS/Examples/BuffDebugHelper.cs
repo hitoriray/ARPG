@@ -3,8 +3,6 @@ using Arch.Core;
 using Arch.Core.Extensions;
 using Battle.ECS.Component;
 using Config;
-using FixMath;
-using UnityEngine;
 
 namespace Battle.ECS.Examples
 {

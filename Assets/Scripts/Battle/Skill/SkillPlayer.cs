@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using Animancer;
 using Config;
-using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Battle.ECS.View.Helper;
 using JKFrame;
-using RayAnimation;
-using Scene;
 using Sirenix.OdinInspector;
 using Skill.Behaviour;
 using UnityEngine;
@@ -60,13 +57,12 @@ namespace Skill
         private void OnWeaponDetection(IHitTarget other, AttackData attackData)
         {
             RayDebug.Info($"[SkillPlayer.OnWeaponDetection] 武器碰撞检测到目标: {other.GetType().Name}, attackValue: {attackData.attackValue}, hitPoint: {attackData.hitPoint}");
-            if (GameSceneManager.Instance.isEcs)
+            bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
+            if (!ok)
             {
-                bool ok = WeaponHitEmitterHelper.Emit(skillBehaviour, other, attackData);
-                if (ok) return;
+                RayDebug.Log("由Mono触发WeaponDetection");
+                skillBehaviour.OnAttackDetection(other, attackData);
             }
-            RayDebug.Log("由Mono触发WeaponDetection");
-            skillBehaviour.OnAttackDetection(other, attackData);
         }
 
         #endregion
@@ -215,11 +211,7 @@ namespace Skill
                     if (effectEvent.Prefab != null && effectEvent.FrameIndex == currentFrameIndex)
                     {
                         // 交给ECS生成特效（若ECS未就绪则回落到原逻辑）
-                        bool success = false;
-                        if (GameSceneManager.Instance.isEcs)
-                        {
-                            success = VfxEmitterHelper.EmitSkillVfx(modelTransform, effectEvent, skillClip.FrameRate);
-                        }
+                        bool success = VfxEmitterHelper.EmitSkillVfx(modelTransform, effectEvent, skillClip.FrameRate);
                         if (!success)
                         {
                             RayDebug.Log("由Mono生成技能特效");
@@ -309,11 +301,7 @@ namespace Skill
                         if (currentFrameIndex >= detectionEvent.FrameIndex &&
                             currentFrameIndex <= detectionEvent.FrameIndex + detectionEvent.DurationFrame)
                         {
-                            bool success = false;
-                            if (GameSceneManager.Instance.isEcs)
-                            {
-                                success = AttackDetectionEmitterHelper.Emit(modelTransform, detectionEvent, skillBehaviour, owner, attackDetectionLayer);
-                            }
+                            bool success = AttackDetectionEmitterHelper.Emit(modelTransform, detectionEvent, skillBehaviour, owner, attackDetectionLayer);
                             if (!success)
                             {
                                 RayDebug.Log("由Mono触发ShapeDetection");

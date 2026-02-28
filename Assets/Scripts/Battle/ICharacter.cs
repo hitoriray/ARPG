@@ -1,9 +1,8 @@
 ﻿using System;
 using Animancer;
+using Attribute;
 using Battle.ECS;
 using Config;
-using Manager;
-using RayAnimation;
 using UnityEngine;
 
 public interface ICharacter : IHitTarget, IDeathCallback
@@ -18,6 +17,8 @@ public interface ICharacter : IHitTarget, IDeathCallback
     void OnSkillMove(Vector3 deltaPos);
     void OnSkillRotate(Quaternion deltaRot);
     
+    CharacterAttribute CharacterAttribute { get; }
+    CharacterConfig CharacterConfig { get; }
     AnimancerComponent Animancer { get; }
     AnimancerLayer SkillLayer { get; }
     Transform ModelTransform { get; }
@@ -26,4 +27,7 @@ public interface ICharacter : IHitTarget, IDeathCallback
     void ExitSkillMode();
     void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion);
     void ClearSkillRootMotion();
+    
+    /// <summary> 是否为玩家操控角色（用于决策UI、技能槽等行为） </summary>
+    bool IsPlayerControlled { get; }
 }

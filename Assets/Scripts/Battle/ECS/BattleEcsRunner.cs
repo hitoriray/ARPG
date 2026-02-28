@@ -1,14 +1,10 @@
 using Arch.Core;
 using Arch.Core.Extensions;
-using Arch.Extend.System;
-using Attribute;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using Battle.ECS.Features;
 using Battle.ECS.View;
-using Boss;
 using FixMath;
-using RayPlayer;
 using UnityEngine;
 
 namespace Battle.ECS
@@ -79,85 +75,54 @@ namespace Battle.ECS
             if (Instance == this)
                 Instance = null;
         }
-
-        public Entity RegisterPlayer(PlayerController player)
+        
+        public Entity RegisterCharacter(ICharacter character)
         {
-            if (Context == null || player == null)
+            if (Context == null || character == null)
                 return Entity.Null;
 
-            var viewComp = player.GetComponentInChildren<PlayerView>();
-            var view = (ICharacterView)viewComp;
-            var viewObj = viewComp != null ? viewComp.gameObject : player.gameObject;
+            var viewComp = character.ModelTransform.GetComponentInChildren<ICharacterView>();
+            var viewObj = viewComp != null ? viewComp.gameObject : character.ModelTransform.gameObject;
             var position = (TSVector3)viewObj.transform.position;
             var rotation = (TSQuaternion)viewObj.transform.rotation;
-            var playerAttr = player.CharacterAttribute;
+            var characterAttr = character.CharacterAttribute;
             var attribute = new Component.Attribute
             {
-                Attack = (FP)playerAttr.attack.Total,
-                MaxHp = (FP)playerAttr.maxHp.Total,
-                MaxMp = (FP)playerAttr.maxMp.Total,
-                Defense = (FP)(player.CharacterConfig != null ? player.CharacterConfig.defenseBaseValue : 0f),
+                Attack = (FP)characterAttr.attack.Total,
+                MaxHp = (FP)characterAttr.maxHp.Total,
+                MaxMp = (FP)characterAttr.maxMp.Total,
+                Defense = (FP)(character.CharacterConfig != null ? character.CharacterConfig.defenseBaseValue : 0f),
             };
-            var health = new Health((FP)playerAttr.currentHp, (FP)playerAttr.currentHp);
-            if (_playerEntity.IsAlive() == false)
+            var health = new Health((FP)characterAttr.currentHp, (FP)characterAttr.currentHp);
+
+            Entity entity = Entity.Null;
+            if (character.IsPlayerControlled && _playerEntity.IsAlive() == false)
             {
                 _playerEntity = Context.World.Create(
-                    new Battle.ECS.Component.PlayerComp(0),
+                    new PlayerComp(0),
                     new Position(position),
                     new Rotation(rotation),
-                    new ViewReference(viewObj, view),
+                    new ViewReference(viewObj, viewComp),
+                    new SyncFromView(),
+                    attribute,
+                    health,
+                    new BuffList(16)
+                );
+                entity = _playerEntity;
+            }
+            else if (character.IsPlayerControlled == false)
+            {
+                entity = Context.World.Create(
+                    new BossTag(0),
+                    new Position(position),
+                    new Rotation(rotation),
+                    new ViewReference(viewObj, null),
                     new SyncFromView(),
                     attribute,
                     health,
                     new BuffList(16)
                 );
             }
-            else
-            {
-                _playerEntity.Replace(new Position(position));
-                _playerEntity.Replace(new Rotation(rotation));
-                _playerEntity.Replace(new ViewReference(viewObj, view));
-                _playerEntity.Replace(health);
-                _playerEntity.Replace(attribute);
-                _playerEntity.Replace(new BuffList(16));
-                _playerEntity.Replace(new SyncFromView());
-            }
-
-            return _playerEntity;
-        }
-
-        /// <summary>
-        /// 注册 Boss 实体到 ECS 世界
-        /// </summary>
-        public Entity RegisterBoss(BossController boss)
-        {
-            if (Context == null || boss == null)
-                return Entity.Null;
-
-            var viewObj = boss.gameObject;
-            var bossAttr = boss.CharacterAttribute;
-            var position = (TSVector3)viewObj.transform.position;
-            var rotation = (TSQuaternion)viewObj.transform.rotation;
-            
-            var attribute = new Component.Attribute
-            {
-                Attack = (FP)bossAttr.attack.Total,
-                MaxHp = (FP)bossAttr.maxHp.Total,
-                MaxMp = (FP)bossAttr.maxMp.Total,
-                Defense = (FP)(boss.CharacterConfig != null ? boss.CharacterConfig.defenseBaseValue : 0f),
-            };
-            var health = new Health((FP)bossAttr.currentHp, (FP)bossAttr.maxHp.Total);
-
-            var entity = Context.World.Create(
-                new BossTag(0),
-                new Position(position),
-                new Rotation(rotation),
-                new ViewReference(viewObj, null),
-                new SyncFromView(),
-                attribute,
-                health,
-                new BuffList(16)
-            );
 
             return entity;
         }

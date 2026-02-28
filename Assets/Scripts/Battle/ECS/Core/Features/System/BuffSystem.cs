@@ -5,6 +5,7 @@ using Battle.ECS.Component;
 using Battle.ECS.Core;
 using Battle.ECS.Core.Helper;
 using Battle.ECS.Core.Process;
+using Config;
 using FixMath;
 
 namespace Battle.ECS.System

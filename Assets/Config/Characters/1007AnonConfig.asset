@@ -52,3 +52,4 @@ MonoBehaviour:
   mpBaseValue: 500
   attackBaseValue: 100
   defenseBaseValue: 0
+  LevelGrowthConfig: {fileID: 11400000, guid: 9f39be9aae8dfb446a1aa83b7834a7e7, type: 2}

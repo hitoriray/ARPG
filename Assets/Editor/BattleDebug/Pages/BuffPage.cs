@@ -5,6 +5,7 @@ using Arch.LowLevel;
 using Battle.ECS;
 using Battle.ECS.Component;
 using Battle.ECS.Core.Helper;
+using Config;
 using UnityEditor;
 using UnityEngine;
 

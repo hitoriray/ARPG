@@ -1,26 +1,21 @@
 using System;
-using System.Threading;
 using Animancer;
 using Arch.Core;
 using Arch.Core.Extensions;
 using Attribute;
 using Battle.ECS;
-using Battle.ECS.Component;
 using Battle.ECS.Core.Helper;
 using Cinemachine;
 using Config;
 using Data;
-using GOAP;
 using JKFrame;
 using Manager;
-using RayAnimation;
 using RayPlayerState;
-using Skill;
 using UnityEngine;
 
 namespace RayPlayer
 {
-    public class PlayerController : CharacterControllerBase, IStateMachineOwner, ICharacter, IGOAPOwner
+    public class PlayerController : CharacterControllerBase, IStateMachineOwner, ICharacter
     {
         public Entity PlayerEntity { get; private set; }
         [Header("Config")]
@@ -64,6 +59,8 @@ namespace RayPlayer
         public PlayerReusableLogic ReusableLogic { get; private set; }
         public PlayerStateMachine MovementStateMachine { get; private set; }
         
+        public bool IsPlayerControlled => true;
+        
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
@@ -96,6 +93,17 @@ namespace RayPlayer
             
             characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
 
+            // 从存档读取等级，并应用成长曲线（有成长配置时生效）
+            if (characterConfig.LevelGrowthConfig != null)
+            {
+                var progress = Manager.DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
+                int currentLevel = progress?.Level ?? 1;
+                characterAttribute.ApplyLevel(currentLevel, characterConfig, characterConfig.LevelGrowthConfig);
+
+                // 升级时自动刷新属性（UI 层也会收到此事件）
+                DataManager.OnLevelUp += OnCharacterLevelUp;
+            }
+
             ReusableData = new PlayerReusableData(animancer, playerSO);
             ReusableLogic = new PlayerReusableLogic(this);
             MovementStateMachine = new PlayerStateMachine(this);
@@ -119,7 +127,11 @@ namespace RayPlayer
             var context = BattleEcsRunner.Instance.Context;
             if (context != null)
             {
-                PlayerEntity = BattleEcsRunner.Instance.RegisterPlayer(this);
+                // 注入飘字服务（UI层 → Battle层，单向依赖，通过接口解耦）
+                if (context.DamageNumberService == null && DamageNumberManager.Instance != null)
+                    context.DamageNumberService = DamageNumberManager.Instance;
+                
+                PlayerEntity = BattleEcsRunner.Instance.RegisterCharacter(this);
                 RayDebug.Log($"ECS实体已创建: Entity ID = {PlayerEntity.Id}");
             }
         }
@@ -417,6 +429,24 @@ namespace RayPlayer
                 vcam.Follow = playerView.LookAt;
                 vcam.LookAt = playerView.LookAt;
             }
+        }
+
+        /// <summary>
+        /// 角色升级回调：刷新属性并通知 UI（事件由 DataManager.AddExperience 触发）。
+        /// </summary>
+        private void OnCharacterLevelUp(int characterId, int newLevel)
+        {
+            if (characterId != DataManager.GameData?.SelectedCharacterId) return;
+            if (characterConfig?.LevelGrowthConfig == null) return;
+
+            characterAttribute.ApplyLevel(newLevel, characterConfig, characterConfig.LevelGrowthConfig);
+            RayDebug.Info($"[PlayerController] 升级！当前等级: {newLevel}");
+            // TODO: 通知 UI 播放升级特效 / 刷新属性面板
+        }
+
+        protected void OnDestroy()
+        {
+            DataManager.OnLevelUp -= OnCharacterLevelUp;
         }
     }
 }

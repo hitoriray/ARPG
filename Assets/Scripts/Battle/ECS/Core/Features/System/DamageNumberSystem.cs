@@ -25,7 +25,7 @@ namespace Battle.ECS.System
 
         public void Update()
         {
-            if (DamageNumberManager.Instance == null) return;
+            if (_context.DamageNumberService == null) return;
 
             _entities.Clear();
             _context.World.CollectEntities(in _query, _entities);
@@ -33,7 +33,7 @@ namespace Battle.ECS.System
             foreach (var entity in _entities)
             {
                 ref var req = ref entity.Get<DamageNumberRequest>();
-                DamageNumberManager.Instance.Spawn(req.Damage, req.IsCritical, req.IsHeal, req.WorldPos);
+                _context.DamageNumberService.Spawn(req.Damage, req.IsCritical, req.IsHeal, req.WorldPos);
                 entity.Remove<DamageNumberRequest>();
             }
         }

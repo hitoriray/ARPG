@@ -3,7 +3,6 @@ using Config;
 using Data;
 using JKFrame;
 using Manager;
-using RayPlayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -44,7 +43,7 @@ namespace UI
         public void Init(SkillLearnedDatas skillLearnedDatas)
         {
             this.skillLearnedDatas = skillLearnedDatas;
-            var skillConfigList = PlayerManager.Instance.GetAllSkillConfig();
+            var skillConfigList = PlayerService.Instance.GetAllSkillConfig();
             itemList = new(skillConfigList.Count);
             for (int i = 0; i < skillConfigList.Count; i++)
             {
@@ -124,12 +123,12 @@ namespace UI
 
         public override void OnShow()
         {
-            PlayerManager.Instance.SetCharacterControl(false);
+            PlayerService.Instance.SetCharacterControl(false);
         }
 
         public override void OnClose()
         {
-            PlayerManager.Instance.SetCharacterControl(true);
+            PlayerService.Instance.SetCharacterControl(true);
         }
 
         private void OnBackBtnClicked()
@@ -147,7 +146,7 @@ namespace UI
                 selectedItemInfo.skillLearnedData = skillLearnedData;
                 skillLearnedDatas.SkillLearnedDataDict.Dictionary.Add(selectedItemInfo.skillIndex, skillLearnedData);
                 // 新学习的技能需要通知玩家更新
-                PlayerManager.Instance.AddSkill(selectedItemInfo.skillIndex, skillLearnedData);
+                PlayerService.Instance.AddSkill(selectedItemInfo.skillIndex, skillLearnedData);
             }
             else
             {

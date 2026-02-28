@@ -1,22 +1,19 @@
-﻿using GOAP;
-using JKFrame;
+﻿using JKFrame;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Npc
 {
-    public class NpcController : CharacterControllerBase, IStateMachineOwner, IGOAPOwner
+    public class NpcController : CharacterControllerBase, IStateMachineOwner
     {
         public NavMeshAgent navMeshAgent;
         public float hpDownSpeed = 1;
-        public GOAPAgent goalAgent;
         public StateMachine stateMachine;
 
         private void Start()
         {
             stateMachine = new();
             stateMachine.Init(this);
-            goalAgent.Init(this);
         }
 
         public void PlayAnimation(string animationName)

@@ -162,3 +162,23 @@ MonoBehaviour:
     MemoryCost: 50
     IsPlayable: 1
     CharacterType: 0
+  - CharacterId: 2001
+    CharacterName: "\u5343\u65E9\u7231\u97F3\uFF08BOSS\uFF09"
+    CharacterIcon:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    CharacterModelPrefab:
+      m_AssetGUID: 5f527c9c3f8bafa44b83becda7cd8d3d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    CharacterConfig:
+      m_AssetGUID: e2b23cc2fbe696942ba3c419a374e3c6
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    MemoryCost: 50
+    IsPlayable: 0
+    CharacterType: 0

@@ -32,32 +32,52 @@ namespace Manager
         /// </summary>
         public async UniTask<GameObject> LoadCharacterModelPrefabAsync(int characterId)
         {
+            // 1. 先查内存缓存（字典中已有有效 handle）
             if (_loadedPrefabs.TryGetValue(characterId, out var existHandle))
             {
-                return existHandle.Result;
+                if (existHandle.IsValid())
+                    return existHandle.Result;
+
+                // handle 已失效（场景切换等情况），从缓存中清除再重新加载
+                _loadedPrefabs.Remove(characterId);
             }
-            
+
             var entry = _characterTable.GetCharacterById(characterId);
             if (entry == null)
             {
                 RayDebug.Error($"[{nameof(CharacterModelManager)}] 角色ID {characterId} 不存在于配置表中！");
                 return null;
             }
-            
-            var handle = entry.CharacterModelPrefab.LoadAssetAsync<GameObject>();
-            await handle.Task;
+
+            // 2. 若 AssetReference 已有有效的操作 handle（被其他路径加载过），直接复用
+            var assetRef = entry.CharacterModelPrefab;
+            if (assetRef.OperationHandle.IsValid())
+            {
+                // 等待已有加载操作完成（可能还在进行中）
+                var existingOp = assetRef.OperationHandle.Convert<GameObject>();
+                await existingOp.ToUniTask();
+                if (existingOp.Status == AsyncOperationStatus.Succeeded)
+                {
+                    _loadedPrefabs[characterId] = existingOp;
+                    return existingOp.Result;
+                }
+                RayDebug.Error($"复用已有 Handle 失败: {entry.CharacterName} (ID: {characterId})");
+                return null;
+            }
+
+            // 3. 全新加载
+            var handle = assetRef.LoadAssetAsync<GameObject>();
+            await handle.ToUniTask();
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 _loadedPrefabs[characterId] = handle;
-                RayDebug.Log($"成功加载角色模型预制体: {entry.CharacterName} (ID: {characterId})");    
+                RayDebug.Log($"成功加载角色模型预制体: {entry.CharacterName} (ID: {characterId})");
                 return handle.Result;
             }
-            else
-            {
-                RayDebug.Error($"加载角色模型预制体失败: {entry.CharacterName} (ID: {characterId})");   
-                return null;
-            }
+
+            RayDebug.Error($"加载角色模型预制体失败: {entry.CharacterName} (ID: {characterId})");
+            return null;
         }
 
         /// <summary>
@@ -80,7 +100,7 @@ namespace Manager
 
             // 加载配置资源
             var handle = entry.CharacterConfig.LoadAssetAsync<CharacterConfig>();
-            await handle.Task;
+            await handle.ToUniTask();
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {

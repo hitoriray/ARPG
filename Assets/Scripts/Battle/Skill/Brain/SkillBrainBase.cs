@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Config;
 using Data;
 using JKFrame;
-using RayPlayer;
 using Sirenix.OdinInspector;
 using Skill.Behaviour;
 using UnityEngine;
@@ -32,17 +31,20 @@ namespace Skill
             skillPlayer.Init(owner, owner.ModelTransform);
         }
 
-        public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
-        {
-            AddSkill((ICharacter)player, skillConfigs, skillIndex, skillLearnedData);
-        }
+        // public void AddSkill(PlayerController player, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
+        // {
+        //     AddSkill((ICharacter)player, skillConfigs, skillIndex, skillLearnedData);
+        // }
 
         public void AddSkill(ICharacter owner, List<SkillConfig> skillConfigs, int skillIndex, SkillLearnedData skillLearnedData = null)
         {
             var skillConfig = skillConfigs[skillIndex];
-            var skillBehaviour = skillConfig.Behaviour.DeepClone();
-            skillBehaviour.Init(owner, skillConfig, this, skillPlayer, skillLearnedData, skillIndex);
-            skillBehaviours.Add(skillBehaviour);
+            if (skillConfig.Behaviour is SkillBehaviourBase battleBehaviour)
+            {
+                var skillBehaviour = battleBehaviour.DeepClone();
+                skillBehaviour.Init(owner, skillConfig, this, skillPlayer, skillLearnedData, skillIndex);
+                skillBehaviours.Add(skillBehaviour);
+            }
         }
 
         public int GetSkillIndex(int index)

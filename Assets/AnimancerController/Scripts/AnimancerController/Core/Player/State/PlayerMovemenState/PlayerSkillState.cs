@@ -81,7 +81,7 @@ public class PlayerSkillState : PlayerMovementState
 
         // 搜索范围内的目标（只找 Enemy Layer 上的碰撞体）
         var skillPlayer = GetSkillPlayer();
-        int layerMask = skillPlayer != null ? (int)skillPlayer.attackDetectionLayer : ~0;
+        int layerMask = skillPlayer != null ? skillPlayer.attackDetectionLayer : ~0;
         var colliders = UnityEngine.Physics.OverlapSphere(
             player.transform.position,
             radius,

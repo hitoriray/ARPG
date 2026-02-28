@@ -24,6 +24,29 @@ namespace Attribute
             this.currentMp = currentMp;
         }
 
+        /// <summary>
+        /// 根据等级和成长配置更新属性基础值。
+        /// 在角色初始化后、每次升级后都应调用此方法。
+        /// </summary>
+        /// <param name="level">当前等级</param>
+        /// <param name="baseConfig">角色基础配置（提供 1 级时的属性原始值）</param>
+        /// <param name="growthConfig">成长曲线配置</param>
+        public void ApplyLevel(int level, CharacterConfig baseConfig, Config.LevelGrowthConfig growthConfig)
+        {
+            if (baseConfig == null || growthConfig == null) return;
+
+            float hpMult     = growthConfig.GetHpMultiplier(level);
+            float atkMult    = growthConfig.GetAttackMultiplier(level);
+
+            maxHp.BaseValue  = baseConfig.hpBaseValue  * hpMult;
+            maxMp.BaseValue  = baseConfig.mpBaseValue;            // MP 暂不随等级成长（可自行扩展）
+            attack.BaseValue = baseConfig.attackBaseValue * atkMult;
+
+            // 同步当前 HP/MP 到新上限（防止溢出）
+            SetHp(currentHp);
+            SetMp(currentMp);
+        }
+
         public void AddHp(float value)
         {
             SetHp(currentHp + value);

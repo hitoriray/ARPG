@@ -1,11 +1,8 @@
 using Battle.ECS;
-using Data;
 using JKFrame;
-using Manager;
-using RayPlayer;
 using Sirenix.OdinInspector;
 
-namespace Scene
+namespace Manager
 {
     public class GameSceneManager : SingletonMono<GameSceneManager>
     {
@@ -13,7 +10,6 @@ namespace Scene
 
         [LabelText("是否创建新存档")] public bool isCreateArchive;
         [LabelText("初始角色ID"), ShowIf("isCreateArchive", true)] public int initialCharacterId = 1004;
-        [LabelText("是否启用ECS")] public bool isEcs;
         
         #endregion
         
@@ -58,7 +54,7 @@ namespace Scene
             RayDebug.Info($"游戏开始！当前角色ID: {DataManager.GameData.SelectedCharacterId}");
             // 初始化ECS并注册玩家
             var ecsRunner = BattleEcsRunner.Ensure();
-            ecsRunner.RegisterPlayer(PlayerManager.Instance.player);
+            ecsRunner.RegisterCharacter(PlayerManager.Instance.player);
         }
 
         private void OnDestroy()

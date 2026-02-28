@@ -1,7 +1,7 @@
 using JKFrame;
 using UI;
 
-namespace Scene
+namespace Manager
 {
     public class MenuSceneManager : SingletonMono<MenuSceneManager>
     {

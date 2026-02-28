@@ -23,12 +23,12 @@ MonoBehaviour:
     SerializationNodes:
     - Name: ReleaseCostDict
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, Assembly-CSharp],[System.Single,
+      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, ARPG.Core],[System.Single,
         mscorlib]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Config.SkillCostType,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -44,18 +44,6 @@ MonoBehaviour:
     - Name: 
       Entry: 13
       Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Behaviour
-      Entry: 7
-      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
-    - Name: standAttackCount
-      Entry: 3
-      Data: 4
-    - Name: perfectClipIndex
-      Entry: 3
-      Data: -1
     - Name: 
       Entry: 8
       Data: 
@@ -76,3 +64,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd497f7b0ccc67e43b28433c9709c0d4, type: 2}
   - {fileID: 11400000, guid: b1f6c238ae49c8d44a19f6a8a91ba0a6, type: 2}
   - {fileID: 11400000, guid: 9a8d563250e3f244587d8c95b905a0a8, type: 2}
+  Behaviour:
+    rid: 7008662689467596873
+  references:
+    version: 2
+    RefIds:
+    - rid: 7008662689467596873
+      type: {class: BasicBehaviour, ns: RayPlayer, asm: Assembly-CSharp}
+      data:
+        standAttackCount: 4
+        perfectClipIndex: -1

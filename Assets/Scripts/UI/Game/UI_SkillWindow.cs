@@ -34,7 +34,7 @@ namespace UI
         
         public override void OnShow()
         {
-            PlayerManager.Instance.SetCharacterControl(false);
+            PlayerService.Instance.SetCharacterControl(false);
         }
 
         public override void OnClose()
@@ -43,7 +43,7 @@ namespace UI
             {
                 UI_SkillSlotBase.currentEnterSlot.OnPointerExit(null);
             }
-            PlayerManager.Instance.SetCharacterControl(true);
+            PlayerService.Instance.SetCharacterControl(true);
         }
         
         private void OnCloseBtnClicked()
@@ -55,7 +55,7 @@ namespace UI
         {
             int releaseSkillIndex = 0;
             int passiveSkillIndex = 0;
-            var skillConfigs = PlayerManager.Instance.GetAllSkillConfig();
+            var skillConfigs = PlayerService.Instance.GetAllSkillConfig();
             foreach (var item in skillLearnedDatas.SkillLearnedDataDict.Dictionary)
             {
                 var skillConfig = skillConfigs[item.Key];

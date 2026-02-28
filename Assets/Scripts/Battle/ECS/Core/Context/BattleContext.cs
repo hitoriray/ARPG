@@ -31,6 +31,9 @@ namespace Battle.ECS.Core
         // public MultiEntityIndex<string, HeroInfo> HeroInfoIndex { get; protected set; }
         public PrimaryEntityIndex<int, Component.PlayerComp> PlayerIndex { get; protected set; }
         
+        /// <summary>飘字服务，由外部（如GameSceneManager）在创建Runner后注入</summary>
+        public IDamageNumberService DamageNumberService { get; set; }
+        
         protected BattleContext(int randomSeed, FP logicDeltaTime)
         {
             World = World.Create();

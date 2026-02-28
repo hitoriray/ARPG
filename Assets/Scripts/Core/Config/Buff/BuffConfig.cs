@@ -1,0 +1,106 @@
+﻿using JKFrame;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace Config
+{
+    [CreateAssetMenu(menuName = "Config/BuffConfig")]
+    public class BuffConfig : ConfigBase
+    {
+        [LabelText("Buff ID")] public int buffId;
+        [LabelText("名称")] public string buffName;
+        [LabelText("描述")] [Multiline] public string description;
+        [LabelText("图标")] public Sprite icon;
+
+        [TitleGroup("叠加配置")] [LabelText("最大层数")]
+        public int maxStack = 1;
+
+        [LabelText("叠加模式")]
+        [Tooltip("RefreshDuration: 叠加时刷新持续时间，时间结束后全部移除，溢出时替换\n" +
+                 "IndependentDuration: 每层同时计时，单独过期，溢出时替换\n" +
+                 "SequentialDuration: 逐层过期，溢出时替换\n" +
+                 "Permanent: 永久有效，保留所有堆叠信息")]
+        public BattleBuffStackMode stackMode = BattleBuffStackMode.RefreshDuration;
+        [LabelText("溢出策略")] public BattleBuffOverflowPolicy overflowPolicy = BattleBuffOverflowPolicy.ReplaceOldest;
+
+        [TitleGroup("时间配置")] [LabelText("每层持续时间（秒）")]
+        public float duration = 5f;
+
+        [LabelText("Tick间隔（秒）")] public float tickInterval = 1f;
+        [LabelText("Tick次数（-1无限）")] public int tickCount = -1;
+
+        [TitleGroup("属性配置")] 
+        [LabelText("Buff创建时属性修正")] public BuffAttrModifier[] StartAttrModifiers;
+        [LabelText("Buff周期属性修正")] public BuffAttrModifier[] PeriodicAttrModifier;
+        [LabelText("速度修正百分比")] public int speedPctModifier = 0;
+        
+        [TitleGroup("标签配置")]
+        [LabelText("Buff标签")] public BuffTag tags = BuffTag.None;
+        
+        public bool canStack => maxStack > 1;
+    }
+
+    /// <summary>
+    /// Buff属性修正器
+    /// </summary>
+    public class BuffAttrModifier
+    {
+        [LabelText("属性类型")] public AttributeType type;
+        [LabelText("修正值")] public float value;
+        [LabelText("修正模式")] public AttrModifyMode mode;
+    }
+
+    public enum AttrModifyMode
+    {
+        Fixed,
+        Percent,
+    }
+
+    /// <summary>
+    /// Buff标签
+    /// </summary>
+    public enum BuffTag
+    {
+        None = 0,
+        Positive = 1 << 0,   // 增益
+        Negative = 1 << 1,   // 减益
+        Control = 1 << 2,    // 控制
+        Dispellable = 1 << 3,// 可驱散
+        Permanent = 1 << 4,  // 永久
+        Mergeable = 1 << 5,  // 可合并
+    }
+    
+    // public abstract class BuffEffectDataBase
+    // {
+    // }
+    //
+    // public class SimpleBuffEffectData : BuffEffectDataBase
+    // {
+    //     [LabelText("类型")] public BuffEffectType type;
+    //     [LabelText("值")] public float value;
+    // }
+    
+    /// <summary>Buff 叠加模式（配置层枚举）</summary>
+    public enum BattleBuffStackMode
+    {
+        /// <summary>叠加时刷新持续时间，时间结束后全部移除，溢出时替换</summary>
+        RefreshDuration = 0,
+        /// <summary>每层同时计时，单独过期，溢出时替换</summary>
+        IndependentDuration = 1,
+        /// <summary>逐层过期，溢出时替换</summary>
+        SequentialDuration = 2,
+        /// <summary>永久有效，保留所有堆叠信息</summary>
+        Permanent = 3,
+    }
+    
+    /// <summary>Buff 溢出策略（配置层枚举）</summary>
+    public enum BattleBuffOverflowPolicy
+    {
+        /// <summary>替换最早添加的那一层</summary>
+        ReplaceOldest = 0,
+        /// <summary>替换优先级最低的那一层</summary>
+        ReplaceLowestPriority = 1,
+        /// <summary>达到上限时丢弃新添加的那一层</summary>
+        DiscardNewest = 2,
+    }
+}

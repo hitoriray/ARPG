@@ -32,6 +32,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f527c9c3f8bafa44b83becda7cd8d3d
+    m_Address: Boss_Anon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7e152a354e36154b87bbda67eb2f6a7
     m_Address: 1005_Fuludelisi_Model
     m_ReadOnly: 0

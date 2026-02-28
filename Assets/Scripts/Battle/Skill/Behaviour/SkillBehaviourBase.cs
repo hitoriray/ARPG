@@ -3,14 +3,11 @@ using Battle.ECS.View.Helper;
 using Config;
 using Data;
 using JKFrame;
-using RayPlayer;
-using Scene;
-using UI;
 using UnityEngine;
 
 namespace Skill.Behaviour
 {
-    public abstract class SkillBehaviourBase
+    public abstract class SkillBehaviourBase : SkillBehaviourLogicBase
     {
         protected ICharacter owner;
         protected SkillConfig skillConfig;
@@ -55,34 +52,8 @@ namespace Skill.Behaviour
             cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
         }
 
-        protected void UpdateSkillSlot()
+        protected virtual void UpdateSkillSlot()
         {
-            if (TryGetSkillSlot(out var slot))
-            {
-                OnUpdateSkillSlot(slot);
-            }
-        }
-
-        protected bool TryGetSkillSlot(out UI_ShortcutSkill_Slot slot)
-        {
-            slot = null;
-            if (owner is not PlayerController)
-                return false;
-
-            var window = UISystem.GetWindow<UI_GameSceneMainWindow>();
-            if (window == null)
-                return false;
-
-            return window.TryGetShortcutSkillSlot(skillIndex, out slot);
-        }
-
-        protected virtual void OnUpdateSkillSlot(UI_ShortcutSkill_Slot slot)
-        {
-            float max = skillConfig.GetCdTimeByLv(SkillLv);
-            float value = 0;
-            if (max != 0) value = cdTimer / max;
-            slot.UpdateCdTime(value);
-            slot.UpdateSkillReleaseState(CheckRelease());
         }
 
         public virtual float GetCdTime()
@@ -279,11 +250,7 @@ namespace Skill.Behaviour
 
                 if (attackHitConfig.HitEffectPrefab != null)
                 {
-                    bool success = false;
-                    if (GameSceneManager.Instance.isEcs)
-                    {
-                        success = VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true);
-                    }
+                    bool success = VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true);
                     if (!success)
                     {
                         RayDebug.Log("由Mono生成命中特效");

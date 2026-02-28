@@ -8,7 +8,6 @@ using Config;
 using Data;
 using Manager;
 using Cysharp.Threading.Tasks;
-using RayAnimation;
 
 namespace UI
 {
@@ -167,7 +166,7 @@ namespace UI
 
         private async UniTaskVoid LoadAndSetIconAsync(CharacterEntry character, HorizontalSelector.Item item)
         {
-            if (character.CharacterIcon != null && character.CharacterIcon.RuntimeKeyIsValid())
+            if (character.CharacterIcon != null)
             {
                 var sprite = await character.CharacterIcon.LoadAssetAsync<Sprite>().ToUniTask();
                 item.itemIcon = sprite;

@@ -3,7 +3,6 @@ using Config;
 using Data;
 using JKFrame;
 using Manager;
-using RayPlayer;
 using UnityEngine;
 
 namespace UI
@@ -46,7 +45,7 @@ namespace UI
 
         public void ShowShortcutSkillSlots(ShortcutSkillSlotData shortcutSkillSlotData)
         {
-            List<SkillConfig> skillConfigs = PlayerManager.Instance.GetAllSkillConfig();
+            List<SkillConfig> skillConfigs = PlayerService.Instance.GetAllSkillConfig();
             for (int i = 0; i < shortcutSkillSlotData.skillIds.Length; i++)
             {
                 SkillConfig skillConfig = null;
@@ -65,7 +64,7 @@ namespace UI
             SkillConfig skillConfig = null;
             if (newSkillIndex != -1)
             {
-                skillConfig = PlayerManager.Instance.GetAllSkillConfig()[newSkillIndex];
+                skillConfig = PlayerService.Instance.GetAllSkillConfig()[newSkillIndex];
             }
             shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
 

@@ -247,6 +247,101 @@ namespace Manager
 
         #endregion
 
+        #region 角色成长（等级 / 经验 / 金币）
+
+        /// <summary>
+        /// 获取指定角色的成长数据（不存在则自动创建）。
+        /// </summary>
+        public static CharacterProgressData GetOrCreateProgressData(int characterId)
+        {
+            if (GameData == null) return null;
+            EnsureGameDataContainers();
+
+            if (!GameData.CharacterProgressDict.Dictionary.TryGetValue(characterId, out var data) || data == null)
+            {
+                data = new CharacterProgressData();
+                GameData.CharacterProgressDict.Dictionary[characterId] = data;
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// 给指定角色增加经验，自动结算升级（可多级连升），自动存档。
+        /// 返回最终到达的等级。
+        /// </summary>
+        public static int AddExperience(int characterId, long expGain, Config.LevelGrowthConfig growthConfig)
+        {
+            if (growthConfig == null || expGain <= 0) return GetOrCreateProgressData(characterId)?.Level ?? 1;
+
+            var data = GetOrCreateProgressData(characterId);
+            if (data == null) return 1;
+
+            if (data.Level >= growthConfig.MaxLevel)
+            {
+                JKLog.Log($"[DataManager] 角色 {characterId} 已满级（{growthConfig.MaxLevel}），经验不再增加");
+                return data.Level;
+            }
+
+            data.Experience += expGain;
+
+            // 结算升级
+            bool leveledUp = false;
+            while (data.Level < growthConfig.MaxLevel)
+            {
+                long need = growthConfig.GetExpRequiredForNextLevel(data.Level);
+                if (data.Experience < need) break;
+                data.Experience -= need;
+                data.Level++;
+                leveledUp = true;
+                JKLog.Log($"[DataManager] 角色 {characterId} 升级！当前等级: {data.Level}");
+            }
+
+            if (leveledUp)
+                OnLevelUp?.Invoke(characterId, data.Level);
+
+            SaveGameData();
+            return data.Level;
+        }
+
+        /// <summary>
+        /// 直接设置指定角色的等级（调试 / GM 指令），自动存档。
+        /// </summary>
+        public static void SetLevel(int characterId, int level, Config.LevelGrowthConfig growthConfig)
+        {
+            var data = GetOrCreateProgressData(characterId);
+            if (data == null) return;
+
+            int maxLv = growthConfig != null ? growthConfig.MaxLevel : 100;
+            data.Level = Mathf.Clamp(level, 1, maxLv);
+            data.Experience = 0;
+            SaveGameData();
+        }
+
+        /// <summary>
+        /// 增加或消耗金币（amount 为负值时消耗）。
+        /// 金币不足时返回 false 且不扣除。
+        /// </summary>
+        public static bool AddGold(long amount)
+        {
+            if (GameData == null) return false;
+            if (amount < 0 && GameData.Gold + amount < 0)
+            {
+                JKLog.Warning($"[DataManager] 金币不足，当前 {GameData.Gold}，需要 {-amount}");
+                return false;
+            }
+            GameData.Gold += amount;
+            SaveGameData();
+            return true;
+        }
+
+        /// <summary>
+        /// 角色升级时触发的事件（characterId, newLevel）。
+        /// UI 层订阅此事件来播放升级特效、刷新属性面板等。
+        /// </summary>
+        public static event System.Action<int, int> OnLevelUp;
+
+        #endregion
+
         #region Internal Repair
 
         private static bool EnsureGameDataContainers()
@@ -262,7 +357,7 @@ namespace Manager
             }
             if (GameData.UnlockedCharacterIds.List == null)
             {
-                GameData.UnlockedCharacterIds.List = new List<int>();
+                GameData.UnlockedCharacterIds.List = new System.Collections.Generic.List<int>();
                 dirty = true;
             }
 
@@ -284,12 +379,26 @@ namespace Manager
                 GameData.CharacterTeam = new[] { GameData.SelectedCharacterId, -1, -1, -1 };
                 if (oldTeam != null)
                 {
-                    Array.Copy(oldTeam, GameData.CharacterTeam, Mathf.Min(oldTeam.Length, GameData.CharacterTeam.Length));
+                    System.Array.Copy(oldTeam, GameData.CharacterTeam, System.Math.Min(oldTeam.Length, GameData.CharacterTeam.Length));
                 }
                 if (GameData.CharacterTeam[0] == -1)
                 {
                     GameData.CharacterTeam[0] = GameData.SelectedCharacterId;
                 }
+                dirty = true;
+            }
+
+            // 向后兼容：旧存档没有成长字典时自动创建
+            if (GameData.CharacterProgressDict == null)
+            {
+                GameData.CharacterProgressDict = new Serialized_Dic<int, CharacterProgressData>();
+                dirty = true;
+            }
+
+            // 向后兼容：旧存档没有已清空区域列表时自动创建
+            if (GameData.ClearedRegionKeys == null)
+            {
+                GameData.ClearedRegionKeys = new Serialized_List<string>();
                 dirty = true;
             }
 

@@ -12,9 +12,10 @@ using UnityEngine;
 
 namespace Boss
 {
-    public class BossController : CharacterControllerBase, ICharacter, IGOAPOwner
+    public class BossController : CharacterControllerBase, ICharacter
     {
         [Header("Config")]
+        
         [SerializeField] private CharacterConfig characterConfig;
         [SerializeField] private PlayerSO playerSO;
 
@@ -23,6 +24,7 @@ namespace Boss
 
         [Header("Combat")]
         [SerializeField] private BossSkillBrainBase skillBrain;
+
         [SerializeField] private CharacterAttribute characterAttribute;
         [SerializeField] private WeaponSlotManager weaponSlotManager;
 
@@ -50,7 +52,8 @@ namespace Boss
         public float WalkSpeed => characterConfig != null ? characterConfig.WalkSpeed : 0f;
         public float RunSpeed => characterConfig != null ? characterConfig.RunSpeed : 0f;
         public float RotateSpeed => characterConfig != null ? characterConfig.RotateSpeed : 8f;
-
+        public bool IsPlayerControlled => false;
+        
         private bool inSkill;
         private bool currentSkillUpperBody;
         private bool initialized;
@@ -82,8 +85,8 @@ namespace Boss
                     animator.avatar = characterConfig.Avatar;
             }
 
-            if (characterAttribute != null && characterConfig != null)
-                characterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
+            if (CharacterAttribute != null && characterConfig != null)
+                CharacterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
 
             ReusableData = new PlayerReusableData(animancer, playerSO);
             ReusableData.speedValueParameter.TargetValue = 0f;
@@ -102,8 +105,8 @@ namespace Boss
             // 注册 ECS 实体
             if (BattleEcsRunner.Instance != null && BattleEcsRunner.Instance.Context != null)
             {
-                BossEntity = BattleEcsRunner.Instance.RegisterBoss(this);
-                RayDebug.Log($"Boss ECS实体已创建: Entity ID = {BossEntity.Id}");
+                BossEntity = BattleEcsRunner.Instance.RegisterCharacter(this);
+                RayDebug.Log($"{gameObject.name} ECS实体已创建: Entity ID = {BossEntity.Id}");
             }
         }
 
@@ -344,7 +347,7 @@ namespace Boss
                 MovementStateMachine.ChangeState(MovementStateMachine.hitState);
             }
 
-            RayDebug.Log($"Boss被命中！伤害值: {attackData.attackValue}");
+            RayDebug.Log($"{gameObject.name}被命中！伤害值: {attackData.attackValue}");
         }
 
         /// <summary>
@@ -352,7 +355,7 @@ namespace Boss
         /// </summary>
         public void OnDeath()
         {
-            RayDebug.Info("[BossController] Boss 死亡！");
+            RayDebug.Info($"{gameObject.name} 死亡！");
             if (MovementStateMachine != null)
             {
                 MovementStateMachine.ChangeState(MovementStateMachine.deadState);
@@ -361,10 +364,10 @@ namespace Boss
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)
         {
-            if (characterAttribute == null || detectionEvent?.AttackHitConfig == null)
+            if (CharacterAttribute == null || detectionEvent?.AttackHitConfig == null)
                 return 0f;
 
-            return characterAttribute.attack.Total * detectionEvent.AttackHitConfig.AttackMultiply;
+            return CharacterAttribute.attack.Total * detectionEvent.AttackHitConfig.AttackMultiply;
         }
     }
 }

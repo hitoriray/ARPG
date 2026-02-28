@@ -17,6 +17,9 @@ namespace Boss
             boss.ClearDesiredMove();
             boss.disableRootMotion = true;
 
+            // 通知 SpawnPoint 敌人已死亡（触发刷新倒计时）
+            boss.GetComponent<Enemy.EnemyDeathListener>()?.NotifyDied();
+
             if (deathClip != null && deathClip.Clip != null)
             {
                 var state = animancer.Play(deathClip);
