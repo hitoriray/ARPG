@@ -2,6 +2,7 @@
 
 namespace Skill.Behaviour
 {
+    [System.Serializable]
     public class AddBuffBehaviour : SkillBehaviourBase
     {
         public override SkillBehaviourBase DeepClone()

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace RayPlayer
 {
+    [System.Serializable]
     public class Skill2Behaviour : PlayerSkillBehaviourBase
     {
         public override SkillBehaviourBase DeepClone()

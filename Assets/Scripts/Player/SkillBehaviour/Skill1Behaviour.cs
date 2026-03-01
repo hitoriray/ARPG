@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace RayPlayer
 {
+    [System.Serializable]
     public class Skill1Behaviour : PlayerSkillBehaviourBase
     {
         #region 配置

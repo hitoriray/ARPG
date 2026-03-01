@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace RayPlayer
 {
+    [System.Serializable]
     public class BasicBehaviour : PlayerSkillBehaviourBase
     {
         private int attackIndex = -1;  // 当前的普攻段数索引
