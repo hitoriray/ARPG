@@ -289,6 +289,9 @@ namespace Boss
 
         public void OnSkillMove(Vector3 deltaPos)
         {
+            if (controller == null || !controller.enabled || !gameObject.activeInHierarchy)
+                return;
+
             controller.Move(deltaPos);
         }
 
@@ -356,6 +359,14 @@ namespace Boss
         public void OnDeath()
         {
             RayDebug.Info($"{gameObject.name} 死亡！");
+            
+            // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定
+            var colliders = GetComponentsInChildren<Collider>();
+            foreach (var col in colliders)
+            {
+                col.enabled = false;
+            }
+
             if (MovementStateMachine != null)
             {
                 MovementStateMachine.ChangeState(MovementStateMachine.deadState);

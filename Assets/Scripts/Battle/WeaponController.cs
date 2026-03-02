@@ -90,13 +90,13 @@ namespace Skill
 
         private void TryHit(Collider other)
         {
-            RayDebug.Info($"[WeaponController.TryHit] 碰撞物体:{other.gameObject.name}, Layer:{LayerMask.LayerToName(other.gameObject.layer)}({other.gameObject.layer}), detectionLayerMask:{detectionLayerMask.value}, 匹配:{((detectionLayerMask & (1 << other.gameObject.layer)) != 0)}");
+            // RayDebug.Info($"[WeaponController.TryHit] 碰撞物体:{other.gameObject.name}, Layer:{LayerMask.LayerToName(other.gameObject.layer)}({other.gameObject.layer}), detectionLayerMask:{detectionLayerMask.value}, 匹配:{((detectionLayerMask & (1 << other.gameObject.layer)) != 0)}");
             if ((detectionLayerMask & (1 << other.gameObject.layer)) == 0)
                 return;
             if (hitCache.Contains(other))
                 return;
             IHitTarget hitTarget = other.GetComponentInChildren<IHitTarget>();
-            RayDebug.Info($"[WeaponController.TryHit] 目标:{other.gameObject.name}, IHitTarget:{(hitTarget != null ? hitTarget.GetType().Name : "NULL")}");
+            // RayDebug.Info($"[WeaponController.TryHit] 目标:{other.gameObject.name}, IHitTarget:{(hitTarget != null ? hitTarget.GetType().Name : "NULL")}");
             if (hitTarget != null)
             {
                 hitCache.Add(other);

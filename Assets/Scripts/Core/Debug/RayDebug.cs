@@ -366,11 +366,16 @@ public class RayDebug
     {
         string className = GetClassName(filePath);
         var sb = new System.Text.StringBuilder();
-        // 日志级别标签
+        // 日志级别标签及颜色开始
         if (!string.IsNullOrEmpty(level) && !string.IsNullOrEmpty(color))
         {
-            sb.Append($"<color={color}>[{level}]</color> ");
+            sb.Append($"<color={color}>[{level}] ");
         }
+        else if (!string.IsNullOrEmpty(level))
+        {
+            sb.Append($"[{level}] ");
+        }
+
         // 时间戳
         if (ShowTimestamp)
         {
@@ -383,8 +388,16 @@ public class RayDebug
         }
         // 类名.方法名:行号
         sb.Append($"[{className}.{memberName}:{lineNumber}] ");
+
         // 消息内容
         sb.Append(message);
+
+        // 如果有颜色，需要在最末尾闭合标签
+        if (!string.IsNullOrEmpty(level) && !string.IsNullOrEmpty(color))
+        {
+            sb.Append("</color>");
+        }
+
         return sb.ToString();
     }
     #endregion

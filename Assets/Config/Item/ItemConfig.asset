@@ -16,17 +16,17 @@ MonoBehaviour:
   ItemName: "\u751F\u547D\u836F\u6C34"
   ItemType: 0
   Icon:
-    m_AssetGUID: 
+    m_AssetGUID: 8b3a30b86c0bda44ba6d101f45b2664c
     m_SubObjectName: 
     m_SubObjectType: 
-    m_EditorAssetChanged: 0
+    m_EditorAssetChanged: 1
   MaxStackCount: 99
   Description: "\u56DE\u590D200HP"
   HpRestore: 200
   MpRestore: 0
   ExpGain: 0
-  SpawnAsWorldDrop: 1
-  AutoPickup: 0
-  PickupRadius: 2
-  WorldDropPrefab: {fileID: 0}
-  WorldDropLifetime: 10
+  SpawnAsWorldDrop: 0
+  AutoPickup: 1
+  PickupRadius: 1
+  WorldDropPrefab: {fileID: 6388237123063429627, guid: 59a252485097bd247a70f7f2ef839ec1, type: 3}
+  WorldDropLifetime: -1

@@ -42,6 +42,12 @@ namespace Battle.ECS.System
         
             public void Update(Entity entity, ref DropItem dropItem, ref ViewReference viewRef)
             {
+                if (dropItem.Lifetime < FP.Zero)
+                {
+                    // Lifetime < 0 表示无限，不做衰减与销毁
+                    return;
+                }
+
                 dropItem.Lifetime -= DeltaTime;
                 if (dropItem.Lifetime <= FP.Zero)
                 {

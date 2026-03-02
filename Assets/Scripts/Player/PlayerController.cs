@@ -21,6 +21,7 @@ namespace RayPlayer
         [Header("Config")]
         [SerializeField] private CharacterConfig characterConfig;
         [SerializeField] public PlayerSO playerSO;
+        [SerializeField] public ItemConfig itemConfig;
 
         [Header("View")]
         [SerializeField] private PlayerView playerView;
@@ -133,6 +134,24 @@ namespace RayPlayer
                 
                 PlayerEntity = BattleEcsRunner.Instance.RegisterCharacter(this);
                 RayDebug.Log($"ECS实体已创建: Entity ID = {PlayerEntity.Id}");
+            }
+
+            // 测试
+            if (Manager.LootDropManager.Instance != null)
+            {
+                if (itemConfig != null)
+                {
+                    Vector3 pos = transform.position + transform.forward * 2f;
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
+                }
             }
         }
 
@@ -372,6 +391,14 @@ namespace RayPlayer
         public void OnDeath()
         {
             RayDebug.Info("[PlayerController] 玩家死亡！");
+            
+            // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定
+            var colliders = GetComponentsInChildren<Collider>();
+            foreach (var col in colliders)
+            {
+                col.enabled = false;
+            }
+
             ChangeState(PlayerState.Dead);
         }
 

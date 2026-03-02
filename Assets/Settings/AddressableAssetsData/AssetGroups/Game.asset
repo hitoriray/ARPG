@@ -17,13 +17,18 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ec7f10da2ba531744b90eeb16256623a
   m_SerializeEntries:
-  - m_GUID: a25d7633cd38d3449bdd4b86e1f35132
-    m_Address: UI_SkillLearnWindow
+  - m_GUID: 66a3ea7ec28abda4fb70fb8fa6f0858a
+    m_Address: UI_SkillWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 66a3ea7ec28abda4fb70fb8fa6f0858a
-    m_Address: UI_SkillWindow
+  - m_GUID: 88de3f79f2e3c3449b44bd2ed2c47dc9
+    m_Address: UI_SkillInfoPopupWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a25d7633cd38d3449bdd4b86e1f35132
+    m_Address: UI_SkillLearnWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -32,8 +37,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 88de3f79f2e3c3449b44bd2ed2c47dc9
-    m_Address: UI_SkillInfoPopupWindow
+  - m_GUID: cecf3546b89f906468c50b6746f4942c
+    m_Address: UI_InteractListWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

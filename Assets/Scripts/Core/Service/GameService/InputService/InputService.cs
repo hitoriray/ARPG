@@ -20,7 +20,11 @@ public class InputService : MonoSingleton<InputService>
 
     private void OnDestroy()
     {
-        inputMap.Disable();
+        if (inputMap != null)
+        {
+            inputMap.Disable();
+            inputMap = null;
+        }
     }
 
     /// <summary>

@@ -52,7 +52,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
-  hpBaseValue: 1000
+  hpBaseValue: 200
   mpBaseValue: 100
   attackBaseValue: 10
   defenseBaseValue: 0
+  LevelGrowthConfig: {fileID: 0}

@@ -76,8 +76,7 @@ namespace Config
 
         [TitleGroup("世界掉落物")]
         [ShowIf("SpawnAsWorldDrop")]
-        [LabelText("存在时间（秒）")]
-        [MinValue(5f)]
-        public float WorldDropLifetime = 60f;
+        [LabelText("存在时间（秒），-1表示无限")]
+        public float WorldDropLifetime = -1;
     }
 }

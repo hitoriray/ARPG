@@ -23,10 +23,18 @@ public class CameraController : MonoBehaviour
     {
         inputService = InputService.Instance;
 
-        virtualCamera = GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineFramingTransposer>();
-        playableDirector = transform.GetComponent<PlayableDirector>();
+        var vcam = GetComponent<CinemachineVirtualCamera>();
+        if (vcam != null)
+        {
+            virtualCamera = vcam.GetCinemachineComponent<CinemachineFramingTransposer>();
+        }
+
+        playableDirector = GetComponent<PlayableDirector>();
         currentDistance = defaultDistance;
-        virtualCamera.m_CameraDistance = currentDistance;
+        if (virtualCamera != null)
+        {
+            virtualCamera.m_CameraDistance = currentDistance;
+        }
     }
     
     private void Update()
@@ -43,6 +51,12 @@ public class CameraController : MonoBehaviour
 
     private void GetMouseScroll()
     {
+        if (inputService == null || inputService.inputMap == null)
+        {
+            inputService = InputService.Instance;
+            if (inputService == null || inputService.inputMap == null) return;
+        }
+
         currentDistance -= inputService.inputMap.Player.Scroll.ReadValue<Vector2>().y * Time.deltaTime * sensitivity;
         currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
     }
@@ -58,6 +72,9 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        virtualCamera.m_CameraDistance = Mathf.Lerp(virtualCamera.m_CameraDistance, currentDistance, Time.deltaTime * smoothness);
+        if (virtualCamera != null)
+        {
+            virtualCamera.m_CameraDistance = Mathf.Lerp(virtualCamera.m_CameraDistance, currentDistance, Time.deltaTime * smoothness);
+        }
     }
 }

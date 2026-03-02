@@ -3,12 +3,14 @@ using UnityEngine;
 //在物体销毁时访问次对象最好加一个Null的判断，防止程序退出次物体被销毁
 public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 {
-    private static T instance;
+    protected static T instance;
+    protected static bool isQuitting;
 
     public static T Instance
     {
         get
         {
+            if (isQuitting) return null;
             if (instance == null)
             {
                 instance = GameObject.FindAnyObjectByType<T>();
@@ -33,7 +35,17 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
         }
         else
         {
-            Destroy(instance);
+            Destroy(gameObject);
         }
+    }
+
+    protected virtual void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (instance == this) instance = null;
     }
 }

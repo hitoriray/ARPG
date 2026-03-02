@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b3a30b86c0bda44ba6d101f45b2664c
+    m_Address: Assets/Res/UI/Swordsman Skills Free Icons Art/PNG/1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f80203ccd72e09743b9f5f6c15c69a93
     m_Address: ProjectConfig
     m_ReadOnly: 0
