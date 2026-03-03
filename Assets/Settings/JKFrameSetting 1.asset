@@ -97,7 +97,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: UI.UI_GameSceneMainWindow
+      Data: UI.UI_InventoryWindow
     - Name: $v
       Entry: 7
       Data: 4|JKFrame.UIWindowData, JKFrame
@@ -106,7 +106,7 @@ MonoBehaviour:
       Data: true
     - Name: assetPath
       Entry: 1
-      Data: UI_GameSceneMainWindow
+      Data: UI_InventoryWindow
     - Name: layerNum
       Entry: 3
       Data: 1
@@ -124,7 +124,7 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: UI.UI_InteractListWindow
+      Data: UI.UI_GameSceneMainWindow
     - Name: $v
       Entry: 7
       Data: 5|JKFrame.UIWindowData, JKFrame
@@ -133,7 +133,7 @@ MonoBehaviour:
       Data: true
     - Name: assetPath
       Entry: 1
-      Data: UI_InteractListWindow
+      Data: UI_GameSceneMainWindow
     - Name: layerNum
       Entry: 3
       Data: 1

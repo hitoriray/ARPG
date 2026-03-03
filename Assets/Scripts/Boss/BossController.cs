@@ -53,10 +53,12 @@ namespace Boss
         public float RunSpeed => characterConfig != null ? characterConfig.RunSpeed : 0f;
         public float RotateSpeed => characterConfig != null ? characterConfig.RotateSpeed : 8f;
         public bool IsPlayerControlled => false;
+        public bool IsDead => isDead;
         
         private bool inSkill;
         private bool currentSkillUpperBody;
         private bool initialized;
+        private bool isDead;
 
         protected override void Awake()
         {
@@ -74,6 +76,7 @@ namespace Boss
         public void Init(CharacterConfig config)
         {
             initialized = true;
+            isDead = false;
             characterConfig = config;
             if (playerSO == null && characterConfig != null)
                 playerSO = characterConfig.PlayerSO;
@@ -152,6 +155,9 @@ namespace Boss
 
         public void SetDesiredMove(Vector3 worldDir, float moveSpeedMultiplier = 1f, float moveSpeedParam = 1f)
         {
+            if (isDead)
+                return;
+
             AI.SetMove(worldDir, moveSpeedMultiplier, moveSpeedParam);
             if (moveSpeedMultiplier > 0f)
                 this.moveSpeedMultiplier = moveSpeedMultiplier;
@@ -164,6 +170,9 @@ namespace Boss
 
         public bool TryStartSkill(int skillIndex)
         {
+            if (isDead)
+                return false;
+
             if (skillBrain == null)
                 return false;
 
@@ -179,6 +188,9 @@ namespace Boss
 
         public bool TryStartEvasion(BossEvasionType type)
         {
+            if (isDead)
+                return false;
+
             if (MovementStateMachine == null || playerSO == null || ReusableData == null)
                 return false;
 
@@ -211,6 +223,9 @@ namespace Boss
 
         public void Change2IdleState()
         {
+            if (isDead)
+                return;
+
             if (MovementStateMachine == null)
                 return;
 
@@ -331,6 +346,8 @@ namespace Boss
 
         public void OnHit(AttackData attackData)
         {
+            if (isDead)
+                return;
             // 1. 发射 ECS 伤害请求
             if (BossEntity.IsAlive())
             {
@@ -358,6 +375,10 @@ namespace Boss
         /// </summary>
         public void OnDeath()
         {
+            if (isDead)
+                return;
+
+            isDead = true;
             RayDebug.Info($"{gameObject.name} 死亡！");
             
             // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定

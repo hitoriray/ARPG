@@ -89,37 +89,42 @@ namespace Manager
 
         /// <summary>
         /// 在世界中生成掉落物（ECS Entity + GO）。
-        /// 由 DropOnDeath 调用。
+        /// 由 DropOnDeath 调用；背包丢弃等场景可通过 forceWorldDrop 强制生效。
         /// </summary>
-        public void SpawnWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay = -1f, string existingGuid = null)
+        public bool SpawnWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay = -1f, string existingGuid = null, bool forceWorldDrop = false)
         {
-            if (config == null || !config.SpawnAsWorldDrop) return;
-            if (count <= 0) return;
+            if (config == null) return false;
+            if (!config.SpawnAsWorldDrop && !forceWorldDrop) return false;
+            if (count <= 0) return false;
+
+            bool spawned = false;
 
             // 检查堆叠：如果最大堆叠数为 1（不可堆叠），且请求生成数量 > 1，则拆解为多个实体
             if (config.MaxStackCount <= 1 && count > 1)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    SpawnSingleWorldDrop(config, 1, position, lockDelay, existingGuid);
+                    spawned |= SpawnSingleWorldDrop(config, 1, position, lockDelay, existingGuid);
                 }
             }
             else
             {
-                SpawnSingleWorldDrop(config, count, position, lockDelay, existingGuid);
+                spawned = SpawnSingleWorldDrop(config, count, position, lockDelay, existingGuid);
             }
+
+            return spawned;
         }
 
-        private void SpawnSingleWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay, string existingGuid)
+        private bool SpawnSingleWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay, string existingGuid)
         {
             var prefab = config.WorldDropPrefab != null ? config.WorldDropPrefab : _defaultDropPrefab;
             if (prefab == null)
             {
                 RayDebug.Error("没有默认掉落物预制体，请在 Inspector 赋值！");
-                return;
+                return false;
             }
 
-            var go = ProjectUtility.GetOrInstantiateGameObject(prefab, null);
+            var go = ProjectUtility.GetOrInstantiateGameObjectClone(prefab, null);
             go.transform.position = position;
             go.SetActive(true);
 
@@ -162,6 +167,7 @@ namespace Manager
 
             // 手动拾取列表由触发器进出范围注册/注销，避免远距离就显示 UI
             item.ApplyBounceForce(lockDelay);
+            return true;
         }
 
         /// <summary>

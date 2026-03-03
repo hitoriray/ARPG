@@ -767,6 +767,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Bag",
+                    "type": "Button",
+                    "id": "26fdc400-4a95-4602-9bb3-1f4245b95bc0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -899,6 +908,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Alt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dcf2f3e5-ecb1-44d1-9715-30bfb1c95795",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Bag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

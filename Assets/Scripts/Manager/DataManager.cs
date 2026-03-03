@@ -83,6 +83,9 @@ namespace Manager
                 CharacterTeam = new[] { initCharacterId, -1, -1, -1 },
                 CharacterSkillsDict = new Serialized_Dic<int, SkillLearnedDatas>(),
                 CharacterShortcutSkillsDict = new Serialized_Dic<int, ShortcutSkillSlotData>(),
+                CharacterProgressDict = new Serialized_Dic<int, CharacterProgressData>(),
+                ClearedRegionKeys = new Serialized_List<string>(),
+                InventoryItems = new Serialized_Dic<int, int>(),
                 PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>()
             };
 
@@ -413,6 +416,13 @@ namespace Manager
             if (GameData.InventoryItems == null)
             {
                 GameData.InventoryItems = new Serialized_Dic<int, int>();
+                dirty = true;
+            }
+
+            // 向后兼容：旧存档没有持久化掉落字典时自动创建
+            if (GameData.PersistentDrops == null)
+            {
+                GameData.PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>();
                 dirty = true;
             }
 

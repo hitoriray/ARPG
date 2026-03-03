@@ -17,6 +17,8 @@ namespace Item
     /// </summary>
     public class InteractManager : SingletonMono<InteractManager>
     {
+        private const string InventoryDropRequestEvent = "InventoryDropRequest";
+
         private readonly List<WorldDropItem> _nearbyDrops = new();
         private readonly List<string> _nearbyDropNames = new();
         private readonly List<DropGroup> _groupedDrops = new();
@@ -40,6 +42,7 @@ namespace Item
                 inputMap.Player.Scroll.performed += OnScrollPerformed;
             }
             EventSystem.AddEventListener("RequestInteractListUpdate", PublishListUpdate);
+            EventSystem.AddEventListener<ItemConfig, int, Vector3, float>(InventoryDropRequestEvent, OnInventoryDropRequested);
         }
 
         private void OnDisable()
@@ -51,6 +54,7 @@ namespace Item
                 inputMap.Player.Scroll.performed -= OnScrollPerformed;
             }
             EventSystem.RemoveEventListener("RequestInteractListUpdate", PublishListUpdate);
+            EventSystem.RemoveEventListener<ItemConfig, int, Vector3, float>(InventoryDropRequestEvent, OnInventoryDropRequested);
 
             _nearbyDrops.Clear();
             _nearbyDropNames.Clear();
@@ -141,9 +145,9 @@ namespace Item
                 {
                     _selectedIndex = Mathf.Max(0, _nearbyDrops.Count - 1);
                 }
-                
-                if (_nearbyDrops.Count > 0)
-                    PublishListUpdate();
+
+                // 即使列表为空也要推送一次更新，确保 UI 及时清空
+                PublishListUpdate();
             }
         }
 
@@ -195,7 +199,7 @@ namespace Item
                 if (item == null || item.Config == null) continue;
 
                 int take = Mathf.Min(item.Count, remaining);
-                int realAdd = InventoryManager.AddItem(item.Config, take);
+                int realAdd = InventoryManager.AddItem(item.Config, take, false);
                 if (realAdd <= 0) break;
 
                 totalAdded += realAdd;
@@ -214,12 +218,43 @@ namespace Item
 
             if (totalAdded > 0)
             {
+                // 一次拾取可能会吃掉多个同类掉落，合并为一次写盘
+                InventoryManager.FlushSave();
+
                 var ui = UISystem.GetWindow<UI_GameSceneMainWindow>();
                 if (ui != null)
                     ui.ShowPickupNotification(group.Config, totalAdded);
             }
 
             PublishListUpdate();
+        }
+
+        private void OnInventoryDropRequested(ItemConfig config, int amount, Vector3 position, float lockDelay)
+        {
+            if (config == null || amount <= 0) return;
+
+            var dropMgr = LootDropManager.Instance;
+            if (dropMgr == null)
+            {
+                JKLog.Warning("[InventoryDrop] LootDropManager 不存在，无法丢弃到地面。");
+                return;
+            }
+
+            if (!InventoryManager.RemoveItem(config.ItemId, amount, false))
+            {
+                return;
+            }
+
+            bool spawned = dropMgr.SpawnWorldDrop(config, amount, position, lockDelay, null, true);
+            if (!spawned)
+            {
+                InventoryManager.AddItem(config, amount, false);
+                InventoryManager.FlushSave();
+                JKLog.Warning($"[InventoryDrop] 丢弃失败，已回滚物品：{config.ItemName}");
+                return;
+            }
+
+            InventoryManager.FlushSave();
         }
 
         private void RebuildGroups()

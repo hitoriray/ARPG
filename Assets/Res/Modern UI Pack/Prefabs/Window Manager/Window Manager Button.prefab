@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 588878278978651581}
   - component: {fileID: 191643983152938936}
   - component: {fileID: 4155090476224486785}
+  - component: {fileID: 2771928829087788774}
   m_Layer: 5
   m_Name: Window Manager Button
   m_TagString: Untagged
@@ -206,6 +207,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!114 &2771928829087788774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683286952045204035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01fef50de04046448865a6d70ddb9b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Michsky.MUIP::Michsky.MUIP.UIManagerButton
+  outlineMode: 0
+  UIManagerAsset: {fileID: 11400000, guid: 2a619a9609984be49b53b928dd94e61b, type: 2}
+  buttonManager: {fileID: 5999675871749361372}
+  overrideColors: 0
+  overrideFonts: 0
+  disabledBackground: {fileID: 0}
+  normalBackground: {fileID: 0}
+  highlightedBackground: {fileID: 0}
+  disabledIcon: {fileID: 0}
+  normalIcon: {fileID: 0}
+  highlightedIcon: {fileID: 0}
+  disabledText: {fileID: 0}
+  normalText: {fileID: 0}
+  highlightedText: {fileID: 0}
 --- !u!1 &962048851801781373
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,8 +378,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 99.915, y: -25}
-  m_SizeDelta: {x: 79.83, y: 40}
+  m_AnchoredPosition: {x: 88.115, y: -25}
+  m_SizeDelta: {x: 56.23, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7779664013855054819
 CanvasRenderer:
@@ -384,8 +411,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
-  m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
+  m_sharedMaterial: {fileID: -3815846971992120459, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1030,7 +1057,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 79.915, y: -25}
+  m_AnchoredPosition: {x: 68.115, y: -25}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &8169744642677593241
@@ -1156,8 +1183,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 99.915, y: -25}
-  m_SizeDelta: {x: 79.83, y: 40}
+  m_AnchoredPosition: {x: 88.115, y: -25}
+  m_SizeDelta: {x: 56.23, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1291011140747959376
 CanvasRenderer:
@@ -1189,8 +1216,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
-  m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
+  m_sharedMaterial: {fileID: -3815846971992120459, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1407,8 +1434,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 99.915, y: -25}
-  m_SizeDelta: {x: 79.83, y: 40}
+  m_AnchoredPosition: {x: 88.115, y: -25}
+  m_SizeDelta: {x: 56.23, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6060664482735489118
 CanvasRenderer:
@@ -1440,8 +1467,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
-  m_sharedMaterial: {fileID: 21261991626553910, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
+  m_sharedMaterial: {fileID: -3815846971992120459, guid: 8725fd86c86766140b27037d35a8dbd9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

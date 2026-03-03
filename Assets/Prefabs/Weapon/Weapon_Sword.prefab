@@ -57,9 +57,9 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6230328955755202672, guid: af13f63ad05bef34681de37730f5c068, type: 3}
-  - {fileID: -5218332275412373946, guid: af13f63ad05bef34681de37730f5c068, type: 3}
-  - {fileID: 2614315942505720761, guid: af13f63ad05bef34681de37730f5c068, type: 3}
+  - {fileID: 2100000, guid: 5b5601c94bf41074abb856beb111c162, type: 2}
+  - {fileID: -5218332275412373946, guid: 18522e963066a9947b6fcf3fa63d56d5, type: 3}
+  - {fileID: 2100000, guid: 88fc1a1f73a628c4ebdbcce5c786b11f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 2638054190616691136}
   - component: {fileID: -2200928899982320816}
   m_Layer: 0
-  m_Name: Weapon_Prop_R
+  m_Name: Weapon_Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -23,7 +23,7 @@ namespace BT.Actions
 
         protected bool EnsureBoss()
         {
-            return boss != null;
+            return boss != null && !boss.IsDead;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Boss.AI
 
         public override TaskStatus OnUpdate()
         {
-            if (boss == null)
+            if (boss == null || boss.IsDead)
                 return TaskStatus.Failure;
 
             return boss.TryStartSkill(SkillIndex.Value) ? TaskStatus.Success : TaskStatus.Failure;

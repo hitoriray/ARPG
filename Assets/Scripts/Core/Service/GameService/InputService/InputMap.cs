@@ -789,6 +789,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bag"",
+                    ""type"": ""Button"",
+                    ""id"": ""26fdc400-4a95-4602-9bb3-1f4245b95bc0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -923,6 +932,17 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""Alt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dcf2f3e5-ecb1-44d1-9715-30bfb1c95795"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -957,6 +977,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_UI_TouchPosition = m_UI.FindAction("TouchPosition", throwIfNotFound: true);
         m_UI_TouchDelta = m_UI.FindAction("TouchDelta", throwIfNotFound: true);
         m_UI_Alt = m_UI.FindAction("Alt", throwIfNotFound: true);
+        m_UI_Bag = m_UI.FindAction("Bag", throwIfNotFound: true);
     }
 
     ~@InputMap()
@@ -1198,6 +1219,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TouchPosition;
     private readonly InputAction m_UI_TouchDelta;
     private readonly InputAction m_UI_Alt;
+    private readonly InputAction m_UI_Bag;
     public struct UIActions
     {
         private @InputMap m_Wrapper;
@@ -1210,6 +1232,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         public InputAction @TouchPosition => m_Wrapper.m_UI_TouchPosition;
         public InputAction @TouchDelta => m_Wrapper.m_UI_TouchDelta;
         public InputAction @Alt => m_Wrapper.m_UI_Alt;
+        public InputAction @Bag => m_Wrapper.m_UI_Bag;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1243,6 +1266,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Alt.started += instance.OnAlt;
             @Alt.performed += instance.OnAlt;
             @Alt.canceled += instance.OnAlt;
+            @Bag.started += instance.OnBag;
+            @Bag.performed += instance.OnBag;
+            @Bag.canceled += instance.OnBag;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1271,6 +1297,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Alt.started -= instance.OnAlt;
             @Alt.performed -= instance.OnAlt;
             @Alt.canceled -= instance.OnAlt;
+            @Bag.started -= instance.OnBag;
+            @Bag.performed -= instance.OnBag;
+            @Bag.canceled -= instance.OnBag;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1317,5 +1346,6 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         void OnTouchPosition(InputAction.CallbackContext context);
         void OnTouchDelta(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
+        void OnBag(InputAction.CallbackContext context);
     }
 }
