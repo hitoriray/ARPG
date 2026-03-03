@@ -25,6 +25,9 @@ MonoBehaviour:
   RunSpeed: 9
   Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
+  MoveStartTurnSpeed: 1.8
+  MoveLoopTurnSpeed: 1.4
+  LockTurnSpeed: 5
   ApplyRootMotionForMove: 1
   ControllerProfile:
     height: 1.56
@@ -35,7 +38,8 @@ MonoBehaviour:
     groundRadius: 0.2
     groundDetectedOffset: -0.06
   Avatar: {fileID: 9000000, guid: 417b718d8d3a8734fb3fc2d5d9c127eb, type: 3}
-  PlayerSO: {fileID: 11400000, guid: 1e23ed64afef95e42b2418e18a9619f9, type: 2}
+  PlayerSO: {fileID: 11400000, guid: 99e2ea24fd0ddcb46a2bf3f325a404fc, type: 2}
+  GenericLocomotionConfig: {fileID: 11400000, guid: fe0ae3ae3390a7c4e881618db6686a74, type: 2}
   FootStepAudioClips:
   - {fileID: 8300000, guid: f7730f403e3ed3848a39f5f4d41c30a8, type: 3}
   - {fileID: 8300000, guid: c5212058eaf72594dbb061ac4573773b, type: 3}
@@ -53,3 +57,5 @@ MonoBehaviour:
   hpBaseValue: 1000
   mpBaseValue: 500
   attackBaseValue: 100
+  defenseBaseValue: 0
+  LevelGrowthConfig: {fileID: 0}

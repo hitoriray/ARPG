@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Config;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -75,6 +76,7 @@ namespace SkillEditor
         /// </summary>
         private void AddChildTrack()
         {
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             SkillEffectEvent effectEvent = new();
             EffectData.FrameData.Add(effectEvent);
             CreateEffectTrackItem(effectEvent);
@@ -92,6 +94,7 @@ namespace SkillEditor
                 return false;
             if (EffectData.FrameData[index] == null)
                 return false;
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             EffectData.FrameData.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
             trackItemList[index].CleanupEffectPrefabObject();
@@ -112,11 +115,19 @@ namespace SkillEditor
         
         public override void DeleteTrackItem(int frameIndex)
         {
-            // AnimationData.FrameData.Remove(frameIndex);
-            // if (trackItemDict.Remove(frameIndex, out var trackItem))
-            // {
-            //     trackStyle.RemoveItem(trackItem.ItemStyle.Root);
-            // }
+            for (int i = 0; i < trackItemList.Count; i++)
+            {
+                if (trackItemList[i].EffectEvent.FrameIndex == frameIndex)
+                {
+                    SkillEditorWindow.Instance.RecordUndoSnapshot();
+                    EffectData.FrameData.RemoveAt(i);
+                    trackItemList[i].CleanupEffectPrefabObject();
+                    trackItemList[i].Destroy();
+                    trackItemList.RemoveAt(i);
+                    SkillEditorWindow.Instance.SaveSkillConfig();
+                    return;
+                }
+            }
         }
         
         public override void Destroy()

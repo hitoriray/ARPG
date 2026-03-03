@@ -371,9 +371,18 @@ namespace SkillEditor
                 startDrawOffset = skillEditorConfig.currentFrameUnitWidth -
                                   ContentOffsetPosX % skillEditorConfig.currentFrameUnitWidth;
 
-            int tickStep = SkillEditorConfig.maxFrameWidthLv + 1 - (skillEditorConfig.currentFrameUnitWidth / SkillEditorConfig.defaultFrameUnitWidth);
-            tickStep /= 2;
-            if (tickStep == 0) tickStep = 1; // 避免为0
+            // 动态计算刻度标签间隔：目标约 60px 显示一个数字，防止标签重叠
+            const float targetLabelSpacingPx = 60f;
+            int rawStep = Mathf.Max(1, Mathf.CeilToInt(targetLabelSpacingPx / skillEditorConfig.currentFrameUnitWidth));
+            // 取整到「好看」的步进：1 2 5 10 20 50 100 ...
+            int tickStep = 1;
+            int[] niceSteps = { 1, 2, 5, 10, 20, 50, 100, 200, 500 };
+            foreach (int s in niceSteps)
+            {
+                tickStep = s;
+                if (s >= rawStep) break;
+            }
+
             for (float i = startDrawOffset; i < rect.width; i += skillEditorConfig.currentFrameUnitWidth)
             {
                 if (index % tickStep == 0)
@@ -398,7 +407,7 @@ namespace SkillEditor
             int delta = (int)evt.delta.y;
             skillEditorConfig.currentFrameUnitWidth = Mathf.Clamp(
                 skillEditorConfig.currentFrameUnitWidth - delta,
-                SkillEditorConfig.defaultFrameUnitWidth,
+                SkillEditorConfig.minFrameUnitWidth,
                 SkillEditorConfig.maxFrameWidthLv * SkillEditorConfig.defaultFrameUnitWidth);
         
             UpdateTimerShaftView();
@@ -543,6 +552,86 @@ namespace SkillEditor
         private SkillClip skillClip;
         public SkillClip SkillClip => skillClip;
         private SkillEditorConfig skillEditorConfig = new();
+        
+        // ====== 手动 Undo 栈 ======
+        private const int MaxUndoSteps = 20;
+        private readonly Stack<byte[]> undoStack = new();
+
+        /// <summary>
+        /// 在所有修改 SkillClip Odin 数据的操作前调用，快照当前状态
+        /// </summary>
+        public void RecordUndoSnapshot()
+        {
+            if (skillClip == null) return;
+            // 将全部 Odin 字段打包并序列化
+            var snap = new SkillClipSnapshot
+            {
+                FrameCount          = skillClip.FrameCount,
+                AnimationData       = skillClip.SkillAnimationData,
+                AudioData           = skillClip.SkillAudioData,
+                EffectData          = skillClip.SkillEffectData,
+                AttackDetectionData = skillClip.SkillAttackDetectionData,
+                CustomEventData     = skillClip.SkillCustomEventData,
+            };
+            byte[] bytes = Sirenix.Serialization.SerializationUtility.SerializeValue(snap, Sirenix.Serialization.DataFormat.Binary);
+            undoStack.Push(bytes);
+            // 限制栈深度
+            if (undoStack.Count > MaxUndoSteps)
+            {
+                var arr = undoStack.ToArray();
+                undoStack.Clear();
+                for (int i = MaxUndoSteps - 1; i >= 0; i--)
+                    undoStack.Push(arr[i]);
+            }
+        }
+
+        /// <summary>
+        /// 执行 Undo：还原最近一次快照并刷新视图
+        /// </summary>
+        private void PerformUndo()
+        {
+            if (skillClip == null || undoStack.Count == 0) return;
+            byte[] bytes = undoStack.Pop();
+            var snap = Sirenix.Serialization.SerializationUtility.DeserializeValue<SkillClipSnapshot>(bytes, Sirenix.Serialization.DataFormat.Binary);
+            // 将快照数据写回 skillClip
+            skillClip.FrameCount                  = snap.FrameCount;
+            skillClip.SkillAnimationData          = snap.AnimationData;
+            skillClip.SkillAudioData              = snap.AudioData;
+            skillClip.SkillEffectData             = snap.EffectData;
+            skillClip.SkillAttackDetectionData    = snap.AttackDetectionData;
+            skillClip.SkillCustomEventData        = snap.CustomEventData;
+            // 刷新帧数显示
+            currentFrameCount = skillClip.FrameCount;
+            FrameCountField.value = currentFrameCount;
+            UpdateContentSize();
+            // 刷新轨道 UI
+            DestroyTracks();
+            InitTrack();
+            TickSkill();
+            // 持久化到磁盘
+            EditorUtility.SetDirty(skillClip);
+            AssetDatabase.SaveAssetIfDirty(skillClip);
+        }
+
+        /// <summary>
+        /// 用于序列化/反序列化的快照结构体（必须加 [Serializable] +  Odin 字段）
+        /// </summary>
+        [System.Serializable]
+        private class SkillClipSnapshot
+        {
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public int FrameCount;
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public Config.SkillAnimationData AnimationData;
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public Config.SkillAudioData AudioData;
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public Config.SkillEffectData EffectData;
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public Config.SkillAttackDetectionData AttackDetectionData;
+            [Sirenix.Serialization.OdinSerialize, System.NonSerialized]
+            public Config.SkillCustomEventData CustomEventData;
+        }
 
         public void SaveSkillConfig()
         {
@@ -715,19 +804,30 @@ namespace SkillEditor
 
         private void Update()
         {
+            // Ctrl+Z \u89e6\u53d1\u624b\u52a8 Undo\uff08\u4ec5\u5728\u672a\u64ad\u653e\u65f6\uff09
+            if (!IsPlaying && Event.current != null &&
+                Event.current.type == EventType.KeyDown &&
+                Event.current.keyCode == KeyCode.Z &&
+                (Event.current.control || Event.current.command))
+            {
+                PerformUndo();
+                Event.current.Use();
+            }
+
             if (IsPlaying)
             {
-                // 得到时间差
+                // \u5f97\u5230\u65f6\u95f4\u5dee
                 float dt = (float)DateTime.Now.Subtract(startTime).TotalSeconds;
-                // 确定时间轴的帧率
+                // \u786e\u5b9a\u65f6\u95f4\u8f74\u7684\u5e27\u7387
                 float frameRate;
                 if (skillClip != null) frameRate = skillClip.FrameRate;
                 else frameRate = skillEditorConfig.defaultFrameRate;
-                // 根据时间差计算当前的选中帧
+                // \u6839\u636e\u65f6\u95f4\u5dee\u8ba1\u7b97\u5f53\u524d\u7684\u9009\u4e2d\u5e27
                 CurrentSelectFrameIndex = (int)(dt * frameRate + startFrameIndex);
-                // 到达最后一帧自动暂停
-                if (CurrentSelectFrameIndex == CurrentFrameCount)
+                // \u5230\u8fbe\u6700\u540e\u4e00\u5e27\u81ea\u52a8\u6682\u505c\uff0c\u5e76\u56de\u5230\u8d77\u59cb\u5e27
+                if (CurrentSelectFrameIndex >= CurrentFrameCount)
                 {
+                    CurrentSelectFrameIndex = startFrameIndex;
                     IsPlaying = false;
                 }
             }
@@ -780,6 +880,7 @@ namespace SkillEditor
 
     public class SkillEditorConfig
     {
+        public const int minFrameUnitWidth = 3;     // 允许缩放到最小 3px/帧
         public const int defaultFrameUnitWidth = 10;
         public const int maxFrameWidthLv = 10;
         public int currentFrameUnitWidth = 10;

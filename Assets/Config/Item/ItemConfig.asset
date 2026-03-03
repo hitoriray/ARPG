@@ -25,8 +25,8 @@ MonoBehaviour:
   HpRestore: 200
   MpRestore: 0
   ExpGain: 0
-  SpawnAsWorldDrop: 0
-  AutoPickup: 1
-  PickupRadius: 1
+  SpawnAsWorldDrop: 1
+  AutoPickup: 0
+  PickupRadius: 2
   WorldDropPrefab: {fileID: 6388237123063429627, guid: 59a252485097bd247a70f7f2ef839ec1, type: 3}
   WorldDropLifetime: -1

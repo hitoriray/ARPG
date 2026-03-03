@@ -24,11 +24,11 @@ MonoBehaviour:
     SerializationNodes:
     - Name: SkillAnimationData
       Entry: 7
-      Data: 0|Config.SkillAnimationData, Assembly-CSharp
+      Data: 0|Config.SkillAnimationData, ARPG.Core
     - Name: FrameData
       Entry: 7
       Data: 1|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillAnimationEvent,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 2|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
@@ -47,7 +47,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 3|Config.SkillAnimationEvent, Assembly-CSharp
+      Data: 3|Config.SkillAnimationEvent, ARPG.Core
     - Name: AnimationClip
       Entry: 10
       Data: 0
@@ -80,10 +80,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillAudioData
       Entry: 7
-      Data: 4|Config.SkillAudioData, Assembly-CSharp
+      Data: 4|Config.SkillAudioData, ARPG.Core
     - Name: FrameData
       Entry: 7
-      Data: 5|System.Collections.Generic.List`1[[Config.SkillAudioEvent, Assembly-CSharp]],
+      Data: 5|System.Collections.Generic.List`1[[Config.SkillAudioEvent, ARPG.Core]],
         mscorlib
     - Name: 
       Entry: 12
@@ -99,10 +99,10 @@ MonoBehaviour:
       Data: 
     - Name: SkillEffectData
       Entry: 7
-      Data: 6|Config.SkillEffectData, Assembly-CSharp
+      Data: 6|Config.SkillEffectData, ARPG.Core
     - Name: FrameData
       Entry: 7
-      Data: 7|System.Collections.Generic.List`1[[Config.SkillEffectEvent, Assembly-CSharp]],
+      Data: 7|System.Collections.Generic.List`1[[Config.SkillEffectEvent, ARPG.Core]],
         mscorlib
     - Name: 
       Entry: 12
@@ -118,11 +118,11 @@ MonoBehaviour:
       Data: 
     - Name: SkillAttackDetectionData
       Entry: 7
-      Data: 8|Config.SkillAttackDetectionData, Assembly-CSharp
+      Data: 8|Config.SkillAttackDetectionData, ARPG.Core
     - Name: FrameData
       Entry: 7
       Data: 9|System.Collections.Generic.List`1[[Config.SkillAttackDetectionEvent,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -137,11 +137,11 @@ MonoBehaviour:
       Data: 
     - Name: SkillCustomEventData
       Entry: 7
-      Data: 10|Config.SkillCustomEventData, Assembly-CSharp
+      Data: 10|Config.SkillCustomEventData, ARPG.Core
     - Name: FrameData
       Entry: 7
       Data: 11|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[Config.SkillCustomEvent,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: comparer
       Entry: 9
       Data: 2
@@ -156,7 +156,7 @@ MonoBehaviour:
       Data: 30
     - Name: $v
       Entry: 7
-      Data: 12|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 12|Config.SkillCustomEvent, ARPG.Core
     - Name: EventType
       Entry: 3
       Data: 1
@@ -189,7 +189,7 @@ MonoBehaviour:
       Data: 36
     - Name: $v
       Entry: 7
-      Data: 13|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 13|Config.SkillCustomEvent, ARPG.Core
     - Name: EventType
       Entry: 3
       Data: 2
@@ -222,7 +222,7 @@ MonoBehaviour:
       Data: 0
     - Name: $v
       Entry: 7
-      Data: 14|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 14|Config.SkillCustomEvent, ARPG.Core
     - Name: EventType
       Entry: 3
       Data: 3
@@ -255,7 +255,7 @@ MonoBehaviour:
       Data: 4
     - Name: $v
       Entry: 7
-      Data: 15|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 15|Config.SkillCustomEvent, ARPG.Core
     - Name: EventType
       Entry: 3
       Data: 4
@@ -288,7 +288,7 @@ MonoBehaviour:
       Data: 35
     - Name: $v
       Entry: 7
-      Data: 16|Config.SkillCustomEvent, Assembly-CSharp
+      Data: 16|Config.SkillCustomEvent, ARPG.Core
     - Name: EventType
       Entry: 3
       Data: 8

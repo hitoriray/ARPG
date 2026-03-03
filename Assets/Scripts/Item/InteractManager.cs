@@ -75,7 +75,6 @@ namespace Item
 
             if (_groupedDrops.Count == 0)
             {
-                UISystem.Close<UI_InteractListWindow>();
                 _selectedIndex = 0;
             }
             else
@@ -126,7 +125,7 @@ namespace Item
                 
                 if (wasEmpty)
                 {
-                    UISystem.Show<UI_InteractListWindow>();
+                    // UISystem.Show<UI_InteractListWindow>();
                 }
                 
                 PublishListUpdate();
@@ -143,14 +142,8 @@ namespace Item
                     _selectedIndex = Mathf.Max(0, _nearbyDrops.Count - 1);
                 }
                 
-                if (_nearbyDrops.Count == 0)
-                {
-                    UISystem.Close<UI_InteractListWindow>();
-                }
-                else
-                {
+                if (_nearbyDrops.Count > 0)
                     PublishListUpdate();
-                }
             }
         }
 

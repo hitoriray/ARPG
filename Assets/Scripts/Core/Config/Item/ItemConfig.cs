@@ -19,7 +19,7 @@ namespace Config
     /// 创建路径：Create → Config/Item/ItemConfig
     /// </summary>
     [CreateAssetMenu(fileName = "ItemConfig", menuName = "Config/Item/ItemConfig")]
-    public class ItemConfig : ScriptableObject
+    public class ItemConfig : ScriptableObject 
     {
         [LabelText("物品ID（唯一）")]
         public int ItemId;

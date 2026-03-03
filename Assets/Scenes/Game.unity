@@ -3039,11 +3039,6 @@ MeshRenderer:
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &858380144 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5647307152969126730, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-  m_PrefabInstance: {fileID: 5647307153343587761}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &880078895
 GameObject:
   m_ObjectHideFlags: 0
@@ -7054,46 +7049,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1057226959}
     m_Modifications:
-    - target: {fileID: 2135552321451007829, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: m_Radius
-      value: 0.42
+    - target: {fileID: 1562128240682588771, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_Avatar
+      value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2135552321451007829, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: m_Center.y
-      value: 0.66
+    - target: {fileID: 1562128240682588771, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_Controller
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5647307152969126730, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5647307152969126730, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: itemConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 83f6c8d57a5aca8468d81e7a94aba81a, type: 2}
-    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: skillInput
-      value: 
-      objectReference: {fileID: 5647307153343587771}
-    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: skillLayerIndex
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: cameraController
       value: 
       objectReference: {fileID: 561894228}
-    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: skillLayerFadeOut
-      value: 0.231
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: whatIsGround.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
     - target: {fileID: 5647307152969126733, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7138,64 +7109,30 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-    - target: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: attackDetectionLayer.m_Bits
-      value: 512
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: serializationData.PrefabModifications.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647307152969126734, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      propertyPath: 'serializationData.PrefabModifications.Array.data[0]'
-      value: '"path":"weaponDict","add_keys":null,"remove_keys":{"$id":0,"$type":"System.Object[],
-        mscorlib","$rlength":1,"$rcontent":[{"$id":1,"$type":"System.String, mscorlib","Weapon1"}]}'
-      objectReference: {fileID: 0}
     - target: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 6774350916955439809, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+    - target: {fileID: 6931894342885324032, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5647307152969126730, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5647307153343587771}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
 --- !u!114 &5647307153343587763 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5647307152969126732, guid: 82f11f29b4b268247af0eaa7c756f46e, type: 3}
   m_PrefabInstance: {fileID: 5647307153343587761}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 858380144}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d57865642c3d3424ba1f1a2d70123730, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5647307153343587771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 858380144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c0f4f44231840eeaa7cd5a5167f3c87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basicAttack:
-    skillIndex: 0
-    action: {fileID: 2452260458797075928, guid: 68e18222ff7f82e4d86f998fa64cc740, type: 3}
-    useBuffer: 1
-    bufferTime: 0.2
-  skills:
-  - skillIndex: 1
-    action: {fileID: -767746484034474775, guid: 68e18222ff7f82e4d86f998fa64cc740, type: 3}
-    useBuffer: 1
-    bufferTime: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

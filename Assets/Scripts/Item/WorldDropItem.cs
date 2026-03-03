@@ -15,6 +15,7 @@ namespace Item
         public ItemConfig Config    { get; private set; }
         public int        Count    { get; private set; }
         public Entity     Entity   { get; private set; }
+        public string     PersistentGuid { get; set; }
 
         /// <summary>手动拾取时：玩家是否处于拾取范围内</summary>
         public bool PlayerNearby  { get; set; }
@@ -74,7 +75,6 @@ namespace Item
             if (Config == null || Config.AutoPickup) return;
             if (!other.CompareTag("Player")) return;
             
-            Debug.Log($"[WorldDropItem] 玩家进入拾取范围: {Config.ItemName}");
             PlayerNearby = true;
             InteractManager.Instance?.RegisterDropItem(this);
         }
@@ -84,7 +84,6 @@ namespace Item
             if (Config == null || Config.AutoPickup) return;
             if (!other.CompareTag("Player")) return;
             
-            Debug.Log($"[WorldDropItem] 玩家离开拾取范围: {Config.ItemName}");
             PlayerNearby = false;
             InteractManager.Instance?.UnregisterDropItem(this);
         }
@@ -97,6 +96,7 @@ namespace Item
             Config       = null;
             Count        = 0;
             Entity       = Entity.Null;
+            PersistentGuid = null;
             PlayerNearby = false;
             if (_rb != null) _rb.isKinematic = true;
         }

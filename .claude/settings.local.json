@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__sequential-thinking__sequentialthinking",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "mcp__ace-tool__search_context",
+      "Bash(curl:*)"
     ]
   }
 }

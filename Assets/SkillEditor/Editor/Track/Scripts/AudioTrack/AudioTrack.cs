@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Config;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace SkillEditor
@@ -62,6 +63,7 @@ namespace SkillEditor
         /// </summary>
         private void AddChildTrack()
         {
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             SkillAudioEvent audioEvent = new();
             AudioData.FrameData.Add(audioEvent);
             CreateAudioTrackItem(audioEvent);
@@ -79,6 +81,7 @@ namespace SkillEditor
                 return false;
             if (AudioData.FrameData[index] == null)
                 return false;
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             AudioData.FrameData.RemoveAt(index);
             trackItemList.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();

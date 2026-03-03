@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Config;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace SkillEditor
@@ -28,6 +29,7 @@ namespace SkillEditor
             // 换位置
             if (EventTrackItem.currentSelectedItem != null)
             {
+                SkillEditorWindow.Instance.RecordUndoSnapshot();
                 EventTrackItem.currentSelectedItem.ChangeFrameIndex(frameIndex);
             }
             // 添加轨道
@@ -36,6 +38,7 @@ namespace SkillEditor
                 // 双击左键才允许新增
                 if (evt.button != 0 || evt.clickCount < 2)
                     return;
+                SkillEditorWindow.Instance.RecordUndoSnapshot();
                 SkillCustomEvent skillCustomEvent = new SkillCustomEvent();
                 CustomEventData.FrameData.Add(frameIndex, skillCustomEvent);
                 SkillEditorWindow.Instance.SaveSkillConfig();
@@ -89,6 +92,7 @@ namespace SkillEditor
         #region 重载方法
         public override void DeleteTrackItem(int frameIndex)
         {
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             CustomEventData.FrameData.Remove(frameIndex);
             if (trackItemDict.Remove(frameIndex, out var trackItem))
             {

@@ -83,6 +83,7 @@ namespace Manager
                 CharacterTeam = new[] { initCharacterId, -1, -1, -1 },
                 CharacterSkillsDict = new Serialized_Dic<int, SkillLearnedDatas>(),
                 CharacterShortcutSkillsDict = new Serialized_Dic<int, ShortcutSkillSlotData>(),
+                PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>()
             };
 
             GameData.UnlockedCharacterIds.List.Add(initCharacterId);
@@ -283,6 +284,7 @@ namespace Manager
             }
 
             data.Experience += expGain;
+            OnExpGained?.Invoke(characterId, data.Experience, growthConfig.GetExpRequiredForNextLevel(data.Level));
 
             // 结算升级
             bool leveledUp = false;
@@ -339,6 +341,11 @@ namespace Manager
         /// UI 层订阅此事件来播放升级特效、刷新属性面板等。
         /// </summary>
         public static event System.Action<int, int> OnLevelUp;
+
+        /// <summary>
+        /// 赋予经验时触发（characterId, currentExp, expToNextLevel）。
+        /// </summary>
+        public static event System.Action<int, long, long> OnExpGained;
 
         #endregion
 

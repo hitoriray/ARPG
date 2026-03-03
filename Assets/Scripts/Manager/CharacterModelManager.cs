@@ -85,10 +85,13 @@ namespace Manager
         /// </summary>
         public async UniTask<CharacterConfig> LoadCharacterConfigAsync(int characterId)
         {
-            // 如果已经加载，直接返回
+            // 如果已经加载且 handle 有效，直接返回
             if (_loadedConfigs.TryGetValue(characterId, out var existingHandle))
             {
-                return existingHandle.Result;
+                if (existingHandle.IsValid() && existingHandle.Status == AsyncOperationStatus.Succeeded)
+                    return existingHandle.Result;
+
+                _loadedConfigs.Remove(characterId);
             }
 
             var entry = _characterTable.GetCharacterById(characterId);

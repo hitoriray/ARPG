@@ -55,6 +55,12 @@ namespace Manager
             // 初始化ECS并注册玩家
             var ecsRunner = BattleEcsRunner.Ensure();
             ecsRunner.RegisterCharacter(PlayerManager.Instance.player);
+            
+            // 恢复当前场景所有无限时长掉落物
+            if (Manager.LootDropManager.Instance != null)
+            {
+                Manager.LootDropManager.Instance.RestoreScenePersistentDrops();
+            }
         }
 
         private void OnDestroy()

@@ -5,6 +5,7 @@ using Arch.Core.Extensions;
 using Arch.Extend.System;
 using Battle.ECS.Component;
 using Config;
+using Data;
 using Item;
 using FixMath;
 using JKFrame;
@@ -90,10 +91,27 @@ namespace Manager
         /// 在世界中生成掉落物（ECS Entity + GO）。
         /// 由 DropOnDeath 调用。
         /// </summary>
-        public void SpawnWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay = -1f)
+        public void SpawnWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay = -1f, string existingGuid = null)
         {
             if (config == null || !config.SpawnAsWorldDrop) return;
+            if (count <= 0) return;
 
+            // 检查堆叠：如果最大堆叠数为 1（不可堆叠），且请求生成数量 > 1，则拆解为多个实体
+            if (config.MaxStackCount <= 1 && count > 1)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    SpawnSingleWorldDrop(config, 1, position, lockDelay, existingGuid);
+                }
+            }
+            else
+            {
+                SpawnSingleWorldDrop(config, count, position, lockDelay, existingGuid);
+            }
+        }
+
+        private void SpawnSingleWorldDrop(ItemConfig config, int count, Vector3 position, float lockDelay, string existingGuid)
+        {
             var prefab = config.WorldDropPrefab != null ? config.WorldDropPrefab : _defaultDropPrefab;
             if (prefab == null)
             {
@@ -121,6 +139,27 @@ namespace Manager
             if (item == null) item = go.AddComponent<WorldDropItem>();
             item.Init(config, count, entity);
 
+            // 【存档检查】：如果世界掉落生命周期是 -1（无限），我们需要将其记录
+            if (config.WorldDropLifetime < 0)
+            {
+                if (string.IsNullOrEmpty(existingGuid))
+                {
+                    // 这是一个全新生成的无限期掉落物，存入存档
+                    string newGuid = System.Guid.NewGuid().ToString();
+                    item.PersistentGuid = newGuid;
+                    SavePersistentDrop(newGuid, config.ItemId, count, position);
+                }
+                else
+                {
+                    // 这是一个从存档恢复的掉落物
+                    item.PersistentGuid = existingGuid;
+                }
+            }
+            else
+            {
+                item.PersistentGuid = null;
+            }
+
             // 手动拾取列表由触发器进出范围注册/注销，避免远距离就显示 UI
             item.ApplyBounceForce(lockDelay);
         }
@@ -143,10 +182,16 @@ namespace Manager
             if (!item.Config.AutoPickup)
                 InteractManager.Instance?.UnregisterDropItem(item);
 
+            // 如果是持久化掉落物，拾取后要从存档中移除
+            if (!string.IsNullOrEmpty(item.PersistentGuid))
+            {
+                RemovePersistentDrop(item.PersistentGuid);
+            }
+
             DestroyDrop(item);
         }
 
-        // ── 内部逻辑 ──────────────────────────────────────────
+        // ── 存档操作 ──────────────────────────────────────────
 
         private void TickLifetimes()
         {
@@ -233,6 +278,70 @@ namespace Manager
         public void RemoveDrop(WorldDropItem item)
         {
             DestroyDrop(item);
+        }
+
+        // ── 无限期掉落物持久化操作 ──────────────────────────────
+
+        private void SavePersistentDrop(string guid, int itemId, int count, Vector3 pos)
+        {
+            if (DataManager.GameData == null || DataManager.GameData.PersistentDrops == null) return;
+
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (!DataManager.GameData.PersistentDrops.Dictionary.TryGetValue(sceneName, out var list))
+            {
+                list = new Serialized_List<PersistentDropData>();
+                DataManager.GameData.PersistentDrops.Dictionary[sceneName] = list;
+            }
+
+            list.List.Add(new PersistentDropData
+            {
+                Guid = guid,
+                ItemId = itemId,
+                Count = count,
+                Position = pos
+            });
+
+            DataManager.SaveGameData();
+        }
+
+        private void RemovePersistentDrop(string guid)
+        {
+            if (DataManager.GameData == null || DataManager.GameData.PersistentDrops == null) return;
+
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (DataManager.GameData.PersistentDrops.Dictionary.TryGetValue(sceneName, out var list))
+            {
+                int removed = list.List.RemoveAll(d => d.Guid == guid);
+                if (removed > 0)
+                {
+                    DataManager.SaveGameData();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 在主场景加载完毕后，由场景管理器或启动器调用，用来复原场景满地的持久化掉落物
+        /// </summary>
+        public void RestoreScenePersistentDrops()
+        {
+            if (DataManager.GameData == null || DataManager.GameData.PersistentDrops == null) return;
+
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (DataManager.GameData.PersistentDrops.Dictionary.TryGetValue(sceneName, out var list))
+            {
+                var itemTable = ResSystem.LoadAsset<ItemTable>("ItemTable");
+                if (itemTable == null) return;
+
+                foreach (var data in list.List)
+                {
+                    var config = itemTable.Items.Find(i => i.ItemId == data.ItemId);
+                    if (config != null)
+                    {
+                        // 设为 lockDelay 0 是因为恢复出的不应该再重新播放弹跳效果
+                        SpawnWorldDrop(config, data.Count, data.Position, 0f, data.Guid);
+                    }
+                }
+            }
         }
     }
 }

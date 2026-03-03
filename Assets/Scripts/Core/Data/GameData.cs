@@ -25,6 +25,8 @@ namespace Data
         public Serialized_List<string> ClearedRegionKeys;
         // 背包：物品ID → 持有数量
         public Serialized_Dic<int, int> InventoryItems;
+        // 无限期掉落物：场景名称 → 掉落物列表
+        public Serialized_Dic<string, Serialized_List<PersistentDropData>> PersistentDrops;
     }
 
     /// <summary>
@@ -58,6 +60,18 @@ namespace Data
     public class ShortcutSkillSlotData
     {
         public int[] skillIds; // -1代表空格子，其他代表技能索引
+    }
+
+    /// <summary>
+    /// 持久化掉落物数据（无限时长）
+    /// </summary>
+    [Serializable]
+    public class PersistentDropData
+    {
+        public string Guid;
+        public int    ItemId;
+        public int    Count;
+        public Serialized_Vector3 Position;
     }
 
     [Serializable]

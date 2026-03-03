@@ -24,7 +24,7 @@ namespace Editor.BattleDebug
         private bool autoRefresh = true;
         private double lastRefreshTime;
 
-        [MenuItem("游戏工具/战斗调试/Buff调试")]
+        [MenuItem("Tools/战斗调试/Buff调试")]
         public static void ShowWindow()
         {
             var window = GetWindow<BuffDebugWindow>("Buff调试");

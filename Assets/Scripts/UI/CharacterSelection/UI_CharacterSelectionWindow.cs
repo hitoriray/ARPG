@@ -249,6 +249,7 @@ namespace UI
             var config = await CharacterModelManager.Instance.LoadCharacterConfigAsync(characterId);
             if (config != null)
             {
+                bool previewPlayed = false;
                 var animancer = _currentPreviewModel.GetComponent<AnimancerComponent>();
                 if (animancer == null)
                     animancer = _currentPreviewModel.AddComponent<AnimancerComponent>();
@@ -257,6 +258,28 @@ namespace UI
                 if (config.PlayerSO != null)
                 {
                     await animancer.Play(config.PlayerSO.playerMovementData.PlayerIdleData.idle);
+                    previewPlayed = true;
+                }
+                else if (config.GenericLocomotionConfig != null)
+                {
+                    var animator = animancer.Animator != null ? animancer.Animator : _currentPreviewModel.GetComponent<Animator>();
+                    if (animator != null)
+                    {
+                        if (config.GenericLocomotionConfig.avatar != null)
+                            animator.avatar = config.GenericLocomotionConfig.avatar;
+                        if (config.GenericLocomotionConfig.animatorController != null)
+                            animator.runtimeAnimatorController = config.GenericLocomotionConfig.animatorController;
+                        animator.applyRootMotion = false;
+                        animator.Play(0, 0, 0f);
+                        previewPlayed = true;
+                    }
+                }
+
+                if (!previewPlayed)
+                {
+                    var animator = _currentPreviewModel.GetComponent<Animator>();
+                    if (animator != null)
+                        animator.Play(0, 0, 0f);
                 }
                 // 更新属性显示
                 UpdateAttributeDisplay(config);

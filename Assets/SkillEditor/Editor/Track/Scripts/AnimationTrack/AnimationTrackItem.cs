@@ -1,4 +1,5 @@
 ﻿using Config;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -136,6 +137,7 @@ namespace SkillEditor
             if (startDragFrameIndex == frameIndex)
                 return;
             
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             track.SetFrameIndex(startDragFrameIndex, frameIndex);
             SkillEditorInspector.Instance.SetTrackItemFrameIndex(frameIndex);
         }
@@ -153,7 +155,10 @@ namespace SkillEditor
 
         public override void OnConfigChanged()
         {
-            animationEvent = track.AnimationData.FrameData[frameIndex];
+            // Undo 后字典可能已回滚，frameIndex 不一定存在
+            // 跳过即可，视图会在后续 ResetTrack 中完整重建
+            if (track.AnimationData.FrameData.TryGetValue(frameIndex, out var evt))
+                animationEvent = evt;
         }
     }
 }

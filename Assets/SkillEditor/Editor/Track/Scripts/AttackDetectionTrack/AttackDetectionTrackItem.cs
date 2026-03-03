@@ -121,6 +121,7 @@ namespace SkillEditor
             if (startDragFrameIndex == frameIndex)
                 return;
             
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             attackDetectionEvent.FrameIndex = frameIndex;
             SkillEditorInspector.Instance.SetTrackItemFrameIndex(frameIndex);
         }

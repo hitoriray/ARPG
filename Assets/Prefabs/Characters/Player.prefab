@@ -17,7 +17,8 @@ GameObject:
   - component: {fileID: 1562128240682588771}
   - component: {fileID: 2135552321451007829}
   - component: {fileID: 6931894342885324032}
-  m_Layer: 0
+  - component: {fileID: 70284939366669095}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -55,18 +56,22 @@ MonoBehaviour:
   velocityLimit: {x: -20, y: 60}
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 128
+  groundDetectionRadius: 1.2
+  groundDetectionOffset: -0.06
   moveSpeedMultiplier: 1
   characterConfig: {fileID: 0}
   playerSO: {fileID: 0}
+  itemConfig: {fileID: 0}
   playerView: {fileID: 0}
   skillBrain: {fileID: 5647307152969126577}
-  skillInput: {fileID: 0}
+  skillInput: {fileID: 70284939366669095}
   characterAttribute: {fileID: 6774350916955439809}
   weaponSlotManager: {fileID: 4339006056208149499}
   cameraController: {fileID: 0}
   skillLayerIndex: 1
   upperBodyMask: {fileID: 0}
+  skillLayerFadeOut: 0.231
 --- !u!114 &5647307152969126734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,7 +96,7 @@ MonoBehaviour:
     - Name: weaponDict
       Entry: 7
       Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[Skill.WeaponController,
-        Assembly-CSharp]], mscorlib
+        ARPG.Battle]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
@@ -108,9 +113,10 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  minClipFadeTime: 0.08
   attackDetectionLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   drawAttackDetectionGizmos: 1
 --- !u!114 &5647307152969126577
 MonoBehaviour:
@@ -148,7 +154,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: maxHp
       Entry: 7
-      Data: 0|Attribute.FloatAttr, Assembly-CSharp
+      Data: 0|Attribute.FloatAttr, ARPG.Battle
     - Name: baseValue
       Entry: 4
       Data: 0
@@ -163,7 +169,7 @@ MonoBehaviour:
       Data: 
     - Name: maxMp
       Entry: 7
-      Data: 1|Attribute.FloatAttr, Assembly-CSharp
+      Data: 1|Attribute.FloatAttr, ARPG.Battle
     - Name: baseValue
       Entry: 4
       Data: 0
@@ -178,7 +184,7 @@ MonoBehaviour:
       Data: 
     - Name: attack
       Entry: 7
-      Data: 2|Attribute.FloatAttr, Assembly-CSharp
+      Data: 2|Attribute.FloatAttr, ARPG.Battle
     - Name: baseValue
       Entry: 4
       Data: 0
@@ -205,7 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!95 &1562128240682588771
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -219,6 +225,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -239,17 +246,16 @@ CharacterController:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.42
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.66, z: 0}
 --- !u!114 &6931894342885324032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,3 +271,25 @@ MonoBehaviour:
   _Animator: {fileID: 1562128240682588771}
   _Transitions: {fileID: 0}
   _ActionOnDisable: 0
+--- !u!114 &70284939366669095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5647307152969126730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c0f4f44231840eeaa7cd5a5167f3c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicAttack:
+    skillIndex: 0
+    action: {fileID: 2452260458797075928, guid: 68e18222ff7f82e4d86f998fa64cc740, type: 3}
+    useBuffer: 1
+    bufferTime: 0.2
+  skills:
+  - skillIndex: 1
+    action: {fileID: -767746484034474775, guid: 68e18222ff7f82e4d86f998fa64cc740, type: 3}
+    useBuffer: 1
+    bufferTime: 0.2

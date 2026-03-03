@@ -17,6 +17,10 @@ namespace RayPlayer
 {
     public class PlayerController : CharacterControllerBase, IStateMachineOwner, ICharacter
     {
+        private const float DefaultMoveStartTurnSpeed = 1.8f;
+        private const float DefaultMoveLoopTurnSpeed = 1.4f;
+        private const float DefaultLockTurnSpeed = 5f;
+
         public Entity PlayerEntity { get; private set; }
         [Header("Config")]
         [SerializeField] private CharacterConfig characterConfig;
@@ -34,6 +38,9 @@ namespace RayPlayer
         
         [Header("Camera")]
         [SerializeField] private CameraController cameraController;
+
+        [Header("Generic Locomotion")]
+        [SerializeField] private GenericPlayerLocomotionController genericLocomotionController;
         
         [Header("Animancer Skill Layer")]
         [SerializeField] private int skillLayerIndex = 1;
@@ -65,9 +72,22 @@ namespace RayPlayer
         public float WalkSpeed => characterConfig.WalkSpeed;
         public float RunSpeed => characterConfig.RunSpeed;
         public float RotateSpeed => characterConfig.RotateSpeed;
+        public float MoveStartTurnSpeed =>
+            characterConfig != null && characterConfig.MoveStartTurnSpeed > 0f
+                ? characterConfig.MoveStartTurnSpeed
+                : DefaultMoveStartTurnSpeed;
+        public float MoveLoopTurnSpeed =>
+            characterConfig != null && characterConfig.MoveLoopTurnSpeed > 0f
+                ? characterConfig.MoveLoopTurnSpeed
+                : DefaultMoveLoopTurnSpeed;
+        public float LockTurnSpeed =>
+            characterConfig != null && characterConfig.LockTurnSpeed > 0f
+                ? characterConfig.LockTurnSpeed
+                : DefaultLockTurnSpeed;
 
         private bool inSkill;
         private bool currentSkillUpperBody;
+        private bool useGenericLocomotion;
 
         protected override void Awake()
         {
@@ -81,13 +101,26 @@ namespace RayPlayer
         public void Init(CharacterConfig characterConfig, GameData gameData)
         {
             this.characterConfig = characterConfig;
+            useGenericLocomotion = characterConfig != null && characterConfig.GenericLocomotionConfig != null;
+            RayDebug.Log($"[PlayerController] Init -> character={characterConfig?.name}, useGeneric={useGenericLocomotion}, genericConfig={characterConfig?.GenericLocomotionConfig?.name}");
             if (playerSO == null && characterConfig != null)
                 playerSO = characterConfig.PlayerSO;
             if (characterConfig != null)
             {
                 ApplyControllerProfile(characterConfig.ControllerProfile);
-                if (characterConfig.Avatar != null)
+                if (!useGenericLocomotion && characterConfig.Avatar != null)
                     animator.avatar = characterConfig.Avatar;
+            }
+
+            if (useGenericLocomotion)
+                SetupGenericLocomotion(characterConfig.GenericLocomotionConfig);
+            else
+                SetupDefaultLocomotion();
+
+            if (!useGenericLocomotion && playerSO == null)
+            {
+                RayDebug.Error("[PlayerController] PlayerSO is null for non-generic locomotion.");
+                return;
             }
             
             playerView?.Init();
@@ -105,18 +138,28 @@ namespace RayPlayer
                 DataManager.OnLevelUp += OnCharacterLevelUp;
             }
 
-            ReusableData = new PlayerReusableData(animancer, playerSO);
-            ReusableLogic = new PlayerReusableLogic(this);
-            MovementStateMachine = new PlayerStateMachine(this);
-            MovementStateMachine.ChangeState(MovementStateMachine.idleState);
-            
-            skillBrain.Init(this, DataManager.GetCurrentCharacterSkills());
-            skillInput?.Init();
-            
-            SetupAnimancerLayers();
+            if (!useGenericLocomotion)
+            {
+                ReusableData = new PlayerReusableData(animancer, playerSO);
+                ReusableLogic = new PlayerReusableLogic(this);
+                MovementStateMachine = new PlayerStateMachine(this);
+                MovementStateMachine.ChangeState(MovementStateMachine.idleState);
+                
+                if (skillBrain != null)
+                    skillBrain.Init(this, DataManager.GetCurrentCharacterSkills());
+                skillInput?.Init();
+                
+                SetupAnimancerLayers();
+            }
+            else
+            {
+                ReusableData = null;
+                ReusableLogic = null;
+                MovementStateMachine = null;
+            }
             
             // 刷新武器槽位索引
-            weaponSlotManager.RefreshSlots();
+            weaponSlotManager?.RefreshSlots();
             // 让Cinemachine看向这个player
             var vcam = cameraController != null ? cameraController.GetComponent<CinemachineVirtualCamera>() : null;
             if (vcam != null && playerView != null)
@@ -155,6 +198,44 @@ namespace RayPlayer
             }
         }
 
+        private void SetupDefaultLocomotion()
+        {
+            disableGravity = false;
+            disableRootMotion = false;
+            ignoreRootMotionY = false;
+            applyFullRootMotion = false;
+
+            if (genericLocomotionController != null)
+                genericLocomotionController.enabled = false;
+
+            if (animancer != null && !animancer.enabled)
+                animancer.enabled = true;
+        }
+
+        private void SetupGenericLocomotion(GenericLocomotionConfig genericConfig)
+        {
+            if (genericConfig == null)
+                return;
+
+            disableGravity = true;
+            disableRootMotion = true;
+            ignoreRootMotionY = true;
+            applyFullRootMotion = false;
+
+            if (genericLocomotionController == null)
+                genericLocomotionController = GetComponent<GenericPlayerLocomotionController>();
+            if (genericLocomotionController == null)
+                genericLocomotionController = gameObject.AddComponent<GenericPlayerLocomotionController>();
+
+            // Generic 动画走 AnimatorController，不再让 Animancer 输出姿态，避免出现 T-Pose 互相覆盖。
+            if (animancer != null && animancer.enabled)
+                animancer.enabled = false;
+
+            genericLocomotionController.Initialize(genericConfig, CameraTransform);
+            genericLocomotionController.enabled = true;
+            RayDebug.Log($"[PlayerController] Generic locomotion active -> controller={animator.runtimeAnimatorController?.name}, avatar={animator.avatar?.name}, animancerEnabled={animancer != null && animancer.enabled}");
+        }
+
         private void SetupAnimancerLayers()
         {
             var layer = animancer.Layers[skillLayerIndex];
@@ -164,6 +245,9 @@ namespace RayPlayer
 
         protected override void Update()
         {
+            if (useGenericLocomotion)
+                return;
+
             base.Update();
             MovementStateMachine?.OnUpdate();
             HandleSkillInput();
@@ -172,6 +256,9 @@ namespace RayPlayer
 
         protected override void OnAnimatorMove()
         {
+            if (useGenericLocomotion)
+                return;
+
             base.OnAnimatorMove();
             MovementStateMachine?.OnAnimationUpdate();
         }
@@ -338,6 +425,7 @@ namespace RayPlayer
             // 让input也旋转y角度
             Vector3 moveDir = Quaternion.Euler(0f, y, 0f) * inputDir;
             // 处理旋转
+            
             // ModelTransform.rotation = Quaternion.Slerp(ModelTransform.rotation,
             //     Quaternion.LookRotation(moveDir), Time.deltaTime * rotateSpeed);
             transform.rotation = Quaternion.Slerp(transform.rotation,
@@ -450,8 +538,8 @@ namespace RayPlayer
         public void BindModel(GameObject model)
         {
             playerView = model.GetComponent<PlayerView>();
-            var vcam = cameraController.GetComponent<CinemachineVirtualCamera>();
-            if (vcam != null)
+            var vcam = cameraController != null ? cameraController.GetComponent<CinemachineVirtualCamera>() : null;
+            if (vcam != null && playerView != null)
             {
                 vcam.Follow = playerView.LookAt;
                 vcam.LookAt = playerView.LookAt;

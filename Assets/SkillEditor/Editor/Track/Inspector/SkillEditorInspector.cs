@@ -93,10 +93,13 @@ namespace SkillEditor
         
         private void OnDeleteBtnClicked()
         {
+            if (currentTrackItem == null) return;
             currentTrack.DeleteTrackItem(currentTrackItem.FrameIndex);
+            currentTrackItem = null;
+            currentTrack = null;
             Selection.activeObject = null;
-            if (currentTrackItem is AnimationTrackItem)
-                SkillEditorWindow.Instance.TickSkill();
+            // 统一刷新预览（不限于动画轨道）
+            SkillEditorWindow.Instance.TickSkill();
         }
 
         private void Clean()

@@ -60,6 +60,7 @@ namespace Manager
                 RayDebug.Error($"无法加载角色配置，ID: {characterId}");
                 return;
             }
+            RayDebug.Log($"[PlayerManager] Loaded CharacterConfig={CharacterConfig.name}, GenericLocomotionConfig={CharacterConfig.GenericLocomotionConfig?.name}, PlayerSO={CharacterConfig.PlayerSO?.name}");
             
             // 2. 动态替换外观模型
             var newModel = await modelManager.ReplaceCharacterModelAsync(

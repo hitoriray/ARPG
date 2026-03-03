@@ -302,26 +302,31 @@ namespace SkillEditor
         private void OnAttackMultiplyFieldValueChanged(ChangeEvent<float> evt)
         {
             trackItem.AttackDetectionEvent.AttackHitConfig.AttackMultiply = evt.newValue;
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
         
         private void OnRepelStrengthFieldValueChanged(ChangeEvent<Vector3> evt)
         {
             trackItem.AttackDetectionEvent.AttackHitConfig.RepelStrength = evt.newValue;
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
         
         private void OnRepelTimeFieldValueChanged(ChangeEvent<float> evt)
         {
             trackItem.AttackDetectionEvent.AttackHitConfig.RepelTime = evt.newValue;
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
         
         private void OnHitEffectPrefabFieldValueChanged(ChangeEvent<Object> evt)
         {
             trackItem.AttackDetectionEvent.AttackHitConfig.HitEffectPrefab = (GameObject)evt.newValue;
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
         
         private void OnHitAudioClipFieldValueChanged(ChangeEvent<Object> evt)
         {
             trackItem.AttackDetectionEvent.AttackHitConfig.HitAudioClip = (AudioClip)evt.newValue;
+            SkillEditorWindow.Instance.SaveSkillConfig();
         }
         
         #endregion

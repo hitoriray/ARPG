@@ -10,6 +10,11 @@ namespace Attribute
         [ShowInInspector, ReadOnly] public float currentHp { get; private set; }
         [ShowInInspector, ReadOnly] public float currentMp { get; private set; }
         
+        /// <summary>当前血量/最大血量发生变化时触发 (current, max)</summary>
+        public event Action<float, float> OnHpChanged;
+        /// <summary>当前魔量/最大魔量发生变化时触发 (current, max)</summary>
+        public event Action<float, float> OnMpChanged;
+        
         public FloatAttr maxHp = new();
         public FloatAttr maxMp = new();
         public FloatAttr attack = new();
@@ -55,7 +60,7 @@ namespace Attribute
         public void SetHp(float value)
         {
             currentHp = Mathf.Clamp(value, 0, maxHp.Total);
-            // TODO: 同步给UI
+            OnHpChanged?.Invoke(currentHp, maxHp.Total);
         }
 
         public void AddMp(float value)
@@ -66,20 +71,20 @@ namespace Attribute
         public void SetMp(float value)
         {
             currentMp = Mathf.Clamp(value, 0, maxMp.Total);
-            // TODO: 同步给UI
+            OnMpChanged?.Invoke(currentMp, maxMp.Total);
         }
         
         private void OnMaxHpChanged(float oldMaxHp, float newMaxHp)
         {
             // 当最大生命值发生变化时，当前生命值同步按比例变化
             currentHp = newMaxHp * currentHp / oldMaxHp;
-            // TODO: 同步给UI
+            OnHpChanged?.Invoke(currentHp, newMaxHp);
         }
         
         private void OnMaxMpChanged(float oldMaxMp, float newMaxMp)
         {
             currentMp = newMaxMp * currentMp / oldMaxMp;
-            // TODO: 同步给UI
+            OnMpChanged?.Invoke(currentMp, newMaxMp);
         }
     }
 

@@ -69,7 +69,7 @@ namespace SkillEditor
             if (clip != null)
             {
                 int selectFrameIndex = SkillEditorWindow.Instance.GetFrameIndexByPos(evt.localMousePosition.x);
-                // 检查选中帧不在任何已有的的TrackItem之间
+                // 检查选中帧不在任何已有的TrackItem之间
                 bool canPlace = true;
                 int durationFrame = -1; // -1表示可以用原本的 AnimationClip 的持续时间
                 int clipFrameCount = (int)(clip.length * clip.frameRate);
@@ -119,6 +119,7 @@ namespace SkillEditor
                     };
 
                     // 保存新增的动画数据
+                    SkillEditorWindow.Instance.RecordUndoSnapshot();
                     AnimationData.FrameData.Add(selectFrameIndex, animationEvent);
                     SkillEditorWindow.Instance.SaveSkillConfig();
                     
@@ -295,7 +296,8 @@ namespace SkillEditor
             foreach (var (startIndex, _) in frameData)
             {
                 int tmpOffset = frameIndex - startIndex;
-                if (tmpOffset > 0 && tmpOffset < currentOffset)
+                // 修复：>= 0 才能让第0帧的动画正确被采样
+                if (tmpOffset >= 0 && tmpOffset < currentOffset)
                 {
                     currentOffset = tmpOffset;
                     animationEventIndex = startIndex;
@@ -323,6 +325,7 @@ namespace SkillEditor
         #region 重载方法
         public override void DeleteTrackItem(int frameIndex)
         {
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             AnimationData.FrameData.Remove(frameIndex);
             if (trackItemDict.Remove(frameIndex, out var trackItem))
             {

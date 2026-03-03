@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Config;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace SkillEditor
@@ -62,6 +63,7 @@ namespace SkillEditor
         /// </summary>
         private void AddChildTrack()
         {
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             SkillAttackDetectionEvent attackDetectionEvent = new();
             AttackDetectionData.FrameData.Add(attackDetectionEvent);
             CreateAttackDetectionTrackItem(attackDetectionEvent);
@@ -79,6 +81,7 @@ namespace SkillEditor
                 return false;
             if (AttackDetectionData.FrameData[index] == null)
                 return false;
+            SkillEditorWindow.Instance.RecordUndoSnapshot();
             AttackDetectionData.FrameData.RemoveAt(index);
             trackItemList.RemoveAt(index);
             SkillEditorWindow.Instance.SaveSkillConfig();
@@ -95,6 +98,22 @@ namespace SkillEditor
         }
 
         #region 重载方法
+
+        public override void DeleteTrackItem(int frameIndex)
+        {
+            for (int i = 0; i < trackItemList.Count; i++)
+            {
+                if (trackItemList[i].AttackDetectionEvent.FrameIndex == frameIndex)
+                {
+                    SkillEditorWindow.Instance.RecordUndoSnapshot();
+                    AttackDetectionData.FrameData.RemoveAt(i);
+                    trackItemList[i].Destroy();
+                    trackItemList.RemoveAt(i);
+                    SkillEditorWindow.Instance.SaveSkillConfig();
+                    return;
+                }
+            }
+        }
 
         public override void DrawGizmos()
         {
