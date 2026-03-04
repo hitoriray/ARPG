@@ -27,6 +27,26 @@ namespace Data
         public Serialized_Dic<int, int> InventoryItems;
         // 无限期掉落物：场景名称 → 掉落物列表
         public Serialized_Dic<string, Serialized_List<PersistentDropData>> PersistentDrops;
+        // AI 对话历史记录
+        public Serialized_Dic<string, Serialized_List<AIChatRecord>> AIChatHistoryByNpc;
+        public Serialized_List<AIChatRecord> AIChatHistory;
+    }
+
+    /// <summary>
+    /// AI 对话历史的单条存档记录
+    /// </summary>
+    [Serializable]
+    public class AIChatRecord
+    {
+        public string role;
+        public string content;
+
+        public AIChatRecord() { }
+        public AIChatRecord(string role, string content)
+        {
+            this.role = role;
+            this.content = content;
+        }
     }
 
     /// <summary>
@@ -37,6 +57,10 @@ namespace Data
     {
         public int  Level      = 1;   // 当前等级
         public long Experience = 0;   // 当前累计经验值
+        /// <summary>当前 HP（-1 = 满血，进游戏后会用 maxHp.Total 填充）</summary>
+        public float CurrentHp = -1f;
+        /// <summary>当前 MP（-1 = 满蓝）</summary>
+        public float CurrentMp = -1f;
     }
 
 

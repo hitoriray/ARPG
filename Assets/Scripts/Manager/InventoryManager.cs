@@ -344,7 +344,17 @@ namespace Manager
             if (config.ItemType != ItemType.Consumable) return false;
             if (!RemoveItem(config.ItemId, 1)) return false;
 
-            if (config.HpRestore > 0f) target.AddHp(config.HpRestore);
+            if (config.HpRestore > 0f)
+            {
+                // ECS 是血量权威数据源，SyncHealth 每帧将 Health.Current → CharacterAttribute.SetHp
+                // 所以必须更新 ECS；如果 ECS 不在场则 fallback 到直接修改 CharacterAttribute
+                var ecsRunner = Battle.ECS.BattleEcsRunner.Instance;
+                if (ecsRunner != null)
+                    ecsRunner.HealPlayer(config.HpRestore);
+                else
+                    target.AddHp(config.HpRestore);
+            }
+
             if (config.MpRestore > 0f) target.AddMp(config.MpRestore);
 
             if (config.ExpGain > 0L)

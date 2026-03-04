@@ -134,9 +134,23 @@ namespace RayPlayer
                 int currentLevel = progress?.Level ?? 1;
                 characterAttribute.ApplyLevel(currentLevel, characterConfig, characterConfig.LevelGrowthConfig);
 
+                // 恢复存档中的当前血量（-1 表示满状态，直接用 maxHp.Total）
+                if (progress != null)
+                {
+                    float savedHp = progress.CurrentHp > 0f ? progress.CurrentHp : characterAttribute.maxHp.Total;
+                    float savedMp = progress.CurrentMp > 0f ? progress.CurrentMp : characterAttribute.maxMp.Total;
+                    characterAttribute.SetHp(savedHp);
+                    characterAttribute.SetMp(savedMp);
+                }
+
                 // 升级时自动刷新属性（UI 层也会收到此事件）
                 DataManager.OnLevelUp += OnCharacterLevelUp;
             }
+
+            // 订阅血量变化事件，实时写入存档（不额外触发 SaveGameData，由现有存档时机统一落盘）
+            characterAttribute.OnHpChanged += OnHpChangedSave;
+            characterAttribute.OnMpChanged += OnMpChangedSave;
+
 
             if (!useGenericLocomotion)
             {
@@ -562,6 +576,22 @@ namespace RayPlayer
         protected void OnDestroy()
         {
             DataManager.OnLevelUp -= OnCharacterLevelUp;
+            characterAttribute.OnHpChanged -= OnHpChangedSave;
+            characterAttribute.OnMpChanged -= OnMpChangedSave;
+        }
+
+        private void OnHpChangedSave(float current, float max)
+        {
+            if (DataManager.GameData == null) return;
+            var progress = DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
+            if (progress != null) progress.CurrentHp = current;
+        }
+
+        private void OnMpChangedSave(float current, float max)
+        {
+            if (DataManager.GameData == null) return;
+            var progress = DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
+            if (progress != null) progress.CurrentMp = current;
         }
     }
 }

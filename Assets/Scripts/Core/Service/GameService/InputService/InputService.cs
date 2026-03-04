@@ -87,6 +87,11 @@ public class InputService : MonoSingleton<InputService>
         get { return inputMap.Player.Shift.ReadValue<float>() != 0; }
     }
 
+    public bool LeftAlt
+    {
+        get { return inputMap.Player.LeftAlt.ReadValue<float>() != 0; }
+    }
+
     public Vector2 Move
     {
         get

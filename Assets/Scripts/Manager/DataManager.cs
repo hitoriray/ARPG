@@ -86,7 +86,9 @@ namespace Manager
                 CharacterProgressDict = new Serialized_Dic<int, CharacterProgressData>(),
                 ClearedRegionKeys = new Serialized_List<string>(),
                 InventoryItems = new Serialized_Dic<int, int>(),
-                PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>()
+                PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>(),
+                AIChatHistoryByNpc = new Serialized_Dic<string, Serialized_List<AIChatRecord>>(),
+                AIChatHistory = new Serialized_List<AIChatRecord>()
             };
 
             GameData.UnlockedCharacterIds.List.Add(initCharacterId);
@@ -423,6 +425,25 @@ namespace Manager
             if (GameData.PersistentDrops == null)
             {
                 GameData.PersistentDrops = new Serialized_Dic<string, Serialized_List<PersistentDropData>>();
+                dirty = true;
+            }
+
+            // 向后兼容：旧存档没有按 NPC 分会话聊天记录时自动创建
+            if (GameData.AIChatHistoryByNpc == null)
+            {
+                GameData.AIChatHistoryByNpc = new Serialized_Dic<string, Serialized_List<AIChatRecord>>();
+                dirty = true;
+            }
+
+            // 向后兼容：旧存档没有旧版聊天列表时自动创建（兼容旧逻辑）
+            if (GameData.AIChatHistory == null)
+            {
+                GameData.AIChatHistory = new Serialized_List<AIChatRecord>();
+                dirty = true;
+            }
+            else if (GameData.AIChatHistory.List == null)
+            {
+                GameData.AIChatHistory.List = new List<AIChatRecord>();
                 dirty = true;
             }
 

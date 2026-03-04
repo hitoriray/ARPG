@@ -40,8 +40,6 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         GetMouseScroll();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void LateUpdate()

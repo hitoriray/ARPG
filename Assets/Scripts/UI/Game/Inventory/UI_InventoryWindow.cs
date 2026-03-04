@@ -8,7 +8,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace UI
@@ -93,6 +92,9 @@ namespace UI
         [SerializeField] private string emptyNameText = "未选择";
         [SerializeField] private string emptyDescText = "请选择一个背包物品";
 
+        [Header("按钮")]
+        [SerializeField] private ButtonManager closeButton;
+
         private readonly List<SubWindowContext> _contexts = new();
         private readonly Dictionary<int, Sprite> _iconCache = new();
         private int _currentWindowIndex;
@@ -103,11 +105,25 @@ namespace UI
             ResolveReferencesIfNeeded();
             BuildSubWindowContexts();
             BindWindowChangeEvent();
+            
+            closeButton.onClick.AddListener(OnCloseClick);
+        }
+
+        private void OnCloseClick()
+        {
+            UISystem.Close<UI_InventoryWindow>();
         }
 
         public override void OnShow()
         {
             base.OnShow();
+            // 显示鼠标 + 禁用全部玩家输入
+            PlayerService.Instance?.SetCharacterControl(false);
+            InputService.Instance?.inputMap?.UI.Disable();
+            PlayerService.Instance?.PushUICursor();
+            // 注册到全局模态栈，支持 ESC 关闭
+            UIModalStack.Push(CloseThisWindow);
+
             ResolveReferencesIfNeeded();
             BuildSubWindowContexts();
 
@@ -116,6 +132,22 @@ namespace UI
                 : 0;
 
             RefreshCurrentWindow();
+        }
+
+        public override void OnClose()
+        {
+            base.OnClose();
+            // 恢复输入和鼠标
+            PlayerService.Instance?.SetCharacterControl(true);
+            InputService.Instance?.inputMap?.UI.Enable();
+            PlayerService.Instance?.PopUICursor();
+            // 从全局模态栈删除（非 ESC 途径关闭时使用）
+            UIModalStack.Remove(CloseThisWindow);
+        }
+
+        private void CloseThisWindow()
+        {
+            UISystem.Close<UI_InventoryWindow>();
         }
 
         protected override void RegisterEventListener()
@@ -357,6 +389,31 @@ namespace UI
                 if (_iconCache.TryGetValue(data.ItemId, out var cached) && cached != null)
                 {
                     btn.SetIcon(cached);
+                }
+                else if (data.Config.Icon.IsValid())
+                {
+                    // AssetReference 已有 handle（正在加载中或已完成），直接复用
+                    var existingHandle = data.Config.Icon.OperationHandle.Convert<Sprite>();
+                    if (existingHandle.IsDone)
+                    {
+                        if (existingHandle.Result != null)
+                        {
+                            _iconCache[data.ItemId] = existingHandle.Result;
+                            btn.SetIcon(existingHandle.Result);
+                        }
+                    }
+                    else
+                    {
+                        existingHandle.Completed += (op) =>
+                        {
+                            if (op.Status != AsyncOperationStatus.Succeeded || op.Result == null) return;
+                            _iconCache[data.ItemId] = op.Result;
+                            if (btn == null) return;
+                            if (!ctx.ButtonItemMap.TryGetValue(btn, out int currentItemId)) return;
+                            if (currentItemId != data.ItemId) return;
+                            btn.SetIcon(op.Result);
+                        };
+                    }
                 }
                 else
                 {

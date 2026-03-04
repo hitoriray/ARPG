@@ -12,6 +12,11 @@ namespace Manager
         private const int InventoryWindowLayer = 1;
         private const bool InventoryWindowCache = true;
 
+        private const string DialogWindowTypeKey = "UI.UI_DialogWindow";
+        private const string DialogWindowAssetKey = "UI_DialogWindow";
+        private const int DialogWindowLayer = 1;
+        private const bool DialogWindowCache = true;
+
         #region Test
 
         [LabelText("是否创建新存档")] public bool isCreateArchive;
@@ -20,6 +25,7 @@ namespace Manager
         #endregion
 
         private InputAction _bagAction;
+        private InputAction _escAction;
         
         private async void Start()
         {
@@ -58,6 +64,7 @@ namespace Manager
             // 初始化背包运行时数据（修复脏数据 + 推送一次全量刷新事件）
             InventoryManager.InitializeForRuntime();
             EnsureInventoryWindowDataRegistered();
+            EnsureDialogWindowDataRegistered();
             RegisterBagInput();
 
             #endregion
@@ -66,6 +73,7 @@ namespace Manager
             await PlayerManager.Instance.InitAsync();
             // 兜底：某些时序下 InputService 可能稍后可用，这里再注册一次 Bag
             RegisterBagInput();
+            RegisterEscInput();
             RayDebug.Info($"游戏开始！当前角色ID: {DataManager.GameData.SelectedCharacterId}");
             // 初始化ECS并注册玩家
             var ecsRunner = BattleEcsRunner.Ensure();
@@ -81,6 +89,7 @@ namespace Manager
         private void OnDestroy()
         {
             UnregisterBagInput();
+            UnregisterEscInput();
 
             // TODO：模拟游戏退出时的存档
             DataManager.SaveGameData();
@@ -100,6 +109,34 @@ namespace Manager
             if (_bagAction == null) return;
             _bagAction.performed -= OnBagPerformed;
             _bagAction = null;
+        }
+
+        /// <summary>
+        /// 注册全局 ESC 输入监听。
+        /// 前提：用户已在 InputMap 中添加一个名为 "Global" 的 ActionMap，其中包含 "ESC" Action。
+        /// </summary>
+        private void RegisterEscInput()
+        {
+            // TODO: 用户在 InputMap 里添加 Global ActionMap 之后，将下面一行注释去掉并替换为实际路径
+            // _escAction = InputService.Instance?.inputMap?.Global.ESC;
+            // 目前先用 UI.ESC 公测，要求：UI ActionMap 需要在小对话框是否打开时进行切换
+            _escAction = InputService.Instance?.inputMap?.Global.ESC;
+            if (_escAction == null) return;
+
+            _escAction.performed -= OnEscPerformed;
+            _escAction.performed += OnEscPerformed;
+        }
+
+        private void UnregisterEscInput()
+        {
+            if (_escAction == null) return;
+            _escAction.performed -= OnEscPerformed;
+            _escAction = null;
+        }
+
+        private void OnEscPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+        {
+            UIModalStack.CloseTop();
         }
 
         private void OnBagPerformed(InputAction.CallbackContext ctx)
@@ -125,12 +162,25 @@ namespace Manager
                 return;
             }
 
-            // JKFrame 的 UIWindowData 默认来自 JKFrameSetting.asset；这里做运行时兜底，避免漏配导致背包无法打开。
             UISystem.AddUIWindowData(
                 InventoryWindowTypeKey,
                 new UIWindowData(InventoryWindowCache, InventoryWindowAssetKey, InventoryWindowLayer));
 
-            JKLog.Warning($"[GameSceneManager] 运行时补注册 UIWindowData: {InventoryWindowTypeKey}（请在编辑器刷新 JKFrameSetting 的 UIWindowDataDic）。");
+            JKLog.Warning($"[GameSceneManager] 运行时补注册 UIWindowData: {InventoryWindowTypeKey}");
+        }
+
+        private void EnsureDialogWindowDataRegistered()
+        {
+            if (UISystem.TryGetUIWindowData(DialogWindowTypeKey, out _))
+            {
+                return;
+            }
+
+            UISystem.AddUIWindowData(
+                DialogWindowTypeKey,
+                new UIWindowData(DialogWindowCache, DialogWindowAssetKey, DialogWindowLayer));
+
+            JKLog.Warning($"[GameSceneManager] 运行时补注册 UIWindowData: {DialogWindowTypeKey}");
         }
     }
 }

@@ -17,6 +17,14 @@ namespace Manager
             PlayerService.Instance = this;
         }
 
+        /// <summary>
+        /// Unity MonoBehaviour 消息：Game 窗口获得焦点时触发（包括 Editor 内切换到 Game 窗口），重新强制执行鼠标状态
+        /// </summary>
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus) ApplyCursorState();
+        }
+
         [SerializeField] public PlayerController player;
         [SerializeField] private GameObject cineMachine;
         [SerializeField] private CharacterModelManager characterModelManager;
@@ -24,6 +32,11 @@ namespace Manager
         public CharacterConfig CharacterConfig { get; private set; }
         private InputService inputService;
         private bool characterControl = true;
+
+        // UI 覆盖计数：任意 UI 打开 +1，关闭 -1；> 0 时强制显示鼠标
+        private int _uiOverrideCount = 0;
+        // Alt 键是否正在按下
+        private bool _altPeeking = false;
 
         /// <summary>
         /// 统一管理角色输入开关（InputSystem）
@@ -109,11 +122,61 @@ namespace Manager
                     inputService.inputMap.Player.Disable();
             }
 
-            Cursor.lockState = canControl ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !canControl;
+            // PlayerSkillInput 直接订阅 InputActionReference，不受 ActionMap 开关影响，需单独切换
+            if (player != null && player.SkillInput != null)
+                player.SkillInput.enabled = canControl;
+
+            ApplyCursorState();
 
             if (cineMachine != null)
                 cineMachine.SetActive(canControl);
+        }
+
+        /// <summary>
+        /// UI 打开时调用，强制显示鼠标。
+        /// </summary>
+        public void PushUICursor()
+        {
+            _uiOverrideCount++;
+            ApplyCursorState();
+        }
+
+        /// <summary>
+        /// UI 关闭时调用，恢复鼠标状态。
+        /// </summary>
+        public void PopUICursor()
+        {
+            _uiOverrideCount = Mathf.Max(0, _uiOverrideCount - 1);
+            ApplyCursorState();
+        }
+
+        private void ApplyCursorState()
+        {
+            bool show = _uiOverrideCount > 0 || _altPeeking || !characterControl;
+            Cursor.lockState = show ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = show;
+        }
+
+        private void Update()
+        {
+            if (inputService == null) return;
+
+            // 仅在战斗控制中且没有 UI 覆盖时，检测 Alt 键
+            if (!characterControl || _uiOverrideCount > 0) return;
+
+            bool altDown = inputService.LeftAlt;
+            if (altDown != _altPeeking)
+            {
+                _altPeeking = altDown;
+            }
+        }
+
+        /// <summary>
+        /// 在 LateUpdate 中强制写入鼠标状态，确保在 Cinemachine 等插件 Update 之后执行，防止被覆盖。
+        /// </summary>
+        private void LateUpdate()
+        {
+            ApplyCursorState();
         }
 
         private CharacterModelManager GetCharacterModelManager()

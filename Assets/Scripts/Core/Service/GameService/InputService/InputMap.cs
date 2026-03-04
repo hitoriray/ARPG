@@ -64,6 +64,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""LeftAlt"",
+                    ""type"": ""Button"",
+                    ""id"": ""11f05661-547b-47fc-98d9-f0503e9ea498"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": "" MoveHorizontal"",
                     ""type"": ""Value"",
                     ""id"": ""dee493a4-3616-43fd-a8cf-a931925f5005"",
@@ -711,6 +720,17 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1459b73-32b1-4e3a-bd47-1638ee442207"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -945,6 +965,34 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Global"",
+            ""id"": ""40927df7-b790-4eae-a960-ac2949305ec5"",
+            ""actions"": [
+                {
+                    ""name"": ""ESC"",
+                    ""type"": ""Button"",
+                    ""id"": ""faaf20f0-0fa0-47ce-a48f-a83140a4fac2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5c1012a7-af41-49d9-ab7b-8c0bbae40084"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ESC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -955,6 +1003,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Interactive = m_Player.FindAction("Interactive", throwIfNotFound: true);
         m_Player_Shift = m_Player.FindAction("Shift", throwIfNotFound: true);
+        m_Player_LeftAlt = m_Player.FindAction("LeftAlt", throwIfNotFound: true);
         m_Player_MoveHorizontal = m_Player.FindAction(" MoveHorizontal", throwIfNotFound: true);
         m_Player_MoveVertical = m_Player.FindAction("MoveVertical", throwIfNotFound: true);
         m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
@@ -978,12 +1027,16 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_UI_TouchDelta = m_UI.FindAction("TouchDelta", throwIfNotFound: true);
         m_UI_Alt = m_UI.FindAction("Alt", throwIfNotFound: true);
         m_UI_Bag = m_UI.FindAction("Bag", throwIfNotFound: true);
+        // Global
+        m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
+        m_Global_ESC = m_Global.FindAction("ESC", throwIfNotFound: true);
     }
 
     ~@InputMap()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputMap.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputMap.UI.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Global.enabled, "This will cause a leak and performance issues, InputMap.Global.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -1049,6 +1102,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Interactive;
     private readonly InputAction m_Player_Shift;
+    private readonly InputAction m_Player_LeftAlt;
     private readonly InputAction m_Player_MoveHorizontal;
     private readonly InputAction m_Player_MoveVertical;
     private readonly InputAction m_Player_Scroll;
@@ -1069,6 +1123,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Interactive => m_Wrapper.m_Player_Interactive;
         public InputAction @Shift => m_Wrapper.m_Player_Shift;
+        public InputAction @LeftAlt => m_Wrapper.m_Player_LeftAlt;
         public InputAction @MoveHorizontal => m_Wrapper.m_Player_MoveHorizontal;
         public InputAction @MoveVertical => m_Wrapper.m_Player_MoveVertical;
         public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
@@ -1102,6 +1157,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Shift.started += instance.OnShift;
             @Shift.performed += instance.OnShift;
             @Shift.canceled += instance.OnShift;
+            @LeftAlt.started += instance.OnLeftAlt;
+            @LeftAlt.performed += instance.OnLeftAlt;
+            @LeftAlt.canceled += instance.OnLeftAlt;
             @MoveHorizontal.started += instance.OnMoveHorizontal;
             @MoveHorizontal.performed += instance.OnMoveHorizontal;
             @MoveHorizontal.canceled += instance.OnMoveHorizontal;
@@ -1154,6 +1212,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Shift.started -= instance.OnShift;
             @Shift.performed -= instance.OnShift;
             @Shift.canceled -= instance.OnShift;
+            @LeftAlt.started -= instance.OnLeftAlt;
+            @LeftAlt.performed -= instance.OnLeftAlt;
+            @LeftAlt.canceled -= instance.OnLeftAlt;
             @MoveHorizontal.started -= instance.OnMoveHorizontal;
             @MoveHorizontal.performed -= instance.OnMoveHorizontal;
             @MoveHorizontal.canceled -= instance.OnMoveHorizontal;
@@ -1317,12 +1378,59 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Global
+    private readonly InputActionMap m_Global;
+    private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
+    private readonly InputAction m_Global_ESC;
+    public struct GlobalActions
+    {
+        private @InputMap m_Wrapper;
+        public GlobalActions(@InputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ESC => m_Wrapper.m_Global_ESC;
+        public InputActionMap Get() { return m_Wrapper.m_Global; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GlobalActions set) { return set.Get(); }
+        public void AddCallbacks(IGlobalActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GlobalActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GlobalActionsCallbackInterfaces.Add(instance);
+            @ESC.started += instance.OnESC;
+            @ESC.performed += instance.OnESC;
+            @ESC.canceled += instance.OnESC;
+        }
+
+        private void UnregisterCallbacks(IGlobalActions instance)
+        {
+            @ESC.started -= instance.OnESC;
+            @ESC.performed -= instance.OnESC;
+            @ESC.canceled -= instance.OnESC;
+        }
+
+        public void RemoveCallbacks(IGlobalActions instance)
+        {
+            if (m_Wrapper.m_GlobalActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGlobalActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GlobalActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GlobalActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GlobalActions @Global => new GlobalActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnInteractive(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
+        void OnLeftAlt(InputAction.CallbackContext context);
         void OnMoveHorizontal(InputAction.CallbackContext context);
         void OnMoveVertical(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
@@ -1347,5 +1455,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         void OnTouchDelta(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
         void OnBag(InputAction.CallbackContext context);
+    }
+    public interface IGlobalActions
+    {
+        void OnESC(InputAction.CallbackContext context);
     }
 }

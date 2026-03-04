@@ -87,7 +87,7 @@ public class InputManager : SingletonMono<InputManager>
         {
             characterControl = value;
             Cursor.lockState = characterControl ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !characterControl;  // 修复：显式设置鼠标可见性
+            Cursor.visible = !characterControl;
             cineMachine.SetActive(characterControl);
         }
     }

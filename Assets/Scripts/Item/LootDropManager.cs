@@ -283,6 +283,11 @@ namespace Manager
 
         public void RemoveDrop(WorldDropItem item)
         {
+            // 如果是持久化掉落物，先从存档移除，防止读档后重复生成
+            if (item != null && !string.IsNullOrEmpty(item.PersistentGuid))
+            {
+                RemovePersistentDrop(item.PersistentGuid);
+            }
             DestroyDrop(item);
         }
 
@@ -309,6 +314,7 @@ namespace Manager
 
             DataManager.SaveGameData();
         }
+
 
         private void RemovePersistentDrop(string guid)
         {

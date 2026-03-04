@@ -93,7 +93,7 @@ namespace Battle.ECS
                 MaxMp = (FP)characterAttr.maxMp.Total,
                 Defense = (FP)(character.CharacterConfig != null ? character.CharacterConfig.defenseBaseValue : 0f),
             };
-            var health = new Health((FP)characterAttr.currentHp, (FP)characterAttr.currentHp);
+            var health = new Health((FP)characterAttr.currentHp, (FP)characterAttr.maxHp.Total);
 
             Entity entity = Entity.Null;
             if (character.IsPlayerControlled && _playerEntity.IsAlive() == false)
@@ -125,6 +125,19 @@ namespace Battle.ECS
             }
 
             return entity;
+        }
+
+        /// <summary>
+        /// 直接对玩家 ECS Health 组件加血（供消耗品等非战斗伤害路径使用）。
+        /// ViewSyncSystem 每帧将 Health.Current 同步回 CharacterAttribute，
+        /// 因此只更新 ECS 即可，无需再调用 CharacterAttribute.SetHp。
+        /// </summary>
+        public void HealPlayer(float amount)
+        {
+            if (Context == null || !_playerEntity.IsAlive()) return;
+
+            ref var health = ref Context.World.Get<Health>(_playerEntity);
+            health.Current = TSMath.Clamp(health.Current + (FP)amount, FP.Zero, health.Max);
         }
 
         private void Initialize()

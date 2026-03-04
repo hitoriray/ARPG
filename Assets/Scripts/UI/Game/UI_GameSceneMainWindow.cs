@@ -5,6 +5,7 @@ using Data;
 using JKFrame;
 using Manager;
 using Michsky.MUIP;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,10 +17,14 @@ namespace UI
     [UIWindowData(typeof(UI_GameSceneMainWindow), true, nameof(UI_GameSceneMainWindow), 1)]
     public class UI_GameSceneMainWindow : UI_WindowBase
     {
+        #region 生命周期函数
+
         public override void Init()
         {
             base.Init();
             SetupScrollContent();
+
+            BindSettingsButtons();
         }
 
         public override void OnShow()
@@ -28,9 +33,7 @@ namespace UI
             RefreshList(null, 0);
             EventSystem.EventTrigger("RequestInteractListUpdate");
             _hasTargetScroll = false;
-            
-            // 每次显示时重新初始化颜色和禁用进度条自走模式
-            InitBarColors();
+
             StopBarsAutoPlay();
 
             // 立即刷新血量和魔量条
@@ -44,7 +47,7 @@ namespace UI
             // 从存档读取当前角色等级和经验，初始化经验条
             RefreshExpBarFromSave();
         }
-        
+
         protected override void RegisterEventListener()
         {
             base.RegisterEventListener();
@@ -60,9 +63,9 @@ namespace UI
 
             // 订阅 EXP 事件（获得经验时即时驱动，升级时也驱动）
             DataManager.OnExpGained += OnExpGained;
-            DataManager.OnLevelUp   += OnExpLevelChanged;
+            DataManager.OnLevelUp += OnExpLevelChanged;
         }
-        
+
         protected override void UnRegisterEventListener()
         {
             base.UnRegisterEventListener();
@@ -76,24 +79,21 @@ namespace UI
             }
 
             DataManager.OnExpGained -= OnExpGained;
-            DataManager.OnLevelUp   -= OnExpLevelChanged;
-        }
-
-        private void Start()
-        {
-            InitBarColors();
+            DataManager.OnLevelUp -= OnExpLevelChanged;
         }
 
         private void Update()
         {
-            if (!_hasTargetScroll || interactScrollRect == null || interactListView == null || interactListView.itemParent == null)
+            if (!_hasTargetScroll || interactScrollRect == null || interactListView == null ||
+                interactListView.itemParent == null)
                 return;
 
             var content = interactListView.itemParent as RectTransform;
             if (content == null) return;
 
             float currentY = content.anchoredPosition.y;
-            float nextY = Mathf.SmoothDamp(currentY, _targetScrollY, ref _scrollVelocity, scrollSmoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
+            float nextY = Mathf.SmoothDamp(currentY, _targetScrollY, ref _scrollVelocity, scrollSmoothTime,
+                Mathf.Infinity, Time.unscaledDeltaTime);
             content.anchoredPosition = new Vector2(content.anchoredPosition.x, nextY);
 
             if (Mathf.Abs(nextY - _targetScrollY) < 0.1f)
@@ -103,7 +103,17 @@ namespace UI
             }
         }
 
+        public override void OnClose()
+        {
+            base.OnClose();
+
+            UnBindSettingsButtons();
+        }
+
+        #endregion
+
         #region 技能快捷栏
+
         [SerializeField] private UI_ShortcutSkill_Slot[] shortcutSkillSlots;
 
         public void Show(ShortcutSkillSlotData shortcutSkillSlotData)
@@ -118,6 +128,7 @@ namespace UI
                 slot = shortcutSkillSlots[slotIndex];
                 return true;
             }
+
             slot = null;
             return false;
         }
@@ -132,6 +143,7 @@ namespace UI
                     return true;
                 }
             }
+
             slotIndex = -1;
             return false;
         }
@@ -147,6 +159,7 @@ namespace UI
                 {
                     skillConfig = skillConfigs[skillIndex];
                 }
+
                 shortcutSkillSlots[i].Init(i);
                 shortcutSkillSlots[i].Show(skillIndex, skillConfig);
             }
@@ -159,6 +172,7 @@ namespace UI
             {
                 skillConfig = PlayerService.Instance.GetAllSkillConfig()[newSkillIndex];
             }
+
             shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
 
             // 使用新接口：更新当前角色的快捷栏数据
@@ -166,16 +180,19 @@ namespace UI
             currentShortcutData.skillIds[slotIndex] = newSkillIndex;
             DataManager.SaveGameData();
         }
+
         #endregion
-        
+
         #region buff栏
+
         [SerializeField] private GameObject buffSlotPrefab;
         [SerializeField] private Transform buffSlotParent;
         private List<UI_Buff_Slot> buffSlotList = new();
 
         public UI_Buff_Slot AddBuff(BuffConfig buffConfig)
         {
-            var buffSlot = ProjectUtility.GetOrInstantiateGameObject(buffSlotPrefab, buffSlotParent).GetComponent<UI_Buff_Slot>();
+            var buffSlot = ProjectUtility.GetOrInstantiateGameObject(buffSlotPrefab, buffSlotParent)
+                .GetComponent<UI_Buff_Slot>();
             buffSlotList.Add(buffSlot);
             buffSlot.Init(buffConfig);
             return buffSlot;
@@ -186,9 +203,9 @@ namespace UI
             buffSlot.Destroy();
             buffSlotList.Remove(buffSlot);
         }
-        
+
         #endregion
-        
+
         #region 获取物品提示栏
 
         [SerializeField] private NotificationManager pickupNotifyPrefab;
@@ -230,10 +247,7 @@ namespace UI
             if (notif.titleObj != null)
                 notif.titleObj.text = pickUpInfo;
 
-            notif.onClose.AddListener(() =>
-            {
-                _activePickupNotifies.Remove(notif);
-            });
+            notif.onClose.AddListener(() => { _activePickupNotifies.Remove(notif); });
 
             _activePickupNotifies.Add(notif);
             TrimPickupNotifies();
@@ -289,31 +303,38 @@ namespace UI
 
             if (config.Icon == null || !config.Icon.RuntimeKeyIsValid()) return;
 
-            var handle = config.Icon.LoadAssetAsync<Sprite>();
-            handle.Completed += op =>
+            void ApplySprite(Sprite sprite)
             {
-                if (op.Status != AsyncOperationStatus.Succeeded) return;
-                var sprite = op.Result;
                 if (sprite == null) return;
                 _itemIconCache[config.ItemId] = sprite;
-                if (notif != null)
-                {
-                    notif.icon = sprite;
-                    if (notif.iconObj != null)
-                    {
-                        notif.iconObj.sprite = sprite;
-                    }
-                    else if (notif.descriptionObj != notif.titleObj)
-                    {
-                        // 仅在 title/desc 分离时刷新，避免覆盖标题
-                        notif.UpdateUI();
-                    }
-                }
-            };
+                if (notif == null) return;
+                notif.icon = sprite;
+                if (notif.iconObj != null)
+                    notif.iconObj.sprite = sprite;
+                else if (notif.descriptionObj != notif.titleObj)
+                    notif.UpdateUI();
+            }
+
+            if (config.Icon.IsValid())
+            {
+                // handle 已存在（加载中或已完成），复用
+                var existingHandle = config.Icon.OperationHandle.Convert<Sprite>();
+                if (existingHandle.IsDone)
+                    ApplySprite(existingHandle.Result);
+                else
+                    existingHandle.Completed += op => { if (op.Status == AsyncOperationStatus.Succeeded) ApplySprite(op.Result); };
+            }
+            else
+            {
+                var handle = config.Icon.LoadAssetAsync<Sprite>();
+                handle.Completed += op => { if (op.Status == AsyncOperationStatus.Succeeded) ApplySprite(op.Result); };
+            }
         }
 
+
         private static readonly System.Reflection.FieldInfo UseCustomContentField =
-            typeof(NotificationManager).GetField("useCustomContent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            typeof(NotificationManager).GetField("useCustomContent",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
         private static void ForceUseCustomContent(NotificationManager notif, bool value)
         {
@@ -322,11 +343,10 @@ namespace UI
         }
 
         #endregion
-        
+
         #region 交互列表
 
-        [Header("交互列表配置")]
-        [SerializeField] private ListView interactListView;
+        [Header("交互列表配置")] [SerializeField] private ListView interactListView;
         [SerializeField] private ScrollRect interactScrollRect;
         [SerializeField, Range(0.01f, 0.5f)] private float scrollSmoothTime = 0.08f;
 
@@ -335,7 +355,7 @@ namespace UI
         private float _scrollVelocity;
         private float _targetScrollY;
         private bool _hasTargetScroll;
-        
+
         private void RefreshList(List<string> dropNames, int selectedIndex)
         {
             if (dropNames == null) dropNames = EmptyNames;
@@ -349,6 +369,7 @@ namespace UI
                     child.gameObject.GameObjectPushPool();
                 }
             }
+
             _activeItems.Clear();
 
             // 2. 生成新的 Item
@@ -357,7 +378,8 @@ namespace UI
                 var dropName = dropNames[i];
                 if (string.IsNullOrEmpty(dropName)) continue;
 
-                var go = ProjectUtility.GetOrInstantiateGameObject(interactListView.itemPreset, interactListView.itemParent);
+                var go = ProjectUtility.GetOrInstantiateGameObject(interactListView.itemPreset,
+                    interactListView.itemParent);
                 go.SetActive(true);
                 // 配合 JKFrame 等原生 UI 组件保证布局刷新
                 go.transform.SetAsLastSibling();
@@ -369,7 +391,7 @@ namespace UI
                 {
                     // 设置 ButtonManager 名字兜底
                     btn.SetText(i == selectedIndex ? $"E  {dropName}" : $"   {dropName}");
-                    
+
                     // 强制手动播放高亮效果
                     if (i == selectedIndex)
                     {
@@ -379,7 +401,7 @@ namespace UI
                     {
                         btn.StartCoroutine("SetNormal");
                     }
-                    
+
                     _activeItems.Add(btn);
                 }
 
@@ -401,52 +423,9 @@ namespace UI
             {
                 Canvas.ForceUpdateCanvases();
                 LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
-                // EnsureSelectedVisible(selectedIndex);
             }
         }
-        
-        // private void EnsureSelectedVisible(int selectedIndex)
-        // {
-        //     if (interactScrollRect == null || interactListView == null || interactListView.itemParent == null)
-        //         return;
-        //
-        //     var content = interactListView.itemParent as RectTransform;
-        //     if (content == null) return;
-        //     if (selectedIndex < 0 || selectedIndex >= content.childCount) return;
-        //
-        //     var viewport = interactScrollRect.viewport != null
-        //         ? interactScrollRect.viewport
-        //         : interactScrollRect.GetComponent<RectTransform>();
-        //     if (viewport == null) return;
-        //
-        //     var item = content.GetChild(selectedIndex) as RectTransform;
-        //     if (item == null) return;
-        //
-        //     var layout = content.GetComponent<VerticalLayoutGroup>();
-        //     float spacing = layout != null ? layout.spacing : 0f;
-        //     float paddingTop = layout != null ? layout.padding.top : 0f;
-        //     float paddingBottom = layout != null ? layout.padding.bottom : 0f;
-        //
-        //     float itemHeight = item.rect.height;
-        //     float itemTop = paddingTop + selectedIndex * (itemHeight + spacing);
-        //     float itemBottom = itemTop + itemHeight;
-        //
-        //     float viewportHeight = viewport.rect.height;
-        //     float contentHeight = content.rect.height;
-        //     float maxScroll = Mathf.Max(0f, contentHeight - viewportHeight);
-        //
-        //     float scrollY = Mathf.Clamp(content.anchoredPosition.y, 0f, maxScroll);
-        //
-        //     if (itemTop < scrollY)
-        //         scrollY = itemTop;
-        //     else if (itemBottom > scrollY + viewportHeight)
-        //         scrollY = itemBottom - viewportHeight;
-        //
-        //     scrollY = Mathf.Clamp(scrollY, 0f, maxScroll);
-        //     _targetScrollY = scrollY;
-        //     _hasTargetScroll = true;
-        // }
-        
+
         private void SetupScrollContent()
         {
             if (interactListView == null || interactListView.itemParent == null || interactScrollRect == null) return;
@@ -472,24 +451,14 @@ namespace UI
         }
 
         #endregion
-        
+
         #region HP / MP / EXP 进度条
-        
-        [Header("HP/MP/EXP 进度条")]
-        [SerializeField] private ProgressBar hpBar;
+
+        [Header("HP/MP/EXP 进度条")] [SerializeField]
+        private ProgressBar hpBar;
+
         [SerializeField] private ProgressBar mpBar;
         [SerializeField] private ProgressBar expBar;
-
-        /// <summary>
-        /// 通过代码修改进度条颜色，避免在 Inspector 设置后被 MUIP UpdateUI 重置。
-        /// 只需在 Start / Init 时调用一次，效果就不会再被重置了。
-        /// </summary>
-        private void InitBarColors()
-        {
-            if (hpBar?.loadingBar != null) hpBar.loadingBar.color = new Color(0.87f, 0.22f, 0.22f); // 红色
-            if (mpBar?.loadingBar != null) mpBar.loadingBar.color = new Color(0.20f, 0.52f, 0.95f); // 蓝色
-            if (expBar?.loadingBar != null) expBar.loadingBar.color = new Color(0.98f, 0.79f, 0.10f); // 金黄色
-        }
 
         private void OnHpChanged(float current, float max)
         {
@@ -533,8 +502,9 @@ namespace UI
             if (characterId != DataManager.GameData.SelectedCharacterId) return;
 
             float max = expToNextLevel > 0 ? expToNextLevel : 100;
-            expBar.maxValue = max;
-            expBar.SetValue(currentExp % max);
+            float pct = Mathf.Clamp01((float)(currentExp % (long)max) / max) * 100f;
+            expBar.maxValue = 100;
+            expBar.SetValue(pct);
         }
 
         /// <summary>
@@ -549,8 +519,15 @@ namespace UI
             DataManager.GameData.CharacterProgressDict.Dictionary.TryGetValue(characterId, out var progress);
             if (progress == null) return;
 
+            var growthConfig = PlayerService.Instance?.GetCharacterConfig()?.LevelGrowthConfig;
+            long expToNext = growthConfig != null
+                ? growthConfig.GetExpRequiredForNextLevel(newLevel)
+                : 100;
+            if (expToNext <= 0) expToNext = 100;
+
+            float pct = Mathf.Clamp01((float)(progress.Experience % expToNext) / expToNext) * 100f;
             expBar.maxValue = 100;
-            expBar.SetValue(progress.Experience);
+            expBar.SetValue(pct);
         }
 
         /// <summary>
@@ -574,10 +551,42 @@ namespace UI
                 : 100;
             if (expToNext <= 0) expToNext = 100; // 满级兜底
 
-            expBar.maxValue = expToNext;
-            expBar.SetValue(progress.Experience);
+            float pct = expToNext > 0
+                ? Mathf.Clamp01((float)(progress.Experience % expToNext) / expToNext) * 100f
+                : 0f;
+            expBar.maxValue = 100;
+            expBar.SetValue(pct);
         }
 
         #endregion
+
+        #region 右上角功能按钮列表
+
+        [Header("右上角功能按钮")] [SerializeField] private ButtonManager settingButton;
+        [SerializeField] private ButtonManager dialogButton;
+
+        private void BindSettingsButtons()
+        {
+            settingButton.onClick.AddListener(OnSettingClick);
+            dialogButton.onClick.AddListener(OnDialogClick);
+        }
+
+        private void UnBindSettingsButtons()
+        {
+            settingButton.onClick.RemoveListener(OnSettingClick);
+            dialogButton.onClick.RemoveListener(OnDialogClick);
+        }
+        
+        private void OnSettingClick()
+        {
+
+        }
+
+        private void OnDialogClick()
+        {
+            UISystem.Show<UI_DialogWindow>()?.Show(null);
+        }
+
+    #endregion
     }
 }

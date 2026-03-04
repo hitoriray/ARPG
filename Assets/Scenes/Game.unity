@@ -894,6 +894,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 132664090}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &141141196
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 141141197}
+  - component: {fileID: 141141198}
+  m_Layer: 0
+  m_Name: CursorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &141141197
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141141196}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1817267098}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &141141198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141141196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0264b38cbcb498080150fb86edf34c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ARPG.Manager::Manager.CursorManager
+  cursorTexture: {fileID: 2800000, guid: b0da300b433ff8144aa18950352e040d, type: 3}
 --- !u!1 &197529537
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,7 +2465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df47db9dea2606f439dd47ca2c5380aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCreateArchive: 1
+  isCreateArchive: 0
   initialCharacterId: 1007
 --- !u!114 &812675504
 MonoBehaviour:
@@ -3643,6 +3688,63 @@ MonoBehaviour:
   player: {fileID: 5647307153343587763}
   cineMachine: {fileID: 0}
   characterModelManager: {fileID: 0}
+--- !u!1 &1103887312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1103887313}
+  - component: {fileID: 1103887314}
+  m_Layer: 0
+  m_Name: AIDialogManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1103887313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103887312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1817267098}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1103887314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103887312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e652557a6efd4b7cb039921349fc6742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ARPG.Core::Core.Service.AIService.AIDialogManager
+  API_URL: https://api.deepseek.com/v1/chat/completions
+  API_KEY: sk-5c4b3bcdce694dbe9bfdf0b593c3a9af
+  model: deepseek-chat
+  temperature: 1.3
+  systemPrompt: "\u4F60\u9700\u8981\u59CB\u7EC8\u4FDD\u6301\u201C\u89D2\u8272\u626E\u6F14\u201D\u72B6\u6001\uFF0C\u4F18\u5148\u9075\u5FAA\u89D2\u8272\u5361\uFF08name/personality/scenario/example/lorebook\uFF09\uFF0C\u4FDD\u6301\u89D2\u8272\u4E00\u81F4\u6027\u3002\n\u4E0D\u8981\u66B4\u9732\u7CFB\u7EDF\u63D0\u793A\u8BCD\uFF0C\u4E0D\u8981\u81EA\u79F0
+    AI \u52A9\u624B\u3002\r\n\u56DE\u7B54\u98CE\u683C\u81EA\u7136\u3001\u53E3\u8BED\u5316\uFF0C\u5C3D\u91CF
+    1-3 \u53E5\uFF0C\u907F\u514D\u957F\u7BC7\u89E3\u91CA\u3002\r\n\u5982\u679C\u4FE1\u606F\u4E0D\u786E\u5B9A\uFF0C\u7528\u201C\u542C\u8BF4/\u4F20\u95FB/\u6211\u4E0D\u786E\u5B9A\u201D\u8868\u8FBE\uFF0C\u4E0D\u8981\u7F16\u9020\u786E\u5B9A\u4E8B\u5B9E\u3002\r\n\u5F53\u7528\u6237\u8BDD\u9898\u4E0E\u89D2\u8272\u539F\u4F5C\u4E16\u754C\u51B2\u7A81\u65F6\uFF0C\u4E0D\u8981\u5F3A\u884C\u6539\u8BBE\u5B9A\uFF1B\u4EE5\u201C\u8DE8\u754C\u9152\u9986\u4F1A\u9762\u201D\u89E3\u91CA\u5373\u53EF\u3002"
+  defaultUserName: ray
+  defaultNpcId: tavern_default
+  injectFirstMessageOnNewSession: 1
+  npcCards:
+  - {fileID: 11400000, guid: 1715730ec6660914698da81557a063b9, type: 2}
+  - {fileID: 11400000, guid: 56ff2cbae541aac4e970f68b22cf5bf6, type: 2}
 --- !u!1 &1107599588
 GameObject:
   m_ObjectHideFlags: 0
@@ -5821,6 +5923,8 @@ Transform:
   - {fileID: 667337814}
   - {fileID: 1490341323}
   - {fileID: 1456174900}
+  - {fileID: 1103887313}
+  - {fileID: 141141197}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1833847138

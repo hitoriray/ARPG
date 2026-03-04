@@ -20,6 +20,9 @@ namespace Manager
 
         /// <summary>为角色添加/升级技能</summary>
         void AddSkill(int skillIndex, SkillLearnedData skillLearnedData);
+
+        void PushUICursor();
+        void PopUICursor();
     }
 
     /// <summary>

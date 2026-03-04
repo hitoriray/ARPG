@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "LeftAlt",
+                    "type": "Button",
+                    "id": "11f05661-547b-47fc-98d9-f0503e9ea498",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": " MoveHorizontal",
                     "type": "Value",
                     "id": "dee493a4-3616-43fd-a8cf-a931925f5005",
@@ -689,6 +698,17 @@
                     "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1459b73-32b1-4e3a-bd47-1638ee442207",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -919,6 +939,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "Bag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Global",
+            "id": "40927df7-b790-4eae-a960-ac2949305ec5",
+            "actions": [
+                {
+                    "name": "ESC",
+                    "type": "Button",
+                    "id": "faaf20f0-0fa0-47ce-a48f-a83140a4fac2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5c1012a7-af41-49d9-ab7b-8c0bbae40084",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ESC",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
