@@ -1353,7 +1353,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Description
+  m_text: "\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0\u63CF\u8FF0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
   m_sharedMaterial: {fileID: 665730728139461080, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
@@ -1460,8 +1460,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 117.705, y: -54.6602}
-  m_SizeDelta: {x: 120.01, y: 99.3204}
+  m_AnchoredPosition: {x: 143.02705, y: -54.6602}
+  m_SizeDelta: {x: 150.01, y: 99.3204}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1879161217375308346
 CanvasRenderer:
@@ -1491,7 +1491,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u786E\u8BA4"
+  m_text: "\u786E \u8BA4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
   m_sharedMaterial: {fileID: 665730728139461080, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
@@ -2259,14 +2259,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.1843137, g: 0.3098039, b: 0.3098039, a: 0.8745098}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 91cc8e54e07844c4ab71029265e76c8a, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2790,7 +2790,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: de72d7bf9d66c4c9b96e8f7d4888aa25, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c427d18e4d1b0421fadef6a901e45461, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2835,8 +2835,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 117.705, y: -54.6602}
-  m_SizeDelta: {x: 120.01, y: 99.3204}
+  m_AnchoredPosition: {x: 143.02705, y: -54.6602}
+  m_SizeDelta: {x: 150.01, y: 99.3204}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6603910067909329605
 CanvasRenderer:
@@ -2866,7 +2866,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u786E\u8BA4"
+  m_text: "\u786E \u8BA4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
   m_sharedMaterial: {fileID: 665730728139461080, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
@@ -6745,7 +6745,7 @@ MonoBehaviour:
   modelSpawnPoint: {fileID: 5570949299912143764}
   previewCamera: {fileID: 5570949300475455417}
   characterDisplayRawImage: {fileID: 1951321359329499277}
-  modelRotationSpeed: 30
+  modelRotationSpeed: 0.5
   modelScale: 1
   modelPositionOffset: {x: 0, y: -0.8, z: -3.5}
   previewLayerName: CharacterPreview
@@ -6832,7 +6832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: b4748a1b7a7b2df409692c305e50b9b7, type: 2}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -6874,8 +6874,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 117.705, y: -54.6602}
-  m_SizeDelta: {x: 120.01, y: 99.3204}
+  m_AnchoredPosition: {x: 143.02705, y: -54.6602}
+  m_SizeDelta: {x: 150.01, y: 99.3204}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8250721047500783179
 CanvasRenderer:
@@ -6905,7 +6905,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u786E\u8BA4"
+  m_text: "\u786E \u8BA4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
   m_sharedMaterial: {fileID: 665730728139461080, guid: a838ca5e12c70664c96960ea9b3a62bf, type: 2}
@@ -7030,8 +7030,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -310.66, y: 126}
-  m_SizeDelta: {x: 235.41, y: 109.3204}
+  m_AnchoredPosition: {x: -264.562, y: 106}
+  m_SizeDelta: {x: 286.0541, y: 109.3204}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8689046540294914673
 MonoBehaviour:
@@ -7046,7 +7046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonIcon: {fileID: 21300000, guid: d58c56a572b8c424b977292054ceb745, type: 3}
-  buttonText: "\u786E\u8BA4"
+  buttonText: "\u786E \u8BA4"
   iconScale: 1
   textSize: 50
   autoFitContent: 0
@@ -7118,7 +7118,7 @@ MonoBehaviour:
   renderOnTop: 1
   centered: 0
   isPreset: 1
-  latestTabIndex: 2
+  latestTabIndex: 0
 --- !u!114 &8869889833139822862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7224,7 +7224,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: de72d7bf9d66c4c9b96e8f7d4888aa25, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c427d18e4d1b0421fadef6a901e45461, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7299,7 +7299,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: de72d7bf9d66c4c9b96e8f7d4888aa25, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c427d18e4d1b0421fadef6a901e45461, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -7537,7 +7537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d218e07e7315e243acdfcc700d01eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonIcon: {fileID: 21300000, guid: de72d7bf9d66c4c9b96e8f7d4888aa25, type: 3}
+  buttonIcon: {fileID: 21300000, guid: c427d18e4d1b0421fadef6a901e45461, type: 3}
   buttonText: Back
   iconScale: 2.6
   textSize: 42
@@ -7610,7 +7610,7 @@ MonoBehaviour:
   renderOnTop: 1
   centered: 0
   isPreset: 1
-  latestTabIndex: 2
+  latestTabIndex: 0
 --- !u!114 &2925952368133768269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7952,10 +7952,6 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2484757557588919654, guid: bf3b72b9d3533c240b47d6c433b38e94, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2484757557588919654, guid: bf3b72b9d3533c240b47d6c433b38e94, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
       objectReference: {fileID: 0}
@@ -8031,8 +8027,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterPreviewStage
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7597164703417060300, guid: bf3b72b9d3533c240b47d6c433b38e94, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
