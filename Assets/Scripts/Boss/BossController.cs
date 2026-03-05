@@ -6,7 +6,6 @@ using Attribute;
 using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Config;
-using GOAP;
 using Manager;
 using UnityEngine;
 

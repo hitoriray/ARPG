@@ -1,34 +1,89 @@
-using Manager;
 using JKFrame;
+using Manager;
 using UnityEngine;
 
 public class GameManager : SingletonMono<GameManager>
 {
+    private const string LoadingWindowTypeKey = "UI.UI_LoadingWindow";
+    private const string LoadingWindowAssetKey = "UI_LoadingWindow";
+    private const int LoadingWindowLayer = 2;
+    private const bool LoadingWindowCache = true;
+    private const string CharacterSelectionSceneName = "CharacterSelection";
+    private const string GameSceneName = "Game";
+
+    public const string GameSceneReadyEvent = "GameSceneReady";
+
     public static Vector2 canvasSize { get; private set; } = new Vector2(1920, 1080);
+    public bool WaitForSceneReadyEvent { get; private set; }
 
     /// <summary>
-    /// 创建新存档并且进入游戏
+    /// Create a new archive, then enter character selection.
     /// </summary>
     public void CreateNewArchiveAndEnterGame()
     {
-        // 初始化存档
         DataManager.CreateArchive();
-        // 进入自定义角色场景
-        SceneSystem.LoadScene("CreateCharacter");
+        EnterCharacterSelectionWithLoading();
     }
 
     /// <summary>
-    /// 使用当前存档并且进入游戏
+    /// Continue with current archive, then enter Game scene with loading UI.
     /// </summary>
     public void UseCurrentArchiveAndEnterGame()
     {
-        // 加载当前存档
         if (!DataManager.LoadCurrentArchive())
         {
-            JKLog.Warning("[GameManager] 继续游戏读取存档失败，创建新存档。");
+            JKLog.Warning("[GameManager] Continue game load failed. Creating a new archive.");
             DataManager.CreateArchive();
         }
-        // 进入游戏场景
-        SceneSystem.LoadScene("Game");
+
+        EnterGameSceneWithLoading();
+    }
+
+    /// <summary>
+    /// Enter Game scene with loading UI and async scene loading.
+    /// </summary>
+    public void EnterGameSceneWithLoading()
+    {
+        LoadSceneWithLoading(GameSceneName, true);
+    }
+
+    /// <summary>
+    /// Enter character selection scene with loading UI.
+    /// </summary>
+    public void EnterCharacterSelectionWithLoading()
+    {
+        LoadSceneWithLoading(CharacterSelectionSceneName, false);
+    }
+
+    /// <summary>
+    /// Generic scene entry with loading UI.
+    /// </summary>
+    public void LoadSceneWithLoading(string sceneName, bool waitForSceneReadyEvent)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            JKLog.Error("[GameManager] sceneName is null or empty.");
+            return;
+        }
+
+        WaitForSceneReadyEvent = waitForSceneReadyEvent;
+        EnsureLoadingWindowDataRegistered();
+
+        UISystem.Show(LoadingWindowTypeKey);
+        SceneSystem.LoadSceneAsync(sceneName);
+    }
+
+    private static void EnsureLoadingWindowDataRegistered()
+    {
+        if (UISystem.TryGetUIWindowData(LoadingWindowTypeKey, out _))
+        {
+            return;
+        }
+
+        UISystem.AddUIWindowData(
+            LoadingWindowTypeKey,
+            new UIWindowData(LoadingWindowCache, LoadingWindowAssetKey, LoadingWindowLayer));
+
+        JKLog.Warning($"[GameManager] Runtime UIWindowData registration: {LoadingWindowTypeKey}");
     }
 }

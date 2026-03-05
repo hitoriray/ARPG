@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GOAP.Editor;
 using GOAP.Plan;
 using Sirenix.OdinInspector;
 
@@ -58,7 +57,7 @@ namespace GOAP.Action
         public virtual void OnStart() { }
         public virtual GOAPRunState OnUpdate() { return default; }
         public virtual void OnStop() { }
-        
+
         /// <summary>
         /// 如果正常Stop，则不需要Destroy，如果在Update中销毁则调用OnDestroy
         /// </summary>
@@ -81,7 +80,7 @@ namespace GOAP.Action
 
         public virtual void UpdatePriority() { }
     }
-    
+
     public class GOAPTypeAndComparer
     {
         [OnValueChanged("CheckState")] public GOAPStateType stateType;
@@ -89,14 +88,14 @@ namespace GOAP.Action
 #if UNITY_EDITOR
         public void CheckState()
         {
-            if (GOAPEditorUtility.GlobalManager != null
-                && GOAPEditorUtility.GlobalManager.TryGetGlobalState(stateType, out GOAPStateBase state)
+            if (GOAP.Editor.GOAPEditorUtility.GlobalManager != null
+                && GOAP.Editor.GOAPEditorUtility.GlobalManager.TryGetGlobalState(stateType, out GOAPStateBase state)
                 && (stateComparer == null || stateComparer.GetType() != state.GetComparerType()))
             {
                 stateComparer = state.GetComparer();
             }
-            else if (GOAPEditorUtility.agent != null 
-                     && GOAPEditorUtility.agent.states.TryGetState(stateType, out state)
+            else if (GOAP.Editor.GOAPEditorUtility.agent != null
+                     && GOAP.Editor.GOAPEditorUtility.agent.states.TryGetState(stateType, out state)
                      && (stateComparer == null || stateComparer.GetType() != state.GetComparerType()))
             {
                 stateComparer = state.GetComparer();

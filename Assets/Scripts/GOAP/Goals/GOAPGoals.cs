@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GOAP.Editor;
 using Sirenix.OdinInspector;
 
 namespace GOAP.Goals
@@ -19,14 +18,14 @@ namespace GOAP.Goals
 #if UNITY_EDITOR
             public void CheckState()
             {
-                if (GOAPEditorUtility.GlobalManager != null 
-                    && GOAPEditorUtility.GlobalManager.TryGetGlobalState(targetState, out GOAPStateBase state)
+                if (GOAP.Editor.GOAPEditorUtility.GlobalManager != null
+                    && GOAP.Editor.GOAPEditorUtility.GlobalManager.TryGetGlobalState(targetState, out GOAPStateBase state)
                     && (targetValue == null || targetValue.GetType() != state.GetComparerType()))
                 {
                     targetValue = state.GetComparer();
                 }
-                else if (GOAPEditorUtility.agent != null 
-                         && GOAPEditorUtility.agent.states.TryGetState(targetState, out state)
+                else if (GOAP.Editor.GOAPEditorUtility.agent != null
+                         && GOAP.Editor.GOAPEditorUtility.agent.states.TryGetState(targetState, out state)
                          && (targetValue == null || targetValue.GetType() != state.GetComparerType()))
                 {
                     targetValue = state.GetComparer();
@@ -55,10 +54,10 @@ namespace GOAP.Goals
 
         public Dictionary<string, GoalItem> goalItemDict = new();
         private SortedList<string, GoalItem> sortedItemList;
-        
+
         private GOAPAgent agent;
         private IGOAPOwner owner;
-        
+
         public void Init(GOAPAgent agent, IGOAPOwner owner)
         {
             this.agent = agent;
@@ -83,7 +82,7 @@ namespace GOAP.Goals
 
             return sortedItemList;
         }
-        
+
 #if UNITY_EDITOR
         [Button("检查目标状态类型")]
         public void CheckGoalsTargetValueType()

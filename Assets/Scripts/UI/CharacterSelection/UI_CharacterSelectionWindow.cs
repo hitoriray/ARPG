@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Animancer;
 using UnityEngine;
 using TMPro;
@@ -8,13 +8,13 @@ using Config;
 using Data;
 using Manager;
 using Cysharp.Threading.Tasks;
+using UnityEngine.InputSystem;
 
 namespace UI
 {
     /// <summary>
-    /// 角色选择UI窗口
-    /// 负责展示可选角色列表、预览3D模型、显示角色属性
-    /// </summary>
+    /// 瑙掕壊閫夋嫨UI绐楀彛
+    /// 璐熻矗灞曠ず鍙€夎鑹插垪琛ㄣ€侀瑙?D妯″瀷銆佹樉绀鸿鑹插睘鎬?    /// </summary>
     [UIWindowData(typeof(UI_CharacterSelectionWindow), false, "UI_CharacterSelectionWindow", 2)]
     public class UI_CharacterSelectionWindow : UI_WindowBase
     {
@@ -34,14 +34,14 @@ namespace UI
         [SerializeField] private ButtonManager backButton;
 
         [Header("3D预览")]
-        [SerializeField] private Transform modelSpawnPoint; // 3D模型生成点
-        [SerializeField] private Camera previewCamera;      // 专用预览相机
-        [SerializeField] private UnityEngine.UI.RawImage characterDisplayRawImage; // 显示RenderTexture的UI
-        [SerializeField] private float modelRotationSpeed = 30f; // 模型旋转速度
-        [SerializeField] private float modelScale = 1.5f; // 模型缩放倍数（调整显示大小）
-        [SerializeField] private Vector3 modelPositionOffset = Vector3.zero; // 模型位置偏移（如果需要上下左右移动）
-        [SerializeField] private string previewLayerName = "CharacterPreview"; // 预览Layer名称
-        [SerializeField] private Vector2Int renderTextureSize = new Vector2Int(1024, 1024); // RenderTexture分辨率
+        [SerializeField] private Transform modelSpawnPoint;
+        [SerializeField] private Camera previewCamera;
+        [SerializeField] private UnityEngine.UI.RawImage characterDisplayRawImage;
+        [SerializeField] private float modelRotationSpeed = 30f;
+        [SerializeField] private float modelScale = 1.5f;
+        [SerializeField] private Vector3 modelPositionOffset = Vector3.zero;
+        [SerializeField] private string previewLayerName = "CharacterPreview";
+        [SerializeField] private Vector2Int renderTextureSize = new Vector2Int(1024, 1024);
         #endregion
 
         #region 私有字段
@@ -52,33 +52,31 @@ namespace UI
         private bool _isDragging;
         private Vector2 _lastMousePosition;
         private RenderTexture _renderTexture;
+        private int _previewLayer = -1;
         #endregion
 
         #region 生命周期
         public override void Init()
         {
             base.Init();
-            
-            // 创建RenderTexture
-            CreateRenderTexture();
 
-            // 加载角色配置表
+            CreateRenderTexture();
+            ConfigurePreviewStage();
+
             _characterTable = ResSystem.LoadAsset<CharacterTable>("CharacterTable");
             if (_characterTable == null)
             {
-                RayDebug.Error($"无法加载CharacterTable！");
+                RayDebug.Error("无法加载 CharacterTable。");
                 return;
             }
 
-            // 筛选可选角色
             _selectableCharacters = _characterTable.Characters.FindAll(c => c.IsPlayable);
             if (_selectableCharacters.Count == 0)
             {
-                RayDebug.Error($"没有可选角色！");
+                RayDebug.Error("没有可选角色。");
                 return;
             }
 
-            // 初始化UI
             InitializeCharacterSelector();
             RegisterButtons();
         }
@@ -86,8 +84,6 @@ namespace UI
         public override void OnShow()
         {
             base.OnShow();
-
-            // 启用预览相机
             if (previewCamera != null)
             {
                 previewCamera.enabled = true;
@@ -98,34 +94,24 @@ namespace UI
         {
             base.OnClose();
 
-            // 清理3D模型
             if (_currentPreviewModel != null)
             {
                 Destroy(_currentPreviewModel);
                 _currentPreviewModel = null;
             }
 
-            // 关闭预览相机
             if (previewCamera != null)
             {
                 previewCamera.enabled = false;
             }
 
-            // 释放RenderTexture
             DestroyRenderTexture();
-
-            // 注销按钮事件
             UnregisterButtonEvents();
-
-            // 释放窗口资源
             ResSystem.UnloadInstance(gameObject);
         }
         #endregion
 
         #region UI初始化
-        /// <summary>
-        /// 初始化角色选择器
-        /// </summary>
         private void InitializeCharacterSelector()
         {
             if (characterSelector == null)
@@ -133,31 +119,22 @@ namespace UI
                 return;
             }
 
-            // 清空现有项
             characterSelector.items.Clear();
 
-            // 添加可选角色到选择器
             foreach (var character in _selectableCharacters)
             {
                 var item = new HorizontalSelector.Item
                 {
                     itemTitle = character.CharacterName,
-                    itemIcon = null // 先设为空，稍后异步加载
+                    itemIcon = null
                 };
-                
                 characterSelector.items.Add(item);
-                
-                // 异步加载 Sprite
                 LoadAndSetIconAsync(character, item).Forget();
             }
 
-            // 重新初始化选择器
             characterSelector.SetupSelector();
-
-            // 监听选择变化
             characterSelector.onValueChanged.AddListener(OnCharacterSelectionChanged);
 
-            // 手动加载第一个角色（因为设置index=0不会触发onValueChanged）
             if (_selectableCharacters.Count > 0)
             {
                 LoadCharacterPreview(_selectableCharacters[0].CharacterId).Forget();
@@ -166,38 +143,53 @@ namespace UI
 
         private async UniTaskVoid LoadAndSetIconAsync(CharacterEntry character, HorizontalSelector.Item item)
         {
-            if (character.CharacterIcon != null)
+            if (character == null || item == null)
+                return;
+
+            if (character.CharacterIcon == null || !character.CharacterIcon.RuntimeKeyIsValid())
+                return;
+
+            try
             {
                 var sprite = await character.CharacterIcon.LoadAssetAsync<Sprite>().ToUniTask();
+                if (sprite == null)
+                    return;
+
                 item.itemIcon = sprite;
-                // 注意：由于 HorizontalSelector 在刷新图片时有额外逻辑，所以可能需要在此处调用 UpdateUI();
-                characterSelector.UpdateUI();
+                if (characterSelector != null)
+                    characterSelector.UpdateUI();
+            }
+            catch (System.Exception e)
+            {
+                JKLog.Warning($"[UI_CharacterSelectionWindow] Load icon failed: {character.CharacterName}, {e.Message}");
             }
         }
 
         private void RegisterButtons()
         {
-            confirmButton.Interactable(true);
-            confirmButton.useRipple = true;
-            confirmButton.enableButtonSounds = false;
-            confirmButton.useClickSound = false;
-            confirmButton.useHoverSound = false;
-            confirmButton.useCustomContent = false;
-            confirmButton.onClick.AddListener(OnConfirmButtonClicked);
-            
-       
-            backButton.Interactable(true);
-            backButton.useRipple = true;
-            backButton.enableButtonSounds = false;
-            backButton.useClickSound = false;
-            backButton.useHoverSound = false;
-            backButton.useCustomContent = false;
-            backButton.onClick.AddListener(OnBackButtonClicked);
+            if (confirmButton != null)
+            {
+                confirmButton.Interactable(true);
+                confirmButton.useRipple = true;
+                confirmButton.enableButtonSounds = false;
+                confirmButton.useClickSound = false;
+                confirmButton.useHoverSound = false;
+                confirmButton.useCustomContent = false;
+                confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+            }
+
+            if (backButton != null)
+            {
+                backButton.Interactable(true);
+                backButton.useRipple = true;
+                backButton.enableButtonSounds = false;
+                backButton.useClickSound = false;
+                backButton.useHoverSound = false;
+                backButton.useCustomContent = false;
+                backButton.onClick.AddListener(OnBackButtonClicked);
+            }
         }
 
-        /// <summary>
-        /// 注销按钮事件
-        /// </summary>
         private void UnregisterButtonEvents()
         {
             if (confirmButton != null)
@@ -211,17 +203,17 @@ namespace UI
         }
         #endregion
 
-        #region 角色预览逻辑
+        #region 瑙掕壊棰勮閫昏緫
         /// <summary>
-        /// 加载并显示角色3D预览
+        /// 鍔犺浇骞舵樉绀鸿鑹?D棰勮
         /// </summary>
         private async UniTaskVoid LoadCharacterPreview(int characterId)
         {
-            RayDebug.Log($"{nameof(LoadCharacterPreview)} 被调用，CharacterID={characterId}");
+            RayDebug.Log($"{nameof(LoadCharacterPreview)} 琚皟鐢紝CharacterID={characterId}");
 
             _selectedCharacterId = characterId;
 
-            // 销毁旧模型
+            // 閿€姣佹棫妯″瀷
             if (_currentPreviewModel != null)
             {
                 Destroy(_currentPreviewModel);
@@ -235,62 +227,140 @@ namespace UI
                 return;
             }
 
-            // 实例化模型到预览舞台
-            _currentPreviewModel = Instantiate(modelPrefab, modelSpawnPoint);
-            _currentPreviewModel.transform.localPosition = modelPositionOffset; // 应用位置偏移
-            _currentPreviewModel.transform.localRotation = Quaternion.identity;
-            _currentPreviewModel.transform.localScale = Vector3.one * modelScale; // 应用缩放
+            if (modelSpawnPoint == null)
+            {
+                RayDebug.Error("[UI_CharacterSelectionWindow] modelSpawnPoint is null, cannot spawn preview model.");
+                return;
+            }
 
-            // 递归设置模型及所有子对象的Layer为CharacterPreview
-            int previewLayer = LayerMask.NameToLayer(previewLayerName);
+            // 瀹炰緥鍖栨ā鍨嬪埌棰勮鑸炲彴
+            _currentPreviewModel = Instantiate(modelPrefab, modelSpawnPoint);
+            _currentPreviewModel.transform.localPosition = modelPositionOffset; // 搴旂敤浣嶇疆鍋忕Щ
+            _currentPreviewModel.transform.localRotation = Quaternion.identity;
+            _currentPreviewModel.transform.localScale = Vector3.one * modelScale; // 搴旂敤缂╂斁
+
+            // 閫掑綊璁剧疆妯″瀷鍙婃墍鏈夊瓙瀵硅薄鐨凩ayer涓篊haracterPreview
+            int previewLayer = _previewLayer >= 0 ? _previewLayer : LayerMask.NameToLayer(previewLayerName);
             SetLayerRecursively(_currentPreviewModel, previewLayer);
             
-            // 加载角色配置并播放Idle动画
+            // 鍔犺浇瑙掕壊閰嶇疆骞舵挱鏀綢dle鍔ㄧ敾
             var config = await CharacterModelManager.Instance.LoadCharacterConfigAsync(characterId);
             if (config != null)
             {
                 bool previewPlayed = false;
-                var animancer = _currentPreviewModel.GetComponent<AnimancerComponent>();
-                if (animancer == null)
-                    animancer = _currentPreviewModel.AddComponent<AnimancerComponent>();
-                if (animancer.Animator == null)
-                    animancer.Animator = _currentPreviewModel.GetComponent<Animator>();
-                if (config.PlayerSO != null)
+                var animator = _currentPreviewModel.GetComponentInChildren<Animator>(true);
+                if (animator == null)
                 {
-                    await animancer.Play(config.PlayerSO.playerMovementData.PlayerIdleData.idle);
+                    animator = _currentPreviewModel.AddComponent<Animator>();
+                }
+
+                if (animator != null)
+                {
+                    if (animator.avatar == null && config.Avatar != null)
+                    {
+                        animator.avatar = config.Avatar;
+                    }
+
+                    if (animator.avatar == null && config.GenericLocomotionConfig?.avatar != null)
+                    {
+                        animator.avatar = config.GenericLocomotionConfig.avatar;
+                    }
+                }
+
+                var animancer = animator != null ? animator.GetComponent<AnimancerComponent>() : null;
+
+                // 浼樺厛锛氭湁 PlayerSO 涓旀ā鍨嬪甫 Animator 鏃讹紝浣跨敤 Animancer 鎾斁 idle
+                if (config.PlayerSO != null && animator != null)
+                {
+                    if (animancer == null)
+                        animancer = animator.gameObject.AddComponent<AnimancerComponent>();
+
+                    if (animancer.Animator == null)
+                        animancer.Animator = animator;
+
+                    var idleTransition = config.PlayerSO.playerMovementData?.PlayerIdleData?.idle;
+                    if (idleTransition != null && animancer.Animator != null)
+                    {
+                        try
+                        {
+                            _ = animancer.Play(idleTransition);
+                            previewPlayed = true;
+                        }
+                        catch (System.Exception e)
+                        {
+                            RayDebug.Warn($"瑙掕壊棰勮 Animancer 鎾斁澶辫触锛屽洖閫€鍒?Animator: {e.Message}");
+                        }
+                    }
+                }
+
+                // 鍥為€€锛氫娇鐢?GenericLocomotion 鐨?AnimatorController
+                if (!previewPlayed && config.GenericLocomotionConfig != null && animator != null)
+                {
+                    if (config.GenericLocomotionConfig.avatar != null)
+                        animator.avatar = config.GenericLocomotionConfig.avatar;
+                    if (config.GenericLocomotionConfig.animatorController != null)
+                        animator.runtimeAnimatorController = config.GenericLocomotionConfig.animatorController;
+
+                    animator.applyRootMotion = false;
+                    animator.Play(0, 0, 0f);
                     previewPlayed = true;
                 }
-                else if (config.GenericLocomotionConfig != null)
+
+                // 最后兜底：只要有 Animator 就尝试播放默认状态
+                if (!previewPlayed && animator != null)
                 {
-                    var animator = animancer.Animator != null ? animancer.Animator : _currentPreviewModel.GetComponent<Animator>();
-                    if (animator != null)
-                    {
-                        if (config.GenericLocomotionConfig.avatar != null)
-                            animator.avatar = config.GenericLocomotionConfig.avatar;
-                        if (config.GenericLocomotionConfig.animatorController != null)
-                            animator.runtimeAnimatorController = config.GenericLocomotionConfig.animatorController;
-                        animator.applyRootMotion = false;
-                        animator.Play(0, 0, 0f);
-                        previewPlayed = true;
-                    }
+                    animator.applyRootMotion = false;
+                    animator.Play(0, 0, 0f);
+                    previewPlayed = true;
                 }
 
                 if (!previewPlayed)
                 {
-                    var animator = _currentPreviewModel.GetComponent<Animator>();
-                    if (animator != null)
-                        animator.Play(0, 0, 0f);
+                    RayDebug.Warn($"瑙掕壊棰勮妯″瀷缂哄皯 Animator锛屾棤娉曟挱鏀惧姩鐢汇€侰haracterID={characterId}");
                 }
+
                 // 更新属性显示
                 UpdateAttributeDisplay(config);
             }
         }
 
         /// <summary>
-        /// 递归设置GameObject及其所有子对象的Layer
+        /// 閫掑綊璁剧疆GameObject鍙婂叾鎵€鏈夊瓙瀵硅薄鐨凩ayer
         /// </summary>
+        private void ConfigurePreviewStage()
+        {
+            _previewLayer = LayerMask.NameToLayer(previewLayerName);
+            if (_previewLayer < 0)
+            {
+                RayDebug.Warn($"[UI_CharacterSelectionWindow] Preview layer not found: {previewLayerName}");
+                return;
+            }
+
+            int previewMask = 1 << _previewLayer;
+            if (previewCamera != null)
+            {
+                previewCamera.cullingMask = previewMask;
+            }
+            else
+            {
+                RayDebug.Warn("[UI_CharacterSelectionWindow] previewCamera is null.");
+            }
+
+            if (modelSpawnPoint != null)
+            {
+                var lights = modelSpawnPoint.root.GetComponentsInChildren<Light>(true);
+                foreach (var light in lights)
+                {
+                    light.cullingMask |= previewMask;
+                }
+            }
+        }
+
         private void SetLayerRecursively(GameObject obj, int layer)
         {
+            if (obj == null || layer < 0)
+                return;
+
             obj.layer = layer;
             foreach (Transform child in obj.transform)
             {
@@ -299,8 +369,7 @@ namespace UI
         }
 
         /// <summary>
-        /// 更新属性显示
-        /// </summary>
+        /// 鏇存柊灞炴€ф樉绀?        /// </summary>
         private void UpdateAttributeDisplay(CharacterConfig config)
         {
             hpText.text = $"{config.hpBaseValue:F0}";
@@ -312,14 +381,14 @@ namespace UI
             if (entry != null)
             {
                 characterNameText.text = entry.CharacterName;
-                characterDescriptionText.text = $"类型: {entry.CharacterType}\n内存占用: {entry.MemoryCost}MB";
+                characterDescriptionText.text = $"绫诲瀷: {entry.CharacterType}\n鍐呭瓨鍗犵敤: {entry.MemoryCost}MB";
             }
         }
         #endregion
 
-        #region 事件回调
+        #region 浜嬩欢鍥炶皟
         /// <summary>
-        /// 当角色选择发生变化
+        /// 褰撹鑹查€夋嫨鍙戠敓鍙樺寲
         /// </summary>
         private void OnCharacterSelectionChanged(int index)
         {
@@ -331,7 +400,7 @@ namespace UI
         }
 
         /// <summary>
-        /// 确认按钮点击
+        /// 纭鎸夐挳鐐瑰嚮
         /// </summary>
         private void OnConfirmButtonClicked()
         {
@@ -339,7 +408,7 @@ namespace UI
         }
 
         /// <summary>
-        /// 延迟关闭窗口并进入游戏（等待当前帧结束）
+        /// 寤惰繜鍏抽棴绐楀彛骞惰繘鍏ユ父鎴忥紙绛夊緟褰撳墠甯х粨鏉燂級
         /// </summary>
         private async UniTaskVoid EnterGame()
         {
@@ -347,18 +416,18 @@ namespace UI
             if (confirmButton != null) confirmButton.Interactable(false);
             if (backButton != null) backButton.Interactable(false);
 
-            // 等待一帧，让ButtonManager.OnPointerClick完全执行完毕
+            // 绛夊緟涓€甯э紝璁〣uttonManager.OnPointerClick瀹屽叏鎵ц瀹屾瘯
             await UniTask.Yield();
 
             // 创建新存档并初始化选中的角色
             DataManager.CreateArchive(_selectedCharacterId);
 
             UISystem.Close<UI_CharacterSelectionWindow>();
-            SceneSystem.LoadScene("Game");
+            GameManager.Instance.EnterGameSceneWithLoading();
         }
 
         /// <summary>
-        /// 返回按钮点击
+        /// 杩斿洖鎸夐挳鐐瑰嚮
         /// </summary>
         private void OnBackButtonClicked()
         {
@@ -366,7 +435,7 @@ namespace UI
         }
 
         /// <summary>
-        /// 延迟关闭窗口并返回主菜单
+        /// 寤惰繜鍏抽棴绐楀彛骞惰繑鍥炰富鑿滃崟
         /// </summary>
         private async UniTaskVoid BackToMenu()
         {
@@ -381,34 +450,39 @@ namespace UI
             UISystem.Show<UI_MenuSceneMenuWindow>();
         }
         #endregion
-
         #region Update
         private void Update()
         {
             if (_currentPreviewModel != null && characterDisplayRawImage != null)
             {
-                if (Input.GetMouseButtonDown(0))
+                var mouse = Mouse.current;
+                if (mouse == null)
+                    return;
+
+                Vector2 mousePosition = mouse.position.ReadValue();
+
+                if (mouse.leftButton.wasPressedThisFrame)
                 {
-                    // 检查鼠标是否在RawImage区域内
+                    // 检查鼠标是否在 RawImage 区域内
                     if (RectTransformUtility.RectangleContainsScreenPoint(
                             characterDisplayRawImage.rectTransform,
-                            Input.mousePosition,
+                            mousePosition,
                             null))
                     {
                         _isDragging = true;
-                        _lastMousePosition = Input.mousePosition;
+                        _lastMousePosition = mousePosition;
                     }
                 }
-                else if (Input.GetMouseButtonUp(0))
+                else if (mouse.leftButton.wasReleasedThisFrame)
                 {
                     _isDragging = false;
                 }
 
                 if (_isDragging)
                 {
-                    Vector2 currentMousePosition = Input.mousePosition;
+                    Vector2 currentMousePosition = mousePosition;
                     Vector2 delta = currentMousePosition - _lastMousePosition;
-                    // 水平拖拽旋转模型（左右拖拽）
+                    // 姘村钩鎷栨嫿鏃嬭浆妯″瀷锛堝乏鍙虫嫋鎷斤級
                     float rotationAmount = delta.x * modelRotationSpeed * Time.deltaTime;
                     _currentPreviewModel.transform.Rotate(Vector3.up, -rotationAmount, Space.World);
 
@@ -418,38 +492,48 @@ namespace UI
         }
         #endregion
 
-        #region RenderTexture管理
+        #region RenderTexture绠＄悊
         /// <summary>
-        /// 创建并配置RenderTexture
+        /// 鍒涘缓骞堕厤缃甊enderTexture
         /// </summary>
         private void CreateRenderTexture()
         {
             if (_renderTexture != null)
                 return;
 
+            if (previewCamera == null || characterDisplayRawImage == null)
+            {
+                RayDebug.Error("[UI_CharacterSelectionWindow] previewCamera or characterDisplayRawImage is not assigned.");
+                return;
+            }
+
             _renderTexture = new RenderTexture(renderTextureSize.x, renderTextureSize.y, 24)
             {
-                antiAliasing = 4, // 4x MSAA抗锯齿
-                filterMode = FilterMode.Bilinear
+                antiAliasing = 4
             };
+            _renderTexture.filterMode = FilterMode.Bilinear;
             _renderTexture.Create();
 
-            // 绑定到PreviewCamera和RawImage
-            previewCamera.targetTexture = _renderTexture;
-            characterDisplayRawImage.texture = _renderTexture;
+            // 缁戝畾鍒癙reviewCamera鍜孯awImage
+            if (previewCamera != null)
+                previewCamera.targetTexture = _renderTexture;
+            if (characterDisplayRawImage != null)
+                characterDisplayRawImage.texture = _renderTexture;
         }
 
         /// <summary>
-        /// 销毁RenderTexture
+        /// 閿€姣丷enderTexture
         /// </summary>
         private void DestroyRenderTexture()
         {
             if (_renderTexture != null)
             {
-                // 解绑
-                previewCamera.targetTexture = null; 
-                characterDisplayRawImage.texture = null;
-                // 释放资源
+                // 瑙ｇ粦
+                if (previewCamera != null)
+                    previewCamera.targetTexture = null;
+                if (characterDisplayRawImage != null)
+                    characterDisplayRawImage.texture = null;
+                // 閲婃斁璧勬簮
                 _renderTexture.Release();
                 Destroy(_renderTexture);
                 _renderTexture = null;
@@ -458,3 +542,4 @@ namespace UI
         #endregion
     }
 }
+

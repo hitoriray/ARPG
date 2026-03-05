@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector.Editor;
+﻿#if UNITY_EDITOR
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 
 namespace GOAP.Editor
@@ -19,3 +20,4 @@ namespace GOAP.Editor
         }
     }
 }
+#endif

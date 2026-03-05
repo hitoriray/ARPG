@@ -1,16 +1,17 @@
 using JKFrame;
 using Manager;
+using Michsky.MUIP;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
-    [UIWindowData(typeof(UI_MenuSceneMenuWindow), false, "UI_MenuSceneMenuWindow", 2)]
+    [UIWindowData(typeof(UI_MenuSceneMenuWindow), false, nameof(UI_MenuSceneMenuWindow), 2)]
     public class UI_MenuSceneMenuWindow : UI_WindowBase
     {
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button continueButton;
-        [SerializeField] private Button quitButton;
+        [SerializeField] private ButtonManager startButton;
+        [SerializeField] private ButtonManager continueButton;
+        [SerializeField] private ButtonManager quitButton;
 
         public override void Init()
         {
@@ -37,16 +38,36 @@ namespace UI
         #region 事件回调
         private void OnStartButtonClicked()
         {
-            // 打开角色选择窗口
-            UISystem.Show<UI_CharacterSelectionWindow>();
-            // 关闭主菜单窗口
-            UISystem.Close<UI_MenuSceneMenuWindow>();
+            EnterCreateCharacterScene().Forget();
         }
 
         private void OnContinueButtonClicked()
         {
+            ContinueGame().Forget();
+        }
+
+        private async UniTaskVoid EnterCreateCharacterScene()
+        {
+            SetButtonsInteractable(false);
+            // 等待一帧，确保 ButtonManager.OnPointerClick 的后续逻辑执行完毕
+            await UniTask.Yield();
+            UISystem.Close<UI_MenuSceneMenuWindow>();
+            GameManager.Instance.EnterCharacterSelectionWithLoading();
+        }
+
+        private async UniTaskVoid ContinueGame()
+        {
+            SetButtonsInteractable(false);
+            await UniTask.Yield();
             UISystem.Close<UI_MenuSceneMenuWindow>();
             GameManager.Instance.UseCurrentArchiveAndEnterGame();
+        }
+
+        private void SetButtonsInteractable(bool interactable)
+        {
+            if (startButton != null) startButton.Interactable(interactable);
+            if (continueButton != null) continueButton.Interactable(interactable);
+            if (quitButton != null) quitButton.Interactable(interactable);
         }
         
         private void OnQuitButtonClicked()

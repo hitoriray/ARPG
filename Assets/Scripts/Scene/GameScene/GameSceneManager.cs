@@ -16,73 +16,78 @@ namespace Manager
         private const string DialogWindowAssetKey = "UI_DialogWindow";
         private const int DialogWindowLayer = 1;
         private const bool DialogWindowCache = true;
+        
+        private const string SettingsWindowTypeKey = "UI.UI_GameSettingsWindow";
+        private const string SettingsWindowAssetKey = "UI_GameSettingsWindow";
+        private const int SettingsWindowLayer = 2;
+        private const bool SettingsWindowCache = true;
 
         #region Test
 
-        [LabelText("是否创建新存档")] public bool isCreateArchive;
-        [LabelText("初始角色ID"), ShowIf("isCreateArchive", true)] public int initialCharacterId = 1004;
+        [LabelText("Create New Archive")] public bool isCreateArchive;
+        [LabelText("Initial Character ID"), ShowIf("isCreateArchive", true)] public int initialCharacterId = 1004;
         
         #endregion
 
         private InputAction _bagAction;
         private InputAction _escAction;
-        
+
         private async void Start()
         {
-            #region 测试逻辑
-
-            if (isCreateArchive)
+            try
             {
-                DataManager.CreateArchive(initialCharacterId);
-            }
-            else
-            {
-                // 正常游戏流程：检查是否有存档
-                if (DataManager.HasArchive)
+                if (isCreateArchive)
                 {
-                    if (!DataManager.LoadCurrentArchive())
-                    {
-                        JKLog.Warning("[GameSceneManager] 存档读取失败，创建新存档...");
-                        DataManager.CreateArchive(initialCharacterId);
-                    }
+                    DataManager.CreateArchive(initialCharacterId);
                 }
                 else
                 {
-                    // 没有存档，创建新存档（默认角色ID 1001）
-                    JKLog.Warning("[GameSceneManager] 未找到存档，创建新存档...");
-                    DataManager.CreateArchive(initialCharacterId);
+                    if (DataManager.HasArchive)
+                    {
+                        if (!DataManager.LoadCurrentArchive())
+                        {
+                            JKLog.Warning("[GameSceneManager] Archive load failed, creating a new archive.");
+                            DataManager.CreateArchive(initialCharacterId);
+                        }
+                    }
+                    else
+                    {
+                        JKLog.Warning("[GameSceneManager] Archive not found, creating a new archive.");
+                        DataManager.CreateArchive(initialCharacterId);
+                    }
+                }
+
+                if (DataManager.GameData == null)
+                {
+                    JKLog.Error("[GameSceneManager] GameData is null, forcing a new archive.");
+                    DataManager.CreateArchive(1001);
+                }
+
+                GameSettingsManager.Init();
+
+                InventoryManager.InitializeForRuntime();
+                EnsureInventoryWindowDataRegistered();
+                EnsureDialogWindowDataRegistered();
+                EnsureSettingsWindowDataRegistered();
+                RegisterBagInput();
+
+                await PlayerManager.Instance.InitAsync();
+
+                RegisterBagInput();
+                RegisterEscInput();
+                RayDebug.Info($"Game start, current character id: {DataManager.GameData.SelectedCharacterId}");
+
+                var ecsRunner = BattleEcsRunner.Ensure();
+                ecsRunner.RegisterCharacter(PlayerManager.Instance.player);
+
+                if (LootDropManager.Instance != null)
+                {
+                    LootDropManager.Instance.RestoreScenePersistentDrops();
                 }
             }
-
-            // ⚠️ 安全检查：确保 GameData 已正确初始化
-            if (DataManager.GameData == null)
+            finally
             {
-                JKLog.Error("[GameSceneManager] GameData 为空！强制创建新存档...");
-                DataManager.CreateArchive(1001);
-            }
-
-            // 初始化背包运行时数据（修复脏数据 + 推送一次全量刷新事件）
-            InventoryManager.InitializeForRuntime();
-            EnsureInventoryWindowDataRegistered();
-            EnsureDialogWindowDataRegistered();
-            RegisterBagInput();
-
-            #endregion
-
-            // 初始化角色
-            await PlayerManager.Instance.InitAsync();
-            // 兜底：某些时序下 InputService 可能稍后可用，这里再注册一次 Bag
-            RegisterBagInput();
-            RegisterEscInput();
-            RayDebug.Info($"游戏开始！当前角色ID: {DataManager.GameData.SelectedCharacterId}");
-            // 初始化ECS并注册玩家
-            var ecsRunner = BattleEcsRunner.Ensure();
-            ecsRunner.RegisterCharacter(PlayerManager.Instance.player);
-            
-            // 恢复当前场景所有无限时长掉落物
-            if (Manager.LootDropManager.Instance != null)
-            {
-                Manager.LootDropManager.Instance.RestoreScenePersistentDrops();
+                EventSystem.EventTrigger(GameManager.GameSceneReadyEvent);
             }
         }
 
@@ -91,7 +96,7 @@ namespace Manager
             UnregisterBagInput();
             UnregisterEscInput();
 
-            // TODO：模拟游戏退出时的存档
+            // Save archive data when leaving scene/application.
             DataManager.SaveGameData();
         }
 
@@ -112,14 +117,10 @@ namespace Manager
         }
 
         /// <summary>
-        /// 注册全局 ESC 输入监听。
-        /// 前提：用户已在 InputMap 中添加一个名为 "Global" 的 ActionMap，其中包含 "ESC" Action。
+        /// Register global ESC input and close the top modal UI.
         /// </summary>
         private void RegisterEscInput()
         {
-            // TODO: 用户在 InputMap 里添加 Global ActionMap 之后，将下面一行注释去掉并替换为实际路径
-            // _escAction = InputService.Instance?.inputMap?.Global.ESC;
-            // 目前先用 UI.ESC 公测，要求：UI ActionMap 需要在小对话框是否打开时进行切换
             _escAction = InputService.Instance?.inputMap?.Global.ESC;
             if (_escAction == null) return;
 
@@ -166,7 +167,7 @@ namespace Manager
                 InventoryWindowTypeKey,
                 new UIWindowData(InventoryWindowCache, InventoryWindowAssetKey, InventoryWindowLayer));
 
-            JKLog.Warning($"[GameSceneManager] 运行时补注册 UIWindowData: {InventoryWindowTypeKey}");
+            JKLog.Warning($"[GameSceneManager] Runtime UIWindowData registration: {InventoryWindowTypeKey}");
         }
 
         private void EnsureDialogWindowDataRegistered()
@@ -180,7 +181,23 @@ namespace Manager
                 DialogWindowTypeKey,
                 new UIWindowData(DialogWindowCache, DialogWindowAssetKey, DialogWindowLayer));
 
-            JKLog.Warning($"[GameSceneManager] 运行时补注册 UIWindowData: {DialogWindowTypeKey}");
+            JKLog.Warning($"[GameSceneManager] Runtime UIWindowData registration: {DialogWindowTypeKey}");
+        }
+
+        private void EnsureSettingsWindowDataRegistered()
+        {
+            if (UISystem.TryGetUIWindowData(SettingsWindowTypeKey, out _))
+            {
+                return;
+            }
+
+            UISystem.AddUIWindowData(
+                SettingsWindowTypeKey,
+                new UIWindowData(SettingsWindowCache, SettingsWindowAssetKey, SettingsWindowLayer));
+
+            JKLog.Warning($"[GameSceneManager] Runtime UIWindowData registration: {SettingsWindowTypeKey}");
         }
     }
 }
+
+

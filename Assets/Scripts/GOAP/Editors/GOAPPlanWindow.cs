@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using GOAP.Plan;
 using UnityEditor;
 using UnityEngine;
@@ -49,7 +50,7 @@ namespace GOAP.Editor
                 PrintNode(child, depth + 1);
             }
         }
-        
+
         #region 测试
 
         private void Test()
@@ -80,6 +81,8 @@ namespace GOAP.Editor
                 CreateTestPlanData(tempNode, length, maxDepth, currentDepth + 1);
             }
         }
+
         #endregion
     }
 }
+#endif

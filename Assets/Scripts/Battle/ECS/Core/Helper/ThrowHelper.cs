@@ -14,7 +14,7 @@ namespace Battle.ECS.Core.Helper
 #if UNITY_EDITOR
             throw exception;
 #else
-            Logger.Fatal(exception);
+            RayDebug.Exception(exception);
 #endif
         }
     }

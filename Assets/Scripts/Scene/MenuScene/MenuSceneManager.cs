@@ -7,6 +7,7 @@ namespace Manager
     {
         void Start()
         {
+            GameSettingsManager.Init();
             UISystem.Show<UI_MenuSceneMenuWindow>();
         }
     }

@@ -23,7 +23,17 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b3a30b86c0bda44ba6d101f45b2664c
-    m_Address: Assets/Res/UI/Swordsman Skills Free Icons Art/PNG/1.png
+    m_Address: 1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bc38eeaf11fdc54b9a5d65600e865dd
+    m_Address: UI_GameSettingsWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa77bd4022271f54cb80aa66f1f79c81
+    m_Address: Assets/Art/CharacterIcon/anon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

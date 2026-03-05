@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: LoadingWindow
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: LoadingWindow
+  m_Data:
+    m_SerializedData: []
+  m_GUID: eda5bd07b7c81d440ac0e79ba7371066
+  m_SerializeEntries:
+  - m_GUID: 1f57eca786b63304a93a867e11c7b2ba
+    m_Address: LoadingBG8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c301464bce20e74f8370582ee6c63a4
+    m_Address: LoadingBG2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c2c6cd93dbe46a41957b4d047e41cc3
+    m_Address: LoadingBG1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 586689a74c7241b438021fd435ac12a7
+    m_Address: LoadingBG7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c3477960c4481c48aa602bbe7787371
+    m_Address: LoadingBG5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9c0f335b09fc92419ce1ade299549c8
+    m_Address: LoadingBG3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caf1af5a5cce5fd40a89f62abe4b2390
+    m_Address: UI_LoadingWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d732c3fad42bf2b46b40deda24f4067e
+    m_Address: LoadingBG6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2363302edf674f469bcb3790c61abdf
+    m_Address: LoadingBG4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d0460f8746561464bad6124ca32088fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 5bb3a9d5097e6c34dafa7554667804d6, type: 2}
+    - {fileID: 11400000, guid: 2858b692c244b274fad80f86fab23447, type: 2}

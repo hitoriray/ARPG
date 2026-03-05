@@ -579,7 +579,15 @@ namespace UI
         
         private void OnSettingClick()
         {
-
+            var settingsWindow = UISystem.GetWindow<UI_GameSettingsWindow>();
+            if (settingsWindow != null && settingsWindow.UIEnable)
+            {
+                UISystem.Close<UI_GameSettingsWindow>();
+            }
+            else
+            {
+                UISystem.Show<UI_GameSettingsWindow>();
+            }
         }
 
         private void OnDialogClick()

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GOAP.Editor;
 using Sirenix.OdinInspector;
 
 namespace GOAP
@@ -26,7 +25,7 @@ namespace GOAP
         private List<string> GetAllState()
         {
             List<string> res = new();
-            GOAPGlobalManager globalManager = GOAPEditorUtility.GlobalManager;
+            GOAPGlobalManager globalManager = GOAP.Editor.GOAPEditorUtility.GlobalManager;
             if (globalManager != null && globalManager.GlobalStates != null && globalManager.GlobalStates.StateDict != null)
             {
                 foreach (KeyValuePair<string, GOAPStateBase> item in globalManager.GlobalStates.StateDict)
@@ -34,9 +33,9 @@ namespace GOAP
                     res.Add(item.Key);
                 }
             }
-            if (GOAPEditorUtility.agent != null && GOAPEditorUtility.agent.states != null && GOAPEditorUtility.agent.states.StateDict != null)
+            if (GOAP.Editor.GOAPEditorUtility.agent != null && GOAP.Editor.GOAPEditorUtility.agent.states != null && GOAP.Editor.GOAPEditorUtility.agent.states.StateDict != null)
             {
-                foreach (KeyValuePair<string, GOAPStateBase> item in GOAPEditorUtility.agent.states.StateDict)
+                foreach (KeyValuePair<string, GOAPStateBase> item in GOAP.Editor.GOAPEditorUtility.agent.states.StateDict)
                 {
                     res.Add(item.Key);
                 }
@@ -44,6 +43,7 @@ namespace GOAP
             return res;
         }
 #endif
+
         #endregion
     }
 }

@@ -40,7 +40,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1002
     CharacterName: "\u9ED1\u53D1\u5973\u5B69"
@@ -60,10 +60,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1003
-    CharacterName: "\u5343Xiao"
+    CharacterName: "\u5343\u54B2"
     CharacterIcon:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -80,7 +80,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1004
     CharacterName: "\u5361\u63D0\u5E0C\u5A05"
@@ -100,7 +100,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1005
     CharacterName: "\u8299\u9732\u5FB7\u5229\u65AF"
@@ -120,10 +120,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1006
-    CharacterName: Tomorin
+    CharacterName: "\u9AD8\u677E\u706F"
     CharacterIcon:
       m_AssetGUID: 
       m_SubObjectName: 
@@ -140,15 +140,15 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     MemoryCost: 50
-    IsPlayable: 1
+    IsPlayable: 0
     CharacterType: 0
   - CharacterId: 1007
-    CharacterName: Anon
+    CharacterName: "\u5343\u65E9\u7231\u97F3"
     CharacterIcon:
-      m_AssetGUID: 
+      m_AssetGUID: aa77bd4022271f54cb80aa66f1f79c81
       m_SubObjectName: 
       m_SubObjectType: 
-      m_EditorAssetChanged: 0
+      m_EditorAssetChanged: 1
     CharacterModelPrefab:
       m_AssetGUID: e3491655555da3a4597720f41f64b199
       m_SubObjectName: 
