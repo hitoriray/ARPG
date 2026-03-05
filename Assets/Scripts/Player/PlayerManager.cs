@@ -31,6 +31,7 @@ namespace Manager
 
         public CharacterConfig CharacterConfig { get; private set; }
         private InputService inputService;
+        private Behaviour[] _cameraInputBehaviours;
         private bool characterControl = true;
 
         // UI 覆盖计数：任意 UI 打开 +1，关闭 -1；> 0 时强制显示鼠标
@@ -128,6 +129,8 @@ namespace Manager
 
             ApplyCursorState();
 
+            EnsureCameraRigReference();
+            SetCameraInputEnabled(canControl);
             if (cineMachine != null)
                 cineMachine.SetActive(canControl);
         }
@@ -189,6 +192,52 @@ namespace Manager
                 characterModelManager = FindAnyObjectByType<CharacterModelManager>();
 
             return characterModelManager;
+        }
+
+        private void EnsureCameraRigReference()
+        {
+            if (cineMachine != null)
+                return;
+
+            var cameraController = FindAnyObjectByType<CameraController>(FindObjectsInactive.Include);
+            if (cameraController != null)
+            {
+                cineMachine = cameraController.gameObject;
+            }
+        }
+
+        private void SetCameraInputEnabled(bool enabled)
+        {
+            if (cineMachine == null)
+                return;
+
+            if (_cameraInputBehaviours == null || _cameraInputBehaviours.Length == 0)
+            {
+                var allBehaviours = cineMachine.GetComponentsInChildren<Behaviour>(true);
+                var temp = new List<Behaviour>();
+                for (int i = 0; i < allBehaviours.Length; i++)
+                {
+                    var behaviour = allBehaviours[i];
+                    if (behaviour == null) continue;
+
+                    string typeName = behaviour.GetType().Name;
+                    if (typeName.Contains("CinemachineInputProvider") || typeName.Contains("InputAxisController"))
+                    {
+                        temp.Add(behaviour);
+                    }
+                }
+                _cameraInputBehaviours = temp.ToArray();
+            }
+
+            if (_cameraInputBehaviours == null)
+                return;
+
+            for (int i = 0; i < _cameraInputBehaviours.Length; i++)
+            {
+                var behaviour = _cameraInputBehaviours[i];
+                if (behaviour == null) continue;
+                behaviour.enabled = enabled;
+            }
         }
 
         public ICharacter GetCharacterController() => player;
