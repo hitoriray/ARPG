@@ -131,8 +131,6 @@ namespace Manager
 
             EnsureCameraRigReference();
             SetCameraInputEnabled(canControl);
-            if (cineMachine != null)
-                cineMachine.SetActive(canControl);
         }
 
         /// <summary>
@@ -197,12 +195,28 @@ namespace Manager
         private void EnsureCameraRigReference()
         {
             if (cineMachine != null)
-                return;
+            {
+                // Inspector 可能绑定到子节点(cm)，这里统一提升到相机根节点，避免漏掉输入组件
+                var currentRoot = cineMachine.GetComponentInParent<CameraController>();
+                if (currentRoot != null)
+                {
+                    if (cineMachine != currentRoot.gameObject)
+                    {
+                        cineMachine = currentRoot.gameObject;
+                        _cameraInputBehaviours = null;
+                    }
+                    return;
+                }
+            }
 
             var cameraController = FindAnyObjectByType<CameraController>(FindObjectsInactive.Include);
             if (cameraController != null)
             {
-                cineMachine = cameraController.gameObject;
+                if (cineMachine != cameraController.gameObject)
+                {
+                    cineMachine = cameraController.gameObject;
+                    _cameraInputBehaviours = null;
+                }
             }
         }
 
