@@ -3,6 +3,7 @@ using Michsky.MUIP;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Manager;
 
 namespace UI
 {

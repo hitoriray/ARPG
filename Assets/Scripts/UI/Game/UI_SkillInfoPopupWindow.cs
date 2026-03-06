@@ -2,6 +2,7 @@
 using JKFrame;
 using UnityEngine;
 using UnityEngine.UI;
+using Manager;
 
 namespace UI
 {

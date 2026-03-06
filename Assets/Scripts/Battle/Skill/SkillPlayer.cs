@@ -43,7 +43,7 @@ namespace Skill
             weaponDict.Clear();
             WeaponController[] weaponControllers = transform.GetComponentsInChildren<WeaponController>();
             foreach (var weaponController in weaponControllers)
-                weaponDict.Add(weaponController.WeaponName, weaponController);
+                weaponDict.TryAdd(weaponController.WeaponName, weaponController);
 
             foreach (var skillWeapon in weaponDict.Values)
                 skillWeapon.Init(attackDetectionLayer, OnWeaponDetection);

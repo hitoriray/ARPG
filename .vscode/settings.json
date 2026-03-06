@@ -60,6 +60,7 @@
         "Mathf",
         "proirity",
         "Rigidbody",
-        "Scriptable"
+        "Scriptable",
+        "Sirenix"
     ]
 }

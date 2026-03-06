@@ -17,6 +17,16 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: e5073113e311ba14082b79d9cf0986e8
   m_SerializeEntries:
+  - m_GUID: 1b76e0c6900779b448db99eeddcbe7cd
+    m_Address: UI_ConfirmWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d1f3d9a2aae0f48aeb38846cfc375b
+    m_Address: UI_ConversationWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 82f11f29b4b268247af0eaa7c756f46e
     m_Address: Player
     m_ReadOnly: 0
@@ -33,7 +43,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aa77bd4022271f54cb80aa66f1f79c81
-    m_Address: Assets/Art/CharacterIcon/anon.png
+    m_Address: anon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

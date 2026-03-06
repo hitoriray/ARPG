@@ -80,16 +80,13 @@ namespace UI
         [SerializeField] private List<RebindEntry> rebindEntries = new();
         [SerializeField] private TMP_Text rebindTipTMPText;
         [SerializeField] private Text rebindTipText;
-        [SerializeField] private Button resetBindingsButton;
         [SerializeField] private ButtonManager resetBindingsButtonManager;
 
         [Header("General Buttons")]
-        [SerializeField] private Button applyButton;
-        [SerializeField] private Button defaultButton;
-        [SerializeField] private Button closeButton;
         [SerializeField] private ButtonManager applyButtonManager;
         [SerializeField] private ButtonManager defaultButtonManager;
         [SerializeField] private ButtonManager closeButtonManager;
+        [SerializeField] private ButtonManager quitGameButtonManager;
 
         [Header("Behavior")]
         [SerializeField] private bool autoApplyOnClose = true;
@@ -130,7 +127,7 @@ namespace UI
             PlayerService.Instance?.SetCharacterControl(false);
             InputService.Instance?.inputMap?.UI.Disable();
             PlayerService.Instance?.PushUICursor();
-            UIModalStack.Push(CloseThisWindow);
+            UIModalStack.Push(Close);
 
             // 防止按钮监听在运行中被覆盖，显示时重新绑定一次。
             BindButtons();
@@ -155,7 +152,7 @@ namespace UI
             PlayerService.Instance?.SetCharacterControl(true);
             InputService.Instance?.inputMap?.UI.Enable();
             PlayerService.Instance?.PopUICursor();
-            UIModalStack.Remove(CloseThisWindow);
+            UIModalStack.Remove(Close);
         }
 
         private void OnDestroy()
@@ -284,10 +281,11 @@ namespace UI
 
         private void BindButtons()
         {
-            BindClick(applyButton, applyButtonManager, OnApplyClick);
-            BindClick(defaultButton, defaultButtonManager, OnDefaultClick);
-            BindClick(closeButton, closeButtonManager, CloseThisWindow);
-            BindClick(resetBindingsButton, resetBindingsButtonManager, OnResetBindingsClick);
+            if (closeButtonManager != null) { closeButtonManager.onClick.RemoveListener(Close); closeButtonManager.onClick.AddListener(Close); }
+            if (applyButtonManager != null) { applyButtonManager.onClick.RemoveListener(OnApplyClick); applyButtonManager.onClick.AddListener(OnApplyClick); }
+            if (defaultButtonManager != null) { defaultButtonManager.onClick.RemoveListener(OnDefaultClick); defaultButtonManager.onClick.AddListener(OnDefaultClick); }
+            if (resetBindingsButtonManager != null) { resetBindingsButtonManager.onClick.RemoveListener(OnResetBindingsClick); resetBindingsButtonManager.onClick.AddListener(OnResetBindingsClick); }
+            if (quitGameButtonManager != null) { quitGameButtonManager.onClick.RemoveListener(OnQuitGameClick); quitGameButtonManager.onClick.AddListener(OnQuitGameClick); }
 
             for (int i = 0; i < rebindEntries.Count; i++)
             {
@@ -368,6 +366,11 @@ namespace UI
             _editingData = GameSettingsManager.GetCurrentSettingsCopy();
             RefreshBindingLabels();
             SetTip("按键已恢复默认。");
+        }
+
+        private void OnQuitGameClick()
+        {
+            UISystem.Show<UI_ConfirmWindow>()?.Show("退出游戏", "确认退出游戏？", UIHelper.QuitGame, null);
         }
 
         private void StartRebind(RebindEntry entry)
@@ -785,7 +788,7 @@ namespace UI
             return switchManager != null ? switchManager.isOn : fallbackValue;
         }
 
-        private void CloseThisWindow()
+        private void Close()
         {
             UISystem.Close<UI_GameSettingsWindow>();
         }

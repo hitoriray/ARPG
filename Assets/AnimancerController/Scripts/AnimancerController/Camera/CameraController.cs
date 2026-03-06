@@ -1,4 +1,5 @@
 using Cinemachine;
+using Manager;
 using RayPlayer;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -36,7 +37,13 @@ public class CameraController : MonoBehaviour
             virtualCamera.m_CameraDistance = currentDistance;
         }
     }
-    
+
+    private void Start()
+    {
+        var player = PlayerManager.Instance.GetComponentInChildren<PlayerController>();
+        player?.RegisterCamera(this);
+    }
+
     private void Update()
     {
         GetMouseScroll();

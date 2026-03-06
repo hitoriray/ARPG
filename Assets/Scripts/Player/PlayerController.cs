@@ -1,4 +1,3 @@
-using System;
 using Animancer;
 using Arch.Core;
 using Arch.Core.Extensions;
@@ -7,7 +6,6 @@ using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Cinemachine;
 using Config;
-using Data;
 using JKFrame;
 using Manager;
 using RayPlayerState;
@@ -17,15 +15,7 @@ namespace RayPlayer
 {
     public class PlayerController : CharacterControllerBase, IStateMachineOwner, ICharacter
     {
-        private const float DefaultMoveStartTurnSpeed = 1.8f;
-        private const float DefaultMoveLoopTurnSpeed = 1.4f;
-        private const float DefaultLockTurnSpeed = 5f;
-
         public Entity PlayerEntity { get; private set; }
-        [Header("Config")]
-        [SerializeField] private CharacterConfig characterConfig;
-        [SerializeField] public PlayerSO playerSO;
-        [SerializeField] public ItemConfig itemConfig;
 
         [Header("View")]
         [SerializeField] private PlayerView playerView;
@@ -41,6 +31,12 @@ namespace RayPlayer
 
         [Header("Generic Locomotion")]
         [SerializeField] private GenericPlayerLocomotionController genericLocomotionController;
+
+        [Header("Footstep")]
+        [SerializeField, Range(0f, 1f)] private float footstepVolume = 1f;
+        [SerializeField, Min(0f)] private float footstepRayDistance = 1.6f;
+        [SerializeField] private Vector3 footstepRayOffset = new Vector3(0f, 0.2f, 0f);
+        [SerializeField, Min(0f)] private float footstepMinInterval = 0.06f;
         
         [Header("Animancer Skill Layer")]
         [SerializeField] private int skillLayerIndex = 1;
@@ -50,7 +46,7 @@ namespace RayPlayer
         
         public PlayerSkillBrainBase SkillBrain => skillBrain;
         public CharacterAttribute CharacterAttribute => characterAttribute;
-        public CharacterConfig CharacterConfig => characterConfig;
+        // CharacterConfig / PlayerSO / WalkSpeed / RunSpeed / RotateSpeed 由基类提供
 
         public AnimancerComponent Animancer => animancer;
         public AnimancerLayer SkillLayer => animancer.Layers[skillLayerIndex];
@@ -62,32 +58,17 @@ namespace RayPlayer
         public InputService InputService { get; private set; }
         public TimerService TimerService { get; private set; }
         public Transform CameraTransform { get; private set; }
-        
+
         public PlayerReusableData ReusableData { get; private set; }
         public PlayerReusableLogic ReusableLogic { get; private set; }
         public PlayerStateMachine MovementStateMachine { get; private set; }
-        
+
         public bool IsPlayerControlled => true;
-        
-        public float WalkSpeed => characterConfig.WalkSpeed;
-        public float RunSpeed => characterConfig.RunSpeed;
-        public float RotateSpeed => characterConfig.RotateSpeed;
-        public float MoveStartTurnSpeed =>
-            characterConfig != null && characterConfig.MoveStartTurnSpeed > 0f
-                ? characterConfig.MoveStartTurnSpeed
-                : DefaultMoveStartTurnSpeed;
-        public float MoveLoopTurnSpeed =>
-            characterConfig != null && characterConfig.MoveLoopTurnSpeed > 0f
-                ? characterConfig.MoveLoopTurnSpeed
-                : DefaultMoveLoopTurnSpeed;
-        public float LockTurnSpeed =>
-            characterConfig != null && characterConfig.LockTurnSpeed > 0f
-                ? characterConfig.LockTurnSpeed
-                : DefaultLockTurnSpeed;
 
         private bool inSkill;
         private bool currentSkillUpperBody;
         private bool useGenericLocomotion;
+        private float lastFootstepTime = -999f;
 
         protected override void Awake()
         {
@@ -98,19 +79,14 @@ namespace RayPlayer
             CameraTransform = Camera.main != null ? Camera.main.transform : null;
         }
         
-        public void Init(CharacterConfig characterConfig, GameData gameData)
+        public override void Init(CharacterConfig characterConfig)
         {
-            this.characterConfig = characterConfig;
+            if (characterConfig == null) return;
+            
+            base.Init(characterConfig);
+            
             useGenericLocomotion = characterConfig != null && characterConfig.GenericLocomotionConfig != null;
-            RayDebug.Log($"[PlayerController] Init -> character={characterConfig?.name}, useGeneric={useGenericLocomotion}, genericConfig={characterConfig?.GenericLocomotionConfig?.name}");
-            if (playerSO == null && characterConfig != null)
-                playerSO = characterConfig.PlayerSO;
-            if (characterConfig != null)
-            {
-                ApplyControllerProfile(characterConfig.ControllerProfile);
-                if (!useGenericLocomotion && characterConfig.Avatar != null)
-                    animator.avatar = characterConfig.Avatar;
-            }
+            RayDebug.Log($"Init -> character={characterConfig?.name}, useGeneric={useGenericLocomotion}, genericConfig={characterConfig?.GenericLocomotionConfig?.name}");
 
             if (useGenericLocomotion)
                 SetupGenericLocomotion(characterConfig.GenericLocomotionConfig);
@@ -119,7 +95,7 @@ namespace RayPlayer
 
             if (!useGenericLocomotion && playerSO == null)
             {
-                RayDebug.Error("[PlayerController] PlayerSO is null for non-generic locomotion.");
+                RayDebug.Error("PlayerSO is null for non-generic locomotion.");
                 return;
             }
             
@@ -130,7 +106,7 @@ namespace RayPlayer
             // 从存档读取等级，并应用成长曲线（有成长配置时生效）
             if (characterConfig.LevelGrowthConfig != null)
             {
-                var progress = Manager.DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
+                var progress = DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
                 int currentLevel = progress?.Level ?? 1;
                 characterAttribute.ApplyLevel(currentLevel, characterConfig, characterConfig.LevelGrowthConfig);
 
@@ -174,13 +150,6 @@ namespace RayPlayer
             
             // 刷新武器槽位索引
             weaponSlotManager?.RefreshSlots();
-            // 让Cinemachine看向这个player
-            var vcam = cameraController != null ? cameraController.GetComponent<CinemachineVirtualCamera>() : null;
-            if (vcam != null && playerView != null)
-            {
-                vcam.Follow = playerView.LookAt;
-                vcam.LookAt = playerView.LookAt;
-            }
 
             var context = BattleEcsRunner.Instance.Context;
             if (context != null)
@@ -192,24 +161,11 @@ namespace RayPlayer
                 PlayerEntity = BattleEcsRunner.Instance.RegisterCharacter(this);
                 RayDebug.Log($"ECS实体已创建: Entity ID = {PlayerEntity.Id}");
             }
+        }
 
-            // 测试
-            if (Manager.LootDropManager.Instance != null)
-            {
-                if (itemConfig != null)
-                {
-                    Vector3 pos = transform.position + transform.forward * 2f;
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                    Manager.LootDropManager.Instance.SpawnWorldDrop(itemConfig, 1, pos);
-                }
-            }
+        public void RegisterCamera(CameraController cameraController)
+        {
+            this.cameraController = cameraController;
         }
 
         private void SetupDefaultLocomotion()
@@ -252,9 +208,7 @@ namespace RayPlayer
 
         private void SetupAnimancerLayers()
         {
-            var layer = animancer.Layers[skillLayerIndex];
-            layer.SetWeight(0f);
-            layer.IsAdditive = false;
+            SetupAnimancerLayers(skillLayerIndex);
         }
 
         protected override void Update()
@@ -331,21 +285,7 @@ namespace RayPlayer
 
             inSkill = true;
             currentSkillUpperBody = upperBody;
-
-            var baseLayer = animancer.Layers[0];
-            var skillLayer = animancer.Layers[skillLayerIndex];
-
-            skillLayer.IsAdditive = false;
-            skillLayer.Mask = upperBody ? upperBodyMask : null;
-
-            // 清除 Layer0 残留状态，防止返回技能后 Mixer 内部权重不等于 1 的警告
-            // Layer0 此刻即将降权至 0（全身技能），Stop 后不可见，安全
-            baseLayer.Stop();
-
-            // 立即切权重，避免渐变期间"no override layers at weight 1"警告
-            // 攻击动画的打击感依赖第一帧即可见，立即生效比 0.08s 淡入更直接
-            skillLayer.SetWeight(1f);
-            baseLayer.SetWeight(upperBody ? 1f : 0f);
+            base.EnterSkillMode(upperBody, skillLayerIndex, upperBodyMask);
         }
 
         public void ExitSkillMode()
@@ -355,53 +295,15 @@ namespace RayPlayer
 
             inSkill = false;
             currentSkillUpperBody = false;
-            ClearSkillRootMotion();
-
-            var baseLayer = animancer.Layers[0];
-            var skillLayer = animancer.Layers[skillLayerIndex];
-
-            // 冻结当前技能动画，防止它在淡出期间继续播放或循环
-            // 这避免了动画Loop回到第0帧，产生错误的过渡姿势
-            var skillState = skillLayer.CurrentState;
-            if (skillState != null)
-            {
-                skillState.IsPlaying = false;  // 暂停动画，保持在当前帧
-            }
-
-            // 只淡出层权重即可，层权重到 0 后 CleanupFinishedSkillLayer 会停止动画
-            skillLayer.StartFade(0f, skillLayerFadeOut);
-            baseLayer.StartFade(1f, skillLayerFadeOut);
+            base.ExitSkillMode(skillLayerIndex, skillLayerFadeOut);
         }
 
-        /// <summary>
-        /// 当 skillLayer 权重淡出完成后，停止层上所有动画状态
-        /// 防止技能动画在不可见时持续运行（浪费性能 + 导致下次播放从错误位置开始）
-        /// </summary>
         private void CleanupFinishedSkillLayer()
         {
-            if (inSkill)
-                return;
-
-            var skillLayer = animancer.Layers[skillLayerIndex];
-            if (skillLayer.Weight > 0f || skillLayer.CurrentState == null)
-                return;
-
-            skillLayer.Stop();
+            if (inSkill) return;
+            base.CleanupFinishedSkillLayer(skillLayerIndex);
         }
-
-        public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
-        {
-            if (applyRootMotion && handler != null)
-                SetRootMotionMode(RootMotionMode.Custom, handler);
-            else
-                SetRootMotionMode(RootMotionMode.Suppressed, null);
-        }
-
-        public void ClearSkillRootMotion()
-        {
-            SetRootMotionMode(RootMotionMode.Default, null);
-        }
-
+        
         public void ChangeState(PlayerState newState, bool reCurrstate = false)
         {
             if (MovementStateMachine == null)
@@ -466,7 +368,7 @@ namespace RayPlayer
             // 1. 发射 ECS 伤害请求
             if (PlayerEntity.IsAlive())
             {
-                Battle.ECS.Core.Helper.DamageHelper.EmitDamage(PlayerEntity, attackData, transform.position);
+                DamageHelper.EmitDamage(PlayerEntity, attackData, transform.position);
             }
 
             // 2. 无敌帧期间不进入受伤状态
@@ -518,6 +420,39 @@ namespace RayPlayer
             }
         }
         
+        public void TryReleaseBasicAttack()
+        {
+            if (skillBrain == null || MovementStateMachine == null) return;
+            // 如果已经在放技能则不再触发，连击由内部状态机控制
+            if (MovementStateMachine.currentState == MovementStateMachine.skillState) return;
+
+            // 0号通常是普攻
+            if (skillBrain.CheckReleaseSkill(0))
+            {
+                MovementStateMachine.ChangeState(MovementStateMachine.skillState);
+                skillBrain.ReleaseSkill(0);
+            }
+        }
+
+        public void TryReleaseSkillBySkillIndex(int skillIndex)
+        {
+            if (skillBrain == null || MovementStateMachine == null || skillIndex < 0) return;
+            if (MovementStateMachine.currentState == MovementStateMachine.skillState) return;
+
+            for (int i = 0; i < skillBrain.SkillCount; i++)
+            {
+                if (skillBrain.GetSkillIndex(i) == skillIndex)
+                {
+                    if (skillBrain.CheckReleaseSkill(i))
+                    {
+                        MovementStateMachine.ChangeState(MovementStateMachine.skillState);
+                        skillBrain.ReleaseSkill(i);
+                    }
+                    return;
+                }
+            }
+        }
+
         public void Change2IdleState()
         {
             if (MovementStateMachine == null)
@@ -533,18 +468,7 @@ namespace RayPlayer
             // 保底：不在技能状态时直接退出（外部非预期调用的兜底）
             ExitSkillMode();
         }
-
-        public void OnSkillMove(Vector3 deltaPos)
-        {
-            controller.Move(deltaPos);
-        }
-
-        public void OnSkillRotate(Quaternion deltaRot)
-        {
-            // ModelTransform.rotation *= deltaRot;
-            transform.rotation = deltaRot * transform.rotation;
-        }
-
+        
         /// <summary>
         /// 绑定角色模型层
         /// </summary>
@@ -592,6 +516,68 @@ namespace RayPlayer
             if (DataManager.GameData == null) return;
             var progress = DataManager.GetOrCreateProgressData(DataManager.GameData.SelectedCharacterId);
             if (progress != null) progress.CurrentMp = current;
+        }
+
+        public void PlayFootSound()
+        {
+            TryPlayFootstepSound(characterConfig.FootstepAudioSet);
+        }
+
+        public void PlayFootEndSound()
+        {
+            TryPlayFootstepSound(characterConfig.FootstepEndAudioSet);
+        }
+
+        private void TryPlayFootstepSound(FootstepSurfaceAudioSet audioSet)
+        {
+            if (footstepMinInterval > 0f && Time.time - lastFootstepTime < footstepMinInterval)
+                return;
+
+            if (!TryGetFootstepSurface(out var surfaceType, out var hitPosition))
+                return;
+
+            AudioClip[] clips = audioSet.GetClips(surfaceType);
+
+            if (clips == null || clips.Length == 0)
+            {
+                RayDebug.Error($"没有 {surfaceType} 对应的脚步声资源！");
+                return;
+            }
+            
+            var clip = clips[UnityEngine.Random.Range(0, clips.Length)];
+            lastFootstepTime = Time.time;
+            AudioSystem.PlayOneShot(clip, hitPosition, false, footstepVolume);
+        }
+
+        private bool TryGetFootstepSurface(out FootstepSurfaceType surfaceType, out Vector3 hitPosition)
+        {
+            surfaceType = FootstepSurfaceType.Default;
+            hitPosition = transform.position;
+
+            Vector3 origin = GetFootstepRayOrigin();
+            if (!Physics.Raycast(origin, Vector3.down, out var hit, footstepRayDistance, whatIsGround,
+                    QueryTriggerInteraction.Ignore))
+            {
+                return false;
+            }
+
+            hitPosition = hit.point;
+            var surface = hit.collider.GetComponentInParent<FootstepSurface>();
+            if (surface != null)
+                surfaceType = surface.SurfaceType;
+
+            return true;
+        }
+
+        private Vector3 GetFootstepRayOrigin()
+        {
+            if (controller != null)
+            {
+                var bounds = controller.bounds;
+                return bounds.center + Vector3.down * bounds.extents.y + footstepRayOffset;
+            }
+
+            return transform.position + footstepRayOffset;
         }
     }
 }

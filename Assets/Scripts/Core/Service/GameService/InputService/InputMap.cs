@@ -179,6 +179,33 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenSkillWindow"",
+                    ""type"": ""Button"",
+                    ""id"": ""a14e5b14-facc-4fd3-aa8d-3d8d44d5e115"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenSkillLearnWindow"",
+                    ""type"": ""Button"",
+                    ""id"": ""805fab54-75c5-4a8a-8251-1e3e48e752e4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenDialogWindow"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae39ee3d-78c9-43a6-a3e9-f9c6eb9a3d07"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -731,6 +758,39 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""LeftAlt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b09a2db-fb46-438f-ab04-118eb9883071"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenSkillWindow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""61983878-79fa-4937-9f81-14ca2a1f8edb"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenSkillLearnWindow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ec3e543c-6082-4092-acc2-dad13a964e36"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenDialogWindow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -805,7 +865,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""name"": ""Alt"",
                     ""type"": ""Button"",
                     ""id"": ""3a1807f6-7621-4c46-9979-e5b2a3137517"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1016,6 +1076,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Player_Skill3 = m_Player.FindAction("Skill3", throwIfNotFound: true);
         m_Player_ToggleRun = m_Player.FindAction("ToggleRun", throwIfNotFound: true);
         m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
+        m_Player_OpenSkillWindow = m_Player.FindAction("OpenSkillWindow", throwIfNotFound: true);
+        m_Player_OpenSkillLearnWindow = m_Player.FindAction("OpenSkillLearnWindow", throwIfNotFound: true);
+        m_Player_OpenDialogWindow = m_Player.FindAction("OpenDialogWindow", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ESC = m_UI.FindAction("ESC", throwIfNotFound: true);
@@ -1115,6 +1178,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Skill3;
     private readonly InputAction m_Player_ToggleRun;
     private readonly InputAction m_Player_Roll;
+    private readonly InputAction m_Player_OpenSkillWindow;
+    private readonly InputAction m_Player_OpenSkillLearnWindow;
+    private readonly InputAction m_Player_OpenDialogWindow;
     public struct PlayerActions
     {
         private @InputMap m_Wrapper;
@@ -1136,6 +1202,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         public InputAction @Skill3 => m_Wrapper.m_Player_Skill3;
         public InputAction @ToggleRun => m_Wrapper.m_Player_ToggleRun;
         public InputAction @Roll => m_Wrapper.m_Player_Roll;
+        public InputAction @OpenSkillWindow => m_Wrapper.m_Player_OpenSkillWindow;
+        public InputAction @OpenSkillLearnWindow => m_Wrapper.m_Player_OpenSkillLearnWindow;
+        public InputAction @OpenDialogWindow => m_Wrapper.m_Player_OpenDialogWindow;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1196,6 +1265,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Roll.started += instance.OnRoll;
             @Roll.performed += instance.OnRoll;
             @Roll.canceled += instance.OnRoll;
+            @OpenSkillWindow.started += instance.OnOpenSkillWindow;
+            @OpenSkillWindow.performed += instance.OnOpenSkillWindow;
+            @OpenSkillWindow.canceled += instance.OnOpenSkillWindow;
+            @OpenSkillLearnWindow.started += instance.OnOpenSkillLearnWindow;
+            @OpenSkillLearnWindow.performed += instance.OnOpenSkillLearnWindow;
+            @OpenSkillLearnWindow.canceled += instance.OnOpenSkillLearnWindow;
+            @OpenDialogWindow.started += instance.OnOpenDialogWindow;
+            @OpenDialogWindow.performed += instance.OnOpenDialogWindow;
+            @OpenDialogWindow.canceled += instance.OnOpenDialogWindow;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1251,6 +1329,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Roll.started -= instance.OnRoll;
             @Roll.performed -= instance.OnRoll;
             @Roll.canceled -= instance.OnRoll;
+            @OpenSkillWindow.started -= instance.OnOpenSkillWindow;
+            @OpenSkillWindow.performed -= instance.OnOpenSkillWindow;
+            @OpenSkillWindow.canceled -= instance.OnOpenSkillWindow;
+            @OpenSkillLearnWindow.started -= instance.OnOpenSkillLearnWindow;
+            @OpenSkillLearnWindow.performed -= instance.OnOpenSkillLearnWindow;
+            @OpenSkillLearnWindow.canceled -= instance.OnOpenSkillLearnWindow;
+            @OpenDialogWindow.started -= instance.OnOpenDialogWindow;
+            @OpenDialogWindow.performed -= instance.OnOpenDialogWindow;
+            @OpenDialogWindow.canceled -= instance.OnOpenDialogWindow;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1443,6 +1530,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         void OnSkill3(InputAction.CallbackContext context);
         void OnToggleRun(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
+        void OnOpenSkillWindow(InputAction.CallbackContext context);
+        void OnOpenSkillLearnWindow(InputAction.CallbackContext context);
+        void OnOpenDialogWindow(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

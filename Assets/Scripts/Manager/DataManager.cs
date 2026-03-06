@@ -187,6 +187,33 @@ namespace Manager
         }
 
         /// <summary>
+        /// 学到新技能时，若快捷栏有空位且该技能是主动技能，则自动填入第一个空位。
+        /// 返回 true 表示成功填入（调用方应随后刷新 UI 并存档）。
+        /// </summary>
+        public static bool TryAddSkillToShortcut(int skillIndex, Config.CharacterConfig characterConfig)
+        {
+            if (GameData == null || characterConfig?.SkillConfigList == null) return false;
+            if (skillIndex < 0 || skillIndex >= characterConfig.SkillConfigList.Count) return false;
+
+            var skillConfig = characterConfig.SkillConfigList[skillIndex];
+            if (skillConfig == null || !skillConfig.canRelease) return false; // 被动技能不进快捷栏
+
+            bool dummy = false;
+            var shortcut = GetOrCreateCharacterShortcutData(GameData.SelectedCharacterId, ref dummy);
+            if (shortcut?.skillIds == null) return false;
+
+            // 已经在快捷栏里了，跳过
+            if (System.Array.IndexOf(shortcut.skillIds, skillIndex) >= 0) return false;
+
+            // 找第一个空位（-1）
+            int emptySlot = System.Array.IndexOf(shortcut.skillIds, -1);
+            if (emptySlot < 0) return false; // 快捷栏已满
+
+            shortcut.skillIds[emptySlot] = skillIndex;
+            return true;
+        }
+
+        /// <summary>
         /// 切换当前角色
         /// </summary>
         public static bool SwitchCharacter(int characterId)
@@ -351,6 +378,30 @@ namespace Manager
         /// 赋予经验时触发（characterId, currentExp, expToNextLevel）。
         /// </summary>
         public static event System.Action<int, long, long> OnExpGained;
+
+        #endregion
+
+        #region 玩家位置
+
+        /// <summary>
+        /// 保存玩家当前位置和所在场景名，下次进入游戏时从此处生成。
+        /// </summary>
+        public static void SavePlayerPosition(UnityEngine.Vector3 position, string sceneName)
+        {
+            if (GameData == null) return;
+            GameData.PlayerLastPosition = position;  // 隐式 Vector3 → Serialized_Vector3
+            GameData.PlayerLastSceneName = sceneName;
+        }
+
+        /// <summary>
+        /// 获取上次退出时的位置。若无记录或场景不符则返回 null。
+        /// </summary>
+        public static UnityEngine.Vector3? GetPlayerLastPosition(string currentSceneName)
+        {
+            if (GameData?.PlayerLastPosition == null) return null;
+            if (GameData.PlayerLastSceneName != currentSceneName) return null;
+            return (UnityEngine.Vector3)GameData.PlayerLastPosition;  // 隐式 Serialized_Vector3 → Vector3
+        }
 
         #endregion
 
@@ -629,7 +680,7 @@ namespace Manager
                 for (int i = 0; i < learnedSkills.Count; i++)
                 {
                     int skillIndex = learnedSkills[i];
-                    if (skillIndex <= 0 || skillIndex >= skillCount) continue;
+                    if (skillIndex < 0 || skillIndex >= skillCount) continue;
                     var cfg = config.SkillConfigList[skillIndex];
                     if (cfg == null || !cfg.canRelease) continue;
 

@@ -96,6 +96,14 @@ namespace Manager
             UnregisterBagInput();
             UnregisterEscInput();
 
+            // 退出前保存玩家位置
+            if (PlayerManager.Instance?.player != null)
+            {
+                var pos = PlayerManager.Instance.player.transform.position;
+                var sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                DataManager.SavePlayerPosition(pos, sceneName);
+            }
+
             // Save archive data when leaving scene/application.
             DataManager.SaveGameData();
         }

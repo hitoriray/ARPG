@@ -21,6 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  ID: 0
   Characters:
   - CharacterId: 1001
     CharacterName: "\u5B89\u6BD4"
@@ -165,10 +166,10 @@ MonoBehaviour:
   - CharacterId: 2001
     CharacterName: "\u5343\u65E9\u7231\u97F3\uFF08BOSS\uFF09"
     CharacterIcon:
-      m_AssetGUID: 
+      m_AssetGUID: aa77bd4022271f54cb80aa66f1f79c81
       m_SubObjectName: 
       m_SubObjectType: 
-      m_EditorAssetChanged: 0
+      m_EditorAssetChanged: 1
     CharacterModelPrefab:
       m_AssetGUID: 5f527c9c3f8bafa44b83becda7cd8d3d
       m_SubObjectName: 

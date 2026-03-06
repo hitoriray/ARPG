@@ -30,6 +30,11 @@ namespace Data
         // AI 对话历史记录
         public Serialized_Dic<string, Serialized_List<AIChatRecord>> AIChatHistoryByNpc;
         public Serialized_List<AIChatRecord> AIChatHistory;
+
+        // 玩家退出时的位置（null = 未记录，从出生点生成）
+        public Serialized_Vector3 PlayerLastPosition;
+        /// <summary>记录位置时所在的场景名，跨场景不恢复</summary>
+        public string PlayerLastSceneName;
     }
 
     /// <summary>
@@ -62,20 +67,6 @@ namespace Data
         /// <summary>当前 MP（-1 = 满蓝）</summary>
         public float CurrentMp = -1f;
     }
-
-
-    /// <summary>
-    /// 自定义角色部位的数据
-    /// </summary>
-    // [Serializable]
-    // public class CustomCharacterPartData
-    // {
-    //     public int Index;
-    //     public float Size;
-    //     public float Height;
-    //     public Serialized_Color Color1;
-    //     public Serialized_Color Color2;
-    // }
 
     /// <summary>
     /// 技能快捷栏的数据

@@ -8,6 +8,8 @@ using UnityEngine;
 public interface ICharacter : IHitTarget, IDeathCallback
 {
     float GetAttackValue(SkillAttackDetectionEvent detectionEvent);
+    void TryReleaseBasicAttack();
+    void TryReleaseSkillBySkillIndex(int skillIndex);
 
     void OnSkillRotate();
     void AddBuff(BuffConfig buffConfig, int stack);

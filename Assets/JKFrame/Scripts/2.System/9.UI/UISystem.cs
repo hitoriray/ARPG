@@ -551,8 +551,15 @@ namespace JKFrame
             if (eventSystem == null)
             {
                 eventSystem = UnityEngine.EventSystems.EventSystem.current;
-                pointerEventData = new PointerEventData(eventSystem);
+                if (eventSystem != null)
+                {
+                    pointerEventData = new PointerEventData(eventSystem);
+                }
             }
+
+            // 如果场景里根本没有挂载 EventSystem，则直接认为没有点击到 UI 上
+            if (eventSystem == null) return false;
+
             pointerEventData.position = pos;
             // 射线去检测有没有除了Mask以外的任何UI物体
             eventSystem.RaycastAll(pointerEventData, raycastResultList);

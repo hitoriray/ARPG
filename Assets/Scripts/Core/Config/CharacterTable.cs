@@ -11,7 +11,7 @@ namespace Config
     /// 角色资源配置表
     /// </summary>
     [CreateAssetMenu(fileName = "CharacterTable", menuName = "Config/CharacterTable")]
-    public class CharacterTable : ConfigBase
+    public class CharacterTable : SerializedScriptableObject
     {
         [LabelText("角色列表")]
         [Searchable]

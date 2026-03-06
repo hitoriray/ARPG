@@ -1,10 +1,13 @@
 ﻿<Solution>
   <Project Path="Unity.Timeline.csproj" />
+  <Project Path="PixelCrushersEditor.csproj" />
+  <Project Path="DialogueSystem.csproj" />
   <Project Path="AstarPathfindingProject.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.csproj" />
   <Project Path="ARPG.Core.csproj" />
   <Project Path="Unity.ScriptableBuildPipeline.Editor.csproj" />
+  <Project Path="DialogueSystemEditor.csproj" />
   <Project Path="Unity.Mathematics.csproj" />
   <Project Path="Unity.Timeline.Editor.csproj" />
   <Project Path="Unity.Collections.csproj" />
@@ -24,6 +27,7 @@
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="Unity.Animation.Rigging.Editor.csproj" />
   <Project Path="Kybernetik.Animancer.Editor.csproj" />
+  <Project Path="PixelCrushers.csproj" />
   <Project Path="UniTask.csproj" />
   <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="Unity.ResourceManager.csproj" />
@@ -54,11 +58,11 @@
   <Project Path="Unity.AI.Navigation.Updater.csproj" />
   <Project Path="MagicaCloth2Example.csproj" />
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
-  <Project Path="undream.llmunity.Runtime.csproj" />
   <Project Path="FixMath.csproj" />
   <Project Path="Unity.AI.Navigation.Editor.csproj" />
   <Project Path="JKFrameEditor.csproj" />
   <Project Path="AstarPackageToolsEditor.csproj" />
+  <Project Path="GOAP.EditorOnly.csproj" />
   <Project Path="MagicaClothV2.Editor.csproj" />
   <Project Path="Unity.InputSystem.ForUI.csproj" />
   <Project Path="Sirenix.OdinInspector.Modules.Unity.Addressables.csproj" />
@@ -77,10 +81,8 @@
   <Project Path="Unity.EditorCoroutines.Editor.csproj" />
   <Project Path="DamageNumbersPro.csproj" />
   <Project Path="PackageTools.csproj" />
-  <Project Path="Cloud.Unum.USearch.csproj" />
   <Project Path="UniTask.Editor.csproj" />
   <Project Path="Unity.CollabProxy.Editor.csproj" />
-  <Project Path="undream.llmunity.Editor.csproj" />
   <Project Path="DrawingEditor.csproj" />
   <Project Path="DrawingPackageToolsEditor.csproj" />
   <Project Path="Unity.ScriptableBuildPipeline.csproj" />

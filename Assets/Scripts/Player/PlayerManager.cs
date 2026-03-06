@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Manager
 {
-    public class PlayerManager : SingletonMono<PlayerManager>, IPlayerManager
+    public class PlayerManager : MonoSingleton<PlayerManager>, IPlayerManager
     {
         protected override void Awake()
         {
@@ -94,10 +94,96 @@ namespace Manager
             var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
 
             player.BindModel(newModel);
-            player.Init(CharacterConfig, DataManager.GameData);
+            player.Init(CharacterConfig);
             inputService = InputService.Instance;
             SetCharacterControl(true);
             UISystem.Show<UI_GameSceneMainWindow>().Show(shortcutSkillDatas);
+
+            // 从存档恢复玩家位置（同场景才恢复，跨场景走默认出生点）
+            var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            var savedPos = DataManager.GetPlayerLastPosition(currentScene);
+            if (savedPos.HasValue)
+            {
+                player.transform.position = savedPos.Value;
+                RayDebug.Log($"[PlayerManager] 从存档位置生成：{savedPos.Value}");
+            }
+
+            // ===== 存档调试输出 =====
+            PrintGameDataDebug();
+        }
+
+        private void PrintGameDataDebug()
+        {
+            var sb = new System.Text.StringBuilder();
+            var gd = DataManager.GameData;
+            if (gd == null)
+            {
+                RayDebug.Info("[GameData] 存档为空");
+                return;
+            }
+
+            sb.AppendLine("========== 当前存档数据 ==========");
+            sb.AppendLine($"  当前角色ID: {gd.SelectedCharacterId}");
+            sb.AppendLine($"  金币: {gd.Gold}");
+
+            // --- 已解锁角色 ---
+            sb.AppendLine("  [已解锁角色]");
+            if (gd.UnlockedCharacterIds?.List != null)
+                foreach (var id in gd.UnlockedCharacterIds.List)
+                    sb.AppendLine($"    角色ID: {id}");
+
+            // --- 队伍 ---
+            sb.Append("  [队伍] ");
+            if (gd.CharacterTeam != null)
+                sb.AppendLine(string.Join(", ", gd.CharacterTeam));
+            else
+                sb.AppendLine("null");
+
+            // --- 角色技能 ---
+            sb.AppendLine("  [角色技能列表]");
+            if (gd.CharacterSkillsDict?.Dictionary != null)
+            {
+                foreach (var kv in gd.CharacterSkillsDict.Dictionary)
+                {
+                    sb.AppendLine($"    角色ID={kv.Key}  技能点={kv.Value?.SkillTotalPoint}");
+                    if (kv.Value?.SkillLearnedDataDict?.Dictionary != null)
+                        foreach (var sk in kv.Value.SkillLearnedDataDict.Dictionary)
+                            sb.AppendLine($"      技能Index={sk.Key}  Lv={sk.Value?.lv}");
+                }
+            }
+
+            // --- 快捷栏 ---
+            sb.AppendLine("  [快捷栏数据]");
+            if (gd.CharacterShortcutSkillsDict?.Dictionary != null)
+            {
+                foreach (var kv in gd.CharacterShortcutSkillsDict.Dictionary)
+                {
+                    string slots = kv.Value?.skillIds != null
+                        ? string.Join(", ", kv.Value.skillIds)
+                        : "null";
+                    sb.AppendLine($"    角色ID={kv.Key}  Slots=[{slots}]");
+                }
+            }
+
+            // --- 角色成长 ---
+            sb.AppendLine("  [角色成长]");
+            if (gd.CharacterProgressDict?.Dictionary != null)
+            {
+                foreach (var kv in gd.CharacterProgressDict.Dictionary)
+                {
+                    var p = kv.Value;
+                    sb.AppendLine($"    角色ID={kv.Key}  Lv={p?.Level}  Exp={p?.Experience}  HP={p?.CurrentHp}  MP={p?.CurrentMp}");
+                }
+            }
+
+            // --- 背包 ---
+            sb.AppendLine("  [背包物品]");
+            if (gd.InventoryItems?.Dictionary != null)
+                foreach (var kv in gd.InventoryItems.Dictionary)
+                    sb.AppendLine($"    ItemId={kv.Key}  数量={kv.Value}");
+
+            sb.AppendLine("==================================");
+            RayDebug.Info(sb.ToString());
         }
 
         public List<SkillConfig> GetAllSkillConfig()
@@ -108,6 +194,21 @@ namespace Manager
         public void AddSkill(int skillIndex, SkillLearnedData skillLearnedData)
         {
             player.SkillBrain.AddSkill(player, GetAllSkillConfig(), skillIndex, skillLearnedData);
+
+            // 新技能自动填入快捷栏（若有空位且是主动技能）
+            bool added = DataManager.TryAddSkillToShortcut(skillIndex, CharacterConfig);
+            if (added)
+            {
+                DataManager.SaveGameData();
+                // 立即刷新主战斗界面快捷栏 UI
+                var mainWindow = UISystem.GetWindow<UI_GameSceneMainWindow>();
+                if (mainWindow != null && mainWindow.UIEnable)
+                {
+                    var shortcutData = DataManager.GetCurrentCharacterShortcutSkills();
+                    if (shortcutData != null)
+                        mainWindow.ShowShortcutSkillSlots(shortcutData);
+                }
+            }
         }
 
         public void SetCharacterControl(bool canControl)

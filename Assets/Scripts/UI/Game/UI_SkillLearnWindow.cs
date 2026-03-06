@@ -40,7 +40,7 @@ namespace UI
             learnBtn.onClick.AddListener(OnLearnBtnClicked);
         }
 
-        public void Init(SkillLearnedDatas skillLearnedDatas)
+        public void Show(SkillLearnedDatas skillLearnedDatas)
         {
             this.skillLearnedDatas = skillLearnedDatas;
             var skillConfigList = PlayerService.Instance.GetAllSkillConfig();

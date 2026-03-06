@@ -23,12 +23,12 @@ MonoBehaviour:
     SerializationNodes:
     - Name: ReleaseCostDict
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, Assembly-CSharp],[System.Single,
+      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, ARPG.Core],[System.Single,
         mscorlib]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Config.SkillCostType,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -44,15 +44,6 @@ MonoBehaviour:
     - Name: 
       Entry: 13
       Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Behaviour
-      Entry: 7
-      Data: 2|Skill.Behaviour.AnbiSkill1Behaviour, Assembly-CSharp
-    - Name: standingTime
-      Entry: 4
-      Data: 5
     - Name: 
       Entry: 8
       Data: 
@@ -77,3 +68,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7a8dbab3cd915214da56098644854d66, type: 2}
   - {fileID: 11400000, guid: 95bf4dea6e5735847aacef62328790fa, type: 2}
   - {fileID: 11400000, guid: 80627d497d9b39242ab2bdb20fcb0b51, type: 2}
+  Behaviour:
+    rid: 1046080981213118668
+  references:
+    version: 2
+    RefIds:
+    - rid: 1046080981213118668
+      type: {class: Skill1Behaviour, ns: RayPlayer, asm: Assembly-CSharp}
+      data:
+        standingTime: 5

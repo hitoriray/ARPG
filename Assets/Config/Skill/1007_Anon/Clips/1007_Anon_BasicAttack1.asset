@@ -240,12 +240,24 @@ MonoBehaviour:
     - Name: RepelTime
       Entry: 4
       Data: 0
+    - Name: KnockbackDirection
+      Entry: 3
+      Data: 0
     - Name: HitEffectPrefab
       Entry: 10
       Data: 2
     - Name: HitAudioClip
       Entry: 10
       Data: 3
+    - Name: CameraShakeForce
+      Entry: 4
+      Data: 0
+    - Name: HitStopDuration
+      Entry: 4
+      Data: 0
+    - Name: HitStopTimeScale
+      Entry: 4
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -449,5 +461,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   SkillName: 
-  FrameCount: 88
+  FrameCount: 80
   FrameRate: 30

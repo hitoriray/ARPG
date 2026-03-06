@@ -13,13 +13,10 @@ namespace Battle.ECS
     /// ECS战斗入口 - 驱动逻辑与表现
     /// </summary>
     [DefaultExecutionOrder(-900)]
-    public sealed class BattleEcsRunner : MonoBehaviour
+    public sealed class BattleEcsRunner : MonoSingleton<BattleEcsRunner>
     {
-        public static BattleEcsRunner Instance { get; private set; }
-
         [SerializeField] private int randomSeed = 12345;
         [SerializeField] private int logicFrameRate = 20;
-        [SerializeField] private bool dontDestroyOnLoad = true;
 
         public LocalBattleContext Context { get; private set; }
         private LocalLogicFeature _logicFeature;
@@ -37,16 +34,7 @@ namespace Battle.ECS
 
         private void Awake()
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            if (dontDestroyOnLoad)
-                DontDestroyOnLoad(gameObject);
-
+            base.Awake();
             Initialize();
         }
 
@@ -69,11 +57,10 @@ namespace Battle.ECS
             _viewFeature.Cleanup();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             Shutdown();
-            if (Instance == this)
-                Instance = null;
         }
         
         public Entity RegisterCharacter(ICharacter character)

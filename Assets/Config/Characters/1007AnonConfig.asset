@@ -21,9 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  ID: 1007
   WalkSpeed: 2
   RunSpeed: 5
-  Walk2RunTransitionSpeed: 2
   RotateSpeed: 10
   ApplyRootMotionForMove: 0
   ControllerProfile:
@@ -36,20 +36,14 @@ MonoBehaviour:
     groundDetectedOffset: -0.06
   Avatar: {fileID: 9000000, guid: 1ef3f4686fa3b154a92fa4a5d3034f49, type: 3}
   PlayerSO: {fileID: 11400000, guid: 99e2ea24fd0ddcb46a2bf3f325a404fc, type: 2}
-  FootStepAudioClips:
-  - {fileID: 8300000, guid: a7d39bb78dd35ed438aa29d107294902, type: 3}
-  - {fileID: 8300000, guid: 2e3cdcff2932f5845bbf2354c0b92df9, type: 3}
-  - {fileID: 8300000, guid: 14ea1e45d5c4df6418452bab767a79d8, type: 3}
-  - {fileID: 8300000, guid: 0db33cd015aaf614da7a67d8ca772eac, type: 3}
-  - {fileID: 8300000, guid: 6d157c9495dba3a44a2e8ebc74f3e5fe, type: 3}
-  - {fileID: 8300000, guid: 65a01bf2bf0133249bf8d76bfc1785d3, type: 3}
-  - {fileID: 8300000, guid: a11786c3647ce5448acffeebd20cecf2, type: 3}
-  - {fileID: 8300000, guid: 06154e23c13a3df4bb3752b39abfc7ac, type: 3}
-  - {fileID: 8300000, guid: 4233c39f8b03fe64e9f5fe2a84450abb, type: 3}
+  GenericLocomotionConfig: {fileID: 0}
+  FootstepAudioSet: {fileID: 11400000, guid: 475f9b95d437170409b3e76c5b5ee9d4, type: 2}
+  FootstepEndAudioSet: {fileID: 11400000, guid: f151fb17ddf646342bb7472b141b531c, type: 2}
   SkillConfigList:
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
+  - {fileID: 11400000, guid: f92bf1dc9b5cdbe448b5abb5fbaacbcf, type: 2}
   hpBaseValue: 1000
   mpBaseValue: 500
   attackBaseValue: 100
-  defenseBaseValue: 0
+  defenseBaseValue: 10
   LevelGrowthConfig: {fileID: 11400000, guid: 9f39be9aae8dfb446a1aa83b7834a7e7, type: 2}

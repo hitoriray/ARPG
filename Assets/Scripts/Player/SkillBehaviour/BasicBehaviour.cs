@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace RayPlayer
 {
+    /// <summary>
+    /// 普通攻击（可多段，支持特殊攻击）
+    /// </summary>
     [System.Serializable]
     public class BasicBehaviour : PlayerSkillBehaviourBase
     {

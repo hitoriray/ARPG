@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 namespace JKFrame
 {
     /// <summary>
@@ -7,6 +8,5 @@ namespace JKFrame
     /// </summary>
     public class ConfigBase : SerializedScriptableObject
     {
-
     }
 }

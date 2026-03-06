@@ -3,13 +3,16 @@ using UnityEngine;
 
 namespace RayPlayer
 {
+    /// <summary>
+    /// 多段技能（独立计算cd）
+    /// </summary>
     [System.Serializable]
     public class Skill1Behaviour : PlayerSkillBehaviourBase
     {
         #region 配置
         public float standingTime = 5;  // 等待下一段技能的释放的空窗时间
-        private Color normalColor = new Color(0, 0, 0, 0.8f);
-        private Color standingColor = new Color(1, 0, 0, 0.8f);
+        private Color normalColor = new Color(0f, 0f, 0f, 0.7f); // 半透黑色遮罩
+        private Color standingColor = new Color(1f, 0.84f, 0f, 0.25f); // 半透淡金光遮罩
         #endregion
         
         private int attackIndex = -1; // -1意味着没有进入技能，0,1,2...代表在技能中（并不是技能播放中）
@@ -57,55 +60,40 @@ namespace RayPlayer
 
         public override void UpdateCdTime()
         {
-            if (playing)
-            {
-                // 播放状态: 技能处于最后一段的技能，已经在计算CD中
-                if (attackIndex == skillConfig.Clips.Length - 1)
-                {
-                    cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
-                    if (IsInteger(cdTimer))
-                        RayDebug.Log($"播放状态：技能处于最后一段，已经在计算CD中:{cdTimer}/{GetCdTime()}");
-                }
-                // 播放状态:技能没有处于最后一段的技能，不计算任何CD
-            }
-            else
+            if (cdTimer > 0f)
             {
                 cdTimer = Mathf.Clamp(cdTimer - Time.deltaTime, 0, float.MaxValue);
-
-                // 技能处于某一段，但是可能会超时
-                if (attackIndex != -1)
-                {
-                    // 已经超时，应该进入到完整CD
-                    // 技能已经播放完某一段，但是没有播放完整个技能，同时开始已经进入CD了！
-                    if (cdTimer <= 0)
-                    {
-                        cdTimer = GetCdTime();
-                        attackIndex = -1;
-                        RayDebug.Log("技能没有完全释放完毕，但是开始进入完整CD了！");
-                    }
-                    // 技能没有播放完某一段，正在计算内部CD
-                    else
-                    {
-                        if (IsInteger(cdTimer))
-                            RayDebug.Log($"技能没有完全释放完毕，正在计算内部CD:{cdTimer}/{standingTime}");
-                    }
-                }
-                // else
-                // {
-                //     if (cdTimer > 0 && IsInteger(cdTimer))
-                //         RayDebug.Log($"技能没有在释放，正在计算CD:{cdTimer}/{GetCdTime()}");
-                // }
             }
 
-            if (TryGetSkillSlot(out var slot))
+            // 如果当前在中间段且倒计时结束，说明连击超时，进入完整CD
+            if (attackIndex != -1 && attackIndex < skillConfig.Clips.Length - 1)
             {
-                int iconIndex = attackIndex + 1; // 预期的下一个技能索引
+                if (cdTimer <= 0f)
+                {
+                    cdTimer = GetCdTime();
+                    attackIndex = -1;
+                    playing = false; // 超时重置状态
+                }
+            }
+
+            // UI 刷新
+            if (TryGetSkillSlot(out var baseSlot))
+            {
+                int iconIndex = attackIndex + 1;
                 if (iconIndex >= skillConfig.skillIcons.Length)
                     iconIndex = 0;
-                slot.UpdateIcon(skillConfig.skillIcons[iconIndex]);
-                bool standing = iconIndex != 0;
+                baseSlot.UpdateIcon(skillConfig.skillIcons[iconIndex]);
+
+                bool standing = (attackIndex != -1 && attackIndex < skillConfig.Clips.Length - 1);
+                
+                // 开启/关闭连击特效
+                if (baseSlot is UI.UI_ShortcutSkill_Slot uiSlot)
+                {
+                    uiSlot.SetComboGlow(standing);
+                }
+
                 float showMaxCd = standing ? standingTime : GetCdTime();
-                slot.UpdateCdTimeAndMaskColor(cdTimer / showMaxCd, standing ? standingColor : normalColor);
+                baseSlot.UpdateCdTimeAndMaskColor(cdTimer / showMaxCd, standing ? standingColor : normalColor);
             }
         }
         
@@ -124,18 +112,11 @@ namespace RayPlayer
         {
             base.OnClipEndOrReleaseNewSkill();
             playing = false;
-            // 如果技能已结束，则不需要触发standingTime
-            if (attackIndex < 0)
-                return;
-            // 当前结束的是最后一段，说明技能全部结束了
+
+            // 动画结束时不额外干涉 cdTimer，让 UpdateCdTime 自然流转
             if (attackIndex == skillConfig.Clips.Length - 1)
             {
-                attackIndex = -1;
-            }
-            // 结束的是中间的某一段技能
-            else
-            {
-                cdTimer = standingTime;
+                attackIndex = -1; // 最后一段动画放完，回归正常空闲状态（此时 cdTimer 已在走大CD）
             }
         }
         

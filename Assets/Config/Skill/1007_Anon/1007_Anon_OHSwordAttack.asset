@@ -23,12 +23,12 @@ MonoBehaviour:
     SerializationNodes:
     - Name: ReleaseCostDict
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, Assembly-CSharp],[System.Single,
+      Data: 0|System.Collections.Generic.Dictionary`2[[Config.SkillCostType, ARPG.Core],[System.Single,
         mscorlib]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Config.SkillCostType,
-        Assembly-CSharp]], mscorlib
+        ARPG.Core]], mscorlib
     - Name: 
       Entry: 12
       Data: 0
@@ -40,39 +40,52 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 0
+      Data: 1
     - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: Behaviour
       Entry: 7
-      Data: 2|Skill.Behaviour.BasicBehaviour, Assembly-CSharp
-    - Name: standAttackCount
+      Data: 
+    - Name: $k
       Entry: 3
-      Data: 4
-    - Name: perfectClipIndex
-      Entry: 3
-      Data: -1
+      Data: 1
+    - Name: $v
+      Entry: 4
+      Data: -10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
     - Name: 
       Entry: 8
       Data: 
   skillId: 100701
   skillName: "\u5343\u65E9\u7231\u97F3\u5927\u51B2\u649E"
   skillIcon: {fileID: 21300000, guid: 6c8f4fde537ca344f88d3876c6c3d5e9, type: 3}
-  skillIcons: []
-  skillDescription: 
-  skillPointRequired: 0
+  skillIcons:
+  - {fileID: 21300000, guid: a5f2f564e90e3324daa88945a150a18f, type: 3}
+  - {fileID: 21300000, guid: 8d75fbdafb22eea4b8ad00d6e2f80b41, type: 3}
+  - {fileID: 21300000, guid: a99c54e1e6b633c4893ea0c8a7195160, type: 3}
+  - {fileID: 21300000, guid: f13b0852619ad5d4a89c90752c457368, type: 3}
+  skillDescription: "\u5343\u65E9\u7231\u97F3\u5927\u51B2\u649E\uFF01\uFF01\uFF01"
+  skillPointRequired: 100
   maxLv: 10
   canRelease: 1
-  basicCdTime: 0
+  basicCdTime: 5
   basicAttackValue: 100
-  cdTimeMultiplierPerLv: 0
-  attackValueMultiplierPerLv: 0
+  cdTimeMultiplierPerLv: 0.02
+  attackValueMultiplierPerLv: 0.1
   Clips:
   - {fileID: 11400000, guid: 2efb882e24cac994aa3600915080b910, type: 2}
   - {fileID: 11400000, guid: 217b7be563449f24688b47c4568b9d7b, type: 2}
   - {fileID: 11400000, guid: fbb20965e67ff4049bffc4e53fe73e93, type: 2}
   - {fileID: 11400000, guid: 5299e65201d2278438743771d0d3bfe8, type: 2}
+  Behaviour:
+    rid: 1046080981213118686
+  references:
+    version: 2
+    RefIds:
+    - rid: 1046080981213118686
+      type: {class: Skill1Behaviour, ns: RayPlayer, asm: Assembly-CSharp}
+      data:
+        standingTime: 5

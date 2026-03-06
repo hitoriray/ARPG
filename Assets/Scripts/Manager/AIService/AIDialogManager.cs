@@ -21,7 +21,7 @@ namespace Manager
         [Header("Global Prompt")]
         [TextArea(3, 10)]
         [SerializeField] private string systemPrompt = "";
-        [SerializeField] private string defaultUserName = "玩家";
+        [SerializeField] private string defaultUserName = "Player";
 
         [Header("Session")]
         [SerializeField] private string defaultNpcId = "tavern_default";

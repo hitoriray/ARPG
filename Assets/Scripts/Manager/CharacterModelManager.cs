@@ -11,7 +11,7 @@ namespace Manager
     /// <summary>
     /// 角色模型资源管理器：负责管理角色模型预制体和配置的加载/卸载
     /// </summary>
-    public class CharacterModelManager : SingletonMono<CharacterModelManager>
+    public class CharacterModelManager : MonoSingleton<CharacterModelManager>
     {
         private CharacterTable _characterTable;
         // 已加载的角色模型预制体缓存  Key:角色ID

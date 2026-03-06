@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Battle.ECS.View.Helper;
 using Config;
 using Data;
@@ -241,33 +242,51 @@ namespace Skill.Behaviour
         protected void DoHitEffect(AttackData attackData)
         {
             var attackHitConfig = attackData.detectionEvent.AttackHitConfig;
-            if (attackHitConfig != null)
-            {
-                if (attackHitConfig.HitAudioClip != null)
-                {
-                    AudioSystem.PlayOneShot(attackHitConfig.HitAudioClip, attackData.hitPoint);
-                }
+            if (attackHitConfig == null) return;
 
-                if (attackHitConfig.HitEffectPrefab != null)
+            if (attackHitConfig.HitAudioClip != null)
+            {
+                AudioSystem.PlayOneShot(attackHitConfig.HitAudioClip, attackData.hitPoint);
+            }
+
+            if (attackHitConfig.HitEffectPrefab != null)
+            {
+                bool success = VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true);
+                if (!success)
                 {
-                    bool success = VfxEmitterHelper.EmitHitVfx(attackData.hitPoint, attackHitConfig.HitEffectPrefab, true);
-                    if (!success)
+                    RayDebug.Log("由Mono生成命中特效");
+                    var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
+                    effect.transform.position = attackData.hitPoint;
+                    if (Camera.main != null)
+                        effect.transform.LookAt(Camera.main.transform.position);
+                    var effectController = effect.GetComponent<EffectController>();
+                    if (effectController == null)
                     {
-                        RayDebug.Log("由Mono生成命中特效");
-                        var effect = ProjectUtility.GetOrInstantiateGameObject(attackHitConfig.HitEffectPrefab, null);
-                        effect.transform.position = attackData.hitPoint;
-                        if (Camera.main != null)
-                            effect.transform.LookAt(Camera.main.transform.position);
-                        var effectController = effect.GetComponent<EffectController>();
-                        if (effectController == null)
-                        {
-                            effectController = effect.AddComponent<EffectController>();
-                            effectController.destroyTime = 3f;
-                        }
-                        effectController.Init();
+                        effectController = effect.AddComponent<EffectController>();
+                        effectController.destroyTime = 3f;
                     }
+                    effectController.Init();
                 }
             }
+
+            // 镜头震动
+            if (attackHitConfig.CameraShakeForce > 0f)
+            {
+                CameraShakeService.ShakeAt(attackData.hitPoint, attackHitConfig.CameraShakeForce);
+            }
+
+            // 时间缓停（Hit Stop）
+            if (attackHitConfig.HitStopDuration > 0f && owner is MonoBehaviour mono)
+            {
+                mono.StartCoroutine(DoHitStop(attackHitConfig.HitStopDuration, attackHitConfig.HitStopTimeScale));
+            }
+        }
+
+        private static IEnumerator DoHitStop(float duration, float timeScale)
+        {
+            Time.timeScale = Mathf.Clamp(timeScale, 0.01f, 1f);
+            yield return new WaitForSecondsRealtime(duration);
+            Time.timeScale = 1f;
         }
 
         public virtual void OnRootMotion(Vector3 deltaPos, Quaternion deltaRot)

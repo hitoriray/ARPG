@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JKFrame;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Config
 {
@@ -11,18 +12,16 @@ namespace Config
     {
         [LabelText("走路速度")] public float WalkSpeed;
         [LabelText("奔跑速度")] public float RunSpeed;
-        [LabelText("走路到奔跑的过渡速度")] public float Walk2RunTransitionSpeed;
+        // [LabelText("走路到奔跑的过渡速度")] public float Walk2RunTransitionSpeed;
         [LabelText("旋转速度")] public float RotateSpeed;
-        [LabelText("移动起步转向速度")] public float MoveStartTurnSpeed = 1.8f;
-        [LabelText("移动循环转向速度")] public float MoveLoopTurnSpeed = 1.4f;
-        [LabelText("锁定朝向转向速度")] public float LockTurnSpeed = 5f;
         [LabelText("为移动应用RootMotion")] public bool ApplyRootMotionForMove;
         [LabelText("碰撞体配置")] public CharacterControllerProfile ControllerProfile;
         [LabelText("角色Avatar")] public Avatar Avatar;
         
         [LabelText("PlayerSO")] public PlayerSO PlayerSO;
         [LabelText("Generic移动配置")] public GenericLocomotionConfig GenericLocomotionConfig;
-        [LabelText("脚步声音资源")] public AudioClip[] FootStepAudioClips;
+        [FormerlySerializedAs("FootstepSurfaceAudioSet")] [LabelText("脚步声地形映射")] public FootstepSurfaceAudioSet FootstepAudioSet;
+        [FormerlySerializedAs("FootstepEndSurfaceAudioSet")] [LabelText("收脚声地形映射")] public FootstepSurfaceAudioSet FootstepEndAudioSet;
         [LabelText("全部技能")] public List<SkillConfig> SkillConfigList;
         [LabelText("基础生命值")] public float hpBaseValue;
         [LabelText("基础魔力值")] public float mpBaseValue;

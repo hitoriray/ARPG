@@ -141,11 +141,28 @@ namespace Config
     public class AttackHitConfig
     {
         [LabelText("攻击系数")] public float AttackMultiply;
-        [LabelText("击退程度（矢量）")] public Vector3 RepelStrength; // 击退程度，矢量
-        [LabelText("击退时间")] public float RepelTime;     // 击退时间
+        [LabelText("击退力度")] public Vector3 RepelStrength;  // 击退力度向量（技能自身坐标系下，x=左右 y=上下 z=前）
+        [LabelText("击退时间")] public float RepelTime;         // 击退持续时间
+        [LabelText("击退方向")] public KnockbackDirection KnockbackDirection = KnockbackDirection.PlayerOpposite;
         [LabelText("命中特效预制体")] public GameObject HitEffectPrefab;
         [LabelText("命中音效")] public AudioClip HitAudioClip;
-        // TODO: 加特效位移，声音音量
+
+        [LabelText("镜头震动力度"), Min(0f)]
+        public float CameraShakeForce = 0f;     // 0 = 不震动
+        [LabelText("时停时长(秒)"), Min(0f)]
+        public float HitStopDuration = 0f;      // 0 = 不时停
+        [LabelText("时停时间缩放"), Range(0.01f, 0.5f)]
+        public float HitStopTimeScale = 0.05f;  // 时停期间的时间缩放比例
+    }
+
+    /// <summary>
+    /// 击退方向枚举
+    /// </summary>
+    public enum KnockbackDirection
+    {
+        [LabelText("攻击者反方向（默认）")] PlayerOpposite = 0,  // 从攻击者指向被击者方向
+        [LabelText("世界坐标方向")] WorldSpace = 1,              // RepelStrength 使用世界坐标
+        [LabelText("技能自身前向")] SkillForward = 2,            // 施法者前向
     }
     
     #endregion

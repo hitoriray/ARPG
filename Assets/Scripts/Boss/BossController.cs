@@ -13,17 +13,11 @@ namespace Boss
 {
     public class BossController : CharacterControllerBase, ICharacter
     {
-        [Header("Config")]
-        
-        [SerializeField] private CharacterConfig characterConfig;
-        [SerializeField] private PlayerSO playerSO;
-
         [Header("View")]
         [SerializeField] private Transform modelTransform;
 
         [Header("Combat")]
         [SerializeField] private BossSkillBrainBase skillBrain;
-
         [SerializeField] private CharacterAttribute characterAttribute;
         [SerializeField] private WeaponSlotManager weaponSlotManager;
 
@@ -45,19 +39,17 @@ namespace Boss
         public AnimancerLayer SkillLayer => animancer.Layers[skillLayerIndex];
         public Transform ModelTransform => modelTransform != null ? modelTransform : transform;
         public CharacterAttribute CharacterAttribute => characterAttribute;
-        public CharacterConfig CharacterConfig => characterConfig;
-        public PlayerSO PlayerSO => playerSO;
-
-        public float WalkSpeed => characterConfig != null ? characterConfig.WalkSpeed : 0f;
-        public float RunSpeed => characterConfig != null ? characterConfig.RunSpeed : 0f;
-        public float RotateSpeed => characterConfig != null ? characterConfig.RotateSpeed : 8f;
-        public bool IsPlayerControlled => false;
+        // CharacterConfig / PlayerSO / WalkSpeed / RunSpeed / RotateSpeed 由基类提供
         public bool IsDead => isDead;
+        
         
         private bool inSkill;
         private bool currentSkillUpperBody;
-        private bool initialized;
         private bool isDead;
+
+        // 击退位移
+        private Vector3 _repelVelocity;   // 当前击退速度（世界坐标）
+        private float _repelRemainTime;  // 击退剩余时间
 
         protected override void Awake()
         {
@@ -65,27 +57,12 @@ namespace Boss
             if (modelTransform == null)
                 modelTransform = transform;
         }
-
-        private void Start()
+        
+        public override void Init(CharacterConfig config)
         {
-            if (!initialized && characterConfig != null)
-                Init(characterConfig);
-        }
-
-        public void Init(CharacterConfig config)
-        {
-            initialized = true;
+            base.Init(config);
+            
             isDead = false;
-            characterConfig = config;
-            if (playerSO == null && characterConfig != null)
-                playerSO = characterConfig.PlayerSO;
-
-            if (characterConfig != null)
-            {
-                ApplyControllerProfile(characterConfig.ControllerProfile);
-                if (characterConfig.Avatar != null)
-                    animator.avatar = characterConfig.Avatar;
-            }
 
             if (CharacterAttribute != null && characterConfig != null)
                 CharacterAttribute.Init(characterConfig, characterConfig.hpBaseValue, characterConfig.mpBaseValue);
@@ -114,9 +91,7 @@ namespace Boss
 
         private void SetupAnimancerLayers()
         {
-            var layer = animancer.Layers[skillLayerIndex];
-            layer.SetWeight(0f);
-            layer.IsAdditive = false;
+            SetupAnimancerLayers(skillLayerIndex);
         }
 
         protected override void Update()
@@ -126,6 +101,7 @@ namespace Boss
             MovementStateMachine?.OnUpdate();
             MovementStateMachine?.TickAI();
 
+            ApplyRepelMotion();
             CleanupFinishedSkillLayer();
         }
 
@@ -244,16 +220,7 @@ namespace Boss
 
             inSkill = true;
             currentSkillUpperBody = upperBody;
-
-            var baseLayer = animancer.Layers[0];
-            var skillLayer = animancer.Layers[skillLayerIndex];
-
-            skillLayer.IsAdditive = false;
-            skillLayer.Mask = upperBody ? upperBodyMask : null;
-
-            baseLayer.Stop();
-            skillLayer.SetWeight(1f);
-            baseLayer.SetWeight(upperBody ? 1f : 0f);
+            base.EnterSkillMode(upperBody, skillLayerIndex, upperBodyMask);
         }
 
         public void ExitSkillMode()
@@ -263,55 +230,22 @@ namespace Boss
 
             inSkill = false;
             currentSkillUpperBody = false;
-            ClearSkillRootMotion();
-
-            var baseLayer = animancer.Layers[0];
-            var skillLayer = animancer.Layers[skillLayerIndex];
-
-            var skillState = skillLayer.CurrentState;
-            if (skillState != null)
-                skillState.IsPlaying = false;
-
-            skillLayer.StartFade(0f, skillLayerFadeOut);
-            baseLayer.StartFade(1f, skillLayerFadeOut);
+            base.ExitSkillMode(skillLayerIndex, skillLayerFadeOut);
         }
 
         private void CleanupFinishedSkillLayer()
         {
-            if (inSkill)
-                return;
-
-            var skillLayer = animancer.Layers[skillLayerIndex];
-            if (skillLayer.Weight > 0f || skillLayer.CurrentState == null)
-                return;
-
-            skillLayer.Stop();
+            if (inSkill) return;
+            base.CleanupFinishedSkillLayer(skillLayerIndex);
         }
+        
+        public bool IsPlayerControlled => false;
 
-        public void SetSkillRootMotion(Action<Vector3, Quaternion> handler, bool applyRootMotion)
+        // OnSkillMove / OnSkillRotate(Quaternion) 由基类提供
+
+        public void TryReleaseSkillBySkillIndex(int skillIndex)
         {
-            if (applyRootMotion && handler != null)
-                SetRootMotionMode(RootMotionMode.Custom, handler);
-            else
-                SetRootMotionMode(RootMotionMode.Suppressed, null);
-        }
-
-        public void ClearSkillRootMotion()
-        {
-            SetRootMotionMode(RootMotionMode.Default, null);
-        }
-
-        public void OnSkillMove(Vector3 deltaPos)
-        {
-            if (controller == null || !controller.enabled || !gameObject.activeInHierarchy)
-                return;
-
-            controller.Move(deltaPos);
-        }
-
-        public void OnSkillRotate(Quaternion deltaRot)
-        {
-            transform.rotation = deltaRot * transform.rotation;
+            throw new NotImplementedException();
         }
 
         public void OnSkillRotate()
@@ -360,13 +294,67 @@ namespace Boss
                 hitDir = -transform.forward;
             LastHitDirection = hitDir.normalized;
 
-            // 3. 切换到受伤状态
+            // 3. 击退位移
+            var hitConfig = attackData.detectionEvent?.AttackHitConfig;
+            if (hitConfig != null && hitConfig.RepelTime > 0f && hitConfig.RepelStrength.sqrMagnitude > 0f)
+            {
+                _repelVelocity = CalcKnockbackWorldVelocity(hitConfig, attackData);
+                _repelRemainTime = hitConfig.RepelTime;
+            }
+
+            // 4. 切换到受伤状态
             if (MovementStateMachine != null)
             {
                 MovementStateMachine.ChangeState(MovementStateMachine.hitState);
             }
 
             RayDebug.Log($"{gameObject.name}被命中！伤害值: {attackData.attackValue}");
+        }
+
+        private Vector3 CalcKnockbackWorldVelocity(AttackHitConfig hitConfig, AttackData attackData)
+        {
+            Vector3 strength = hitConfig.RepelStrength;
+            switch (hitConfig.KnockbackDirection)
+            {
+                case KnockbackDirection.PlayerOpposite:
+                {
+                    // 攻击者指向被击者的方向
+                    Vector3 knockDir = (transform.position - attackData.hitPoint);
+                    knockDir.y = 0f;
+                    if (knockDir.sqrMagnitude < 0.0001f)
+                        knockDir = -transform.forward;
+                    knockDir.Normalize();
+                    // strength.z 为居4展开的透风强度，strength.y 为上相分量
+                    return knockDir * strength.z + Vector3.up * strength.y;
+                }
+                case KnockbackDirection.WorldSpace:
+                    return strength;
+                case KnockbackDirection.SkillForward:
+                {
+                    // 施法者前向
+                    if (attackData.source == null) goto default;
+                    var src = attackData.source as MonoBehaviour;
+                    if (src == null) goto default;
+                    Quaternion fwdRot = Quaternion.LookRotation(src.transform.forward, Vector3.up);
+                    return fwdRot * strength;
+                }
+                default:
+                    return strength;
+            }
+        }
+
+        private void ApplyRepelMotion()
+        {
+            if (_repelRemainTime <= 0f || controller == null) return;
+
+            float dt = Time.deltaTime;
+            controller.Move(_repelVelocity * dt);
+            _repelRemainTime -= dt;
+            if (_repelRemainTime <= 0f)
+            {
+                _repelRemainTime = 0f;
+                _repelVelocity = Vector3.zero;
+            }
         }
 
         /// <summary>
@@ -399,6 +387,10 @@ namespace Boss
                 return 0f;
 
             return CharacterAttribute.attack.Total * detectionEvent.AttackHitConfig.AttackMultiply;
+        }
+
+        public void TryReleaseBasicAttack()
+        {
         }
     }
 }

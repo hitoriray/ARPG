@@ -8,6 +8,7 @@ using Michsky.MUIP;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -25,6 +26,22 @@ namespace UI
             SetupScrollContent();
 
             BindSettingsButtons();
+
+            // 切换端手游UI
+            bool isMobile = Application.isMobilePlatform;
+#if UNITY_EDITOR
+            // isMobile = true; // 可在编辑器内解开注释测试手游UI
+#endif
+            if (pcSkillGroup != null) pcSkillGroup.SetActive(!isMobile);
+            if (mobileSkillGroup != null) mobileSkillGroup.SetActive(isMobile);
+
+            if (mobileBasicAttackBtn != null)
+            {
+                mobileBasicAttackBtn.onClick.AddListener(() =>
+                {
+                    PlayerService.Instance?.GetCharacterController()?.TryReleaseBasicAttack();
+                });
+            }
         }
 
         public override void OnShow()
@@ -64,6 +81,12 @@ namespace UI
             // 订阅 EXP 事件（获得经验时即时驱动，升级时也驱动）
             DataManager.OnExpGained += OnExpGained;
             DataManager.OnLevelUp += OnExpLevelChanged;
+
+            // 绑定技能窗口快捷键
+            InputService.Instance.inputMap.Player.OpenSkillWindow.performed += OnOpenSkillWindowAction;
+            InputService.Instance.inputMap.Player.OpenSkillLearnWindow.performed += OnOpenSkillLearnWindowAction;
+            InputService.Instance.inputMap.Player.OpenDialogWindow.performed += OnOpenDialogWindowAction;
+            InputService.Instance.inputMap.UI.ESC.performed += OnOpenSettingsWindowAction;
         }
 
         protected override void UnRegisterEventListener()
@@ -109,12 +132,51 @@ namespace UI
 
             UnBindSettingsButtons();
         }
+        
+        private void OnOpenSkillWindowAction(InputAction.CallbackContext ctx)
+        {
+            OnOpenSkillWindow();
+        }
+
+        private void OnOpenSkillLearnWindowAction(InputAction.CallbackContext ctx)
+        {
+            OnOpenSkillLearnWindow();
+        }
+
+        private void OnOpenDialogWindowAction(InputAction.CallbackContext ctx)
+        {
+            OnOpenDialogWindow();
+        }
+
+        private void OnOpenSettingsWindowAction(InputAction.CallbackContext ctx)
+        {
+            OnOpenSettingsWindow();
+        }
 
         #endregion
 
         #region 技能快捷栏
 
-        [SerializeField] private UI_ShortcutSkill_Slot[] shortcutSkillSlots;
+        [Header("端手游UI切换")]
+        [SerializeField] private GameObject pcSkillGroup;
+        [SerializeField] private GameObject mobileSkillGroup;
+        [SerializeField] private ButtonManager mobileBasicAttackBtn;
+
+        [Header("技能槽位")]
+        [SerializeField] private UI_ShortcutSkill_Slot[] pcShortcutSkillSlots;
+        [SerializeField] private UI_ShortcutSkill_Slot[] mobileShortcutSkillSlots;
+
+        private UI_ShortcutSkill_Slot[] CurrentShortcutSkillSlots
+        {
+            get
+            {
+                bool isMobile = Application.isMobilePlatform;
+#if UNITY_EDITOR
+                // isMobile = true; // 同上，测试开关
+#endif
+                return isMobile ? mobileShortcutSkillSlots : pcShortcutSkillSlots;
+            }
+        }
 
         public void Show(ShortcutSkillSlotData shortcutSkillSlotData)
         {
@@ -125,7 +187,8 @@ namespace UI
         {
             if (TryGetShortcutSkillSlotIndex(skillIndex, out int slotIndex))
             {
-                slot = shortcutSkillSlots[slotIndex];
+                var slots = CurrentShortcutSkillSlots;
+                slot = slots[slotIndex];
                 return true;
             }
 
@@ -135,9 +198,10 @@ namespace UI
 
         public bool TryGetShortcutSkillSlotIndex(int skillIndex, out int slotIndex)
         {
-            for (int i = 0; i < shortcutSkillSlots.Length; i++)
+            var slots = CurrentShortcutSkillSlots;
+            for (int i = 0; i < slots.Length; i++)
             {
-                if (shortcutSkillSlots[i].skillIndex == skillIndex)
+                if (slots[i].skillIndex == skillIndex)
                 {
                     slotIndex = i;
                     return true;
@@ -150,35 +214,67 @@ namespace UI
 
         public void ShowShortcutSkillSlots(ShortcutSkillSlotData shortcutSkillSlotData)
         {
-            List<SkillConfig> skillConfigs = PlayerService.Instance.GetAllSkillConfig();
-            for (int i = 0; i < shortcutSkillSlotData.skillIds.Length; i++)
-            {
-                SkillConfig skillConfig = null;
-                int skillIndex = shortcutSkillSlotData.skillIds[i];
-                if (skillIndex != -1)
-                {
-                    skillConfig = skillConfigs[skillIndex];
-                }
+            var config = PlayerService.Instance.GetCharacterConfig();
+            var allSkillConfigs = config != null ? config.SkillConfigList : null;
+            var slots = CurrentShortcutSkillSlots;
 
-                shortcutSkillSlots[i].Init(i);
-                shortcutSkillSlots[i].Show(skillIndex, skillConfig);
+            if (slots == null) return;
+
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (i < shortcutSkillSlotData.skillIds.Length)
+                {
+                    int skillIndex = shortcutSkillSlotData.skillIds[i];
+                    SkillConfig skillConfig = null;
+                    if (skillIndex != -1 && allSkillConfigs != null && skillIndex < allSkillConfigs.Count)
+                    {
+                        skillConfig = allSkillConfigs[skillIndex];
+                    }
+
+                    // 根据配置决定技能按键是否存在，如果配了就不隐藏，没配就隐藏
+                    if (skillConfig == null)
+                    {
+                        slots[i].gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        slots[i].gameObject.SetActive(true);
+                        slots[i].Init(i);
+                        slots[i].Show(skillIndex, skillConfig);
+                    }
+                }
+                else
+                {
+                    slots[i].gameObject.SetActive(false);
+                }
             }
         }
 
         public void ChangeShortcutSkill(int slotIndex, int newSkillIndex)
         {
             SkillConfig skillConfig = null;
-            if (newSkillIndex != -1)
+            var config = PlayerService.Instance.GetCharacterConfig();
+            var allSkillConfigs = config != null ? config.SkillConfigList : null;
+
+            if (newSkillIndex != -1 && allSkillConfigs != null && newSkillIndex < allSkillConfigs.Count)
             {
-                skillConfig = PlayerService.Instance.GetAllSkillConfig()[newSkillIndex];
+                skillConfig = allSkillConfigs[newSkillIndex];
             }
 
-            shortcutSkillSlots[slotIndex].Show(newSkillIndex, skillConfig);
+            var slots = CurrentShortcutSkillSlots;
+            if (slots != null && slotIndex >= 0 && slotIndex < slots.Length)
+            {
+                slots[slotIndex].gameObject.SetActive(skillConfig != null);
+                slots[slotIndex].Show(newSkillIndex, skillConfig);
+            }
 
             // 使用新接口：更新当前角色的快捷栏数据
             var currentShortcutData = DataManager.GetCurrentCharacterShortcutSkills();
-            currentShortcutData.skillIds[slotIndex] = newSkillIndex;
-            DataManager.SaveGameData();
+            if (currentShortcutData != null && slotIndex >= 0 && slotIndex < currentShortcutData.skillIds.Length)
+            {
+                currentShortcutData.skillIds[slotIndex] = newSkillIndex;
+                DataManager.SaveGameData();
+            }
         }
 
         #endregion
@@ -346,7 +442,8 @@ namespace UI
 
         #region 交互列表
 
-        [Header("交互列表配置")] [SerializeField] private ListView interactListView;
+        [Header("交互列表配置")]
+        [SerializeField] private ListView interactListView;
         [SerializeField] private ScrollRect interactScrollRect;
         [SerializeField, Range(0.01f, 0.5f)] private float scrollSmoothTime = 0.08f;
 
@@ -390,7 +487,7 @@ namespace UI
                 if (btn != null)
                 {
                     // 设置 ButtonManager 名字兜底
-                    btn.SetText(i == selectedIndex ? $"E  {dropName}" : $"   {dropName}");
+                    btn.SetText(i == selectedIndex ? $"E {dropName}" : $"  {dropName}");
 
                     // 强制手动播放高亮效果
                     if (i == selectedIndex)
@@ -562,37 +659,66 @@ namespace UI
 
         #region 右上角功能按钮列表
 
-        [Header("右上角功能按钮")] [SerializeField] private ButtonManager settingButton;
+        [Header("右上角功能按钮")]
+        [SerializeField] private ButtonManager settingButton;
         [SerializeField] private ButtonManager dialogButton;
+        [SerializeField] private ButtonManager skillLearnButton;
+        [SerializeField] private ButtonManager skillButton;
 
         private void BindSettingsButtons()
         {
-            settingButton.onClick.AddListener(OnSettingClick);
-            dialogButton.onClick.AddListener(OnDialogClick);
+            settingButton.onClick.AddListener(OnOpenSettingsWindow);
+            dialogButton.onClick.AddListener(OnOpenDialogWindow);
+            skillLearnButton.onClick.AddListener(OnOpenSkillLearnWindow);
+            skillButton.onClick.AddListener(OnOpenSkillWindow);
         }
 
         private void UnBindSettingsButtons()
         {
-            settingButton.onClick.RemoveListener(OnSettingClick);
-            dialogButton.onClick.RemoveListener(OnDialogClick);
+            settingButton.onClick.RemoveListener(OnOpenSettingsWindow);
+            dialogButton.onClick.RemoveListener(OnOpenDialogWindow);
+            skillLearnButton.onClick.RemoveListener(OnOpenSkillLearnWindow);
+            skillButton.onClick.RemoveListener(OnOpenSkillWindow);
         }
-        
-        private void OnSettingClick()
+
+        private void OnOpenSkillLearnWindow()
         {
-            var settingsWindow = UISystem.GetWindow<UI_GameSettingsWindow>();
-            if (settingsWindow != null && settingsWindow.UIEnable)
+            var learnWindow = UISystem.GetWindow<UI_SkillLearnWindow>();
+            if (learnWindow != null && learnWindow.UIEnable)
             {
-                UISystem.Close<UI_GameSettingsWindow>();
+                UISystem.Close<UI_SkillLearnWindow>();
             }
             else
             {
-                UISystem.Show<UI_GameSettingsWindow>();
+                var skillLearnedDatas = DataManager.GetCurrentCharacterSkills();
+                if (skillLearnedDatas != null)
+                    UISystem.Show<UI_SkillLearnWindow>()?.Show(skillLearnedDatas);
             }
         }
 
-        private void OnDialogClick()
+        private void OnOpenSkillWindow()
         {
-            UISystem.Show<UI_DialogWindow>()?.Show(null);
+            var skillWindow = UISystem.GetWindow<UI_SkillWindow>();
+            if (skillWindow != null && skillWindow.UIEnable)
+            {
+                UISystem.Close<UI_SkillWindow>();
+            }
+            else
+            {
+                var skillLearnedDatas = DataManager.GetCurrentCharacterSkills();
+                if (skillLearnedDatas != null)
+                    UISystem.Show<UI_SkillWindow>()?.Show(skillLearnedDatas);
+            }
+        }
+
+        private void OnOpenDialogWindow()
+        {
+            UISystem.Show<UI_DialogWindow>();
+        }
+
+        private void OnOpenSettingsWindow()
+        {
+            UISystem.Show<UI_GameSettingsWindow>();
         }
 
     #endregion

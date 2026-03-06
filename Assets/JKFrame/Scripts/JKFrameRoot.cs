@@ -16,7 +16,7 @@ namespace JKFrame
         private JKFrameRoot() { }
         private static JKFrameRoot Instance;
         public static Transform RootTransform { get; private set; }
-        public static JKFrameSetting Setting { get => Instance.FrameSetting; }
+        public static JKFrameSetting Setting { get => Instance?.FrameSetting; }
         // 框架层面的配置文件
         [SerializeField] JKFrameSetting FrameSetting;
 
