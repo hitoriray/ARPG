@@ -1,4 +1,6 @@
-﻿using JKFrame;
+﻿using Config;
+using JKFrame;
+using Manager;
 using PixelCrushers.DialogueSystem;
 using UnityEngine;
 using UnityEngine.AI;
@@ -118,8 +120,9 @@ namespace Npc
         {
             if (characterId < 0) return;
 
-            var table = ResSystem.LoadAsset<Config.CharacterTable>("CharacterTable");
-            if (table == null) return;
+            var table = CharacterModelManager.Instance.CharacterTable;
+            if (table == null)
+                table = ResSystem.LoadAsset<CharacterTable>("CharacterTable");
 
             var entry = table.GetCharacterById(characterId);
             if (entry != null && !string.IsNullOrEmpty(entry.CharacterName))

@@ -14,6 +14,8 @@ namespace Manager
     public class CharacterModelManager : MonoSingleton<CharacterModelManager>
     {
         private CharacterTable _characterTable;
+        public CharacterTable CharacterTable => _characterTable;
+        
         // 已加载的角色模型预制体缓存  Key:角色ID
         private Dictionary<int, AsyncOperationHandle<GameObject>> _loadedPrefabs = new();
         // 已加载的角色配置缓存  Key:角色ID
