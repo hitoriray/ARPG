@@ -98,4 +98,8 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 .ace-tool/
+
 /[Aa]ssets/StreamingAssets/LlamaLib-*/
+/[Aa]ssets/StreamingAssets/LlamaLib-*.meta
+
+node_modules/
