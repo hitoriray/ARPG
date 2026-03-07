@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Manager
 {
@@ -15,14 +16,35 @@ namespace Manager
         /// <summary>将一个关闭回调压栈（窗口打开时调用）。</summary>
         public static void Push(Action closeAction)
         {
+            if (closeAction == null)
+                return;
+
             _stack.Push(closeAction);
         }
 
         /// <summary>弹出并执行栈顶的关闭回调（ESC 时调用）。</summary>
-        public static void CloseTop()
+        /// <returns>是否成功关闭了一个窗口。</returns>
+        public static bool CloseTop()
         {
-            if (_stack.Count > 0)
-                _stack.Pop()?.Invoke();
+            while (_stack.Count > 0)
+            {
+                Action closeAction = _stack.Pop();
+                if (closeAction == null)
+                    continue;
+
+                try
+                {
+                    closeAction.Invoke();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"[UIModalStack] CloseTop invoke failed: {e.Message}");
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>手动将指定回调从栈中移除（窗口被非 ESC 途径关闭时调用）。</summary>
@@ -39,5 +61,10 @@ namespace Manager
         }
 
         public static bool HasAny => _stack.Count > 0;
+
+        public static void Clear()
+        {
+            _stack.Clear();
+        }
     }
 }

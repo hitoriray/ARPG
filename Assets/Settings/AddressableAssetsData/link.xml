@@ -57,6 +57,7 @@
     <type fullname="UI.UI_SkillLearnWindow_Item" preserve="all" />
     <type fullname="UI.UI_SkillWindow" preserve="all" />
     <type fullname="UI.UI_SkillWindow_Slot" preserve="all" />
+    <type fullname="UI.UI_WorldHeadItem" preserve="all" />
     <type fullname="UI.UI_InventoryWindow/SubWindowBinding" preserve="nothing" serialized="true" />
     <type fullname="UI.UI_InventoryWindow/TabFilterRule" preserve="nothing" serialized="true" />
   </assembly>
@@ -179,12 +180,12 @@
     <type fullname="Michsky.MUIP.CustomDropdown/DropdownEvent" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.CustomDropdown/Item" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.CustomDropdown/ItemTextChangedEvent" preserve="nothing" serialized="true" />
+    <type fullname="Michsky.MUIP.ProgressBar/ProgressBarEvent" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.SliderManager/SliderEvent" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.SwitchManager/SwitchEvent" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.WindowManager/WindowChangeEvent" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.WindowManager/WindowItem" preserve="nothing" serialized="true" />
     <type fullname="Michsky.MUIP.ListView/ListRow" preserve="nothing" serialized="true" />
-    <type fullname="Michsky.MUIP.ProgressBar/ProgressBarEvent" preserve="nothing" serialized="true" />
   </assembly>
   <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
     <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />

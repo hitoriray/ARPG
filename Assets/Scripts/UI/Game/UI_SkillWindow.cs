@@ -34,19 +34,32 @@ namespace UI
         
         public override void OnShow()
         {
-            PlayerService.Instance.SetCharacterControl(false);
+            base.OnShow();
+            PlayerService.Instance?.SetCharacterControl(false);
+            InputService.Instance?.inputMap?.UI.Disable();
+            PlayerService.Instance?.PushUICursor();
+            UIModalStack.Push(CloseThisWindow);
         }
 
         public override void OnClose()
         {
+            base.OnClose();
             if (UI_SkillSlotBase.currentEnterSlot != null)
             {
                 UI_SkillSlotBase.currentEnterSlot.OnPointerExit(null);
             }
-            PlayerService.Instance.SetCharacterControl(true);
+            PlayerService.Instance?.SetCharacterControl(true);
+            InputService.Instance?.inputMap?.UI.Enable();
+            PlayerService.Instance?.PopUICursor();
+            UIModalStack.Remove(CloseThisWindow);
         }
         
         private void OnCloseBtnClicked()
+        {
+            UISystem.Close<UI_SkillWindow>();
+        }
+
+        private void CloseThisWindow()
         {
             UISystem.Close<UI_SkillWindow>();
         }

@@ -123,15 +123,28 @@ namespace UI
 
         public override void OnShow()
         {
-            PlayerService.Instance.SetCharacterControl(false);
+            base.OnShow();
+            PlayerService.Instance?.SetCharacterControl(false);
+            InputService.Instance?.inputMap?.UI.Disable();
+            PlayerService.Instance?.PushUICursor();
+            UIModalStack.Push(CloseThisWindow);
         }
 
         public override void OnClose()
         {
-            PlayerService.Instance.SetCharacterControl(true);
+            base.OnClose();
+            PlayerService.Instance?.SetCharacterControl(true);
+            InputService.Instance?.inputMap?.UI.Enable();
+            PlayerService.Instance?.PopUICursor();
+            UIModalStack.Remove(CloseThisWindow);
         }
 
         private void OnBackBtnClicked()
+        {
+            UISystem.Close<UI_SkillLearnWindow>();
+        }
+
+        private void CloseThisWindow()
         {
             UISystem.Close<UI_SkillLearnWindow>();
         }

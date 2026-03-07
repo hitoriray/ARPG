@@ -43,6 +43,7 @@ namespace Manager
 
                 InventoryManager.InitializeForRuntime();
                 EnsureUIWindowsRegistered();
+                UIModalStack.Clear();
                 RegisterBagInput();
 
                 await PlayerManager.Instance.EnsureInitializedAsync();
@@ -120,7 +121,18 @@ namespace Manager
 
         private void OnEscPerformed(InputAction.CallbackContext ctx)
         {
-            UIModalStack.CloseTop();
+            if (UIModalStack.CloseTop())
+                return;
+
+            var settingsWindow = UISystem.GetWindow<UI.UI_GameSettingsWindow>();
+            if (settingsWindow != null && settingsWindow.UIEnable)
+            {
+                UISystem.Close<UI.UI_GameSettingsWindow>();
+            }
+            else
+            {
+                UISystem.Show<UI.UI_GameSettingsWindow>();
+            }
         }
 
         private void OnBagPerformed(InputAction.CallbackContext ctx)

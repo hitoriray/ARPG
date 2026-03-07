@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Attribute;
 using JKFrame;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
@@ -28,6 +27,7 @@ namespace UI
 
         private static WorldHeadUIManager _instance;
         private static bool _isQuitting;
+        private static bool _missingInstanceLogged;
         private const string ItemPoolKey = "WorldHeadUIManager_ItemPool";
 
         [Header("Canvas")]
@@ -74,6 +74,11 @@ namespace UI
                     return _instance;
 
                 _instance = FindAnyObjectByType<WorldHeadUIManager>();
+                if (_instance == null && !_missingInstanceLogged)
+                {
+                    Debug.LogError("[WorldHeadUIManager] No scene instance found. Please place and configure WorldHeadUIManager in the scene.");
+                    _missingInstanceLogged = true;
+                }
                 return _instance;
             }
         }
@@ -89,11 +94,6 @@ namespace UI
                 return _instance;
 
             _instance = FindAnyObjectByType<WorldHeadUIManager>();
-            if (_instance != null)
-                return _instance;
-            var go = new GameObject("[WorldHeadUIManager]");
-            _instance = go.AddComponent<WorldHeadUIManager>();
-            DontDestroyOnLoad(go);
             return _instance;
         }
 
@@ -105,6 +105,7 @@ namespace UI
                 return;
             }
             _isQuitting = false;
+            _missingInstanceLogged = false;
             _instance = this;
             EnsureCanvas();
         }
@@ -178,7 +179,8 @@ namespace UI
             if (target == null)
                 return;
 
-            EnsureCanvas();
+            if (!EnsureCanvas())
+                return;
             int key = target.GetInstanceID();
 
             if (_entries.TryGetValue(key, out var existing))
@@ -281,7 +283,11 @@ namespace UI
                     continue;
                 }
 
-                if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(itemRoot, screenPos, null, out var localPos))
+                Camera uiCamera = null;
+                if (rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+                    uiCamera = rootCanvas.worldCamera;
+
+                if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(itemRoot, screenPos, uiCamera, out var localPos))
                 {
                     entry.Item.SetAlpha(0f);
                     entry.Item.gameObject.SetActive(false);
@@ -386,7 +392,9 @@ namespace UI
 
         private UI_WorldHeadItem AcquireItem()
         {
-            EnsureCanvas();
+            if (!EnsureCanvas())
+                return null;
+
             if (itemPrefab == null)
             {
                 Debug.LogError("[WorldHeadUIManager] itemPrefab is not assigned. Please assign UI_WorldHeadItem prefab in Inspector.", this);
@@ -418,34 +426,24 @@ namespace UI
             PoolSystem.PushGameObject(ItemPoolKey, item.gameObject);
         }
 
-        private void EnsureCanvas()
+        private bool EnsureCanvas()
         {
             if (rootCanvas == null)
             {
-                var canvasGo = new GameObject("WorldHeadCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler),
-                    typeof(GraphicRaycaster));
-                canvasGo.transform.SetParent(transform, false);
-                rootCanvas = canvasGo.GetComponent<Canvas>();
-                rootCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                rootCanvas.overrideSorting = true;
-                rootCanvas.sortingOrder = sortingOrder;
-
-                var scaler = canvasGo.GetComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920f, 1080f);
-                scaler.matchWidthOrHeight = 0.5f;
+                Debug.LogError("[WorldHeadUIManager] rootCanvas is not assigned. Please assign RootCanvas in Inspector.", this);
+                return false;
             }
 
             if (itemRoot == null)
             {
-                var rootGo = new GameObject("WorldHeadRoot", typeof(RectTransform));
-                itemRoot = rootGo.GetComponent<RectTransform>();
-                itemRoot.SetParent(rootCanvas.transform, false);
-                itemRoot.anchorMin = Vector2.zero;
-                itemRoot.anchorMax = Vector2.one;
-                itemRoot.offsetMin = Vector2.zero;
-                itemRoot.offsetMax = Vector2.zero;
+                Debug.LogError("[WorldHeadUIManager] itemRoot is not assigned. Please assign WorldHeadRoot in Inspector.", this);
+                return false;
             }
+
+            rootCanvas.overrideSorting = true;
+            rootCanvas.sortingOrder = sortingOrder;
+
+            return true;
         }
 
         private static class ListPool<T>

@@ -73,6 +73,7 @@ namespace Manager
                 EnsureInventoryWindowDataRegistered();
                 EnsureDialogWindowDataRegistered();
                 EnsureSettingsWindowDataRegistered();
+                UIModalStack.Clear();
                 RegisterBagInput();
 
                 // Keep scene-switch behavior aligned with TestScene and avoid redundant full re-init.
@@ -145,7 +146,19 @@ namespace Manager
 
         private void OnEscPerformed(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
         {
-            UIModalStack.CloseTop();
+            if (UIModalStack.CloseTop())
+                return;
+
+            EnsureSettingsWindowDataRegistered();
+            var settingsWindow = UISystem.GetWindow<UI.UI_GameSettingsWindow>();
+            if (settingsWindow != null && settingsWindow.UIEnable)
+            {
+                UISystem.Close<UI.UI_GameSettingsWindow>();
+            }
+            else
+            {
+                UISystem.Show<UI.UI_GameSettingsWindow>();
+            }
         }
 
         private void OnBagPerformed(InputAction.CallbackContext ctx)
