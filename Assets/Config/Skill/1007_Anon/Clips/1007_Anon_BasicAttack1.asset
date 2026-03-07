@@ -246,19 +246,19 @@ MonoBehaviour:
       Data: UnityEngine.Vector3, UnityEngine.CoreModule
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 4
       Data: 0
     - Name: 
       Entry: 4
-      Data: 0
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
     - Name: RepelTime
       Entry: 4
-      Data: 0
+      Data: 0.5
     - Name: KnockbackDirection
       Entry: 3
       Data: 0

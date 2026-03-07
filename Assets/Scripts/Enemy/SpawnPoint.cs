@@ -1,6 +1,9 @@
-using System;
+﻿using System;
+using Attribute;
+using Boss;
 using Cysharp.Threading.Tasks;
 using Manager;
+using UI;
 using UnityEngine;
 
 namespace Enemy
@@ -69,6 +72,10 @@ namespace Enemy
             State = SpawnPointState.Cleared;
             if (SpawnedEnemy != null)
             {
+                var headUi = WorldHeadUIManager.TryGetExistingInstance();
+                if (headUi != null)
+                    headUi.Unregister(SpawnedEnemy.transform);
+
                 Destroy(SpawnedEnemy);
                 SpawnedEnemy = null;
             }
@@ -133,12 +140,29 @@ namespace Enemy
             var dropComp = SpawnedEnemy.AddComponent<DropOnDeath>();
             dropComp.Init(_config);
 
+            var headUiManager = WorldHeadUIManager.EnsureInstance();
+            if (headUiManager != null)
+            {
+                var attr = SpawnedEnemy.GetComponentInChildren<CharacterAttribute>();
+                string displayName = modelManager.GetCharacterName(_config.EnemyCharacterId);
+                if (string.IsNullOrWhiteSpace(displayName))
+                    displayName = SpawnedEnemy.name;
+
+                bool isBoss = SpawnedEnemy.GetComponentInChildren<BossController>() != null;
+                headUiManager.RegisterHostile(SpawnedEnemy.transform, attr, displayName, isBoss);
+            }
+
             State = SpawnPointState.Alive;
             RayDebug.Log($"[SpawnPoint] 生成敌人：{SpawnedEnemy.name} at {spawnPos}");
         }
 
         private void HandleEnemyDied()
         {
+            Transform deadTransform = SpawnedEnemy != null ? SpawnedEnemy.transform : null;
+            var headUi = WorldHeadUIManager.TryGetExistingInstance();
+            if (headUi != null && deadTransform != null)
+                headUi.Unregister(deadTransform);
+
             if (SpawnedEnemy != null)
             {
                 // 注意：不在这里直接 Destroy，让敌人自己播放死亡动画后销毁
@@ -208,3 +232,4 @@ namespace Enemy
 #endif
     }
 }
+

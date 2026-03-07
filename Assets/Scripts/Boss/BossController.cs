@@ -7,6 +7,7 @@ using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Config;
 using Manager;
+using UI;
 using UnityEngine;
 
 namespace Boss
@@ -80,6 +81,7 @@ namespace Boss
                 skillBrain.Init(this, characterConfig.SkillConfigList);
 
             weaponSlotManager?.RefreshSlots();
+            WorldHeadUIManager.EnsureInstance()?.RegisterHostile(transform, CharacterAttribute, gameObject.name, true);
 
             // 注册 ECS 实体
             if (BattleEcsRunner.Instance != null && BattleEcsRunner.Instance.Context != null)
@@ -103,6 +105,13 @@ namespace Boss
 
             ApplyRepelMotion();
             CleanupFinishedSkillLayer();
+        }
+
+        private void OnDestroy()
+        {
+            var headUi = WorldHeadUIManager.TryGetExistingInstance();
+            if (headUi != null)
+                headUi.Unregister(transform);
         }
 
         protected override void OnAnimatorMove()
@@ -288,11 +297,7 @@ namespace Boss
             }
 
             // 2. 记录受击方向
-            Vector3 hitDir = attackData.hitPoint - transform.position;
-            hitDir.y = 0f;
-            if (hitDir.sqrMagnitude < 0.0001f)
-                hitDir = -transform.forward;
-            LastHitDirection = hitDir.normalized;
+            LastHitDirection = ResolveIncomingHitDirection(attackData);
 
             // 3. 击退位移
             var hitConfig = attackData.detectionEvent?.AttackHitConfig;
@@ -320,11 +325,7 @@ namespace Boss
                 case KnockbackDirection.PlayerOpposite:
                 {
                     // 攻击者指向被击者的方向
-                    Vector3 knockDir = (transform.position - attackData.hitPoint);
-                    knockDir.y = 0f;
-                    if (knockDir.sqrMagnitude < 0.0001f)
-                        knockDir = -transform.forward;
-                    knockDir.Normalize();
+                    Vector3 knockDir = -ResolveIncomingHitDirection(attackData);
                     // strength.z 为居4展开的透风强度，strength.y 为上相分量
                     return knockDir * strength.z + Vector3.up * strength.y;
                 }
@@ -342,6 +343,35 @@ namespace Boss
                 default:
                     return strength;
             }
+        }
+
+        private Vector3 ResolveIncomingHitDirection(AttackData attackData)
+        {
+            Vector3 dir = Vector3.zero;
+
+            if (attackData.source != null)
+            {
+                Transform sourceTransform = attackData.source.ModelTransform;
+                if (sourceTransform == null && attackData.source is UnityEngine.Component sourceComponent)
+                    sourceTransform = sourceComponent.transform;
+
+                if (sourceTransform != null)
+                {
+                    dir = sourceTransform.position - transform.position;
+                    dir.y = 0f;
+                }
+            }
+
+            if (dir.sqrMagnitude < 0.0001f)
+            {
+                dir = attackData.hitPoint - transform.position;
+                dir.y = 0f;
+            }
+
+            if (dir.sqrMagnitude < 0.0001f)
+                dir = transform.forward;
+
+            return dir.normalized;
         }
 
         private void ApplyRepelMotion()
@@ -368,6 +398,7 @@ namespace Boss
 
             isDead = true;
             PlayDeathSound();
+            WorldHeadUIManager.TryGetExistingInstance()?.Unregister(transform);
             RayDebug.Info($"{gameObject.name} 死亡！");
             
             // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定

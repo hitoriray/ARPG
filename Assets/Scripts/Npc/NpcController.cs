@@ -2,6 +2,7 @@
 using JKFrame;
 using Manager;
 using PixelCrushers.DialogueSystem;
+using UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -78,6 +79,8 @@ namespace Npc
             }
         }
 
+        public string DisplayName => NpcDisplayName;
+
         // ── 静态列表：追踪当前所有在范围内的 NPC（最近进入的排首位）
         private static readonly System.Collections.Generic.List<NpcController> _nearbyNpcs = new();
 
@@ -101,6 +104,7 @@ namespace Npc
             base.Start();
 
             ResolveDisplayName();
+            WorldHeadUIManager.EnsureInstance()?.RegisterNpc(transform, NpcDisplayName);
 
             stateMachine = new StateMachine();
             stateMachine.Init(this);
@@ -131,6 +135,10 @@ namespace Npc
 
         private void OnDestroy()
         {
+            var headUi = WorldHeadUIManager.TryGetExistingInstance();
+            if (headUi != null)
+                headUi.Unregister(transform);
+
             if (DialogueManager.instance != null)
             {
                 DialogueManager.instance.conversationStarted -= OnConversationStarted;

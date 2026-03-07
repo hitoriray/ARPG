@@ -40,8 +40,8 @@ MonoBehaviour:
   FootstepEndAudioSet: {fileID: 11400000, guid: f151fb17ddf646342bb7472b141b531c, type: 2}
   HurtAudio:
     Clips:
-    - {fileID: 8300000, guid: 3b9b0f367226ee34483d6d4dc99aaf48, type: 3}
-    Volume: 1
+    - {fileID: 8300000, guid: 347a5886475669541902e4dc4863a5c5, type: 3}
+    Volume: 0.3
     MinInterval: 0.1
   DeathAudio:
     Clips:
