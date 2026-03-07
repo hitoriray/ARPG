@@ -1,4 +1,4 @@
-using Battle.ECS;
+﻿using Battle.ECS;
 using JKFrame;
 using Sirenix.OdinInspector;
 using UnityEngine.InputSystem;
@@ -7,6 +7,7 @@ namespace Manager
 {
     public class GameSceneManager : SingletonMono<GameSceneManager>
     {
+        private const string GameSceneName = "Game";
         private const string InventoryWindowTypeKey = "UI.UI_InventoryWindow";
         private const string InventoryWindowAssetKey = "UI_InventoryWindow";
         private const int InventoryWindowLayer = 1;
@@ -36,6 +37,9 @@ namespace Manager
         {
             try
             {
+                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                RayDebug.Info($"[GameSceneManager] Start: scene={sceneName}, isCreateArchive={isCreateArchive}");
+
                 if (isCreateArchive)
                 {
                     DataManager.CreateArchive(initialCharacterId);
@@ -71,7 +75,8 @@ namespace Manager
                 EnsureSettingsWindowDataRegistered();
                 RegisterBagInput();
 
-                await PlayerManager.Instance.InitAsync();
+                // Keep scene-switch behavior aligned with TestScene and avoid redundant full re-init.
+                await PlayerManager.Instance.EnsureInitializedAsync();
 
                 RegisterBagInput();
                 RegisterEscInput();
@@ -95,17 +100,12 @@ namespace Manager
         {
             UnregisterBagInput();
             UnregisterEscInput();
+            SavePlayerArchiveSnapshot("OnDestroy");
+        }
 
-            // 退出前保存玩家位置
-            if (PlayerManager.Instance?.player != null)
-            {
-                var pos = PlayerManager.Instance.player.transform.position;
-                var sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                DataManager.SavePlayerPosition(pos, sceneName);
-            }
-
-            // Save archive data when leaving scene/application.
-            DataManager.SaveGameData();
+        private void OnApplicationQuit()
+        {
+            SavePlayerArchiveSnapshot("OnApplicationQuit");
         }
 
         private void RegisterBagInput()
@@ -205,7 +205,20 @@ namespace Manager
 
             JKLog.Warning($"[GameSceneManager] Runtime UIWindowData registration: {SettingsWindowTypeKey}");
         }
+
+        private static void SavePlayerArchiveSnapshot(string reason)
+        {
+            if (PlayerManager.TryGetLatestPlayerWorldPosition(out var pos))
+            {
+                DataManager.SavePlayerPosition(pos, GameSceneName);
+                JKLog.Log($"[GameSceneManager] 保存玩家存档快照: reason={reason}, scene={GameSceneName}, pos={pos}");
+            }
+            else
+            {
+                JKLog.Warning($"[GameSceneManager] 保存玩家存档快照失败: reason={reason}, 无可用玩家位置。");
+            }
+
+            DataManager.SaveGameData();
+        }
     }
 }
-
-

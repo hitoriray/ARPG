@@ -33,14 +33,9 @@ namespace Enemy
             OnDied?.Invoke();
         }
 
-        // 降级方案：GameObject 被销毁时也触发（以防忘记调用 NotifyDied）
-        private void OnDestroy()
-        {
-            if (!_notified)
-            {
-                _notified = true;
-                OnDied?.Invoke();
-            }
-        }
+        // IMPORTANT:
+        // Do not infer "died" from OnDestroy.
+        // Scene unload / app quit also destroys enemy objects, which would incorrectly trigger drops.
+        private void OnDestroy() { }
     }
 }

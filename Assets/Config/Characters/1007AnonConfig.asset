@@ -21,7 +21,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  ID: 1007
   WalkSpeed: 2
   RunSpeed: 5
   RotateSpeed: 10
@@ -39,6 +38,17 @@ MonoBehaviour:
   GenericLocomotionConfig: {fileID: 0}
   FootstepAudioSet: {fileID: 11400000, guid: 475f9b95d437170409b3e76c5b5ee9d4, type: 2}
   FootstepEndAudioSet: {fileID: 11400000, guid: f151fb17ddf646342bb7472b141b531c, type: 2}
+  HurtAudio:
+    Clips:
+    - {fileID: 8300000, guid: 3b9b0f367226ee34483d6d4dc99aaf48, type: 3}
+    Volume: 1
+    MinInterval: 0.1
+  DeathAudio:
+    Clips:
+    - {fileID: 8300000, guid: f867e7b91ebef9549bcf29825ff03d0d, type: 3}
+    - {fileID: 8300000, guid: e3b6ef92209ae464cba676958176b295, type: 3}
+    Volume: 1
+    MinInterval: 0
   SkillConfigList:
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: f92bf1dc9b5cdbe448b5abb5fbaacbcf, type: 2}

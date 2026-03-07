@@ -32,12 +32,6 @@ namespace RayPlayer
         [Header("Generic Locomotion")]
         [SerializeField] private GenericPlayerLocomotionController genericLocomotionController;
 
-        [Header("Footstep")]
-        [SerializeField, Range(0f, 1f)] private float footstepVolume = 1f;
-        [SerializeField, Min(0f)] private float footstepRayDistance = 1.6f;
-        [SerializeField] private Vector3 footstepRayOffset = new Vector3(0f, 0.2f, 0f);
-        [SerializeField, Min(0f)] private float footstepMinInterval = 0.06f;
-        
         [Header("Animancer Skill Layer")]
         [SerializeField] private int skillLayerIndex = 1;
         [SerializeField] private AvatarMask upperBodyMask;
@@ -68,7 +62,6 @@ namespace RayPlayer
         private bool inSkill;
         private bool currentSkillUpperBody;
         private bool useGenericLocomotion;
-        private float lastFootstepTime = -999f;
 
         protected override void Awake()
         {
@@ -84,6 +77,9 @@ namespace RayPlayer
             if (characterConfig == null) return;
             
             base.Init(characterConfig);
+            CameraTransform = Camera.main != null ? Camera.main.transform : null;
+            if (cameraController == null)
+                cameraController = FindAnyObjectByType<CameraController>(FindObjectsInactive.Include);
             
             useGenericLocomotion = characterConfig != null && characterConfig.GenericLocomotionConfig != null;
             RayDebug.Log($"Init -> character={characterConfig?.name}, useGeneric={useGenericLocomotion}, genericConfig={characterConfig?.GenericLocomotionConfig?.name}");
@@ -385,6 +381,7 @@ namespace RayPlayer
                 ReusableData.lastHitDirection = hitDir.normalized;
             }
 
+            PlayHurtSound();
             ChangeState(PlayerState.Hurt);
             RayDebug.Log($"玩家被命中！伤害值: {attackData.attackValue}");
         }
@@ -394,6 +391,7 @@ namespace RayPlayer
         /// </summary>
         public void OnDeath()
         {
+            PlayDeathSound();
             RayDebug.Info("[PlayerController] 玩家死亡！");
             
             // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定
@@ -476,6 +474,25 @@ namespace RayPlayer
         public void BindModel(GameObject model)
         {
             playerView = model.GetComponent<PlayerView>();
+            BindCameraTargets();
+        }
+
+        public void RefreshSceneBindings()
+        {
+            CameraTransform = Camera.main != null ? Camera.main.transform : null;
+            if (cameraController == null)
+                cameraController = FindAnyObjectByType<CameraController>(FindObjectsInactive.Include);
+
+            BindCameraTargets();
+
+            if (useGenericLocomotion && genericLocomotionController != null && characterConfig?.GenericLocomotionConfig != null)
+            {
+                genericLocomotionController.Initialize(characterConfig.GenericLocomotionConfig, CameraTransform);
+            }
+        }
+
+        private void BindCameraTargets()
+        {
             var vcam = cameraController != null ? cameraController.GetComponent<CinemachineVirtualCamera>() : null;
             if (vcam != null && playerView != null)
             {
@@ -518,66 +535,5 @@ namespace RayPlayer
             if (progress != null) progress.CurrentMp = current;
         }
 
-        public void PlayFootSound()
-        {
-            TryPlayFootstepSound(characterConfig.FootstepAudioSet);
-        }
-
-        public void PlayFootEndSound()
-        {
-            TryPlayFootstepSound(characterConfig.FootstepEndAudioSet);
-        }
-
-        private void TryPlayFootstepSound(FootstepSurfaceAudioSet audioSet)
-        {
-            if (footstepMinInterval > 0f && Time.time - lastFootstepTime < footstepMinInterval)
-                return;
-
-            if (!TryGetFootstepSurface(out var surfaceType, out var hitPosition))
-                return;
-
-            AudioClip[] clips = audioSet.GetClips(surfaceType);
-
-            if (clips == null || clips.Length == 0)
-            {
-                RayDebug.Error($"没有 {surfaceType} 对应的脚步声资源！");
-                return;
-            }
-            
-            var clip = clips[UnityEngine.Random.Range(0, clips.Length)];
-            lastFootstepTime = Time.time;
-            AudioSystem.PlayOneShot(clip, hitPosition, false, footstepVolume);
-        }
-
-        private bool TryGetFootstepSurface(out FootstepSurfaceType surfaceType, out Vector3 hitPosition)
-        {
-            surfaceType = FootstepSurfaceType.Default;
-            hitPosition = transform.position;
-
-            Vector3 origin = GetFootstepRayOrigin();
-            if (!Physics.Raycast(origin, Vector3.down, out var hit, footstepRayDistance, whatIsGround,
-                    QueryTriggerInteraction.Ignore))
-            {
-                return false;
-            }
-
-            hitPosition = hit.point;
-            var surface = hit.collider.GetComponentInParent<FootstepSurface>();
-            if (surface != null)
-                surfaceType = surface.SurfaceType;
-
-            return true;
-        }
-
-        private Vector3 GetFootstepRayOrigin()
-        {
-            if (controller != null)
-            {
-                var bounds = controller.bounds;
-                return bounds.center + Vector3.down * bounds.extents.y + footstepRayOffset;
-            }
-
-            return transform.position + footstepRayOffset;
-        }
     }
 }

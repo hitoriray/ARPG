@@ -22,6 +22,8 @@ namespace Config
         [LabelText("Generic移动配置")] public GenericLocomotionConfig GenericLocomotionConfig;
         [FormerlySerializedAs("FootstepSurfaceAudioSet")] [LabelText("脚步声地形映射")] public FootstepSurfaceAudioSet FootstepAudioSet;
         [FormerlySerializedAs("FootstepEndSurfaceAudioSet")] [LabelText("收脚声地形映射")] public FootstepSurfaceAudioSet FootstepEndAudioSet;
+        [LabelText("受伤音效")] public CharacterActionAudioConfig HurtAudio = new();
+        [LabelText("死亡音效")] public CharacterActionAudioConfig DeathAudio = new();
         [LabelText("全部技能")] public List<SkillConfig> SkillConfigList;
         [LabelText("基础生命值")] public float hpBaseValue;
         [LabelText("基础魔力值")] public float mpBaseValue;
@@ -41,5 +43,13 @@ namespace Config
         [LabelText("Skin Width")] public float skinWidth;
         [LabelText("地面检测半径")] public float groundRadius;
         [LabelText("地面检测偏移")] public float groundDetectedOffset;
+    }
+
+    [Serializable]
+    public class CharacterActionAudioConfig
+    {
+        [LabelText("音效列表")] public AudioClip[] Clips;
+        [LabelText("音量"), Range(0f, 1f)] public float Volume = 1f;
+        [LabelText("最小间隔"), Min(0f)] public float MinInterval = 0f;
     }
 }

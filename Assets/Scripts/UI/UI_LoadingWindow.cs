@@ -44,6 +44,13 @@ namespace UI
             BeginLoading();
         }
 
+        public override void OnClose()
+        {
+            base.OnClose();
+            // Invalidate all pending async background callbacks for this showing cycle.
+            _backgroundLoadVersion++;
+        }
+
         public void BeginLoading()
         {
             _waitForSceneReadyEvent = GameManager.Instance != null && GameManager.Instance.WaitForSceneReadyEvent;
@@ -182,7 +189,8 @@ namespace UI
 
             ResSystem.LoadAssetAsync<Sprite>(key, sprite =>
             {
-                if (!UIEnable || currentVersion != _backgroundLoadVersion) return;
+                if (currentVersion != _backgroundLoadVersion) return;
+                if (!UIEnable || backgroundImage == null) return;
                 if (sprite == null) return;
                 backgroundImage.sprite = sprite;
                 ApplyBackgroundCoverLayout();

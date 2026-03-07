@@ -1,5 +1,6 @@
 using JKFrame;
 using PixelCrushers.DialogueSystem;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -108,10 +109,20 @@ namespace Manager
                 return;
             }
 
+            LoadSceneWithLoadingAsync(sceneName, waitForSceneReadyEvent).Forget();
+        }
+
+        private async UniTaskVoid LoadSceneWithLoadingAsync(string sceneName, bool waitForSceneReadyEvent)
+        {
             WaitForSceneReadyEvent = waitForSceneReadyEvent;
             EnsureLoadingWindowDataRegistered();
 
             UISystem.Show(LoadingWindowTypeKey);
+            Canvas.ForceUpdateCanvases();
+
+            // Let LoadingWindow render at least one frame before scene load starts.
+            await UniTask.NextFrame();
+
             SceneSystem.LoadSceneAsync(sceneName);
         }
 

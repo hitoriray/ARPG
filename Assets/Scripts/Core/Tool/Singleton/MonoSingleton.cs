@@ -1,10 +1,11 @@
 using UnityEngine;
 
-//在物体销毁时访问次对象最好加一个Null的判断，防止程序退出次物体被销毁
+// Add null checks when accessing singleton during teardown to avoid invalid references.
 public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 {
     protected static T instance;
     protected static bool isQuitting;
+    private static bool isAutoCreatedInstance;
 
     public static T Instance
     {
@@ -14,10 +15,12 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
             if (instance == null)
             {
                 instance = GameObject.FindAnyObjectByType<T>();
+                isAutoCreatedInstance = false;
                 if (instance == null)
                 {
                     var go = new GameObject(typeof(T).Name);
                     instance = go.AddComponent<T>();
+                    isAutoCreatedInstance = true;
                 }
             }
 
@@ -27,16 +30,33 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 
     protected virtual void Awake()
     {
-        //默认放到DontDestroyScene中
         if (instance == null)
         {
             instance = (T)this;
-            DontDestroyOnLoad(instance);
+            isAutoCreatedInstance = false;
+            DontDestroyOnLoad(gameObject);
+            return;
         }
-        else
+
+        if (instance == this)
         {
-            Destroy(gameObject);
+            isAutoCreatedInstance = false;
+            DontDestroyOnLoad(gameObject);
+            return;
         }
+
+        // Replace auto-created placeholder instance with scene instance (keeps serialized refs).
+        if (isAutoCreatedInstance && instance != null)
+        {
+            Destroy(instance.gameObject);
+            instance = (T)this;
+            isAutoCreatedInstance = false;
+            DontDestroyOnLoad(gameObject);
+            return;
+        }
+
+        // Destroy only this component to avoid deleting other managers on the same GameObject.
+        Destroy(this);
     }
 
     protected virtual void OnApplicationQuit()
@@ -46,6 +66,10 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 
     protected virtual void OnDestroy()
     {
-        if (instance == this) instance = null;
+        if (instance == this)
+        {
+            instance = null;
+            isAutoCreatedInstance = false;
+        }
     }
 }

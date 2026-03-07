@@ -11,10 +11,49 @@ namespace Manager
 {
     public class PlayerManager : MonoSingleton<PlayerManager>, IPlayerManager
     {
+        private static bool _hasLastKnownPlayerWorldPosition;
+        private static Vector3 _lastKnownPlayerWorldPosition;
+
         protected override void Awake()
         {
             base.Awake();
-            PlayerService.Instance = this;
+            // Avoid stale service binding when a duplicate PlayerManager component is destroyed by MonoSingleton.
+            if (instance == this)
+            {
+                PlayerService.Instance = this;
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            // If service still points to this instance (or destroyed duplicate), recover to current singleton instance.
+            if (ReferenceEquals(PlayerService.Instance, this))
+            {
+                PlayerService.Instance = instance;
+            }
+        }
+
+        public static bool TryGetLatestPlayerWorldPosition(out Vector3 worldPosition)
+        {
+            // Use cached singleton field directly to avoid auto-creating placeholder during teardown.
+            var mgr = instance;
+            if (mgr != null && mgr.TryGetCurrentPlayerWorldPosition(out worldPosition))
+            {
+                _lastKnownPlayerWorldPosition = worldPosition;
+                _hasLastKnownPlayerWorldPosition = true;
+                return true;
+            }
+
+            if (_hasLastKnownPlayerWorldPosition)
+            {
+                worldPosition = _lastKnownPlayerWorldPosition;
+                return true;
+            }
+
+            worldPosition = Vector3.zero;
+            return false;
         }
 
         /// <summary>
@@ -30,9 +69,11 @@ namespace Manager
         [SerializeField] private CharacterModelManager characterModelManager;
 
         public CharacterConfig CharacterConfig { get; private set; }
+        public bool IsRuntimeInitialized => player != null && CharacterConfig != null && _loadedCharacterId > 0;
         private InputService inputService;
         private Behaviour[] _cameraInputBehaviours;
         private bool characterControl = true;
+        private int _loadedCharacterId = -1;
 
         // UI 覆盖计数：任意 UI 打开 +1，关闭 -1；> 0 时强制显示鼠标
         private int _uiOverrideCount = 0;
@@ -53,6 +94,18 @@ namespace Manager
         /// </summary>
         public async UniTask InitAsync()
         {
+            if (DataManager.GameData == null)
+            {
+                RayDebug.Error("[PlayerManager] GameData is null, cannot initialize player.");
+                return;
+            }
+
+            if (player == null)
+            {
+                RayDebug.Error("[PlayerManager] player reference is null. Ensure PlayerManager in scene has PlayerController assigned.");
+                return;
+            }
+
             var modelManager = GetCharacterModelManager();
             if (modelManager == null)
             {
@@ -95,21 +148,96 @@ namespace Manager
 
             player.BindModel(newModel);
             player.Init(CharacterConfig);
+            player.RefreshSceneBindings();
             inputService = InputService.Instance;
             SetCharacterControl(true);
-            UISystem.Show<UI_GameSceneMainWindow>().Show(shortcutSkillDatas);
+            ShowOrRefreshMainWindow(shortcutSkillDatas);
+            _loadedCharacterId = characterId;
 
-            // 从存档恢复玩家位置（同场景才恢复，跨场景走默认出生点）
-            var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            var savedPos = DataManager.GetPlayerLastPosition(currentScene);
-            if (savedPos.HasValue)
-            {
-                player.transform.position = savedPos.Value;
-                RayDebug.Log($"[PlayerManager] 从存档位置生成：{savedPos.Value}");
-            }
+            TryRestorePlayerPositionForCurrentScene();
 
             // ===== 存档调试输出 =====
             PrintGameDataDebug();
+        }
+
+        /// <summary>
+        /// 跨场景进入时确保玩家可用：仅在必要时完整重建，其余情况只刷新场景引用。
+        /// </summary>
+        public async UniTask EnsureInitializedAsync()
+        {
+            int selectedCharacterId = DataManager.GameData != null ? DataManager.GameData.SelectedCharacterId : -1;
+            bool needFullInit = !IsRuntimeInitialized || selectedCharacterId != _loadedCharacterId;
+
+            if (needFullInit)
+            {
+                await InitAsync();
+                return;
+            }
+
+            player.RefreshSceneBindings();
+            inputService = InputService.Instance;
+            SetCharacterControl(characterControl);
+            TryRestorePlayerPositionForCurrentScene();
+
+            var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
+            ShowOrRefreshMainWindow(shortcutSkillDatas);
+        }
+
+        private void TryRestorePlayerPositionForCurrentScene()
+        {
+            if (player == null) return;
+
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            var savedPos = DataManager.GetPlayerLastPosition(currentScene);
+            if (!savedPos.HasValue)
+            {
+                var gd = DataManager.GameData;
+                Vector3 rawPos = gd != null ? (Vector3)gd.PlayerLastPosition : Vector3.zero;
+                string rawScene = gd != null ? gd.PlayerLastSceneName : "<GameData null>";
+                RayDebug.Warn($"[PlayerManager] 未应用存档位置：currentScene={currentScene}, savedScene={rawScene}, savedPos={rawPos}");
+                return;
+            }
+
+            var controller = player.controller;
+            bool controllerWasEnabled = controller != null && controller.enabled;
+            if (controllerWasEnabled)
+                controller.enabled = false;
+
+            // PlayerController is the actual moving object; move manager by delta to keep parent-child relation consistent.
+            Vector3 currentPlayerPos = player.transform.position;
+            Vector3 delta = savedPos.Value - currentPlayerPos;
+            if (player.transform.parent == transform)
+                transform.position += delta;
+            else
+                player.transform.position = savedPos.Value;
+
+            player.ChangeVerticalSpeed(0f);
+            player.ClearHorizontalVelocity();
+
+            if (controllerWasEnabled)
+                controller.enabled = true;
+
+            CacheLatestPlayerWorldPosition();
+            RayDebug.Log($"[PlayerManager] 从存档位置生成: target={savedPos.Value}, managerPos={transform.position}, playerPos={player.transform.position}");
+        }
+
+        private void ShowOrRefreshMainWindow(ShortcutSkillSlotData shortcutSkillDatas)
+        {
+            if (shortcutSkillDatas == null)
+            {
+                shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
+            }
+
+            if (shortcutSkillDatas == null) return;
+
+            var mainWindow = UISystem.GetWindow<UI_GameSceneMainWindow>();
+            if (mainWindow != null && mainWindow.UIEnable)
+            {
+                mainWindow.ShowShortcutSkillSlots(shortcutSkillDatas);
+                return;
+            }
+
+            UISystem.Show<UI_GameSceneMainWindow>()?.Show(shortcutSkillDatas);
         }
 
         private void PrintGameDataDebug()
@@ -181,6 +309,12 @@ namespace Manager
             if (gd.InventoryItems?.Dictionary != null)
                 foreach (var kv in gd.InventoryItems.Dictionary)
                     sb.AppendLine($"    ItemId={kv.Key}  数量={kv.Value}");
+
+            // --- 玩家位置存档 ---
+            var lastPos = (Vector3)gd.PlayerLastPosition;
+            sb.AppendLine("  [玩家位置存档]");
+            sb.AppendLine($"    LastScene={gd.PlayerLastSceneName ?? "null"}");
+            sb.AppendLine($"    LastPosition={lastPos}");
 
             sb.AppendLine("==================================");
             RayDebug.Info(sb.ToString());
@@ -279,6 +413,28 @@ namespace Manager
         private void LateUpdate()
         {
             ApplyCursorState();
+            CacheLatestPlayerWorldPosition();
+        }
+
+        private bool TryGetCurrentPlayerWorldPosition(out Vector3 worldPosition)
+        {
+            if (player != null)
+            {
+                worldPosition = player.transform.position;
+                return true;
+            }
+
+            worldPosition = Vector3.zero;
+            return false;
+        }
+
+        private void CacheLatestPlayerWorldPosition()
+        {
+            if (TryGetCurrentPlayerWorldPosition(out var worldPos))
+            {
+                _lastKnownPlayerWorldPosition = worldPos;
+                _hasLastKnownPlayerWorldPosition = true;
+            }
         }
 
         private CharacterModelManager GetCharacterModelManager()

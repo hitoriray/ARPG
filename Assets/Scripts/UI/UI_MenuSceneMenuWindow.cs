@@ -1,7 +1,7 @@
+using Cysharp.Threading.Tasks;
 using JKFrame;
 using Manager;
 using Michsky.MUIP;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace UI
@@ -16,12 +16,11 @@ namespace UI
         public override void Init()
         {
             base.Init();
-            
+
             startButton.onClick.AddListener(OnStartButtonClicked);
             continueButton.onClick.AddListener(OnContinueButtonClicked);
             quitButton.onClick.AddListener(OnQuitButtonClicked);
-            
-            // 如果没有存档，隐藏继续按钮
+
             if (!DataManager.HasArchive)
             {
                 continueButton.gameObject.SetActive(false);
@@ -31,11 +30,8 @@ namespace UI
         public override void OnClose()
         {
             base.OnClose();
-            // 释放自身资源
-            ResSystem.UnloadInstance(gameObject);
         }
 
-        #region 事件回调
         private void OnStartButtonClicked()
         {
             EnterCreateCharacterScene().Forget();
@@ -49,7 +45,6 @@ namespace UI
         private async UniTaskVoid EnterCreateCharacterScene()
         {
             SetButtonsInteractable(false);
-            // 等待一帧，确保 ButtonManager.OnPointerClick 的后续逻辑执行完毕
             await UniTask.Yield();
             UISystem.Close<UI_MenuSceneMenuWindow>();
             GameManager.Instance.EnterCharacterSelectionWithLoading();
@@ -69,12 +64,10 @@ namespace UI
             if (continueButton != null) continueButton.Interactable(interactable);
             if (quitButton != null) quitButton.Interactable(interactable);
         }
-        
+
         private void OnQuitButtonClicked()
         {
             Application.Quit();
         }
-        
-        #endregion
     }
 }

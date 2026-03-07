@@ -1,5 +1,7 @@
+using System;
 using Arch.Core;
 using Arch.Core.Extensions;
+using Arch.Extend.System;
 using Battle.ECS.Component;
 using Battle.ECS.Core;
 using Battle.ECS.Features;
@@ -32,7 +34,7 @@ namespace Battle.ECS
             return go.AddComponent<BattleEcsRunner>();
         }
 
-        private void Awake()
+        protected override void Awake()
         {
             base.Awake();
             Initialize();
@@ -65,8 +67,15 @@ namespace Battle.ECS
         
         public Entity RegisterCharacter(ICharacter character)
         {
-            if (Context == null || character == null)
+            if (character == null)
                 return Entity.Null;
+            if (!EnsureContextReady())
+                return Entity.Null;
+            if (character.ModelTransform == null)
+            {
+                Debug.LogWarning("[BattleEcsRunner] RegisterCharacter failed: character.ModelTransform is null.");
+                return Entity.Null;
+            }
 
             var viewComp = character.ModelTransform.GetComponentInChildren<ICharacterView>();
             var viewObj = viewComp != null ? viewComp.gameObject : character.ModelTransform.gameObject;
@@ -75,26 +84,42 @@ namespace Battle.ECS
             var characterAttr = character.CharacterAttribute;
             var attribute = new Component.Attribute
             {
-                Attack = (FP)characterAttr.attack.Total,
-                MaxHp = (FP)characterAttr.maxHp.Total,
-                MaxMp = (FP)characterAttr.maxMp.Total,
+                Attack = (FP)(characterAttr != null ? characterAttr.attack.Total : 0f),
+                MaxHp = (FP)(characterAttr != null ? characterAttr.maxHp.Total : 0f),
+                MaxMp = (FP)(characterAttr != null ? characterAttr.maxMp.Total : 0f),
                 Defense = (FP)(character.CharacterConfig != null ? character.CharacterConfig.defenseBaseValue : 0f),
             };
-            var health = new Health((FP)characterAttr.currentHp, (FP)characterAttr.maxHp.Total);
+            var health = new Health(
+                (FP)(characterAttr != null ? characterAttr.currentHp : 0f),
+                (FP)(characterAttr != null ? characterAttr.maxHp.Total : 0f));
 
             Entity entity = Entity.Null;
-            if (character.IsPlayerControlled && _playerEntity.IsAlive() == false)
+            if (character.IsPlayerControlled)
             {
-                _playerEntity = Context.World.Create(
-                    new PlayerComp(0),
-                    new Position(position),
-                    new Rotation(rotation),
-                    new ViewReference(viewObj),
-                    new SyncFromView(),
-                    attribute,
-                    health,
-                    new BuffList(16)
-                );
+                if (!IsEntityAliveSafe(_playerEntity))
+                {
+                    _playerEntity = Context.World.Create(
+                        new PlayerComp(0),
+                        new Position(position),
+                        new Rotation(rotation),
+                        new ViewReference(viewObj),
+                        new SyncFromView(),
+                        attribute,
+                        health,
+                        new BuffList(16)
+                    );
+                }
+                else
+                {
+                    // Keep existing player entity and refresh runtime-bound data after scene/model changes.
+                    _playerEntity.Replace(new Position(position));
+                    _playerEntity.Replace(new Rotation(rotation));
+                    _playerEntity.Replace(new ViewReference(viewObj));
+                    _playerEntity.Replace(new SyncFromView());
+                    _playerEntity.Replace(attribute);
+                    _playerEntity.Replace(health);
+                }
+
                 entity = _playerEntity;
             }
             else if (character.IsPlayerControlled == false)
@@ -121,7 +146,8 @@ namespace Battle.ECS
         /// </summary>
         public void HealPlayer(float amount)
         {
-            if (Context == null || !_playerEntity.IsAlive()) return;
+            if (Context == null || Context.World == null || !IsEntityAliveSafe(_playerEntity))
+                return;
 
             ref var health = ref Context.World.Get<Health>(_playerEntity);
             health.Current = TSMath.Clamp(health.Current + (FP)amount, FP.Zero, health.Max);
@@ -129,12 +155,13 @@ namespace Battle.ECS
 
         private void Initialize()
         {
-            if (Context != null) return;
+            if (Context != null && Context.World != null) return;
 
             var logicDeltaTime = FP.FromFloat(1f / logicFrameRate);
             Context = new LocalBattleContext(randomSeed, logicDeltaTime);
             _logicFeature = new LocalLogicFeature(Context);
             _viewFeature = new LocalViewFeature(Context);
+            _playerEntity = Entity.Null;
 
             _logicFeature.Initialize();
             _logicFeature.SubscribeEvents();
@@ -151,16 +178,46 @@ namespace Battle.ECS
 
         private void Shutdown()
         {
-            if (Context == null) return;
-
-            _viewFeature.UnloadView();
-            _viewFeature.Shutdown();
-            _logicFeature.Shutdown();
+            if (_viewFeature != null)
+            {
+                _viewFeature.UnloadView();
+                _viewFeature.Shutdown();
+            }
+            if (_logicFeature != null)
+            {
+                _logicFeature.Shutdown();
+            }
             _viewFeature = null;
             _logicFeature = null;
 
-            Context.Dispose();
+            Context?.Dispose();
             Context = null;
+            _playerEntity = Entity.Null;
+        }
+
+        private bool EnsureContextReady()
+        {
+            if (Context != null && Context.World != null && _logicFeature != null && _viewFeature != null)
+                return true;
+
+            Shutdown();
+            Initialize();
+            return Context != null && Context.World != null;
+        }
+
+        private static bool IsEntityAliveSafe(Entity entity)
+        {
+            try
+            {
+                return entity.IsAlive();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning(
+                    $"[BattleEcsRunner] Invalid entity handle detected, treat as dead: " +
+                    $"[{entity.WorldId}:{entity.Id}:{entity.Version}] ex={ex.GetType().Name}");
+                return false;
+            }
         }
     }
 }

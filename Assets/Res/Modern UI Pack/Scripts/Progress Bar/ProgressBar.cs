@@ -59,13 +59,24 @@ namespace Michsky.MUIP
 
         public void UpdateUI()
         {
-            loadingBar.fillAmount = currentPercent / maxValue;
+            float safeCurrent = float.IsFinite(currentPercent) ? currentPercent : 0f;
+            float safeMax = (float.IsFinite(maxValue) && Mathf.Abs(maxValue) > 0.0001f) ? maxValue : 1f;
+            float fill = safeCurrent / safeMax;
+            if (!float.IsFinite(fill))
+                fill = 0f;
 
-            if (addSuffix) { textPercent.text = currentPercent.ToString("F" + decimals) + suffix; }
-            else { textPercent.text = currentPercent.ToString("F" + decimals); }
+            if (loadingBar != null)
+                loadingBar.fillAmount = Mathf.Clamp01(fill);
 
-            if (addPrefix) { textPercent.text = prefix + textPercent.text; }
-            if (eventSource != null) { eventSource.value = currentPercent; }
+            if (textPercent != null)
+            {
+                if (addSuffix) { textPercent.text = safeCurrent.ToString("F" + decimals) + suffix; }
+                else { textPercent.text = safeCurrent.ToString("F" + decimals); }
+
+                if (addPrefix) { textPercent.text = prefix + textPercent.text; }
+            }
+
+            if (eventSource != null) { eventSource.value = safeCurrent; }
         }
 
         public void InitializeEvents()

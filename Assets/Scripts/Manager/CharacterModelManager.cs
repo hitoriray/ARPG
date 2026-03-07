@@ -25,6 +25,12 @@ namespace Manager
         {
             base.Awake();
             _characterTable = ResSystem.LoadAsset<CharacterTable>("CharacterTable");
+            if (_characterTable == null)
+            {
+                RayDebug.Error(
+                    "[CharacterModelManager] Failed to load CharacterTable (Address key: CharacterTable). " +
+                    "Please verify Addressables catalog/content in player build.");
+            }
         }
         
         #region 核心加载方法

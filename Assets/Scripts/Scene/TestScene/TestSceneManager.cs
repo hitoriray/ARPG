@@ -1,6 +1,7 @@
 using Battle.ECS;
 using JKFrame;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Manager
@@ -17,6 +18,10 @@ namespace Manager
     /// </summary>
     public class TestSceneManager : SingletonMono<TestSceneManager>
     {
+        [Title("Spawn")]
+        [SerializeField] private bool forceSpawnAtFixedPoint = true;
+        [SerializeField, ShowIf(nameof(forceSpawnAtFixedPoint))] private Transform fixedSpawnPoint;
+
         private InputAction _bagAction;
         private InputAction _escAction;
 
@@ -40,7 +45,15 @@ namespace Manager
                 EnsureUIWindowsRegistered();
                 RegisterBagInput();
 
-                await PlayerManager.Instance.InitAsync();
+                await PlayerManager.Instance.EnsureInitializedAsync();
+
+                if (PlayerManager.Instance?.player == null)
+                {
+                    JKLog.Error("[TestSceneManager] Player is not available after initialization.");
+                    return;
+                }
+
+                ApplyFixedSpawnPointIfNeeded();
 
                 RegisterBagInput();
                 RegisterEscInput();
@@ -64,9 +77,8 @@ namespace Manager
             UnregisterEscInput();
 
             // 切场景前保存玩家位置
-            if (PlayerManager.Instance?.player != null)
+            if (PlayerManager.TryGetLatestPlayerWorldPosition(out var pos))
             {
-                var pos = PlayerManager.Instance.player.transform.position;
                 var sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
                 DataManager.SavePlayerPosition(pos, sceneName);
             }
@@ -134,6 +146,36 @@ namespace Manager
         {
             if (UISystem.TryGetUIWindowData(typeKey, out _)) return;
             UISystem.AddUIWindowData(typeKey, new UIWindowData(cache, assetKey, layer));
+        }
+
+        private void ApplyFixedSpawnPointIfNeeded()
+        {
+            if (!forceSpawnAtFixedPoint || fixedSpawnPoint == null)
+            {
+                return;
+            }
+
+            var player = PlayerManager.Instance?.player;
+            if (player == null)
+            {
+                return;
+            }
+
+            var controller = player.controller;
+            bool controllerWasEnabled = controller != null && controller.enabled;
+            if (controllerWasEnabled)
+            {
+                controller.enabled = false;
+            }
+
+            player.transform.SetPositionAndRotation(fixedSpawnPoint.position, fixedSpawnPoint.rotation);
+            player.ChangeVerticalSpeed(0f);
+            player.ClearHorizontalVelocity();
+
+            if (controllerWasEnabled)
+            {
+                controller.enabled = true;
+            }
         }
     }
 }

@@ -18,15 +18,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 15.17633
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -10.91817
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalRotation.w
@@ -34,15 +34,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6029324472053449205, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -60,9 +60,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: JKFrame Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6029324473013266666, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
+      propertyPath: effectVolume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6029324473076240864, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
       propertyPath: uiLayers.Array.data[1].enableMask
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6220994715086994164, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7100579899713781443, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1866637781, guid: 92a72c9a3d3131f498a24198d7029305, type: 3}

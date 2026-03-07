@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Config;
 using Data;
@@ -15,6 +16,7 @@ namespace Manager
         private const int DefaultSkillPoint = 100;
         private const int DefaultSkillLv = 1;
         private const int ShortcutSlotCount = 6;
+        private const string PlayerPositionSceneName = "Game";
 
         private static bool? _hasArchive;
 
@@ -71,6 +73,10 @@ namespace Manager
             bool dirty = EnsureGameDataContainers();
             if (dirty) SaveGameData();
             _hasArchive = true;
+
+            var pos = (Vector3)GameData.PlayerLastPosition;
+            JKLog.Log($"[{nameof(DataManager)}] 存档读取成功: CharacterId={GameData.SelectedCharacterId}, Gold={GameData.Gold}, LastScene={GameData.PlayerLastSceneName ?? "null"}, LastPos={pos}");
+            LogCurrentArchiveDetail("LoadCurrentArchive");
             return true;
         }
 
@@ -383,24 +389,134 @@ namespace Manager
 
         #region 玩家位置
 
+        private static bool IsPlayerPositionScene(string sceneName)
+        {
+            return !string.IsNullOrWhiteSpace(sceneName) &&
+                   string.Equals(sceneName, PlayerPositionSceneName, StringComparison.OrdinalIgnoreCase);
+        }
+
         /// <summary>
-        /// 保存玩家当前位置和所在场景名，下次进入游戏时从此处生成。
+        /// 保存玩家当前位置（仅 Game 场景有效）。
         /// </summary>
         public static void SavePlayerPosition(UnityEngine.Vector3 position, string sceneName)
         {
             if (GameData == null) return;
+            if (!IsPlayerPositionScene(sceneName))
+                return;
+
             GameData.PlayerLastPosition = position;  // 隐式 Vector3 → Serialized_Vector3
             GameData.PlayerLastSceneName = sceneName;
+            JKLog.Log($"[{nameof(DataManager)}] 保存玩家位置: Scene={sceneName}, Pos={position}");
         }
 
         /// <summary>
-        /// 获取上次退出时的位置。若无记录或场景不符则返回 null。
+        /// 获取上次 Game 场景保存的位置。仅在当前场景为 Game 时返回。
         /// </summary>
         public static UnityEngine.Vector3? GetPlayerLastPosition(string currentSceneName)
         {
-            if (GameData?.PlayerLastPosition == null) return null;
-            if (GameData.PlayerLastSceneName != currentSceneName) return null;
-            return (UnityEngine.Vector3)GameData.PlayerLastPosition;  // 隐式 Serialized_Vector3 → Vector3
+            if (GameData == null) return null;
+            if (!IsPlayerPositionScene(currentSceneName)) return null;
+            if (!IsPlayerPositionScene(GameData.PlayerLastSceneName))
+                return null;
+
+            var pos = (UnityEngine.Vector3)GameData.PlayerLastPosition; // 隐式 Serialized_Vector3 → Vector3
+            if (!float.IsFinite(pos.x) || !float.IsFinite(pos.y) || !float.IsFinite(pos.z))
+                return null;
+
+            return pos;
+        }
+
+        public static void LogCurrentArchiveDetail(string reason = null)
+        {
+            if (GameData == null)
+            {
+                JKLog.Warning($"[{nameof(DataManager)}] 存档详情输出失败：GameData 为空。reason={reason ?? "N/A"}");
+                return;
+            }
+
+            var gd = GameData;
+            var sb = new StringBuilder();
+            sb.AppendLine($"========== 存档完整数据 [{reason ?? "N/A"}] ==========");
+            sb.AppendLine($"  当前角色ID: {gd.SelectedCharacterId}");
+            sb.AppendLine($"  金币: {gd.Gold}");
+
+            sb.AppendLine("  [已解锁角色]");
+            if (gd.UnlockedCharacterIds?.List != null && gd.UnlockedCharacterIds.List.Count > 0)
+            {
+                foreach (var id in gd.UnlockedCharacterIds.List)
+                    sb.AppendLine($"    角色ID: {id}");
+            }
+            else
+            {
+                sb.AppendLine("    (空)");
+            }
+
+            sb.Append("  [队伍] ");
+            sb.AppendLine(gd.CharacterTeam != null ? string.Join(", ", gd.CharacterTeam) : "null");
+
+            sb.AppendLine("  [角色技能列表]");
+            if (gd.CharacterSkillsDict?.Dictionary != null && gd.CharacterSkillsDict.Dictionary.Count > 0)
+            {
+                foreach (var kv in gd.CharacterSkillsDict.Dictionary)
+                {
+                    sb.AppendLine($"    角色ID={kv.Key}  技能点={kv.Value?.SkillTotalPoint}");
+                    if (kv.Value?.SkillLearnedDataDict?.Dictionary != null)
+                    {
+                        foreach (var sk in kv.Value.SkillLearnedDataDict.Dictionary)
+                            sb.AppendLine($"      技能Index={sk.Key}  Lv={sk.Value?.lv}");
+                    }
+                }
+            }
+            else
+            {
+                sb.AppendLine("    (空)");
+            }
+
+            sb.AppendLine("  [快捷栏数据]");
+            if (gd.CharacterShortcutSkillsDict?.Dictionary != null && gd.CharacterShortcutSkillsDict.Dictionary.Count > 0)
+            {
+                foreach (var kv in gd.CharacterShortcutSkillsDict.Dictionary)
+                {
+                    string slots = kv.Value?.skillIds != null ? string.Join(", ", kv.Value.skillIds) : "null";
+                    sb.AppendLine($"    角色ID={kv.Key}  Slots=[{slots}]");
+                }
+            }
+            else
+            {
+                sb.AppendLine("    (空)");
+            }
+
+            sb.AppendLine("  [角色成长]");
+            if (gd.CharacterProgressDict?.Dictionary != null && gd.CharacterProgressDict.Dictionary.Count > 0)
+            {
+                foreach (var kv in gd.CharacterProgressDict.Dictionary)
+                {
+                    var p = kv.Value;
+                    sb.AppendLine($"    角色ID={kv.Key}  Lv={p?.Level}  Exp={p?.Experience}  HP={p?.CurrentHp}  MP={p?.CurrentMp}");
+                }
+            }
+            else
+            {
+                sb.AppendLine("    (空)");
+            }
+
+            sb.AppendLine("  [背包物品]");
+            if (gd.InventoryItems?.Dictionary != null && gd.InventoryItems.Dictionary.Count > 0)
+            {
+                foreach (var kv in gd.InventoryItems.Dictionary)
+                    sb.AppendLine($"    ItemId={kv.Key}  数量={kv.Value}");
+            }
+            else
+            {
+                sb.AppendLine("    (空)");
+            }
+
+            var lastPos = (Vector3)gd.PlayerLastPosition;
+            sb.AppendLine("  [玩家位置存档]");
+            sb.AppendLine($"    LastScene={gd.PlayerLastSceneName ?? "null"}");
+            sb.AppendLine($"    LastPosition={lastPos}");
+            sb.AppendLine("==================================");
+            JKLog.Log(sb.ToString());
         }
 
         #endregion

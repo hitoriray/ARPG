@@ -305,6 +305,7 @@ namespace Boss
             // 4. 切换到受伤状态
             if (MovementStateMachine != null)
             {
+                PlayHurtSound();
                 MovementStateMachine.ChangeState(MovementStateMachine.hitState);
             }
 
@@ -366,6 +367,7 @@ namespace Boss
                 return;
 
             isDead = true;
+            PlayDeathSound();
             RayDebug.Info($"{gameObject.name} 死亡！");
             
             // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定

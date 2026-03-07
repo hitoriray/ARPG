@@ -67,7 +67,7 @@ public class PlayerMovementState : StateBase
         reusableData.lockValueParameter.TargetValue = reusableData.lockValueParameter.TargetValue == 0 ? 1 : 0;
         if (reusableData.lockValueParameter.TargetValue == 1)
         {
-            reusableData.lockTarget.Value = cam;
+            reusableData.lockTarget.Value = GetValidCameraTransform();
         }
         else
         {
@@ -164,10 +164,16 @@ public class PlayerMovementState : StateBase
 
     protected void UpdateLockRotation(float rotationSize, Transform lockTarget = null)
     {
+        var cameraTransform = GetValidCameraTransform();
+        if (cameraTransform == null)
+        {
+            return;
+        }
+
         if (lockTarget == null)
         {
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation,
-                Quaternion.LookRotation(Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up)),
+                Quaternion.LookRotation(Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up)),
                 Time.deltaTime * rotationSize);
         }
         else
@@ -180,10 +186,16 @@ public class PlayerMovementState : StateBase
 
     protected void UpdateLockRotation(float rotationSize, Vector3 normal = default)
     {
+        var cameraTransform = GetValidCameraTransform();
+        if (cameraTransform == null)
+        {
+            return;
+        }
+
         if (normal == default)
         {
             player.transform.rotation = Quaternion.Slerp(player.transform.rotation,
-                Quaternion.LookRotation(Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up)),
+                Quaternion.LookRotation(Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up)),
                 Time.deltaTime * rotationSize);
         }
         else
@@ -202,7 +214,40 @@ public class PlayerMovementState : StateBase
 
     protected Vector3 GetTargetDir()
     {
-        return Quaternion.Euler(0, cam.eulerAngles.y, 0) * new Vector3(inputServer.Move.x, 0, inputServer.Move.y);
+        var cameraTransform = GetValidCameraTransform();
+        if (cameraTransform == null)
+        {
+            return new Vector3(inputServer.Move.x, 0, inputServer.Move.y);
+        }
+
+        return Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0) * new Vector3(inputServer.Move.x, 0, inputServer.Move.y);
+    }
+
+    private Transform GetValidCameraTransform()
+    {
+        if (cam != null)
+        {
+            // Try to sync with latest camera reference after scene switch.
+            if (player.CameraTransform != null && cam != player.CameraTransform)
+            {
+                cam = player.CameraTransform;
+            }
+            return cam;
+        }
+
+        if (player.CameraTransform != null)
+        {
+            cam = player.CameraTransform;
+            return cam;
+        }
+
+        if (Camera.main != null)
+        {
+            cam = Camera.main.transform;
+            return cam;
+        }
+
+        return null;
     }
 
     /// <summary>

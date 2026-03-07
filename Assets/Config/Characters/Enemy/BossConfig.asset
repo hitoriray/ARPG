@@ -24,9 +24,6 @@ MonoBehaviour:
   WalkSpeed: 2
   RunSpeed: 5
   RotateSpeed: 10
-  MoveStartTurnSpeed: 1.8
-  MoveLoopTurnSpeed: 1.4
-  LockTurnSpeed: 5
   ApplyRootMotionForMove: 1
   ControllerProfile:
     height: 1.56
@@ -41,13 +38,27 @@ MonoBehaviour:
   GenericLocomotionConfig: {fileID: 0}
   FootstepAudioSet: {fileID: 11400000, guid: 475f9b95d437170409b3e76c5b5ee9d4, type: 2}
   FootstepEndAudioSet: {fileID: 11400000, guid: f151fb17ddf646342bb7472b141b531c, type: 2}
+  HurtAudio:
+    Clips:
+    - {fileID: 8300000, guid: 41709102639abea4bbb5175fce9e9be8, type: 3}
+    - {fileID: 8300000, guid: db5a09ad054c0c44980a20e85ed6b1b1, type: 3}
+    - {fileID: 8300000, guid: 8d5bb9d07db58ea4b80f442f853bf9e7, type: 3}
+    - {fileID: 8300000, guid: 7677540b27160534e8a7f173f726223f, type: 3}
+    Volume: 1
+    MinInterval: 0
+  DeathAudio:
+    Clips:
+    - {fileID: 8300000, guid: f867e7b91ebef9549bcf29825ff03d0d, type: 3}
+    - {fileID: 8300000, guid: e3b6ef92209ae464cba676958176b295, type: 3}
+    Volume: 1
+    MinInterval: 0
   SkillConfigList:
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   hpBaseValue: 1000
-  mpBaseValue: 100
-  attackBaseValue: 10
-  defenseBaseValue: 100
+  mpBaseValue: 50
+  attackBaseValue: 100
+  defenseBaseValue: 10
   LevelGrowthConfig: {fileID: 0}

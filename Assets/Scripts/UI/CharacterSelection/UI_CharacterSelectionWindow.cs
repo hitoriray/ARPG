@@ -106,7 +106,6 @@ namespace UI
 
             DestroyRenderTexture();
             UnregisterButtonEvents();
-            ResSystem.UnloadInstance(gameObject);
         }
         #endregion
 
@@ -510,7 +509,7 @@ namespace UI
             await UniTask.Yield();
 
             UISystem.Close<UI_CharacterSelectionWindow>();
-            UISystem.Show<UI_MenuSceneMenuWindow>();
+            GameManager.Instance.LoadSceneWithLoading("Menu", false);
         }
         #endregion
         #region Update

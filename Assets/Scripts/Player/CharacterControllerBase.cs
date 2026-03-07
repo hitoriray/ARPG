@@ -1,6 +1,7 @@
 using System;
 using Animancer;
 using Config;
+using JKFrame;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -21,6 +22,12 @@ public class CharacterControllerBase : MonoBehaviour
     [Header("角色配置")]
     [SerializeField] protected CharacterConfig characterConfig;
     [SerializeField] public PlayerSO playerSO;
+
+    [Header("Footstep")]
+    [SerializeField, Range(0f, 1f)] private float footstepVolume = 1f;
+    [SerializeField, Min(0f)] private float footstepRayDistance = 1.6f;
+    [SerializeField] private Vector3 footstepRayOffset = new Vector3(0f, 0.2f, 0f);
+    [SerializeField, Min(0f)] private float footstepMinInterval = 0.06f;
 
     // ── 快捷属性（供子类和状态机读取）──
     public CharacterConfig CharacterConfig => characterConfig;
@@ -60,6 +67,10 @@ public class CharacterControllerBase : MonoBehaviour
     private Action<Vector3, Quaternion> rootMotionHandler;
     
     private bool initialized;
+    private float lastFootstepTime = -999f;
+    private float lastHurtSoundTime = -999f;
+    private float lastDeathSoundTime = -999f;
+    private bool deathSoundLocked;
 
     protected virtual void Awake()
     {
@@ -93,6 +104,8 @@ public class CharacterControllerBase : MonoBehaviour
             if (characterConfig.Avatar != null)
                 animator.avatar = characterConfig.Avatar;
         }
+
+        deathSoundLocked = false;
     }
 
     protected virtual void Update()
@@ -339,5 +352,114 @@ public class CharacterControllerBase : MonoBehaviour
     public void OnSkillRotate(Quaternion deltaRot)
     {
         transform.rotation = deltaRot * transform.rotation;
+    }
+
+    public void PlayFootSound()
+    {
+        TryPlayFootstepSound(characterConfig != null ? characterConfig.FootstepAudioSet : null);
+    }
+
+    public void PlayFootEndSound()
+    {
+        TryPlayFootstepSound(characterConfig != null ? characterConfig.FootstepEndAudioSet : null);
+    }
+
+    public void PlayHurtSound()
+    {
+        TryPlayActionSound(characterConfig != null ? characterConfig.HurtAudio : null, ref lastHurtSoundTime);
+    }
+
+    public void PlayDeathSound()
+    {
+        if (deathSoundLocked)
+            return;
+
+        if (TryPlayActionSound(characterConfig != null ? characterConfig.DeathAudio : null, ref lastDeathSoundTime))
+            deathSoundLocked = true;
+    }
+
+    private void TryPlayFootstepSound(FootstepSurfaceAudioSet audioSet)
+    {
+        if (audioSet == null)
+            return;
+
+        if (footstepMinInterval > 0f && Time.time - lastFootstepTime < footstepMinInterval)
+            return;
+
+        if (!TryGetFootstepSurface(out var surfaceType, out var hitPosition))
+            return;
+
+        var clips = audioSet.GetClips(surfaceType);
+        if (clips == null || clips.Length == 0)
+            return;
+
+        var clip = clips[UnityEngine.Random.Range(0, clips.Length)];
+        lastFootstepTime = Time.time;
+        AudioSystem.PlayOneShot(clip, hitPosition, false, footstepVolume);
+    }
+
+    private bool TryPlayActionSound(CharacterActionAudioConfig audioConfig, ref float lastPlayTime)
+    {
+        if (audioConfig == null || audioConfig.Clips == null || audioConfig.Clips.Length == 0)
+            return false;
+
+        if (audioConfig.MinInterval > 0f && Time.time - lastPlayTime < audioConfig.MinInterval)
+            return false;
+
+        var clip = PickRandomValidClip(audioConfig.Clips);
+        if (clip == null)
+            return false;
+
+        lastPlayTime = Time.time;
+        AudioSystem.PlayOneShot(clip, transform.position, false, Mathf.Clamp01(audioConfig.Volume));
+        RayDebug.Info($"播放了音效:{clip.name}");
+        return true;
+    }
+
+    private static AudioClip PickRandomValidClip(AudioClip[] clips)
+    {
+        if (clips == null || clips.Length == 0)
+            return null;
+
+        int startIndex = UnityEngine.Random.Range(0, clips.Length);
+        for (int i = 0; i < clips.Length; i++)
+        {
+            var clip = clips[(startIndex + i) % clips.Length];
+            if (clip != null)
+                return clip;
+        }
+
+        return null;
+    }
+
+    private bool TryGetFootstepSurface(out FootstepSurfaceType surfaceType, out Vector3 hitPosition)
+    {
+        surfaceType = FootstepSurfaceType.Default;
+        hitPosition = transform.position;
+
+        Vector3 origin = GetFootstepRayOrigin();
+        if (!Physics.Raycast(origin, Vector3.down, out var hit, footstepRayDistance, whatIsGround,
+                QueryTriggerInteraction.Ignore))
+        {
+            return false;
+        }
+
+        hitPosition = hit.point;
+        var surface = hit.collider.GetComponentInParent<FootstepSurface>();
+        if (surface != null)
+            surfaceType = surface.SurfaceType;
+
+        return true;
+    }
+
+    private Vector3 GetFootstepRayOrigin()
+    {
+        if (controller != null)
+        {
+            var bounds = controller.bounds;
+            return bounds.center + Vector3.down * bounds.extents.y + footstepRayOffset;
+        }
+
+        return transform.position + footstepRayOffset;
     }
 }
