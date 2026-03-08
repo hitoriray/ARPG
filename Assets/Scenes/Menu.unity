@@ -127,17 +127,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4055172118900952114, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
-      propertyPath: uiLayers.Array.data[1].enableMask
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4055172120462711845, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
       propertyPath: m_Name
       value: JKFrame Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 4055172120462711847, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4055172120462711847, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
       propertyPath: m_LocalPosition.x
@@ -178,10 +170,6 @@ PrefabInstance:
     - target: {fileID: 4055172120462711847, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4449488935914579750, guid: 9d3b415de5331ef47a5ef9b8d192f744, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

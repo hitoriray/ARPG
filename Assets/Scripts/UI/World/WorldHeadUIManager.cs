@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Attribute;
 using JKFrame;
+using Manager;
 using UnityEngine;
 
 namespace UI
@@ -25,6 +26,17 @@ namespace UI
             public float CombatVisibleUntil;
         }
 
+        private sealed class PendingRegister
+        {
+            public Transform Target;
+            public CharacterAttribute Attribute;
+            public string DisplayName;
+            public bool IsNpc;
+            public bool IsBoss;
+            public bool ShowHp;
+            public Vector3 Offset;
+        }
+
         private static WorldHeadUIManager _instance;
         private static bool _isQuitting;
         private static bool _missingInstanceLogged;
@@ -36,6 +48,12 @@ namespace UI
         [SerializeField] private UI_WorldHeadItem itemPrefab;
         [SerializeField] private Camera worldCamera;
         [SerializeField] private int sortingOrder = 18;
+        [SerializeField] private bool applyCanvasSorting = false;
+        [SerializeField] private bool autoResolveCanvasAtRuntime = true;
+        [SerializeField] private string preferredLayoutName = "Layout4";
+        [SerializeField] private string itemRootName = "WorldHeadRoot";
+        [SerializeField] private bool autoCreateItemRoot = true;
+        [SerializeField] private bool hideWhenModalUIOpen = true;
 
         [Header("Update")]
         [SerializeField, Min(0.01f)] private float updateInterval = 0.033f;
@@ -61,7 +79,10 @@ namespace UI
         [SerializeField, Range(0.7f, 1f)] private float minDistanceScale = 0.85f;
 
         private readonly Dictionary<int, TrackEntry> _entries = new();
+        private readonly Dictionary<int, PendingRegister> _pendingRegistrations = new();
         private float _updateTimer;
+        private bool _canvasMissingLogged;
+        private bool _itemRootMissingLogged;
 
         public static WorldHeadUIManager Instance
         {
@@ -73,7 +94,7 @@ namespace UI
                 if (_instance != null)
                     return _instance;
 
-                _instance = FindAnyObjectByType<WorldHeadUIManager>();
+                _instance = FindAnyObjectByType<WorldHeadUIManager>(FindObjectsInactive.Include);
                 if (_instance == null && !_missingInstanceLogged)
                 {
                     Debug.LogError("[WorldHeadUIManager] No scene instance found. Please place and configure WorldHeadUIManager in the scene.");
@@ -93,7 +114,7 @@ namespace UI
             if (_instance != null)
                 return _instance;
 
-            _instance = FindAnyObjectByType<WorldHeadUIManager>();
+            _instance = FindAnyObjectByType<WorldHeadUIManager>(FindObjectsInactive.Include);
             return _instance;
         }
 
@@ -112,6 +133,8 @@ namespace UI
 
         private void LateUpdate()
         {
+            FlushPendingRegistrations();
+
             if (_entries.Count == 0)
                 return;
 
@@ -139,6 +162,7 @@ namespace UI
             }
 
             _entries.Clear();
+            _pendingRegistrations.Clear();
         }
 
         public void RegisterHostile(Transform target, CharacterAttribute characterAttribute, string displayName, bool isBoss = false)
@@ -159,6 +183,7 @@ namespace UI
                 return;
 
             int key = target.GetInstanceID();
+            _pendingRegistrations.Remove(key);
             if (!_entries.TryGetValue(key, out var entry))
                 return;
 
@@ -179,9 +204,14 @@ namespace UI
             if (target == null)
                 return;
 
-            if (!EnsureCanvas())
-                return;
             int key = target.GetInstanceID();
+            if (!EnsureCanvas())
+            {
+                QueuePendingRegistration(key, target, characterAttribute, displayName, isNpc, isBoss, showHp, offset);
+                return;
+            }
+
+            _pendingRegistrations.Remove(key);
 
             if (_entries.TryGetValue(key, out var existing))
             {
@@ -233,8 +263,71 @@ namespace UI
             _entries[key] = entry;
         }
 
+        private void QueuePendingRegistration(
+            int key,
+            Transform target,
+            CharacterAttribute characterAttribute,
+            string displayName,
+            bool isNpc,
+            bool isBoss,
+            bool showHp,
+            Vector3 offset)
+        {
+            _pendingRegistrations[key] = new PendingRegister
+            {
+                Target = target,
+                Attribute = characterAttribute,
+                DisplayName = displayName,
+                IsNpc = isNpc,
+                IsBoss = isBoss,
+                ShowHp = showHp,
+                Offset = offset
+            };
+        }
+
+        private void FlushPendingRegistrations()
+        {
+            if (_pendingRegistrations.Count == 0)
+                return;
+
+            if (!EnsureCanvas())
+                return;
+
+            var pendingList = ListPool<PendingRegister>.Get();
+            foreach (var pair in _pendingRegistrations)
+            {
+                if (pair.Value != null)
+                    pendingList.Add(pair.Value);
+            }
+            _pendingRegistrations.Clear();
+
+            for (int i = 0; i < pendingList.Count; i++)
+            {
+                var pending = pendingList[i];
+                if (pending == null || pending.Target == null)
+                    continue;
+
+                RegisterInternal(
+                    pending.Target,
+                    pending.Attribute,
+                    pending.DisplayName,
+                    pending.IsNpc,
+                    pending.IsBoss,
+                    pending.ShowHp,
+                    pending.Offset);
+            }
+
+            ListPool<PendingRegister>.Release(pendingList);
+        }
+
         private void UpdateEntries()
         {
+            if (hideWhenModalUIOpen && UIModalStack.HasAny)
+            {
+                HideAllEntries();
+                return;
+            }
+
             if (worldCamera == null)
                 worldCamera = Camera.main;
 
@@ -256,8 +349,14 @@ namespace UI
 
                 var targetPos = entry.Target.position;
                 float distance = Vector3.Distance(worldCamera.transform.position, targetPos);
+                bool wasInDistance = entry.DistanceVisible;
                 bool inDistance = EvaluateDistanceVisibility(entry, distance);
                 entry.DistanceVisible = inDistance;
+
+                if (!entry.IsNpc && inDistance && !wasInDistance)
+                {
+                    entry.CombatVisibleUntil = now + hostileDisplayHoldSeconds;
+                }
 
                 if (!inDistance)
                 {
@@ -324,6 +423,18 @@ namespace UI
             }
 
             ListPool<int>.Release(keysToRemove);
+        }
+
+        private void HideAllEntries()
+        {
+            foreach (var entry in _entries.Values)
+            {
+                if (entry?.Item == null)
+                    continue;
+
+                entry.Item.SetAlpha(0f);
+                entry.Item.gameObject.SetActive(false);
+            }
         }
 
         private bool EvaluateDistanceVisibility(TrackEntry entry, float distance)
@@ -428,22 +539,137 @@ namespace UI
 
         private bool EnsureCanvas()
         {
+            if (autoResolveCanvasAtRuntime && (rootCanvas == null || itemRoot == null))
+            {
+                TryResolveCanvasReferences();
+            }
+
             if (rootCanvas == null)
             {
-                Debug.LogError("[WorldHeadUIManager] rootCanvas is not assigned. Please assign RootCanvas in Inspector.", this);
+                if (!_canvasMissingLogged)
+                {
+                    Debug.LogError("[WorldHeadUIManager] rootCanvas is not assigned. Please assign RootCanvas in Inspector.", this);
+                    _canvasMissingLogged = true;
+                }
                 return false;
             }
+            _canvasMissingLogged = false;
 
             if (itemRoot == null)
             {
-                Debug.LogError("[WorldHeadUIManager] itemRoot is not assigned. Please assign WorldHeadRoot in Inspector.", this);
+                if (!_itemRootMissingLogged)
+                {
+                    Debug.LogError("[WorldHeadUIManager] itemRoot is not assigned. Please assign WorldHeadRoot in Inspector.", this);
+                    _itemRootMissingLogged = true;
+                }
                 return false;
             }
+            _itemRootMissingLogged = false;
 
-            rootCanvas.overrideSorting = true;
-            rootCanvas.sortingOrder = sortingOrder;
+            if (applyCanvasSorting)
+            {
+                rootCanvas.overrideSorting = true;
+                rootCanvas.sortingOrder = sortingOrder;
+            }
 
             return true;
+        }
+
+        private void TryResolveCanvasReferences()
+        {
+            if (itemRoot != null && rootCanvas == null)
+            {
+                rootCanvas = itemRoot.GetComponentInParent<Canvas>(true);
+            }
+
+            if (rootCanvas == null)
+            {
+                rootCanvas = FindPreferredCanvas();
+            }
+
+            if (rootCanvas == null)
+                return;
+
+            if (itemRoot == null)
+            {
+                Transform existingRoot = string.IsNullOrWhiteSpace(itemRootName)
+                    ? null
+                    : rootCanvas.transform.Find(itemRootName);
+                if (existingRoot is RectTransform existingRect)
+                {
+                    itemRoot = existingRect;
+                    return;
+                }
+
+                if (!autoCreateItemRoot)
+                    return;
+
+                var rootGo = new GameObject(
+                    string.IsNullOrWhiteSpace(itemRootName) ? "WorldHeadRoot" : itemRootName,
+                    typeof(RectTransform));
+                rootGo.transform.SetParent(rootCanvas.transform, false);
+
+                itemRoot = rootGo.GetComponent<RectTransform>();
+                itemRoot.anchorMin = Vector2.zero;
+                itemRoot.anchorMax = Vector2.one;
+                itemRoot.pivot = new Vector2(0.5f, 0.5f);
+                itemRoot.offsetMin = Vector2.zero;
+                itemRoot.offsetMax = Vector2.zero;
+            }
+        }
+
+        private Canvas FindPreferredCanvas()
+        {
+            if (JKFrameRoot.RootTransform != null)
+            {
+                if (!string.IsNullOrWhiteSpace(preferredLayoutName))
+                {
+                    var preferred = JKFrameRoot.RootTransform.Find($"UISystem/{preferredLayoutName}");
+                    if (preferred != null)
+                    {
+                        var preferredCanvas = preferred.GetComponent<Canvas>();
+                        if (preferredCanvas != null)
+                            return preferredCanvas;
+                    }
+                }
+
+                var allInRoot = JKFrameRoot.RootTransform.GetComponentsInChildren<Canvas>(true);
+                var canvas = PickBestCanvas(allInRoot);
+                if (canvas != null)
+                    return canvas;
+            }
+
+            var all = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            return PickBestCanvas(all);
+        }
+
+        private Canvas PickBestCanvas(Canvas[] canvases)
+        {
+            if (canvases == null || canvases.Length == 0)
+                return null;
+
+            Canvas best = null;
+            int bestOrder = int.MinValue;
+            for (int i = 0; i < canvases.Length; i++)
+            {
+                var canvas = canvases[i];
+                if (canvas == null)
+                    continue;
+
+                if (!string.IsNullOrWhiteSpace(preferredLayoutName) &&
+                    string.Equals(canvas.name, preferredLayoutName, StringComparison.Ordinal))
+                {
+                    return canvas;
+                }
+
+                if (best == null || canvas.sortingOrder > bestOrder)
+                {
+                    best = canvas;
+                    bestOrder = canvas.sortingOrder;
+                }
+            }
+
+            return best;
         }
 
         private static class ListPool<T>

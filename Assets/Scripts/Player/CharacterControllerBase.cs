@@ -378,6 +378,12 @@ public class CharacterControllerBase : MonoBehaviour
             deathSoundLocked = true;
     }
 
+    public void ResetDeathSoundLock()
+    {
+        deathSoundLocked = false;
+        lastDeathSoundTime = -999f;
+    }
+
     private void TryPlayFootstepSound(FootstepSurfaceAudioSet audioSet)
     {
         if (audioSet == null)

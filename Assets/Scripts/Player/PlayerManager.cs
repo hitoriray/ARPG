@@ -67,6 +67,7 @@ namespace Manager
         [SerializeField] public PlayerController player;
         [SerializeField] private GameObject cineMachine;
         [SerializeField] private CharacterModelManager characterModelManager;
+        [SerializeField] private Transform respawnPoint;
 
         public CharacterConfig CharacterConfig { get; private set; }
         public bool IsRuntimeInitialized => player != null && CharacterConfig != null && _loadedCharacterId > 0;
@@ -79,6 +80,10 @@ namespace Manager
         private int _uiOverrideCount = 0;
         // Alt 键是否正在按下
         private bool _altPeeking = false;
+        private bool _hasDefaultRespawnPose;
+        private Vector3 _defaultRespawnPosition;
+        private Quaternion _defaultRespawnRotation;
+        private string _defaultRespawnSceneName;
 
         /// <summary>
         /// 统一管理角色输入开关（InputSystem）
@@ -154,6 +159,7 @@ namespace Manager
             ShowOrRefreshMainWindow(shortcutSkillDatas);
             _loadedCharacterId = characterId;
 
+            CacheDefaultRespawnPose();
             TryRestorePlayerPositionForCurrentScene();
 
             // ===== 存档调试输出 =====
@@ -177,6 +183,7 @@ namespace Manager
             player.RefreshSceneBindings();
             inputService = InputService.Instance;
             SetCharacterControl(characterControl);
+            CacheDefaultRespawnPose();
             TryRestorePlayerPositionForCurrentScene();
 
             var shortcutSkillDatas = DataManager.GetCurrentCharacterShortcutSkills();
@@ -219,6 +226,96 @@ namespace Manager
 
             CacheLatestPlayerWorldPosition();
             RayDebug.Log($"[PlayerManager] 从存档位置生成: target={savedPos.Value}, managerPos={transform.position}, playerPos={player.transform.position}");
+        }
+
+        private void CacheDefaultRespawnPose()
+        {
+            if (player == null)
+                return;
+
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (_hasDefaultRespawnPose && string.Equals(_defaultRespawnSceneName, sceneName, System.StringComparison.Ordinal))
+                return;
+
+            _defaultRespawnSceneName = sceneName;
+            if (respawnPoint != null)
+            {
+                _defaultRespawnPosition = respawnPoint.position;
+                _defaultRespawnRotation = respawnPoint.rotation;
+            }
+            else
+            {
+                _defaultRespawnPosition = player.transform.position;
+                _defaultRespawnRotation = player.transform.rotation;
+            }
+
+            _hasDefaultRespawnPose = true;
+            RayDebug.Log($"[PlayerManager] 缓存复活点: scene={sceneName}, pos={_defaultRespawnPosition}");
+        }
+
+        private bool TryGetRespawnPose(out Vector3 position, out Quaternion rotation)
+        {
+            if (respawnPoint != null)
+            {
+                position = respawnPoint.position;
+                rotation = respawnPoint.rotation;
+                return true;
+            }
+
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (_hasDefaultRespawnPose && string.Equals(_defaultRespawnSceneName, currentScene, System.StringComparison.Ordinal))
+            {
+                position = _defaultRespawnPosition;
+                rotation = _defaultRespawnRotation;
+                return true;
+            }
+
+            if (player != null)
+            {
+                position = player.transform.position;
+                rotation = player.transform.rotation;
+                return true;
+            }
+
+            position = Vector3.zero;
+            rotation = Quaternion.identity;
+            return false;
+        }
+
+        public bool TryRespawnPlayerToSpawnPoint()
+        {
+            if (player == null)
+                return false;
+
+            if (!TryGetRespawnPose(out var spawnPos, out var spawnRot))
+                return false;
+
+            var controller = player.controller;
+            bool controllerWasEnabled = controller != null && controller.enabled;
+            if (controllerWasEnabled)
+                controller.enabled = false;
+
+            Vector3 currentPlayerPos = player.transform.position;
+            Vector3 delta = spawnPos - currentPlayerPos;
+            if (player.transform.parent == transform)
+            {
+                transform.position += delta;
+                player.transform.rotation = spawnRot;
+            }
+            else
+            {
+                player.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+
+            player.ChangeVerticalSpeed(0f);
+            player.ClearHorizontalVelocity();
+
+            if (controllerWasEnabled)
+                controller.enabled = true;
+
+            CacheLatestPlayerWorldPosition();
+            RayDebug.Log($"[PlayerManager] 玩家复活到出生点: scene={_defaultRespawnSceneName}, pos={spawnPos}");
+            return true;
         }
 
         private void ShowOrRefreshMainWindow(ShortcutSkillSlotData shortcutSkillDatas)

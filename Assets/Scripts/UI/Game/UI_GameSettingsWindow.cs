@@ -477,17 +477,17 @@ namespace UI
             SetDropdownOptions(resolutionDropdown, resolutionLabels);
             SetDropdownOptions(fullScreenDropdown, new List<string>
             {
-                "FullScreenWindow",
-                "ExclusiveFullScreen",
-                "MaximizedWindow",
-                "Windowed"
+                "无边框全屏窗口模式",
+                "独占全屏模式",
+                "最大化窗口模式",
+                "窗口化模式"
             });
 
             var frameRateLabels = new List<string>(_frameRateOptions.Count);
             for (int i = 0; i < _frameRateOptions.Count; i++)
             {
                 int fps = _frameRateOptions[i];
-                frameRateLabels.Add(fps <= 0 ? "Unlimited" : fps.ToString());
+                frameRateLabels.Add(fps <= 0 ? "不限制" : fps.ToString());
             }
 
             SetDropdownOptions(frameRateDropdown, frameRateLabels);

@@ -7,9 +7,6 @@ using UnityEngine;
 /// </summary>
 public class PlayerDeadState : PlayerMovementState
 {
-    private HurtData hurtData;   // 复用 HurtData 中的死亡动画（或单独配置）
-    private bool isDead;
-
     // 死亡专用动画 clip（在 PlayerMovementData 中配置）
     // 若未配置则使用 hurtFront 兜底
     private ClipTransition deathClip;
@@ -22,8 +19,6 @@ public class PlayerDeadState : PlayerMovementState
     public override void OnEnter()
     {
         // 死亡状态不调用 base.OnEnter() — 不注册任何输入事件
-        isDead = true;
-
         // 停掉所有技能
         player.ExitSkillMode();
 
@@ -49,16 +44,13 @@ public class PlayerDeadState : PlayerMovementState
 
     public override void OnExit()
     {
-        isDead = false;
     }
 
     public override void OnAnimationEnd() => OnDeathAnimationEnd();
 
     private void OnDeathAnimationEnd()
     {
-        // 停留在死亡姿势最后一帧
-        // 可在此通知 GameManager 显示死亡 UI、重启场景等
         RayDebug.Info("[PlayerDeadState] 死亡动画结束");
-        // TODO: 调用 GameManager.Instance.OnPlayerDead() 或 GameSceneManager
+        player.NotifyDeathAnimationFinished();
     }
 }

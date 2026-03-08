@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Animancer;
 using Arch.Core;
 using Arch.Core.Extensions;
@@ -6,9 +8,11 @@ using Battle.ECS;
 using Battle.ECS.Core.Helper;
 using Cinemachine;
 using Config;
+using Cysharp.Threading.Tasks;
 using JKFrame;
 using Manager;
 using RayPlayerState;
+using UI;
 using UnityEngine;
 
 namespace RayPlayer
@@ -62,6 +66,14 @@ namespace RayPlayer
         private bool inSkill;
         private bool currentSkillUpperBody;
         private bool useGenericLocomotion;
+        private bool isDead;
+        private bool isRespawning;
+        private bool controlStateBeforeDeath = true;
+        private readonly List<Collider> disabledCollidersByDeath = new();
+
+        [Header("Death & Respawn")]
+        [SerializeField, Min(0f)] private float respawnDelaySeconds = 10f;
+        [SerializeField, Min(0f)] private float respawnInvincibleSeconds = 2f;
 
         protected override void Awake()
         {
@@ -214,6 +226,9 @@ namespace RayPlayer
 
             base.Update();
             MovementStateMachine?.OnUpdate();
+            if (isDead || isRespawning)
+                return;
+
             HandleSkillInput();
             CleanupFinishedSkillLayer();
         }
@@ -234,6 +249,9 @@ namespace RayPlayer
 
         private void HandleSkillInput()
         {
+            if (isDead || isRespawning)
+                return;
+
             if (skillBrain == null || skillInput == null)
                 return;
 
@@ -361,6 +379,9 @@ namespace RayPlayer
 
         public void OnHit(AttackData attackData)
         {
+            if (isDead || isRespawning)
+                return;
+
             // 1. 发射 ECS 伤害请求
             if (PlayerEntity.IsAlive())
             {
@@ -391,17 +412,194 @@ namespace RayPlayer
         /// </summary>
         public void OnDeath()
         {
+            if (isDead || isRespawning)
+                return;
+
+            isDead = true;
+            if (characterAttribute != null)
+                characterAttribute.SetHp(0f);
             PlayDeathSound();
             RayDebug.Info("[PlayerController] 玩家死亡！");
-            
-            // 死亡瞬间关闭所有碰撞体，防止在死亡动画期间发生发生攻击判定
-            var colliders = GetComponentsInChildren<Collider>();
-            foreach (var col in colliders)
+
+            var playerManager = PlayerManager.Instance;
+            if (playerManager != null)
             {
-                col.enabled = false;
+                controlStateBeforeDeath = playerManager.CharacterControl;
+                playerManager.SetCharacterControl(false);
             }
 
-            ChangeState(PlayerState.Dead);
+            if (genericLocomotionController != null)
+                genericLocomotionController.enabled = false;
+
+            DisableCollidersForDeath();
+            ChangeVerticalSpeed(0f);
+            ClearHorizontalVelocity();
+
+            if (MovementStateMachine != null)
+            {
+                ChangeState(PlayerState.Dead);
+            }
+            else
+            {
+                // Generic locomotion path has no PlayerStateMachine; fallback to direct respawn flow.
+                NotifyDeathAnimationFinished();
+            }
+        }
+
+        public void NotifyDeathAnimationFinished()
+        {
+            if (!isDead || isRespawning)
+                return;
+
+            RespawnAfterDeathAsync().Forget();
+        }
+
+        private async UniTaskVoid RespawnAfterDeathAsync()
+        {
+            isRespawning = true;
+            try
+            {
+                var cancellationToken = this.GetCancellationTokenOnDestroy();
+                await RunRespawnCountdownAsync(respawnDelaySeconds, cancellationToken);
+
+                if (this == null || !gameObject.activeInHierarchy)
+                    return;
+
+                PlayerManager.Instance?.TryRespawnPlayerToSpawnPoint();
+                RestoreVitalsOnRespawn();
+                RestoreCollidersAfterRespawn();
+                ResetDeathSoundLock();
+
+                ChangeState(PlayerState.Idle);
+                if (genericLocomotionController != null)
+                    genericLocomotionController.enabled = useGenericLocomotion;
+
+                var ecsRunner = BattleEcsRunner.Ensure();
+                if (ecsRunner != null)
+                    PlayerEntity = ecsRunner.RegisterCharacter(this);
+
+                ApplyRespawnInvincibleWindow().Forget();
+                PlayerManager.Instance?.SetCharacterControl(controlStateBeforeDeath);
+                RayDebug.Info("[PlayerController] 玩家已复活。");
+            }
+            catch (OperationCanceledException)
+            {
+                // Scene unload / object destroy.
+            }
+            finally
+            {
+                EventSystem.EventTrigger(RespawnCountdownEvents.CountdownEndEvent);
+                TryCloseRespawnCountdownWindow();
+                isRespawning = false;
+                isDead = false;
+            }
+        }
+
+        private async UniTask RunRespawnCountdownAsync(float durationSeconds, System.Threading.CancellationToken cancellationToken)
+        {
+            float totalSeconds = Mathf.Max(0f, durationSeconds);
+
+            TryShowRespawnCountdownWindow();
+            EventSystem.EventTrigger(RespawnCountdownEvents.CountdownStartEvent, totalSeconds);
+            EventSystem.EventTrigger(RespawnCountdownEvents.CountdownTickEvent, totalSeconds);
+
+            if (totalSeconds <= 0f)
+                return;
+
+            float endTime = Time.unscaledTime + totalSeconds;
+            float nextDispatchRemain = Mathf.Max(0f, totalSeconds - 0.1f);
+
+            while (true)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+
+                float remain = endTime - Time.unscaledTime;
+                if (remain <= 0f)
+                {
+                    EventSystem.EventTrigger(RespawnCountdownEvents.CountdownTickEvent, 0f);
+                    break;
+                }
+
+                if (remain <= nextDispatchRemain)
+                {
+                    EventSystem.EventTrigger(RespawnCountdownEvents.CountdownTickEvent, remain);
+                    nextDispatchRemain = Mathf.Max(0f, remain - 0.1f);
+                }
+            }
+        }
+
+        private static void TryShowRespawnCountdownWindow()
+        {
+            if (UISystem.TryGetUIWindowData(RespawnCountdownEvents.WindowTypeKey, out _))
+                UISystem.Show(RespawnCountdownEvents.WindowTypeKey);
+        }
+
+        private static void TryCloseRespawnCountdownWindow()
+        {
+            if (!UISystem.TryGetUIWindowData(RespawnCountdownEvents.WindowTypeKey, out _))
+                return;
+
+            var window = UISystem.GetWindow(RespawnCountdownEvents.WindowTypeKey);
+            if (window != null && window.UIEnable)
+                UISystem.Close(RespawnCountdownEvents.WindowTypeKey);
+        }
+
+        private async UniTaskVoid ApplyRespawnInvincibleWindow()
+        {
+            if (ReusableData == null || respawnInvincibleSeconds <= 0f)
+                return;
+
+            ReusableData.isInvincible = true;
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(respawnInvincibleSeconds), DelayType.DeltaTime, PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            if (this == null || isDead || isRespawning || ReusableData == null)
+                return;
+
+            ReusableData.isInvincible = false;
+        }
+
+        private void DisableCollidersForDeath()
+        {
+            disabledCollidersByDeath.Clear();
+            var colliders = GetComponentsInChildren<Collider>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                var col = colliders[i];
+                if (col == null || !col.enabled)
+                    continue;
+
+                col.enabled = false;
+                disabledCollidersByDeath.Add(col);
+            }
+        }
+
+        private void RestoreCollidersAfterRespawn()
+        {
+            for (int i = 0; i < disabledCollidersByDeath.Count; i++)
+            {
+                var col = disabledCollidersByDeath[i];
+                if (col != null)
+                    col.enabled = true;
+            }
+            disabledCollidersByDeath.Clear();
+        }
+
+        private void RestoreVitalsOnRespawn()
+        {
+            if (characterAttribute == null)
+                return;
+
+            float maxHp = Mathf.Max(1f, characterAttribute.maxHp.Total);
+            float maxMp = Mathf.Max(0f, characterAttribute.maxMp.Total);
+            characterAttribute.SetHp(maxHp);
+            characterAttribute.SetMp(maxMp);
         }
 
         public float GetAttackValue(SkillAttackDetectionEvent detectionEvent)

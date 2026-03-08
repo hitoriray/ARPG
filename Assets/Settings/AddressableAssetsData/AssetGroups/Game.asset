@@ -17,6 +17,16 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ec7f10da2ba531744b90eeb16256623a
   m_SerializeEntries:
+  - m_GUID: 1b76e0c6900779b448db99eeddcbe7cd
+    m_Address: UI_ConfirmWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30d1f3d9a2aae0f48aeb38846cfc375b
+    m_Address: UI_ConversationWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 66a3ea7ec28abda4fb70fb8fa6f0858a
     m_Address: UI_SkillWindow
     m_ReadOnly: 0
@@ -32,8 +42,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bc38eeaf11fdc54b9a5d65600e865dd
+    m_Address: UI_GameSettingsWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a25d7633cd38d3449bdd4b86e1f35132
     m_Address: UI_SkillLearnWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c202803c95e12a645a0dae18d302bd08
+    m_Address: UI_WorldHeadItem
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c53b381356ca6e542a347f6b1ccc6c34
+    m_Address: UI_RespawnCountdownWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -52,8 +52,8 @@ MonoBehaviour:
   SkillConfigList:
   - {fileID: 11400000, guid: c1324694cb7285244b8253990e172ba1, type: 2}
   - {fileID: 11400000, guid: f92bf1dc9b5cdbe448b5abb5fbaacbcf, type: 2}
-  hpBaseValue: 1000
-  mpBaseValue: 500
+  hpBaseValue: 500
+  mpBaseValue: 100
   attackBaseValue: 100
-  defenseBaseValue: 10
+  defenseBaseValue: 0
   LevelGrowthConfig: {fileID: 11400000, guid: 9f39be9aae8dfb446a1aa83b7834a7e7, type: 2}

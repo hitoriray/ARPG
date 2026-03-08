@@ -24,6 +24,12 @@ namespace JKFrame
         {
             if (Instance != null && Instance != this) // 防止Editor下的Instance已经存在，并且是自身
             {
+                Debug.LogWarning(
+                    $"[JKFrameRoot] Duplicate instance detected. " +
+                    $"Keeping '{Instance.name}' in scene '{GetSceneLabel(Instance.gameObject)}', " +
+                    $"destroying '{name}' in scene '{GetSceneLabel(gameObject)}'. " +
+                    "Please keep only one JKFrame prefab in startup scene.",
+                    this);
                 Destroy(gameObject);
                 return;
             }
@@ -39,6 +45,15 @@ namespace JKFrame
         private void Init()
         {
             InitSystems();
+        }
+
+        private static string GetSceneLabel(GameObject go)
+        {
+            if (go == null)
+                return "<null>";
+
+            var scene = go.scene;
+            return scene.IsValid() ? scene.name : "<invalid>";
         }
 
         #region System

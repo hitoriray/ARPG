@@ -63,6 +63,10 @@ MonoBehaviour:
   groundDetectionOffset: -0.06
   characterConfig: {fileID: 0}
   playerSO: {fileID: 0}
+  footstepVolume: 1
+  footstepRayDistance: 1.6
+  footstepRayOffset: {x: 0, y: 0.2, z: 0}
+  footstepMinInterval: 0.06
   moveSpeedMultiplier: 1
   playerView: {fileID: 0}
   skillBrain: {fileID: 5647307152969126577}
@@ -71,13 +75,11 @@ MonoBehaviour:
   weaponSlotManager: {fileID: 4339006056208149499}
   cameraController: {fileID: 0}
   genericLocomotionController: {fileID: 0}
-  footstepVolume: 1
-  footstepRayDistance: 1.6
-  footstepRayOffset: {x: 0, y: 0.2, z: 0}
-  footstepMinInterval: 0.06
   skillLayerIndex: 1
   upperBodyMask: {fileID: 0}
   skillLayerFadeOut: 0.231
+  respawnDelaySeconds: 3
+  respawnInvincibleSeconds: 1
 --- !u!114 &5647307152969126734
 MonoBehaviour:
   m_ObjectHideFlags: 0

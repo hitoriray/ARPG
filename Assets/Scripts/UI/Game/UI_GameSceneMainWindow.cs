@@ -83,10 +83,13 @@ namespace UI
             DataManager.OnLevelUp += OnExpLevelChanged;
 
             // 绑定技能窗口快捷键
-            InputService.Instance.inputMap.Player.OpenSkillWindow.performed += OnOpenSkillWindowAction;
-            InputService.Instance.inputMap.Player.OpenSkillLearnWindow.performed += OnOpenSkillLearnWindowAction;
-            InputService.Instance.inputMap.Player.OpenDialogWindow.performed += OnOpenDialogWindowAction;
-            InputService.Instance.inputMap.UI.ESC.performed += OnOpenSettingsWindowAction;
+            var inputMap = InputService.Instance?.inputMap;
+            if (inputMap != null)
+            {
+                inputMap.Player.OpenSkillWindow.performed += OnOpenSkillWindowAction;
+                inputMap.Player.OpenSkillLearnWindow.performed += OnOpenSkillLearnWindowAction;
+                inputMap.Player.OpenDialogWindow.performed += OnOpenDialogWindowAction;
+            }
         }
 
         protected override void UnRegisterEventListener()
@@ -103,6 +106,14 @@ namespace UI
 
             DataManager.OnExpGained -= OnExpGained;
             DataManager.OnLevelUp -= OnExpLevelChanged;
+
+            var inputMap = InputService.Instance?.inputMap;
+            if (inputMap != null)
+            {
+                inputMap.Player.OpenSkillWindow.performed -= OnOpenSkillWindowAction;
+                inputMap.Player.OpenSkillLearnWindow.performed -= OnOpenSkillLearnWindowAction;
+                inputMap.Player.OpenDialogWindow.performed -= OnOpenDialogWindowAction;
+            }
         }
 
         private void Update()
