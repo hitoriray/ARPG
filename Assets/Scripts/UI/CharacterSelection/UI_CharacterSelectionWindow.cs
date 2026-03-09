@@ -372,6 +372,10 @@ namespace UI
                 // 更新属性显示
                 UpdateAttributeDisplay(config);
             }
+            
+            // 加入少量延迟，确保Animancer绑定并计算好Idle姿态，防止初次打开看到T-pose
+            await UniTask.Delay(200);
+            EventSystem.EventTrigger(GameManager.GameSceneReadyEvent);
         }
 
         /// <summary>
@@ -509,7 +513,7 @@ namespace UI
             await UniTask.Yield();
 
             UISystem.Close<UI_CharacterSelectionWindow>();
-            GameManager.Instance.LoadSceneWithLoading("Menu", false);
+            JKFrame.SceneSystem.LoadSceneAsync("Menu");
         }
         #endregion
         #region Update

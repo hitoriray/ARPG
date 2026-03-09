@@ -470,6 +470,12 @@ namespace RayPlayer
                 RestoreCollidersAfterRespawn();
                 ResetDeathSoundLock();
 
+                // 强制瞬间播放Idle动画，消除从死亡倒地过渡到站立的不自然表现
+                if (!useGenericLocomotion && animancer != null && playerSO != null)
+                {
+                    animancer.Play(playerSO.playerMovementData.PlayerIdleData.idle, 0f);
+                }
+
                 ChangeState(PlayerState.Idle);
                 if (genericLocomotionController != null)
                     genericLocomotionController.enabled = useGenericLocomotion;

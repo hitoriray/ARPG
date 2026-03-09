@@ -64,6 +64,9 @@ namespace Manager
 
                 if (LootDropManager.Instance != null)
                     LootDropManager.Instance.RestoreScenePersistentDrops();
+
+                // 额外等待一小段时间，确保角色模型和动画状态完全初始化并应用，避免看到T-pose
+                await Cysharp.Threading.Tasks.UniTask.Delay(200);
             }
             finally
             {

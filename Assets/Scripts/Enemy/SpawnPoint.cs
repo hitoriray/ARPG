@@ -102,6 +102,11 @@ namespace Enemy
 
             State = SpawnPointState.Spawning;
 
+            // 引入一小段随机延迟进行错帧处理。
+            // 原因是若缓存命中，多个SpawnPoint将同一帧执行Instantiate，导致主线程瞬间压力过大造成卡顿。
+            await Cysharp.Threading.Tasks.UniTask.Delay(TimeSpan.FromSeconds(UnityEngine.Random.Range(0.01f, 0.3f)));
+            if (State == SpawnPointState.Cleared) return;
+
             // 通过 CharacterModelManager 异步加载预制体（复用现有基础设施）
             var modelManager = CharacterModelManager.Instance;
             if (modelManager == null)

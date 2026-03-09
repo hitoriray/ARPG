@@ -90,7 +90,7 @@ namespace Manager
         /// <summary>进入角色选择场景（带 Loading 界面）</summary>
         public void EnterCharacterSelectionWithLoading()
         {
-            LoadSceneWithLoading(CharacterSelectionSceneName, false);
+            LoadSceneWithLoading(CharacterSelectionSceneName, true);
         }
 
         /// <summary>
@@ -117,7 +117,13 @@ namespace Manager
             WaitForSceneReadyEvent = waitForSceneReadyEvent;
             EnsureLoadingWindowDataRegistered();
 
-            UISystem.Show(LoadingWindowTypeKey);
+            UISystem.ShowAsync(LoadingWindowTypeKey);
+            await UniTask.WaitUntil(() =>
+            {
+                var loadingWindow = UISystem.GetWindow(LoadingWindowTypeKey);
+                return loadingWindow != null && loadingWindow.UIEnable;
+            });
+            
             Canvas.ForceUpdateCanvases();
 
             // Let LoadingWindow render at least one frame before scene load starts.
