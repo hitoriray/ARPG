@@ -4,6 +4,7 @@ using Attribute;
 using JKFrame;
 using Manager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UI
 {
@@ -128,6 +129,7 @@ namespace UI
             _isQuitting = false;
             _missingInstanceLogged = false;
             _instance = this;
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
             EnsureCanvas();
         }
 
@@ -153,16 +155,12 @@ namespace UI
 
         private void OnDestroy()
         {
+            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
             if (_instance == this)
                 _instance = null;
 
-            foreach (var entry in _entries.Values)
-            {
-                UnsubscribeHp(entry);
-            }
-
-            _entries.Clear();
-            _pendingRegistrations.Clear();
+            ClearAllEntries();
         }
 
         public void RegisterHostile(Transform target, CharacterAttribute characterAttribute, string displayName, bool isBoss = false)
@@ -328,11 +326,16 @@ namespace UI
                 return;
             }
 
+            CleanupInvalidEntries();
+
             if (worldCamera == null)
                 worldCamera = Camera.main;
 
             if (worldCamera == null || itemRoot == null)
+            {
+                HideAllEntries();
                 return;
+            }
 
             float now = Time.unscaledTime;
             var keysToRemove = ListPool<int>.Get();
@@ -423,6 +426,55 @@ namespace UI
             }
 
             ListPool<int>.Release(keysToRemove);
+        }
+
+        private void OnActiveSceneChanged(Scene previousScene, Scene nextScene)
+        {
+            worldCamera = null;
+            ClearAllEntries();
+        }
+
+        private void ClearAllEntries()
+        {
+            foreach (var entry in _entries.Values)
+            {
+                if (entry == null) continue;
+                UnsubscribeHp(entry);
+                ReleaseItem(entry.Item);
+            }
+
+            _entries.Clear();
+            _pendingRegistrations.Clear();
+            _updateTimer = 0f;
+        }
+
+        private void CleanupInvalidEntries()
+        {
+            if (_entries.Count == 0)
+                return;
+
+            var invalidKeys = ListPool<int>.Get();
+            foreach (var pair in _entries)
+            {
+                var entry = pair.Value;
+                if (entry == null || entry.Target == null || entry.Item == null)
+                {
+                    invalidKeys.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < invalidKeys.Count; i++)
+            {
+                int key = invalidKeys[i];
+                if (!_entries.TryGetValue(key, out var entry))
+                    continue;
+
+                _entries.Remove(key);
+                UnsubscribeHp(entry);
+                ReleaseItem(entry.Item);
+            }
+
+            ListPool<int>.Release(invalidKeys);
         }
 
         private void HideAllEntries()
