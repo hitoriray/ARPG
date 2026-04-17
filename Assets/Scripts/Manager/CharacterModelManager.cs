@@ -233,9 +233,10 @@ namespace Manager
 
         #endregion
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             UnloadAllCharacters();
+            base.OnDestroy();
         }
     }
 }
