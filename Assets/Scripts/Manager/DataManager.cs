@@ -114,6 +114,44 @@ namespace Manager
             _hasArchive = true;
         }
 
+        /// <summary>
+        /// 导出当前本地存档，供云存档上传使用。
+        /// </summary>
+        public static string ExportCurrentArchiveJson()
+        {
+            if (GameData == null)
+            {
+                throw new InvalidOperationException($"[{nameof(DataManager)}] GameData 为空，无法导出云存档。");
+            }
+
+            return JsonUtility.ToJson(GameData);
+        }
+
+        /// <summary>
+        /// 使用云端存档覆盖当前单槽位本地存档。
+        /// </summary>
+        public static void ImportCloudArchiveJson(string saveJson)
+        {
+            if (string.IsNullOrWhiteSpace(saveJson))
+            {
+                throw new ArgumentException("云存档内容为空。", nameof(saveJson));
+            }
+
+            GameData cloudGameData = JsonUtility.FromJson<GameData>(saveJson);
+            if (cloudGameData == null)
+            {
+                throw new InvalidOperationException("云存档解析失败。");
+            }
+
+            SaveSystem.DeleteAllSaveItem();
+            SaveSystem.CreateSaveItem();
+
+            GameData = cloudGameData;
+            EnsureGameDataContainers();
+            SaveGameData();
+            _hasArchive = true;
+        }
+
         #region 角色管理
 
         /// <summary>

@@ -108,6 +108,8 @@ namespace JKFrame
         /// <returns></returns>
         public static List<SaveItem> GetAllSaveItem()
         {
+            if (saveSystemData == null) Init();
+            if (saveSystemData == null) return new List<SaveItem>();
             return saveSystemData.saveItemList;
         }
 

@@ -103,3 +103,11 @@ InitTestScene*.unity*
 /[Aa]ssets/StreamingAssets/LlamaLib-*.meta
 
 node_modules/
+
+# ASP.NET Core server source should keep its project file, but not build outputs or local DBs.
+!/Server/**/*.csproj
+/Server/**/[Bb]in/
+/Server/**/[Oo]bj/
+/Server/**/.build-check/
+/Server/**/*.db
+/Server/**/*.db-*
