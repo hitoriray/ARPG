@@ -104,6 +104,14 @@ InitTestScene*.unity*
 
 node_modules/
 
+# Local secrets (never commit)
+.env
+.env.*
+.secrets/
+
+# Unity auto-recovery scenes can accidentally contain sensitive inspector values
+/[Aa]ssets/_Recovery/
+
 # ASP.NET Core server source should keep its project file, but not build outputs or local DBs.
 !/Server/**/*.csproj
 /Server/**/[Bb]in/

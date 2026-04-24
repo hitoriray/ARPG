@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Config;
 using Data;
@@ -14,9 +15,12 @@ namespace Manager
     {
         [Header("API")]
         [SerializeField] private string API_URL;
-        [SerializeField] private string API_KEY;
         [SerializeField] private string model;
         [SerializeField] private float temperature = 1f;
+        [SerializeField] private string apiKeyEnvVarName = "DEEPSEEK_API_KEY";
+        [SerializeField] private string localApiKeyFileRelativePath = ".secrets/deepseek_api_key.txt";
+        [SerializeField] private bool allowPlayerPrefsFallback = true;
+        [SerializeField] private string playerPrefsApiKeyKey = "ARPG.AI.DeepSeekApiKey";
 
         [Header("Global Prompt")]
         [TextArea(3, 10)]
@@ -36,6 +40,7 @@ namespace Manager
 
         private string currentNpcId;
         private bool loadedFromArchive;
+        private string runtimeApiKey;
 
         [Serializable]
         public class ChatMessage
@@ -171,6 +176,23 @@ namespace Manager
             List<ChatMessage> history = EnsureNpcSession(normalizedNpcId);
             history.Add(new ChatMessage("user", msg));
 
+            if (string.IsNullOrWhiteSpace(API_URL))
+            {
+                RemoveLastPendingUser(history, msg);
+                onError?.Invoke("API_URL 未配置。");
+                yield break;
+            }
+
+            string apiKey = ResolveApiKey();
+            if (RequiresApiKeyForUrl(API_URL) && string.IsNullOrWhiteSpace(apiKey))
+            {
+                RemoveLastPendingUser(history, msg);
+                onError?.Invoke(
+                    $"未配置 DeepSeek API Key。请设置环境变量 {apiKeyEnvVarName}，" +
+                    $"或在项目根目录创建 {localApiKeyFileRelativePath}。");
+                yield break;
+            }
+
             ApiRequest request = new ApiRequest(model, history, temperature);
             string json = JsonUtility.ToJson(request);
             byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
@@ -180,7 +202,10 @@ namespace Manager
                 webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 webRequest.downloadHandler = new DownloadHandlerBuffer();
                 webRequest.SetRequestHeader("Content-Type", "application/json");
-                webRequest.SetRequestHeader("Authorization", "Bearer " + API_KEY);
+                if (!string.IsNullOrWhiteSpace(apiKey))
+                {
+                    webRequest.SetRequestHeader("Authorization", "Bearer " + apiKey);
+                }
 
                 yield return webRequest.SendWebRequest();
 
@@ -472,6 +497,100 @@ namespace Manager
                 sb.AppendLine($"[{m.role}]: {m.content}");
             }
             RayDebug.Info(sb.ToString());
+        }
+
+        public void SetRuntimeApiKey(string apiKey, bool persistToPlayerPrefs = false)
+        {
+            runtimeApiKey = string.IsNullOrWhiteSpace(apiKey) ? null : apiKey.Trim();
+            if (!persistToPlayerPrefs || string.IsNullOrWhiteSpace(playerPrefsApiKeyKey))
+                return;
+
+            if (string.IsNullOrWhiteSpace(runtimeApiKey))
+            {
+                PlayerPrefs.DeleteKey(playerPrefsApiKeyKey);
+            }
+            else
+            {
+                PlayerPrefs.SetString(playerPrefsApiKeyKey, runtimeApiKey);
+            }
+
+            PlayerPrefs.Save();
+        }
+
+        public void ClearRuntimeApiKey(bool clearPersisted = false)
+        {
+            runtimeApiKey = null;
+            if (!clearPersisted || string.IsNullOrWhiteSpace(playerPrefsApiKeyKey))
+                return;
+
+            PlayerPrefs.DeleteKey(playerPrefsApiKeyKey);
+            PlayerPrefs.Save();
+        }
+
+        private string ResolveApiKey()
+        {
+            if (!string.IsNullOrWhiteSpace(runtimeApiKey))
+                return runtimeApiKey.Trim();
+
+            if (!string.IsNullOrWhiteSpace(apiKeyEnvVarName))
+            {
+                string envValue = Environment.GetEnvironmentVariable(apiKeyEnvVarName);
+                if (!string.IsNullOrWhiteSpace(envValue))
+                    return envValue.Trim();
+            }
+
+            if (TryReadLocalApiKeyFile(out string fileKey))
+                return fileKey;
+
+            if (allowPlayerPrefsFallback && !string.IsNullOrWhiteSpace(playerPrefsApiKeyKey))
+            {
+                string prefsValue = PlayerPrefs.GetString(playerPrefsApiKeyKey, string.Empty);
+                if (!string.IsNullOrWhiteSpace(prefsValue))
+                    return prefsValue.Trim();
+            }
+
+            return string.Empty;
+        }
+
+        private bool TryReadLocalApiKeyFile(out string apiKey)
+        {
+            apiKey = string.Empty;
+            if (string.IsNullOrWhiteSpace(localApiKeyFileRelativePath))
+                return false;
+
+            try
+            {
+                string projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+                string normalizedRelativePath = localApiKeyFileRelativePath
+                    .Trim()
+                    .Replace('\\', Path.DirectorySeparatorChar)
+                    .Replace('/', Path.DirectorySeparatorChar);
+
+                string filePath = Path.GetFullPath(Path.Combine(projectRoot, normalizedRelativePath));
+                if (!filePath.StartsWith(projectRoot, StringComparison.OrdinalIgnoreCase))
+                    return false;
+
+                if (!File.Exists(filePath))
+                    return false;
+
+                string content = File.ReadAllText(filePath, Encoding.UTF8).Trim();
+                if (string.IsNullOrWhiteSpace(content))
+                    return false;
+
+                apiKey = content;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RayDebug.Warn($"读取本地 API Key 文件失败：{ex.Message}");
+                return false;
+            }
+        }
+
+        private static bool RequiresApiKeyForUrl(string url)
+        {
+            return !string.IsNullOrWhiteSpace(url) &&
+                   url.IndexOf("deepseek.com", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private string NormalizeNpcId(string npcId)
