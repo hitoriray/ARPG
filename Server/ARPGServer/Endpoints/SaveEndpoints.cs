@@ -64,11 +64,6 @@ public static class SaveEndpoints
         var save = await db.CloudSaves.SingleOrDefaultAsync(entity => entity.UserId == userId.Value);
         if (save == null)
         {
-            if (request.ExpectedVersion is > 0)
-            {
-                return Results.Conflict(new ErrorResponse("SAVE_VERSION_CONFLICT", "Cloud save version conflict."));
-            }
-
             save = new CloudSave
             {
                 Id = Guid.NewGuid(),
@@ -82,11 +77,6 @@ public static class SaveEndpoints
         }
         else
         {
-            if (request.ExpectedVersion is > 0 && request.ExpectedVersion != save.Version)
-            {
-                return Results.Conflict(new ErrorResponse("SAVE_VERSION_CONFLICT", "Cloud save version conflict."));
-            }
-
             save.SaveJson = saveJson;
             save.Version += 1;
             save.UpdatedAtUtc = DateTime.UtcNow;

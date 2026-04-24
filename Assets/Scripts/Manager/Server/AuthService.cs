@@ -6,11 +6,12 @@ namespace Manager.Server
 {
     public static class AuthService
     {
-        public static async UniTask<RegisterResponse> RegisterAsync(string userName, string password)
+        public static async UniTask<RegisterResponse> RegisterAsync(string userName, string phoneNumber, string password)
         {
-            var request = new AuthRequest
+            var request = new RegisterRequest
             {
                 userName = userName,
+                phoneNumber = phoneNumber,
                 password = password
             };
 
@@ -20,7 +21,7 @@ namespace Manager.Server
 
         public static async UniTask<LoginResponse> LoginAsync(string userName, string password)
         {
-            var request = new AuthRequest
+            var request = new LoginRequest
             {
                 userName = userName,
                 password = password
@@ -44,7 +45,15 @@ namespace Manager.Server
         }
 
         [Serializable]
-        private sealed class AuthRequest
+        private sealed class RegisterRequest
+        {
+            public string userName;
+            public string phoneNumber;
+            public string password;
+        }
+
+        [Serializable]
+        private sealed class LoginRequest
         {
             public string userName;
             public string password;
@@ -55,6 +64,7 @@ namespace Manager.Server
         {
             public string userId;
             public string userName;
+            public string phoneNumber;
             public string createdAtUtc;
         }
 

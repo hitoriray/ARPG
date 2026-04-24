@@ -6,13 +6,12 @@ namespace Manager.Server
 {
     public static class CloudSaveService
     {
-        public static async UniTask<CloudSaveResponse> UploadCurrentArchiveAsync(int? expectedVersion = null)
+        public static async UniTask<CloudSaveResponse> UploadCurrentArchiveAsync()
         {
             string saveJson = DataManager.ExportCurrentArchiveJson();
             var request = new UpsertCloudSaveRequest
             {
-                saveJson = saveJson,
-                expectedVersion = expectedVersion.GetValueOrDefault()
+                saveJson = saveJson
             };
 
             string responseJson = await ApiClient.PutJsonAsync(
@@ -40,7 +39,6 @@ namespace Manager.Server
         private sealed class UpsertCloudSaveRequest
         {
             public string saveJson;
-            public int expectedVersion;
         }
 
         [Serializable]

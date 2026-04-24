@@ -11,6 +11,7 @@ namespace UI
     {
         [SerializeField] private ButtonManager startButton;
         [SerializeField] private ButtonManager continueButton;
+        [SerializeField] private ButtonManager serverButton;
         [SerializeField] private ButtonManager quitButton;
 
         public override void Init()
@@ -19,6 +20,7 @@ namespace UI
 
             startButton.onClick.AddListener(OnStartButtonClicked);
             continueButton.onClick.AddListener(OnContinueButtonClicked);
+            if (serverButton != null) serverButton.onClick.AddListener(OnServerButtonClicked);
             quitButton.onClick.AddListener(OnQuitButtonClicked);
 
             if (!DataManager.HasArchive)
@@ -62,7 +64,13 @@ namespace UI
         {
             if (startButton != null) startButton.Interactable(interactable);
             if (continueButton != null) continueButton.Interactable(interactable);
+            if (serverButton != null) serverButton.Interactable(interactable);
             if (quitButton != null) quitButton.Interactable(interactable);
+        }
+
+        private void OnServerButtonClicked()
+        {
+            UISystem.Show<UI_ServerAccountWindow>();
         }
 
         private void OnQuitButtonClicked()

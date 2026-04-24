@@ -8,6 +8,7 @@ namespace Manager.Server
     {
         [SerializeField] private string serverUrl = "http://localhost:5254";
         [SerializeField] private string userName = "unity_test";
+        [SerializeField] private string phoneNumber = "13800138000";
         [SerializeField] private string password = "Password123";
         [SerializeField] private int initialCharacterId = 1001;
 
@@ -56,7 +57,7 @@ namespace Manager.Server
         {
             try
             {
-                var registered = await AuthService.RegisterAsync(userName, password);
+                var registered = await AuthService.RegisterAsync(userName, phoneNumber, password);
                 Debug.Log($"[ServerSmokeTest] Register ok: userName={registered.userName}, userId={registered.userId}");
             }
             catch (ApiException ex) when (ex.StatusCode == 409)

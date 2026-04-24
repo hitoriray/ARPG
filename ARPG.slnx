@@ -60,6 +60,7 @@
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
   <Project Path="FixMath.csproj" />
   <Project Path="Unity.AI.Navigation.Editor.csproj" />
+  <Project Path="ARPG.UI.csproj" />
   <Project Path="JKFrameEditor.csproj" />
   <Project Path="AstarPackageToolsEditor.csproj" />
   <Project Path="GOAP.EditorOnly.csproj" />
@@ -69,7 +70,6 @@
   <Project Path="Unity.AI.Navigation.csproj" />
   <Project Path="Unity.Collections.CodeGen.csproj" />
   <Project Path="Kybernetik.Animancer.FSM.csproj" />
-  <Project Path="ARPG.UI.csproj" />
   <Project Path="Unity.Mathematics.Editor.csproj" />
   <Project Path="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
   <Project Path="UniTask.TextMeshPro.csproj" />

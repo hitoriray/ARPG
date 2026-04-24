@@ -12,6 +12,7 @@ namespace ARPGServer.Endpoints;
 public static class AuthEndpoints
 {
     private static readonly Regex UserNameRegex = new("^[a-z0-9_]{3,32}$", RegexOptions.Compiled);
+    private static readonly Regex PhoneNumberRegex = new("^\\+?[0-9]{6,20}$", RegexOptions.Compiled);
 
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
@@ -33,9 +34,10 @@ public static class AuthEndpoints
     private static async Task<IResult> RegisterAsync(RegisterRequest request, AppDbContext db)
     {
         var userName = NormalizeUserName(request.UserName);
+        var phoneNumber = NormalizePhoneNumber(request.PhoneNumber);
         var password = request.Password ?? string.Empty;
 
-        var error = ValidateRegisterRequest(userName, password);
+        var error = ValidateRegisterRequest(userName, phoneNumber, password);
         if (error != null) return Results.BadRequest(error);
 
         var exists = await db.Users.AnyAsync(user => user.UserName == userName);
@@ -48,6 +50,7 @@ public static class AuthEndpoints
         {
             Id = Guid.NewGuid(),
             UserName = userName,
+            PhoneNumber = phoneNumber,
             PasswordHash = PasswordHasher.Hash(password),
             CreatedAtUtc = DateTime.UtcNow
         };
@@ -65,7 +68,7 @@ public static class AuthEndpoints
 
         return Results.Created(
             $"/api/users/{user.Id}",
-            new RegisterResponse(user.Id, user.UserName, user.CreatedAtUtc));
+            new RegisterResponse(user.Id, user.UserName, user.PhoneNumber, user.CreatedAtUtc));
     }
 
     private static async Task<IResult> LoginAsync(
@@ -113,13 +116,25 @@ public static class AuthEndpoints
         return (userName ?? string.Empty).Trim().ToLowerInvariant();
     }
 
-    private static ErrorResponse? ValidateRegisterRequest(string userName, string password)
+    private static string NormalizePhoneNumber(string? phoneNumber)
+    {
+        return (phoneNumber ?? string.Empty).Trim().Replace(" ", string.Empty).Replace("-", string.Empty);
+    }
+
+    private static ErrorResponse? ValidateRegisterRequest(string userName, string phoneNumber, string password)
     {
         if (!UserNameRegex.IsMatch(userName))
         {
             return new ErrorResponse(
                 "INVALID_USER_NAME",
                 "User name must be 3-32 chars and contain only lowercase letters, digits, or underscore.");
+        }
+
+        if (!PhoneNumberRegex.IsMatch(phoneNumber))
+        {
+            return new ErrorResponse(
+                "INVALID_PHONE_NUMBER",
+                "Phone number format is invalid.");
         }
 
         if (password.Length is < 8 or > 128)
